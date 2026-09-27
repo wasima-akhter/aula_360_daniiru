@@ -177,7 +177,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
 
                     const SizedBox(height: 20),
 
-                    AulaTextField(
+                    AppTextField(
                       controller: nameController,
                       label: 'Parent Full Name',
                       hint: 'Enter your full name',
@@ -186,7 +186,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
 
                     const SizedBox(height: 15),
 
-                    AulaTextField(
+                    AppTextField(
                       controller: phoneController,
                       label: 'Primary Mobile Number',
                       hint: 'Enter mobile number',
@@ -195,7 +195,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
 
                     const SizedBox(height: 15),
 
-                    AulaTextField(
+                    AppTextField(
                       controller: emailController,
                       label: 'Email Address',
                       hint: 'Enter email address',
@@ -267,7 +267,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
 
                     const SizedBox(height: 15),
 
-                    AulaTextField(
+                    AppTextField(
                       controller: addressController,
                       label: 'Residential Address',
                       hint: 'e.g. 742 Evergreen Terrace, Springfield',

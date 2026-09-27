@@ -13,13 +13,20 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   int _currentPage = 0;
 
-  final List<_OnboardingData> pages = const [
+  final List<_OnboardingData> pages = [
     _OnboardingData(
-      image: 'assets/images/onboarding_1.png',
+      image: 'assets/images/onboarding_1.jpg',
       title: 'Centralized Academy\nIntelligence',
       description:
           'Experience all-in-one academy management. Connect curriculum, classes, educators, and institutional operations in a unified cloud platform.',
-      tags: ['Unified Hub', 'Smart Timetables', 'Real-Time Sync'],
+      tags: [
+        _OnboardingTagData(name: 'Unified Hub', icon: Icons.hub_outlined),
+        _OnboardingTagData(
+          name: 'Smart Timetables',
+          icon: Icons.calendar_month_outlined,
+        ),
+        _OnboardingTagData(name: 'Real-Time Sync', icon: Icons.sync),
+      ],
     ),
     _OnboardingData(
       image: 'assets/images/onboarding_2.png',
@@ -27,14 +34,29 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       description:
           'Effortlessly monitor real-time attendance, track homework submissions, review weekly exam reports, and stay aligned with your student’s learning journey.',
       tags: [
-        'Live Attendance',
-        'Homework Tracker',
-        'Progress Reports',
-        'Class Schedules',
+        _OnboardingTagData(
+          name: 'Live Attendance',
+          icon: Icons.fact_check_outlined,
+        ),
+
+        _OnboardingTagData(
+          name: 'Homework Tracker',
+          icon: Icons.assignment_outlined,
+        ),
+
+        _OnboardingTagData(
+          name: 'Progress Reports',
+          icon: Icons.bar_chart_outlined,
+        ),
+
+        _OnboardingTagData(
+          name: 'Class Schedules',
+          icon: Icons.calendar_month_outlined,
+        ),
       ],
     ),
     _OnboardingData(
-      image: 'assets/images/onboarding_3.png',
+      image: 'assets/images/onboarding_3.jpg',
       title: 'Direct Communication &\nGrowth',
       description:
           'Instant two-way messaging with educators, urgent academy broadcasts, milestone badges, and comprehensive performance analytics at your fingertips.',
@@ -55,12 +77,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         curve: Curves.easeOut,
       );
     } else {
-      context.go(RoutePath.chooseRoleScreen.addBasePath);
+      context.go(RoutePath.chooseRoleScreen);
     }
   }
 
   void _skip() {
-    context.go(RoutePath.chooseRoleScreen.addBasePath);
+    context.go(RoutePath.chooseRoleScreen);
   }
 
   @override
@@ -71,7 +93,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -81,7 +103,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     child: const Text(
                       'Skip',
                       style: TextStyle(
-                        fontSize: 12,
                         color: AppColors.text,
                         fontWeight: FontWeight.w500,
                       ),
@@ -136,21 +157,24 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
           Container(
             width: double.infinity,
-            height: 210,
+
             decoration: BoxDecoration(
               color: const Color(0xFFF7FAFD),
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(10.r),
             ),
-            child: Image.asset(
-              data.image,
-              fit: BoxFit.contain,
-              errorBuilder: (_, _, _) {
-                return const Icon(
-                  Icons.school_outlined,
-                  size: 80,
-                  color: AppColors.primary,
-                );
-              },
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10.r),
+              child: Image.asset(
+                data.image,
+                fit: BoxFit.contain,
+                errorBuilder: (_, _, _) {
+                  return const Icon(
+                    Icons.school_outlined,
+                    size: 80,
+                    color: AppColors.primary,
+                  );
+                },
+              ),
             ),
           ),
 
@@ -159,10 +183,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           Text(
             data.title,
             textAlign: TextAlign.center,
-            style: const TextStyle(
+            style: TextStyle(
               color: AppColors.primaryDark,
-              fontSize: 18,
+              fontSize: 22.sp,
               height: 1.25,
+              letterSpacing: -0.3,
               fontWeight: FontWeight.w800,
             ),
           ),
@@ -174,7 +199,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             textAlign: TextAlign.center,
             style: const TextStyle(
               color: AppColors.secondaryText,
-              fontSize: 11,
+
               height: 1.55,
             ),
           ),
@@ -192,17 +217,28 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     vertical: 5,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Colors.grey.shade50,
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(color: AppColors.border),
                   ),
-                  child: Text(
-                    tag,
-                    style: const TextStyle(
-                      color: AppColors.text,
-                      fontSize: 9,
-                      fontWeight: FontWeight.w600,
-                    ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        tag.icon,
+                        color: AppColors.deepBlueColor,
+                        size: 14.sp,
+                      ),
+                      Gap(5),
+                      Text(
+                        tag.name,
+                        style: TextStyle(
+                          color: AppColors.text,
+                          fontSize: 11.sp,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
                   ),
                 );
               }).toList(),
@@ -233,7 +269,7 @@ class _OnboardingData {
   final String image;
   final String title;
   final String description;
-  final List<String> tags;
+  final List<_OnboardingTagData> tags;
 
   const _OnboardingData({
     required this.image,
@@ -241,4 +277,11 @@ class _OnboardingData {
     required this.description,
     required this.tags,
   });
+}
+
+class _OnboardingTagData {
+  final String name;
+  final IconData icon;
+
+  _OnboardingTagData({required this.name, required this.icon});
 }

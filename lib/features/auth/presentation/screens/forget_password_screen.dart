@@ -70,7 +70,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
 
               const SizedBox(height: 30),
 
-              AulaTextField(
+              AppTextField(
                 controller: emailController,
                 label: 'Email Address',
                 hint: 'Enter your registered email',

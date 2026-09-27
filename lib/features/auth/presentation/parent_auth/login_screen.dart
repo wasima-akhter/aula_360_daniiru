@@ -83,7 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
               const SizedBox(height: 30),
 
-              AulaTextField(
+              AppTextField(
                 controller: emailController,
                 label: 'Mobile Number or Email',
                 hint: 'e.g. parent@example.com or +1 (555) 019-28',
@@ -93,7 +93,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
               const SizedBox(height: 18),
 
-              AulaTextField(
+              AppTextField(
                 controller: passwordController,
                 label: 'Password',
                 hint: '••••••••••••',
@@ -187,6 +187,47 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ],
                     ),
+                  ),
+                ),
+              ),
+
+              Gap(20.h),
+              Center(
+                child: TextButton(
+                  onPressed: () {
+                    // Navigate to teacher login
+                    context.pushNamed(RoutePath.teacherLoginScreen);
+                  },
+                  style: TextButton.styleFrom(
+                    foregroundColor: AppColors.primary,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'Login as Teacher',
+                        style: TextStyle(
+                          color: AppColors.primary,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          decorationColor: AppColors.primary,
+                          decorationThickness: 1.5,
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Icon(
+                        Icons.arrow_forward_rounded,
+                        size: 18,
+                        color: AppColors.primary,
+                      ),
+                    ],
                   ),
                 ),
               ),

@@ -1,11 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-
-import '../../../../core/router/route_path.dart';
-import '../../../../utils/color/app_colors.dart';
-import '../../../../utils/extension/base_extension.dart';
+import '../../../share/export/screen_export.dart';
 import '../../../share/widgets/button/app_logo.dart';
-import '../../../share/widgets/button/app_primary_button.dart';
 
 class ChooseRoleScreen extends StatefulWidget {
   const ChooseRoleScreen({super.key});
@@ -49,13 +43,13 @@ class _ChooseRoleScreenState extends State<ChooseRoleScreen> {
 
               const SizedBox(height: 43),
 
-              const Align(
+              Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   'Select your role',
                   style: TextStyle(
                     color: AppColors.text,
-                    fontSize: 21,
+                    fontSize: 21.sp,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
@@ -67,10 +61,7 @@ class _ChooseRoleScreenState extends State<ChooseRoleScreen> {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   'Choose how you’ll be accessing your academy portal.',
-                  style: TextStyle(
-                    color: AppColors.secondaryText,
-                    fontSize: 11,
-                  ),
+                  style: TextStyle(color: AppColors.secondaryText),
                 ),
               ),
 
@@ -160,7 +151,7 @@ class _ChooseRoleScreenState extends State<ChooseRoleScreen> {
                     color: selected
                         ? AppColors.primary
                         : const Color(0xFF718096),
-                    size: 20,
+                    size: 20.sp,
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -169,9 +160,9 @@ class _ChooseRoleScreenState extends State<ChooseRoleScreen> {
                     children: [
                       Text(
                         title,
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: AppColors.text,
-                          fontSize: 12,
+
                           fontWeight: FontWeight.w800,
                         ),
                       ),
@@ -180,7 +171,7 @@ class _ChooseRoleScreenState extends State<ChooseRoleScreen> {
                           ' $subtitle',
                           style: const TextStyle(
                             color: AppColors.text,
-                            fontSize: 12,
+
                             fontWeight: FontWeight.w800,
                           ),
                         ),
@@ -192,7 +183,7 @@ class _ChooseRoleScreenState extends State<ChooseRoleScreen> {
                       ? Icons.radio_button_checked
                       : Icons.radio_button_off,
                   color: selected ? AppColors.primary : const Color(0xFFB8BFCA),
-                  size: 21,
+                  size: 21.sp,
                 ),
               ],
             ),
@@ -205,20 +196,20 @@ class _ChooseRoleScreenState extends State<ChooseRoleScreen> {
 
             Text(
               description,
-              style: const TextStyle(
+              style: TextStyle(
                 color: AppColors.secondaryText,
-                fontSize: 10,
+                fontSize: 12.sp,
                 height: 1.5,
               ),
             ),
 
-            if (selected && role == 'parent') ...[
+            if (selected) ...[
               const SizedBox(height: 7),
-              const Text(
-                'Continue as Parent Login →',
+              Text(
+                'Continue as ${role == 'parent' ? 'Parent' : 'Teacher'} Login →',
                 style: TextStyle(
                   color: AppColors.primary,
-                  fontSize: 9,
+                  fontSize: 12.sp,
                   fontWeight: FontWeight.w700,
                 ),
               ),

@@ -9,11 +9,19 @@ import '../../../share/widgets/button/custom_back_button.dart';
 
 enum OtpPurpose { signup, forgotPassword }
 
+enum OtpRole { parent, teacher }
+
 class ActiveOtpScreen extends ConsumerStatefulWidget {
   final String? email;
-  final OtpPurpose purpose;
 
-  const ActiveOtpScreen({super.key, this.email, required this.purpose});
+  final OtpPurpose purpose;
+  final OtpRole role;
+  const ActiveOtpScreen({
+    super.key,
+    this.email,
+    required this.purpose,
+    required this.role,
+  });
 
   @override
   ConsumerState<ActiveOtpScreen> createState() => _ActiveOtpScreenState();
@@ -129,14 +137,11 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
 
     switch (widget.purpose) {
       case OtpPurpose.signup:
-        context.go(RoutePath.profileScreen.addBasePath);
+        context.go(widget.role == OtpRole.parent ? RoutePath.profileScreen : RoutePath.tea);
         break;
 
       case OtpPurpose.forgotPassword:
-        context.go(
-          RoutePath.resetPasswordScreen.addBasePath,
-          extra: widget.email,
-        );
+        context.go(RoutePath.resetPasswordScreen, extra: widget.email);
         break;
     }
   }

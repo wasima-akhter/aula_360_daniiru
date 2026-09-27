@@ -9,7 +9,9 @@ class RoutePath {
   static const String onboardingScreen = 'onboardingScreen';
 
   static const String loginScreen = 'loginScreen';
+  static const String teacherLoginScreen = 'teacherLoginScreen';
   static const String signUpScreen = 'signUpScreen';
+  static const String teacherSignUpScreen = 'teacherSignUpScreen';
   static const String activeOtpScreen = 'activeOtpScreen';
   static const String forgetPasswordScreen = 'forgetPasswordScreen';
   static const String resetPasswordScreen = 'resetPasswordScreen';

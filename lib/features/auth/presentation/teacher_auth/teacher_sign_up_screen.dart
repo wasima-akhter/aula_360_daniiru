@@ -1,23 +1,25 @@
+import '../../../../core/helper/snackbar/api_snackbar.dart';
 import '../../../share/export/screen_export.dart';
 import '../../../share/widgets/button/app_logo.dart';
 import '../../../share/widgets/button/custom_back_button.dart';
 import '../../../share/widgets/text_field/custom_text_field.dart';
 import '../../abc.dart';
 
-class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+class TeacherSignUpScreen extends StatefulWidget {
+  const TeacherSignUpScreen({super.key});
 
   @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  State<TeacherSignUpScreen> createState() => _TeacherSignUpScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _TeacherSignUpScreenState extends State<TeacherSignUpScreen> {
   final fullNameController = TextEditingController();
   final mobileController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
   bool obscurePassword = true;
+  bool agreedToTerms = false;
 
   @override
   void dispose() {
@@ -48,10 +50,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
       return;
     }
 
-    context.push(
-      RoutePath.activeOtpScreen.addBasePath,
-      extra: emailController.text.trim(),
-    );
+    if (!agreedToTerms) {
+      ApiSnackbar.show('Please agree to the Terms and Conditions.');
+      return;
+    }
+
+    context.push(RoutePath.activeOtpScreen, extra: emailController.text.trim());
   }
 
   @override
@@ -64,7 +68,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const AuthBackButton(title: 'Create Account'),
+              const AuthBackButton(title: 'Teacher Registration'),
 
               const SizedBox(height: 32),
 
@@ -74,7 +78,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
               Center(
                 child: Text(
-                  'Create your account',
+                  'Register as Faculty',
                   style: TextStyle(
                     color: AppColors.text,
                     fontSize: 26.sp,
@@ -87,7 +91,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
               Center(
                 child: Text(
-                  'Enter your basic details to register and connect\nwith your child’s academy.',
+                  'Enter your institutional details to initiate verified \nteacher access.',
                   textAlign: TextAlign.center,
                   style: TextStyle(color: AppColors.secondaryText, height: 1.5),
                 ),
@@ -95,7 +99,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
               const SizedBox(height: 27),
 
-              AulaTextField(
+              AppTextField(
                 controller: fullNameController,
                 label: 'Full Name',
                 hint: 'e.g. Eleanor Vance',
@@ -104,7 +108,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
               const SizedBox(height: 16),
 
-              AulaTextField(
+              AppTextField(
+                controller: emailController,
+                label: 'Academy Email/Faculty ID',
+                hint: 'e.g. m.vance@institution.com',
+                icon: Icons.email_outlined,
+                keyboardType: TextInputType.emailAddress,
+              ),
+
+              const SizedBox(height: 16),
+
+              AppTextField(
                 controller: mobileController,
                 label: 'Mobile Number',
                 hint: '(555) 234-5678',
@@ -114,17 +128,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
               const SizedBox(height: 16),
 
-              AulaTextField(
-                controller: emailController,
-                label: 'Email Address',
-                hint: 'e.g. eleanor.vance@example.com',
-                icon: Icons.email_outlined,
-                keyboardType: TextInputType.emailAddress,
-              ),
-
-              const SizedBox(height: 16),
-
-              AulaTextField(
+              AppTextField(
                 controller: passwordController,
                 label: 'Password',
                 hint: 'Create a secure password',
@@ -139,24 +143,69 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
               const SizedBox(height: 7),
 
+              // add a agree term checkbox+text here
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(
-                    Icons.info_outline_rounded,
-                    size: 13.sp,
-                    color: AppColors.secondaryText,
+                  SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: Checkbox(
+                      value: agreedToTerms,
+                      onChanged: (value) {
+                        setState(() {
+                          agreedToTerms = value ?? false;
+                        });
+                      },
+                      activeColor: AppColors.primary,
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
                   ),
-                  const SizedBox(width: 4),
-                  Text(
-                    'At least 8 characters with numbers and letters',
-                    style: TextStyle(
-                      color: AppColors.secondaryText,
-                      fontSize: 13.sp,
+
+                  const SizedBox(width: 8),
+
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          agreedToTerms = !agreedToTerms;
+                        });
+                      },
+                      child: Text.rich(
+                        TextSpan(
+                          text: 'I agree to the ',
+                          style: TextStyle(
+                            color: AppColors.secondaryText,
+                            fontSize: 12.5.sp,
+                            height: 1.4,
+                          ),
+                          children: [
+                            TextSpan(
+                              text: 'Terms and Conditions',
+                              style: TextStyle(
+                                color: AppColors.primary,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            TextSpan(
+                              text: ' and ',
+                              style: TextStyle(color: AppColors.secondaryText),
+                            ),
+                            TextSpan(
+                              text: 'Privacy Policy',
+                              style: TextStyle(
+                                color: AppColors.primary,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            const TextSpan(text: '.'),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 ],
               ),
-
               const SizedBox(height: 21),
 
               AulaPrimaryButton(text: 'Create Account', onTap: _createAccount),

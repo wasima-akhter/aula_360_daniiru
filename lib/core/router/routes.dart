@@ -1,11 +1,13 @@
+import 'package:aula360/features/auth/presentation/teacher_auth/teacher_login_screen.dart';
+import 'package:aula360/features/auth/presentation/teacher_auth/teacher_sign_up_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/auth/presentation/parent_auth/login_screen.dart';
+import '../../features/auth/presentation/parent_auth/sign_up_screen.dart';
 import '../../features/auth/presentation/screens/active_otp_screen.dart';
 import '../../features/auth/presentation/screens/forget_password_screen.dart';
-import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/reset_password_screen.dart';
-import '../../features/auth/presentation/screens/sign_up_screen.dart';
 import '../../features/entry/presentation/screens/choose_role_screen.dart';
 import '../../features/entry/presentation/screens/onboarding_screen.dart';
 import '../../features/entry/presentation/screens/splash_screen.dart';
@@ -66,12 +68,32 @@ class AppRouter {
         },
       ),
       GoRoute(
+        name: RoutePath.teacherLoginScreen,
+        path: RoutePath.teacherLoginScreen.addBasePath,
+        pageBuilder: (context, state) {
+          return _buildPageWithAnimation(
+            state: state,
+            child: const TeacherLoginScreen(),
+          );
+        },
+      ),
+      GoRoute(
         name: RoutePath.signUpScreen,
         path: RoutePath.signUpScreen.addBasePath,
         pageBuilder: (context, state) {
           return _buildPageWithAnimation(
             state: state,
             child: const SignUpScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        name: RoutePath.teacherSignUpScreen,
+        path: RoutePath.teacherSignUpScreen.addBasePath,
+        pageBuilder: (context, state) {
+          return _buildPageWithAnimation(
+            state: state,
+            child: const TeacherSignUpScreen(),
           );
         },
       ),
@@ -85,7 +107,7 @@ class AppRouter {
             state: state,
             child: ActiveOtpScreen(
               email: email,
-              purpose: OtpPurpose.forgotPassword,
+              purpose: OtpPurpose.forgotPassword,role: OtpRole.parent,
             ),
           );
         },

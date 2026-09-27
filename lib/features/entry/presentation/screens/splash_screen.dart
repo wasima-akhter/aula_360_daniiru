@@ -41,7 +41,7 @@ class _SplashScreenState extends State<SplashScreen>
 
     // widget.onInitializationComplete?.call();
 
-    context.pushReplacement(RoutePath.loginScreen);
+    context.pushReplacement(RoutePath.onboardingScreen);
   }
 
   @override

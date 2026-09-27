@@ -176,7 +176,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
   }
 }
 
-class AulaTextField extends StatelessWidget {
+class AppTextField extends StatelessWidget {
   final TextEditingController controller;
   final String label;
   final String hint;
@@ -187,7 +187,7 @@ class AulaTextField extends StatelessWidget {
   final bool readOnly;
   final VoidCallback? onTap;
 
-  const AulaTextField({
+  const AppTextField({
     super.key,
     required this.controller,
     required this.label,

@@ -100,7 +100,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
               const SizedBox(height: 30),
 
-              AulaTextField(
+              AppTextField(
                 controller: passwordController,
                 label: 'New Password',
                 hint: 'Enter new password',
@@ -115,7 +115,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
               const SizedBox(height: 16),
 
-              AulaTextField(
+              AppTextField(
                 controller: confirmPasswordController,
                 label: 'Confirm Password',
                 hint: 'Re-enter new password',
