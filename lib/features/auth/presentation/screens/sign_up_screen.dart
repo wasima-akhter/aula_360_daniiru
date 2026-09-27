@@ -72,12 +72,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
               const SizedBox(height: 18),
 
-              const Center(
+              Center(
                 child: Text(
                   'Create your account',
                   style: TextStyle(
                     color: AppColors.text,
-                    fontSize: 20,
+                    fontSize: 26.sp,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
@@ -85,15 +85,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
               const SizedBox(height: 6),
 
-              const Center(
+              Center(
                 child: Text(
                   'Enter your basic details to register and connect\nwith your child’s academy.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: AppColors.secondaryText,
-                    fontSize: 10,
-                    height: 1.5,
-                  ),
+                  style: TextStyle(color: AppColors.secondaryText, height: 1.5),
                 ),
               ),
 
@@ -143,19 +139,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
               const SizedBox(height: 7),
 
-              const Row(
+              Row(
                 children: [
                   Icon(
                     Icons.info_outline_rounded,
-                    size: 11,
+                    size: 13.sp,
                     color: AppColors.secondaryText,
                   ),
-                  SizedBox(width: 4),
+                  const SizedBox(width: 4),
                   Text(
                     'At least 8 characters with numbers and letters',
                     style: TextStyle(
                       color: AppColors.secondaryText,
-                      fontSize: 8,
+                      fontSize: 13.sp,
                     ),
                   ),
                 ],
@@ -172,12 +168,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   onTap: () {
                     context.pop();
                   },
-                  child: const Text.rich(
+                  child: Text.rich(
                     TextSpan(
                       text: 'Already have an account? ',
                       style: TextStyle(
                         color: AppColors.secondaryText,
-                        fontSize: 9,
+                        fontSize: 13.sp,
                       ),
                       children: [
                         TextSpan(

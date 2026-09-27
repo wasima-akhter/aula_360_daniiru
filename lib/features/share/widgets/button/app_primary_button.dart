@@ -1,8 +1,6 @@
 import 'package:aula360/features/share/widgets/loading/loading_widget.dart';
-import 'package:aula360/utils/color/app_colors.dart';
-import 'package:flutter/material.dart';
 
-import '../../../../utils/extension/base_extension.dart' show ContextExtensions;
+import '../../export/screen_export.dart';
 
 class CustomButton extends StatelessWidget {
   final String text;
@@ -119,7 +117,7 @@ class AulaPrimaryButton extends StatelessWidget {
           children: [
             Text(
               text,
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+              style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w700),
             ),
             const SizedBox(width: 6),
             trailing ?? const Icon(Icons.arrow_forward_rounded, size: 18),

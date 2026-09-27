@@ -175,9 +175,9 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
               Center(
                 child: Text(
                   purposeTitle,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppColors.text,
-                    fontSize: 20,
+                    fontSize: 28.sp,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
@@ -188,10 +188,7 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
               Center(
                 child: Text(
                   purposeDescription,
-                  style: const TextStyle(
-                    color: AppColors.secondaryText,
-                    fontSize: 10,
-                  ),
+                  style: const TextStyle(color: AppColors.secondaryText),
                 ),
               ),
 
@@ -203,7 +200,7 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
                     widget.email!,
                     style: const TextStyle(
                       color: AppColors.primary,
-                      fontSize: 10,
+
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -227,7 +224,7 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
                       'ENTER 6-DIGIT CODE',
                       style: TextStyle(
                         color: AppColors.secondaryText,
-                        fontSize: 8,
+
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -248,10 +245,7 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
                         SizedBox(width: 4),
                         Text(
                           'Numeric keypad activated automatically',
-                          style: TextStyle(
-                            color: AppColors.secondaryText,
-                            fontSize: 7,
-                          ),
+                          style: TextStyle(color: AppColors.secondaryText),
                         ),
                       ],
                     ),
@@ -288,7 +282,7 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
                           'Expires in 00:${seconds.toString().padLeft(2, '0')}',
                           style: const TextStyle(
                             color: AppColors.primary,
-                            fontSize: 9,
+
                             fontWeight: FontWeight.w700,
                           ),
                         ),
@@ -304,7 +298,9 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
                           ),
                           child: const Text(
                             'Resend Code',
-                            style: TextStyle(fontSize: 9),
+                            style: TextStyle(
+                              color: AppColors.blackMainTextColor,
+                            ),
                           ),
                         ),
                       ],
@@ -312,12 +308,12 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
 
                     const SizedBox(height: 4),
 
-                    const Text(
+                    Text(
                       'Didn’t receive a message? Check spam or resend once the timer expires.',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: AppColors.secondaryText,
-                        fontSize: 7,
+                        fontSize: 12.sp,
                       ),
                     ),
                   ],

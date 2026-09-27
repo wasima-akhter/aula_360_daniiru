@@ -10,7 +10,7 @@ class AulaLogo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Image.asset(
-      'assets/images/aula360_logo.png',
+      'assets/images/app_logo.png',
       width: width,
       fit: BoxFit.contain,
       errorBuilder: (_, _, _) {

@@ -1,5 +1,4 @@
-import 'package:aula360/utils/color/app_colors.dart';
-import 'package:flutter/material.dart';
+import 'package:aula360/features/share/export/screen_export.dart';
 
 class CustomBackButton extends StatelessWidget {
   final VoidCallback onTap;
@@ -43,28 +42,27 @@ class CustomBackButton extends StatelessWidget {
 
 class AuthBackButton extends StatelessWidget {
   final String title;
-
-  const AuthBackButton({super.key, this.title = ''});
+  final VoidCallback? onTap;
+  const AuthBackButton({super.key, this.title = '', this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         GestureDetector(
-          onTap: () => Navigator.of(context).pop(),
-          child: const Icon(
+          onTap: onTap ?? () => Navigator.of(context).pop(),
+          child: Icon(
             Icons.arrow_back_ios_new_rounded,
-            size: 17,
+            size: 20.sp,
             color: AppColors.primaryDark,
           ),
         ),
         if (title.isNotEmpty) ...[
-          const SizedBox(width: 7),
+          SizedBox(width: 10.w),
           Text(
             title,
-            style: const TextStyle(
+            style: context.titleLarge.copyWith(
               color: AppColors.primaryDark,
-              fontSize: 13,
               fontWeight: FontWeight.w600,
             ),
           ),

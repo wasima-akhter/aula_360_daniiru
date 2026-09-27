@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 
 class CustomTextField extends StatefulWidget {
   const CustomTextField({
+    super.key,
     this.inputFormatters,
     this.onFieldSubmitted,
     this.controller,
@@ -11,7 +12,7 @@ class CustomTextField extends StatefulWidget {
     this.keyboardType = TextInputType.text,
     this.textInputAction = TextInputAction.next,
     this.cursorColor = AppColors.primaryColor,
-    this.inputTextStyle,
+    this.textStyle,
     this.textAlignVertical = TextAlignVertical.center,
     this.textAlign = TextAlign.start,
     this.onChanged,
@@ -25,7 +26,7 @@ class CustomTextField extends StatefulWidget {
     this.isPassword = false,
     this.readOnly = false,
     this.maxLength,
-    super.key,
+
     this.prefixIcon,
     this.onTap,
     this.isCollapsed,
@@ -46,7 +47,7 @@ class CustomTextField extends StatefulWidget {
   final TextInputType keyboardType;
   final TextInputAction textInputAction;
   final Color cursorColor;
-  final TextStyle? inputTextStyle;
+  final TextStyle? textStyle;
   final TextAlignVertical? textAlignVertical;
   final TextAlign textAlign;
   final int? maxLines;
@@ -120,7 +121,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
               keyboardType: widget.keyboardType,
               textInputAction: widget.textInputAction,
               cursorColor: widget.cursorColor,
-              style: widget.inputTextStyle,
+              style: widget.textStyle ?? context.bodyMedium,
               onChanged: widget.onChanged,
               maxLines: widget.maxLines,
               minLines: widget.minLines,
@@ -206,9 +207,8 @@ class AulaTextField extends StatelessWidget {
       children: [
         Text(
           label,
-          style: const TextStyle(
+          style: context.titleMedium.copyWith(
             color: AppColors.text,
-            fontSize: 12,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -219,10 +219,13 @@ class AulaTextField extends StatelessWidget {
           keyboardType: keyboardType,
           readOnly: readOnly,
           onTap: onTap,
-          style: const TextStyle(fontSize: 13, color: AppColors.text),
+          style: context.titleMedium.copyWith(
+            fontSize: 13,
+            color: AppColors.text,
+          ),
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: const TextStyle(color: Color(0xFFADB5C2), fontSize: 12),
+            hintStyle: context.bodyMedium.copyWith(color: Color(0xFFADB5C2)),
             prefixIcon: Icon(icon, size: 17, color: const Color(0xFF718096)),
             suffixIcon: onTogglePassword == null
                 ? null

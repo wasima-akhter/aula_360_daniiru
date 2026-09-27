@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-
+import '../../../features/share/export/screen_export.dart';
 import '../../../utils/app_keys/app_keys.dart';
 
 enum SnackbarType { success, error, warning, info }
@@ -32,14 +31,17 @@ class ApiSnackbar {
               if (title != null && title.isNotEmpty)
                 Text(
                   title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
-                    fontSize: 16,
+                    fontSize: 14.sp,
                   ),
                 ),
               if (title != null && title.isNotEmpty) const SizedBox(height: 4),
-              Text(message, style: const TextStyle(color: Colors.white)),
+              Text(
+                message,
+                style: TextStyle(fontSize: 13.sp, color: Colors.white),
+              ),
             ],
           ),
         ),

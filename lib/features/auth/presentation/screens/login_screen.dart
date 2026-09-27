@@ -1,11 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:aula360/features/share/export/screen_export.dart';
 
-import '../../../../core/router/route_path.dart';
-import '../../../../utils/color/app_colors.dart';
-import '../../../../utils/extension/base_extension.dart';
 import '../../../share/widgets/button/app_logo.dart';
-import '../../../share/widgets/button/app_primary_button.dart';
 import '../../../share/widgets/button/custom_back_button.dart';
 import '../../../share/widgets/text_field/custom_text_field.dart';
 import '../../abc.dart';
@@ -53,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const AuthBackButton(title: 'Parent Login'),
+              AuthBackButton(title: 'Parent Login', onTap: () {}),
 
               const SizedBox(height: 38),
 
@@ -61,12 +56,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
               const SizedBox(height: 25),
 
-              const Center(
+              Center(
                 child: Text(
                   'Welcome back',
-                  style: TextStyle(
+                  style: context.titleLarge.copyWith(
                     color: AppColors.text,
-                    fontSize: 20,
+                    fontSize: 30.sp,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
@@ -74,13 +69,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
               const SizedBox(height: 6),
 
-              const Center(
+              Center(
                 child: Text(
                   'Enter your registered mobile number or email\naddress to access your parent account.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: context.bodyMedium.copyWith(
                     color: AppColors.secondaryText,
-                    fontSize: 10,
+
                     height: 1.5,
                   ),
                 ),
@@ -136,12 +131,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             activeColor: AppColors.primary,
                           ),
                         ),
-                        const SizedBox(width: 5),
-                        const Text(
+                        const SizedBox(width: 15),
+                        Text(
                           'Remember this device',
-                          style: TextStyle(
+                          style: context.bodySmall.copyWith(
                             color: AppColors.secondaryText,
-                            fontSize: 9,
                           ),
                         ),
                       ],
@@ -151,12 +145,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   GestureDetector(
                     onTap: () {
                       // Forgot password screen can be connected here.
+
+                      context.push(RoutePath.forgetPasswordScreen);
                     },
-                    child: const Text(
+                    child: Text(
                       'Forgot password?',
-                      style: TextStyle(
+                      style: context.titleSmall.copyWith(
+                        fontSize: 13.sp,
                         color: AppColors.primary,
-                        fontSize: 9,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -164,28 +160,27 @@ class _LoginScreenState extends State<LoginScreen> {
                 ],
               ),
 
-              const SizedBox(height: 22),
+              Gap(36.h),
 
               AulaPrimaryButton(text: 'Log In to Aula 360', onTap: _login),
 
-              const SizedBox(height: 19),
+              SizedBox(height: 29.h),
 
               Center(
                 child: GestureDetector(
                   onTap: () {
-                    context.push(RoutePath.signUpScreen.addBasePath);
+                    context.push(RoutePath.signUpScreen);
                   },
-                  child: const Text.rich(
+                  child: Text.rich(
                     TextSpan(
                       text: 'Don’t have an account? ',
-                      style: TextStyle(
+                      style: context.titleSmall.copyWith(
                         color: AppColors.secondaryText,
-                        fontSize: 9,
                       ),
                       children: [
                         TextSpan(
                           text: 'Create Account',
-                          style: TextStyle(
+                          style: context.titleSmall.copyWith(
                             color: AppColors.primary,
                             fontWeight: FontWeight.w700,
                           ),

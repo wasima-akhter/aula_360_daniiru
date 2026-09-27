@@ -25,10 +25,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
       return;
     }
 
-    context.push(
-      RoutePath.forgetOtpScreen.addBasePath,
-      extra: emailController.text.trim(),
-    );
+    context.push(RoutePath.activeOtpScreen, extra: emailController.text.trim());
   }
 
   @override
@@ -49,13 +46,13 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
 
               const SizedBox(height: 28),
 
-              const Center(
+              Center(
                 child: Text(
                   'Forgot your password?',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: AppColors.text,
-                    fontSize: 20,
+                    fontSize: 26.sp,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
@@ -67,11 +64,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                 child: Text(
                   'Enter the email address associated with your\naccount and we’ll send you a verification code.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: AppColors.secondaryText,
-                    fontSize: 10,
-                    height: 1.5,
-                  ),
+                  style: TextStyle(color: AppColors.secondaryText, height: 1.5),
                 ),
               ),
 

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:aula360/features/share/export/screen_export.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key, this.onInitializationComplete});
@@ -39,7 +39,9 @@ class _SplashScreenState extends State<SplashScreen>
 
     if (!mounted) return;
 
-    widget.onInitializationComplete?.call();
+    // widget.onInitializationComplete?.call();
+
+    context.pushReplacement(RoutePath.loginScreen);
   }
 
   @override
@@ -53,52 +55,54 @@ class _SplashScreenState extends State<SplashScreen>
     return Scaffold(
       backgroundColor: const Color(0xFFFCFDFF),
       body: SafeArea(
-        child: Column(
-          children: [
-            const Spacer(),
+        child: Center(
+          child: Column(
+            children: [
+              const Spacer(),
 
-            // Logo
-            _buildLogo(),
+              // Logo
+              _buildLogo(),
 
-            const SizedBox(height: 12),
+              const SizedBox(height: 12),
 
-            // App name
-            const Text(
-              'Aula 360',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w700,
-                color: Color(0xFF123477),
-                letterSpacing: 0.1,
-              ),
-            ),
-
-            const SizedBox(height: 8),
-
-            // App description
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 50),
-              child: Text(
-                'Empowering Modern Academies &\nConnected Learning',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 10,
-                  height: 1.55,
-                  fontWeight: FontWeight.w400,
-                  color: Color(0xFF7D8AA3),
+              // App name
+              Text(
+                'Aula 360',
+                style: context.titleLarge.copyWith(
+                  fontSize: 32.sp,
+                  fontWeight: FontWeight.w800,
+                  color: Color(0xFF123477),
+                  letterSpacing: 0.1,
                 ),
               ),
-            ),
 
-            const SizedBox(height: 52),
+              const SizedBox(height: 8),
 
-            // Loading section
-            _buildLoadingIndicator(),
+              // App description
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 50),
+                child: Text(
+                  'Empowering Modern Academies &\nConnected Learning',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 15.sp,
+                    height: 1.55,
+                    fontWeight: FontWeight.w400,
+                    color: Color(0xFF7D8AA3),
+                  ),
+                ),
+              ),
 
-            const Spacer(),
+              const SizedBox(height: 52),
 
-            const SizedBox(height: 35),
-          ],
+              // Loading section
+              _buildLoadingIndicator(),
+
+              const Spacer(),
+
+              const SizedBox(height: 35),
+            ],
+          ),
         ),
       ),
     );
@@ -112,11 +116,11 @@ class _SplashScreenState extends State<SplashScreen>
         'assets/images/app_logo.png',
         fit: BoxFit.contain,
         errorBuilder: (context, error, stackTrace) {
-          return const Center(
+          return Center(
             child: Text(
               'AULA360',
               style: TextStyle(
-                fontSize: 28,
+                fontSize: 28.sp,
                 fontWeight: FontWeight.w800,
                 color: Color(0xFF123477),
               ),
@@ -131,7 +135,7 @@ class _SplashScreenState extends State<SplashScreen>
     return Column(
       children: [
         SizedBox(
-          width: 138,
+          width: 1.sw * 0.6,
           height: 4,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(10),
@@ -181,10 +185,10 @@ class _SplashScreenState extends State<SplashScreen>
               ),
             ),
             const SizedBox(width: 6),
-            const Text(
+            Text(
               'Initializing secure session...',
               style: TextStyle(
-                fontSize: 8,
+                fontSize: 13.sp,
                 color: Color(0xFF7D8AA3),
                 fontWeight: FontWeight.w400,
               ),

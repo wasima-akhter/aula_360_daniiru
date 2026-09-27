@@ -8,14 +8,14 @@ import 'package:flutter/material.dart';
 final ThemeData lightTheme = ThemeData(
   useMaterial3: true,
   brightness: Brightness.light,
-  fontFamily: 'Poppins',
+  fontFamily: 'Plus Jakarta Sans',
 
   appBarTheme: const AppBarTheme(
     backgroundColor: AppColors.backgroundColorNew,
     elevation: 0,
     centerTitle: true,
     titleTextStyle: TextStyle(
-      fontFamily: 'Poppins',
+      fontFamily: 'Plus Jakarta Sans',
       fontWeight: FontWeight.w800,
       fontSize: 18,
       color: AppColors.darkTextColor,
@@ -39,7 +39,7 @@ final ThemeData lightTheme = ThemeData(
         ), // Matching OutlinedButton corner language
       ),
       textStyle: const TextStyle(
-        fontFamily: 'Poppins',
+        fontFamily: 'Plus Jakarta Sans',
         fontSize: 14,
         fontWeight: FontWeight.w600,
       ),
@@ -56,7 +56,7 @@ final ThemeData lightTheme = ThemeData(
         borderRadius: BorderRadius.circular(12), // Clean unified corner radius
       ),
       textStyle: const TextStyle(
-        fontFamily: 'Poppins',
+        fontFamily: 'Plus Jakarta Sans',
         fontSize: 16,
         fontWeight: FontWeight.w700,
       ),
@@ -67,7 +67,7 @@ final ThemeData lightTheme = ThemeData(
     style: TextButton.styleFrom(
       foregroundColor: AppColors.primaryColor,
       textStyle: const TextStyle(
-        fontFamily: 'Poppins',
+        fontFamily: 'Plus Jakarta Sans',
         fontWeight: FontWeight.w600,
         fontSize: 14,
       ),
@@ -119,15 +119,15 @@ final ThemeData lightTheme = ThemeData(
       borderSide: const BorderSide(color: AppColors.backgroundsLinesColor),
     ),
 
-    // Figma: Input placeholder → Poppins, 14px, Regular (400), #9CA3AF
+    // Figma: Input placeholder → Plus Jakarta Sans, 14px, Regular (400), #9CA3AF
     hintStyle: const TextStyle(
-      fontFamily: 'Poppins',
+      fontFamily: 'Plus Jakarta Sans',
       fontSize: 14,
       fontWeight: FontWeight.w400,
       color: AppColors.hintTextColor,
     ),
     errorStyle: const TextStyle(
-      fontFamily: 'Poppins',
+      fontFamily: 'Plus Jakarta Sans',
       fontSize: 12,
       fontWeight: FontWeight.w400,
       color: AppColors.redColor,
@@ -138,27 +138,27 @@ final ThemeData lightTheme = ThemeData(
   // Extracted from: SomSpot - Business App Figma Design
   //
   // Figma Mapping:
-  //   "Create account"  → Poppins, 24px, Medium (500), #515151
-  //   "Full Name" label  → Poppins, 16px, Medium (500), #334155
-  //   Subtitle text      → Poppins, 16px, Regular (400), #64748B
-  //   Tab/chip text      → Poppins, 14px, Medium (500), #64748B
-  //   Placeholder        → Poppins, 14px, Regular (400), #9CA3AF
+  //   "Create account"  → Plus Jakarta Sans, 24px, Medium (500), #515151
+  //   "Full Name" label  → Plus Jakarta Sans, 16px, Medium (500), #334155
+  //   Subtitle text      → Plus Jakarta Sans, 16px, Regular (400), #64748B
+  //   Tab/chip text      → Plus Jakarta Sans, 14px, Medium (500), #64748B
+  //   Placeholder        → Plus Jakarta Sans, 14px, Regular (400), #9CA3AF
   textTheme: const TextTheme(
     // ── Headline: Page-level headings ──
     headlineLarge: TextStyle(
-      fontFamily: 'Poppins',
+      fontFamily: 'Plus Jakarta Sans',
       fontSize: 28,
       fontWeight: FontWeight.w600,
       color: AppColors.headingTextColor,
     ),
     headlineMedium: TextStyle(
-      fontFamily: 'Poppins',
+      fontFamily: 'Plus Jakarta Sans',
       fontSize: 24, // Figma: "Create account" = 24px
       fontWeight: FontWeight.w500, // Figma: Medium
       color: AppColors.headingTextColor, // Figma: #515151
     ),
     headlineSmall: TextStyle(
-      fontFamily: 'Poppins',
+      fontFamily: 'Plus Jakarta Sans',
       fontSize: 20,
       fontWeight: FontWeight.w500,
       color: AppColors.headingTextColor,
@@ -166,19 +166,19 @@ final ThemeData lightTheme = ThemeData(
 
     // ── Title: Field labels, section titles ──
     titleLarge: TextStyle(
-      fontFamily: 'Poppins',
+      fontFamily: 'Plus Jakarta Sans',
       fontSize: 18, // Figma: Business name = 18px
       fontWeight: FontWeight.w500, // Figma: Medium
       color: AppColors.darkTextColor, // Figma: #0F172A
     ),
     titleMedium: TextStyle(
-      fontFamily: 'Poppins',
+      fontFamily: 'Plus Jakarta Sans',
       fontSize: 16, // Figma: "Full Name" label = 16px
       fontWeight: FontWeight.w500, // Figma: Medium
       color: AppColors.darkTextColor, // Figma: #334155
     ),
     titleSmall: TextStyle(
-      fontFamily: 'Poppins',
+      fontFamily: 'Plus Jakarta Sans',
       fontSize: 14,
       fontWeight: FontWeight.w500,
       color: AppColors.darkTextColor,
@@ -186,19 +186,19 @@ final ThemeData lightTheme = ThemeData(
 
     // ── Body: Content, descriptions, subtitles ──
     bodyLarge: TextStyle(
-      fontFamily: 'Poppins',
+      fontFamily: 'Plus Jakarta Sans',
       fontSize: 16, // Figma: Subtitle text = 16px
       fontWeight: FontWeight.w400, // Figma: Regular
       color: AppColors.subtitleTextColor, // Figma: #64748B
     ),
     bodyMedium: TextStyle(
-      fontFamily: 'Poppins',
+      fontFamily: 'Plus Jakarta Sans',
       fontSize: 14,
       fontWeight: FontWeight.w400,
       color: AppColors.subtitleTextColor,
     ),
     bodySmall: TextStyle(
-      fontFamily: 'Poppins',
+      fontFamily: 'Plus Jakarta Sans',
       fontSize: 12,
       fontWeight: FontWeight.w400,
       color: AppColors.subtitleTextColor,
@@ -206,19 +206,19 @@ final ThemeData lightTheme = ThemeData(
 
     // ── Label: Tabs, chips, captions, hints ──
     labelLarge: TextStyle(
-      fontFamily: 'Poppins',
+      fontFamily: 'Plus Jakarta Sans',
       fontSize: 14, // Figma: Tab text = 14px
       fontWeight: FontWeight.w500, // Figma: Medium
       color: AppColors.subtitleTextColor, // Figma: #64748B
     ),
     labelMedium: TextStyle(
-      fontFamily: 'Poppins',
+      fontFamily: 'Plus Jakarta Sans',
       fontSize: 12,
       fontWeight: FontWeight.w400,
       color: AppColors.hintTextColor, // Figma: #9CA3AF
     ),
     labelSmall: TextStyle(
-      fontFamily: 'Poppins',
+      fontFamily: 'Plus Jakarta Sans',
       fontSize: 10,
       fontWeight: FontWeight.w400,
       color: AppColors.hintTextColor,

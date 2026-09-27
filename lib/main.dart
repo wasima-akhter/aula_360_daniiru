@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'core/router/routes.dart';
 import 'utils/app_keys/app_keys.dart';
@@ -12,14 +13,22 @@ class Aula360App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
-      scaffoldMessengerKey: AppKeys.scaffoldMessengerKey,
-      routerConfig: AppRouter.router,
-      theme: ThemeData(
-        useMaterial3: true,
-        fontFamily: 'Inter',
-        scaffoldBackgroundColor: Colors.white,
+    return ScreenUtilInit(
+      designSize: const Size(375, 812),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, child) {
+        return child!;
+      },
+      child: MaterialApp.router(
+        debugShowCheckedModeBanner: false,
+        scaffoldMessengerKey: AppKeys.scaffoldMessengerKey,
+        routerConfig: AppRouter.router,
+        theme: ThemeData(
+          useMaterial3: true,
+          fontFamily: 'Inter',
+          scaffoldBackgroundColor: Colors.white,
+        ),
       ),
     );
   }
