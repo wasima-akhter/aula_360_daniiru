@@ -12,7 +12,7 @@ class _ChooseRoleScreenState extends State<ChooseRoleScreen> {
   String selectedRole = 'parent';
 
   void _continue() {
-    context.go(RoutePath.loginScreen.addBasePath);
+    context.go(RoutePath.loginScreen);
   }
 
   @override
@@ -162,6 +162,7 @@ class _ChooseRoleScreenState extends State<ChooseRoleScreen> {
                         title,
                         style: TextStyle(
                           color: AppColors.text,
+                          fontSize: 16.sp,
 
                           fontWeight: FontWeight.w800,
                         ),
@@ -169,8 +170,9 @@ class _ChooseRoleScreenState extends State<ChooseRoleScreen> {
                       if (subtitle.isNotEmpty)
                         Text(
                           ' $subtitle',
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: AppColors.text,
+                            fontSize: 16.sp,
 
                             fontWeight: FontWeight.w800,
                           ),

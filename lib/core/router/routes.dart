@@ -1,3 +1,4 @@
+import 'package:aula360/features/auth/presentation/parent_auth/profile_setup_screen.dart';
 import 'package:aula360/features/auth/presentation/teacher_auth/teacher_login_screen.dart';
 import 'package:aula360/features/auth/presentation/teacher_auth/teacher_sign_up_screen.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import '../../features/auth/presentation/parent_auth/sign_up_screen.dart';
 import '../../features/auth/presentation/screens/active_otp_screen.dart';
 import '../../features/auth/presentation/screens/forget_password_screen.dart';
 import '../../features/auth/presentation/screens/reset_password_screen.dart';
+import '../../features/auth/presentation/teacher_auth/teacher_profile_setup_screen.dart';
 import '../../features/entry/presentation/screens/choose_role_screen.dart';
 import '../../features/entry/presentation/screens/onboarding_screen.dart';
 import '../../features/entry/presentation/screens/splash_screen.dart';
@@ -102,12 +104,14 @@ class AppRouter {
         name: RoutePath.activeOtpScreen,
         path: RoutePath.activeOtpScreen.addBasePath,
         pageBuilder: (context, state) {
-          final email = state.extra as String?;
+          final extra = state.extra as OtpArgs?;
           return _buildPageWithAnimation(
             state: state,
             child: ActiveOtpScreen(
-              email: email,
-              purpose: OtpPurpose.forgotPassword,role: OtpRole.parent,
+              args: OtpArgs(
+                purpose: extra?.purpose ?? OtpPurpose.forgotPassword,
+                role: extra?.role ?? OtpRole.parent,
+              ),
             ),
           );
         },
@@ -128,9 +132,11 @@ class AppRouter {
         name: RoutePath.forgetPasswordScreen,
         path: RoutePath.forgetPasswordScreen.addBasePath,
         pageBuilder: (context, state) {
+          final args = state.extra as ForgotPasswordArgs;
+
           return _buildPageWithAnimation(
             state: state,
-            child: const ForgetPasswordScreen(),
+            child: ForgetPasswordScreen(args: args),
           );
         },
       ),
@@ -148,6 +154,29 @@ class AppRouter {
         },
       ),
 
+      //
+      //
+      GoRoute(
+        name: RoutePath.profileScreen,
+        path: RoutePath.profileScreen.addBasePath,
+        pageBuilder: (context, state) {
+          return _buildPageWithAnimation(
+            state: state,
+            child: ProfileSetupScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        name: RoutePath.teacherProfileScreen,
+        path: RoutePath.teacherProfileScreen.addBasePath,
+        pageBuilder: (context, state) {
+          return _buildPageWithAnimation(
+            state: state,
+            child: TeacherProfileSetupScreen(),
+          );
+        },
+      ),
+
       GoRoute(
         name: RoutePath.navigationPages,
         path: RoutePath.navigationPages.addBasePath,
@@ -156,7 +185,7 @@ class AppRouter {
 
           return _buildPageWithAnimation(
             state: state,
-            child: NavigationPage(index: 0),
+            child: NavigationPage(index: index),
           );
         },
       ),

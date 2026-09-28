@@ -103,17 +103,15 @@ class CustomDropdownField<T> extends StatelessWidget {
       isExpanded: true,
       value: items.contains(value) ? value : null,
       decoration: InputDecoration(
-        contentPadding: const EdgeInsets.symmetric(
-          vertical: 16,
-          horizontal: 12,
-        ),
+        contentPadding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 8.w),
         border: OutlineInputBorder(
+          gapPadding: 0,
           borderRadius: BorderRadius.circular(15),
           borderSide: BorderSide(
             color: hasError
                 ? AppColors.redColor
                 : AppColors.bgSecondaryButtonColor,
-            width: 1.2,
+            width: 0.8,
           ),
         ),
         filled: true,

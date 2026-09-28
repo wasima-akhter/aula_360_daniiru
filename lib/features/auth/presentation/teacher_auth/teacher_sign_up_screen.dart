@@ -4,6 +4,7 @@ import '../../../share/widgets/button/app_logo.dart';
 import '../../../share/widgets/button/custom_back_button.dart';
 import '../../../share/widgets/text_field/custom_text_field.dart';
 import '../../abc.dart';
+import '../screens/active_otp_screen.dart';
 
 class TeacherSignUpScreen extends StatefulWidget {
   const TeacherSignUpScreen({super.key});
@@ -55,7 +56,10 @@ class _TeacherSignUpScreenState extends State<TeacherSignUpScreen> {
       return;
     }
 
-    context.push(RoutePath.activeOtpScreen, extra: emailController.text.trim());
+    context.go(
+      RoutePath.activeOtpScreen,
+      extra: OtpArgs(purpose: OtpPurpose.signup, role: OtpRole.parent),
+    );
   }
 
   @override

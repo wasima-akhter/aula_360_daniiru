@@ -30,9 +30,9 @@ class DescriptionTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return PrimaryContainer(
       radius: radius,
-      color: backgroundColor,
+      color: backgroundColor ?? AppColors.background,
       child: TextField(
-        controller: controller ?? TextEditingController(),
+        controller: controller,
         maxLines: maxLines,
         style: textStyle ?? Theme.of(context).textTheme.bodyMedium,
         onChanged: onChanged,
@@ -41,8 +41,8 @@ class DescriptionTextField extends StatelessWidget {
               contentPadding ??
               const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
           border: InputBorder.none,
-          filled: true,
-          fillColor: backgroundColor ?? Colors.white,
+          enabledBorder: InputBorder.none,
+          focusedBorder: InputBorder.none,
           hintText: hintText,
           hintStyle: hintStyle ?? Theme.of(context).textTheme.bodyMedium,
         ),
@@ -65,13 +65,15 @@ class PrimaryContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final borderRadius = BorderRadius.circular((radius ?? 30).r);
+
     return Container(
       decoration: BoxDecoration(
         color: color ?? Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(radius ?? 30),
+        borderRadius: borderRadius,
         border: Border.all(color: AppColors.backgroundsLinesColor, width: 1.w),
       ),
-      child: child,
+      child: ClipRRect(borderRadius: borderRadius, child: child),
     );
   }
 }

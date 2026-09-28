@@ -1,9 +1,12 @@
 import 'package:aula360/features/share/export/screen_export.dart';
+import 'package:flutter/foundation.dart';
 
 import '../../../share/widgets/button/app_logo.dart';
 import '../../../share/widgets/button/custom_back_button.dart';
 import '../../../share/widgets/text_field/custom_text_field.dart';
 import '../../abc.dart';
+import '../screens/active_otp_screen.dart';
+import '../screens/forget_password_screen.dart';
 
 class TeacherLoginScreen extends StatefulWidget {
   const TeacherLoginScreen({super.key});
@@ -146,7 +149,10 @@ class _TeacherLoginScreenState extends State<TeacherLoginScreen> {
                     onTap: () {
                       // Forgot password screen can be connected here.
 
-                      context.push(RoutePath.forgetPasswordScreen);
+                      context.push(
+                        RoutePath.forgetPasswordScreen,
+                        extra: const ForgotPasswordArgs(role: OtpRole.teacher),
+                      );
                     },
                     child: Text(
                       'Forgot password?',
@@ -161,6 +167,26 @@ class _TeacherLoginScreenState extends State<TeacherLoginScreen> {
               ),
 
               Gap(36.h),
+
+              //
+              if (kDebugMode) ...[
+                AulaPrimaryButton(
+                  text: 'Teacher Profile setup',
+                  onTap: () {
+                    context.go(RoutePath.teacherProfileScreen);
+                  },
+                ),
+
+                Gap(36.h),
+                AulaPrimaryButton(
+                  text: 'Log In directly',
+                  onTap: () {
+                    context.go(RoutePath.navigationPages);
+                  },
+                ),
+
+                Gap(36.h),
+              ],
 
               AulaPrimaryButton(text: 'Log In to Aula 360', onTap: _login),
 

@@ -3,9 +3,18 @@ import '../../../share/widgets/button/app_logo.dart';
 import '../../../share/widgets/button/custom_back_button.dart';
 import '../../../share/widgets/text_field/custom_text_field.dart';
 import '../../abc.dart';
+import 'active_otp_screen.dart';
+
+class ForgotPasswordArgs {
+  final OtpRole role;
+
+  const ForgotPasswordArgs({required this.role});
+}
 
 class ForgetPasswordScreen extends StatefulWidget {
-  const ForgetPasswordScreen({super.key});
+  final ForgotPasswordArgs args;
+
+  const ForgetPasswordScreen({super.key, required this.args});
 
   @override
   State<ForgetPasswordScreen> createState() => _ForgetPasswordScreenState();
@@ -25,7 +34,25 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
       return;
     }
 
-    context.push(RoutePath.activeOtpScreen, extra: emailController.text.trim());
+    context.push(
+      RoutePath.activeOtpScreen,
+      extra: OtpArgs(
+        email: emailController.text.trim(),
+        purpose: OtpPurpose.forgotPassword,
+        role: widget.args.role,
+      ),
+    );
+  }
+
+  //
+  String get title {
+    switch (widget.args.role) {
+      case OtpRole.parent:
+        return 'Reset Parent Password';
+
+      case OtpRole.teacher:
+        return 'Reset Teacher Password';
+    }
   }
 
   @override

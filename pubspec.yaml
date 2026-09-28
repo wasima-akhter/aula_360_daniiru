@@ -78,6 +78,7 @@ dependencies:
   pinput: ^6.0.2
   media_kit_video: ^2.0.1
   media_kit: ^1.2.6
+  image_picker: ^1.2.1
 
 dev_dependencies:
   flutter_test:

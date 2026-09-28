@@ -11,17 +11,16 @@ enum OtpPurpose { signup, forgotPassword }
 
 enum OtpRole { parent, teacher }
 
-class ActiveOtpScreen extends ConsumerStatefulWidget {
+class OtpArgs {
   final String? email;
-
   final OtpPurpose purpose;
   final OtpRole role;
-  const ActiveOtpScreen({
-    super.key,
-    this.email,
-    required this.purpose,
-    required this.role,
-  });
+  const OtpArgs({this.email, required this.purpose, required this.role});
+}
+
+class ActiveOtpScreen extends ConsumerStatefulWidget {
+  final OtpArgs args;
+  const ActiveOtpScreen({super.key, required this.args});
 
   @override
   ConsumerState<ActiveOtpScreen> createState() => _ActiveOtpScreenState();
@@ -85,8 +84,14 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
     return otpControllers.map((controller) => controller.text).join();
   }
 
+  OtpPurpose get purpose => widget.args.purpose;
+
+  OtpRole get role => widget.args.role;
+
+  String? get email => widget.args.email;
+
   String get purposeTitle {
-    switch (widget.purpose) {
+    switch (purpose) {
       case OtpPurpose.signup:
         return 'Verify your account';
 
@@ -96,7 +101,7 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
   }
 
   String get purposeDescription {
-    switch (widget.purpose) {
+    switch (purpose) {
       case OtpPurpose.signup:
         return 'We sent a 6-digit verification code to:';
 
@@ -106,7 +111,7 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
   }
 
   String get buttonText {
-    switch (widget.purpose) {
+    switch (purpose) {
       case OtpPurpose.signup:
         return 'Verify & Continue';
 
@@ -115,6 +120,28 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
     }
   }
 
+  void _navigateAfterVerification() {
+    switch (purpose) {
+      case OtpPurpose.signup:
+        switch (role) {
+          case OtpRole.parent:
+            context.go(RoutePath.profileScreen);
+            break;
+
+          case OtpRole.teacher:
+            context.go(RoutePath.teacherProfileScreen);
+            break;
+        }
+        break;
+
+      case OtpPurpose.forgotPassword:
+        context.go(RoutePath.resetPasswordScreen, extra: email);
+        break;
+    }
+  }
+
+  // Then _verify() becomes:
+
   Future<void> _verify() async {
     if (otp.length != 6) {
       ApiValidationForOtp.show();
@@ -122,28 +149,21 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
     }
 
     /*
-     * Actual API verification should happen here through Riverpod:
-     *
-     * final controller = ref.read(authControllerProvider.notifier);
-     *
-     * final success = await controller.verifyOtp(
-     *   email: widget.email ?? '',
-     *   otp: otp,
-     *   purpose: widget.purpose,
-     * );
-     *
-     * if (!success) return;
-     */
+   * Actual API verification:
+   *
+   * final controller = ref.read(authControllerProvider.notifier);
+   *
+   * final success = await controller.verifyOtp(
+   *   email: email ?? '',
+   *   otp: otp,
+   *   purpose: purpose,
+   *   role: role,
+   * );
+   *
+   * if (!success) return;
+   */
 
-    switch (widget.purpose) {
-      case OtpPurpose.signup:
-        context.go(widget.role == OtpRole.parent ? RoutePath.profileScreen : RoutePath.tea);
-        break;
-
-      case OtpPurpose.forgotPassword:
-        context.go(RoutePath.resetPasswordScreen, extra: widget.email);
-        break;
-    }
+    _navigateAfterVerification();
   }
 
   Future<void> _resendCode() async {
@@ -197,12 +217,12 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
                 ),
               ),
 
-              if (widget.email != null) ...[
+              if (widget.args.email != null) ...[
                 const SizedBox(height: 3),
 
                 Center(
                   child: Text(
-                    widget.email!,
+                    widget.args.email!,
                     style: const TextStyle(
                       color: AppColors.primary,
 

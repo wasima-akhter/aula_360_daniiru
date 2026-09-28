@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import '../../../../core/helper/snackbar/api_snackbar.dart';
 import '../../../share/export/screen_export.dart';
-import '../../../share/widgets/button/app_logo.dart';
+import '../../../share/widgets/custom_image/app_image_picker.dart';
+import '../../../share/widgets/dropdown/custom_dropdown_field.dart';
 import '../../../share/widgets/text_field/custom_text_field.dart';
 import '../../abc.dart';
 
@@ -24,6 +27,93 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
 
   String relationship = 'Mother';
 
+  File? profileImage;
+
+  Future<void> _pickProfileImage() async {
+    final image = await AppImagePicker.pickFromGallery();
+
+    if (image == null || !mounted) return;
+
+    setState(() {
+      profileImage = image;
+    });
+  }
+
+  Future<void> _showImagePicker() async {
+    final source = await showModalBottomSheet<ImagePickerSource>(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: AppColors.border,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                const SizedBox(height: 18),
+                Text(
+                  'Choose Profile Photo',
+                  style: context.titleMedium.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.text,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  'Select an option to update your profile photo.',
+                  textAlign: TextAlign.center,
+                  style: context.bodySmall.copyWith(
+                    color: AppColors.secondaryText,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                ImagePickerOption(
+                  icon: Icons.photo_library_outlined,
+                  title: 'Choose from Gallery',
+                  onTap: () {
+                    Navigator.pop(context, ImagePickerSource.gallery);
+                  },
+                ),
+                const SizedBox(height: 10),
+                ImagePickerOption(
+                  icon: Icons.camera_alt_outlined,
+                  title: 'Take a Photo',
+                  onTap: () {
+                    Navigator.pop(context, ImagePickerSource.camera);
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+
+    if (source == null) return;
+
+    final image = await AppImagePicker.pickImage(
+      source: source,
+      imageQuality: 85,
+    );
+
+    if (image == null || !mounted) return;
+
+    setState(() {
+      profileImage = image;
+    });
+  }
+
   @override
   void dispose() {
     nameController.dispose();
@@ -33,21 +123,66 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
     super.dispose();
   }
 
-  void _completeProfile() {
+  bool validateForm() {
     if (!AulaValidation.required(
       value: nameController.text,
       fieldName: 'Parent Full Name',
     )) {
-      return;
+      ApiSnackbar.show(
+        'Please enter your full name.',
+        title: 'Full Name Required',
+        type: SnackbarType.error,
+      );
+      return false;
     }
-
     if (!AulaValidation.phone(phoneController.text)) {
-      return;
+      ApiSnackbar.show(
+        'Please enter a valid mobile number.',
+        title: 'Invalid Mobile Number',
+        type: SnackbarType.error,
+      );
+      return false;
     }
-
     if (!AulaValidation.email(emailController.text)) {
-      return;
+      ApiSnackbar.show(
+        'Please enter a valid email address.',
+        title: 'Invalid Email Address',
+        type: SnackbarType.error,
+      );
+      return false;
     }
+    if (relationship.isEmpty) {
+      ApiSnackbar.show(
+        'Please select your relationship to the student.',
+        title: 'Relationship Required',
+        type: SnackbarType.error,
+      );
+      return false;
+    }
+    if (!AulaValidation.required(
+      value: addressController.text,
+      fieldName: 'Residential Address',
+    )) {
+      ApiSnackbar.show(
+        'Please enter your residential address.',
+        title: 'Address Required',
+        type: SnackbarType.error,
+      );
+      return false;
+    }
+    if (profileImage == null) {
+      ApiSnackbar.show(
+        'Please add a profile photo to continue.',
+        title: 'Profile Photo Required',
+        type: SnackbarType.error,
+      );
+      return false;
+    }
+    return true;
+  }
+
+  void _completeProfile() {
+    if (!validateForm()) return;
 
     // Profile API will be connected here.
 
@@ -58,6 +193,8 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
     );
 
     // Navigate to dashboard/navigation after backend integration.
+
+    context.go(RoutePath.navigationPages);
   }
 
   @override
@@ -69,21 +206,26 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
           children: [
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 10),
+              padding: EdgeInsets.symmetric(vertical: 6.h),
               decoration: const BoxDecoration(
                 border: Border(bottom: BorderSide(color: AppColors.border)),
               ),
               child: Column(
                 children: [
-                  const AulaLogo(width: 90),
+                  Text(
+                    "Profile Setup".toUpperCase(),
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.primary,
+                    ),
+                  ),
                   const SizedBox(height: 2),
-                  const Text(
+                  Text(
                     'PARENT PORTAL',
                     style: TextStyle(
                       color: AppColors.secondaryText,
-                      fontSize: 7,
+                      fontSize: 11.sp,
                       fontWeight: FontWeight.w600,
-                      letterSpacing: .6,
                     ),
                   ),
                 ],
@@ -92,43 +234,43 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
 
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(22, 20, 22, 25),
+                padding: const EdgeInsets.fromLTRB(22, 14, 22, 25),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Center(
+                    Center(
                       child: Text(
                         'Complete your profile',
                         style: TextStyle(
                           color: AppColors.text,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w800,
+                          fontSize: 22.sp,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),
 
                     const SizedBox(height: 6),
 
-                    const Center(
+                    Center(
                       child: Text(
                         'Add your parent details to finish setup and\naccess your student’s academy dashboard.',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: AppColors.secondaryText,
-                          fontSize: 9,
+                          fontSize: 12.sp,
                           height: 1.5,
                         ),
                       ),
                     ),
 
-                    const SizedBox(height: 20),
+                    SizedBox(height: 16.h),
 
                     Center(
                       child: Stack(
                         children: [
                           Container(
-                            width: 66,
-                            height: 66,
+                            width: 70.w,
+                            height: 70.w,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: const Color(0xFFF7F8FA),
@@ -136,26 +278,39 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                                 color: const Color(0xFFD4DAE3),
                               ),
                             ),
-                            child: const Icon(
-                              Icons.person_outline_rounded,
-                              size: 27,
-                              color: AppColors.secondaryText,
+                            child: ClipOval(
+                              child: profileImage != null
+                                  ? Image.file(
+                                      profileImage!,
+                                      width: 70.w,
+                                      height: 70.w,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Icon(
+                                      Icons.person_outline_rounded,
+                                      size: 27.sp,
+                                      color: AppColors.secondaryText,
+                                    ),
                             ),
                           ),
                           Positioned(
                             right: 0,
                             bottom: 0,
-                            child: Container(
-                              width: 21,
-                              height: 21,
-                              decoration: const BoxDecoration(
-                                color: AppColors.primary,
-                                shape: BoxShape.circle,
-                              ),
-                              child: const Icon(
-                                Icons.camera_alt_outlined,
-                                color: Colors.white,
-                                size: 11,
+                            child: GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: _showImagePicker,
+                              child: Container(
+                                width: 26.w,
+                                height: 26.w,
+                                decoration: const BoxDecoration(
+                                  color: AppColors.primary,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  Icons.camera_alt_outlined,
+                                  color: Colors.white,
+                                  size: 16.h,
+                                ),
                               ),
                             ),
                           ),
@@ -163,19 +318,18 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                       ),
                     ),
 
-                    const SizedBox(height: 5),
+                    // const SizedBox(height: 5),
 
-                    const Center(
-                      child: Text(
-                        'Photo Optional',
-                        style: TextStyle(
-                          color: AppColors.secondaryText,
-                          fontSize: 7,
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 20),
+                    // const Center(
+                    //   child: Text(
+                    //     'Photo Optional',
+                    //     style: TextStyle(
+                    //       color: AppColors.secondaryText,
+                    //       fontSize: 7,
+                    //     ),
+                    //   ),
+                    // ),
+                    SizedBox(height: 16.h),
 
                     AppTextField(
                       controller: nameController,
@@ -204,67 +358,29 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
 
                     const SizedBox(height: 15),
 
-                    const Text(
+                    Text(
                       'Relationship to Student',
-                      style: TextStyle(
+                      style: context.titleMedium.copyWith(
                         color: AppColors.text,
-                        fontSize: 12,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
 
                     const SizedBox(height: 7),
 
-                    Container(
-                      width: double.infinity,
-                      height: 48,
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(7),
-                        border: Border.all(color: AppColors.border),
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton<String>(
-                          value: relationship,
-                          isExpanded: true,
-                          icon: const Icon(
-                            Icons.keyboard_arrow_down_rounded,
-                            size: 20,
-                          ),
-                          items: const [
-                            DropdownMenuItem(
-                              value: 'Mother',
-                              child: Text(
-                                'Mother',
-                                style: TextStyle(fontSize: 12),
-                              ),
-                            ),
-                            DropdownMenuItem(
-                              value: 'Father',
-                              child: Text(
-                                'Father',
-                                style: TextStyle(fontSize: 12),
-                              ),
-                            ),
-                            DropdownMenuItem(
-                              value: 'Guardian',
-                              child: Text(
-                                'Guardian',
-                                style: TextStyle(fontSize: 12),
-                              ),
-                            ),
-                          ],
-                          onChanged: (value) {
-                            if (value == null) return;
+                    CustomDropdownField<String>(
+                      hintText: 'Select relationship',
+                      items: const ['Mother', 'Father', 'Guardian'],
+                      value: relationship,
 
-                            setState(() {
-                              relationship = value;
-                            });
-                          },
-                        ),
-                      ),
+                      onChanged: (value) {
+                        if (value == null) return;
+
+                        setState(() {
+                          relationship = value;
+                        });
+                      },
                     ),
-
                     const SizedBox(height: 15),
 
                     AppTextField(
@@ -286,10 +402,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                     const Center(
                       child: Text(
                         'Navigates to Parent Dashboard',
-                        style: TextStyle(
-                          color: AppColors.secondaryText,
-                          fontSize: 7,
-                        ),
+                        style: TextStyle(color: AppColors.secondaryText),
                       ),
                     ),
                   ],

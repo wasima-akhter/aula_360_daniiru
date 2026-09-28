@@ -1,3 +1,5 @@
+import 'package:aula360/features/auth/presentation/screens/active_otp_screen.dart';
+
 import '../../../share/export/screen_export.dart';
 import '../../../share/widgets/button/app_logo.dart';
 import '../../../share/widgets/button/custom_back_button.dart';
@@ -48,9 +50,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
       return;
     }
 
-    context.push(
-      RoutePath.activeOtpScreen.addBasePath,
-      extra: emailController.text.trim(),
+    context.go(
+      RoutePath.activeOtpScreen,
+      extra: OtpArgs(purpose: OtpPurpose.signup, role: OtpRole.parent),
     );
   }
 

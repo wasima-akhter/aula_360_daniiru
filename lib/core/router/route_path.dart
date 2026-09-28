@@ -23,6 +23,7 @@ class RoutePath {
   static const String editCustomerProfileScreen = 'editCustomerProfileScreen';
   static const String editInfluencerScreen = 'editInfluencerScreen';
   static const String profileScreen = 'profileScreen';
+  static const String teacherProfileScreen = 'teacherProfileScreen';
   static const String claimsScreen = 'claimsScreen';
   static const String helpAndSupportScreen = 'helpAndSupportScreen';
   static const String aboutSomSpotScreen = 'aboutSomSpotScreen';
