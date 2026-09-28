@@ -18,17 +18,24 @@ class RoutePath {
 
   static const String navigationPages = 'navigationPages';
 
+  //
+  static const String parentHome = 'parentHome';
+  static const String schedule = 'schedule';
+  static const String teacherHome = 'teacherHome';
+  static const String classes = 'classes';
+  static const String students = 'students';
+  static const String teacherReports = 'teacherReports';
+  static const String profile = 'profile';
+  static const String notification = 'notification';
+
+  static const String classDetail = 'classDetail';
+
   // Profile and Settings Screens
-  static const String editProfileScreen = 'editProfileScreen';
-  static const String editCustomerProfileScreen = 'editCustomerProfileScreen';
-  static const String editInfluencerScreen = 'editInfluencerScreen';
+
   static const String profileScreen = 'profileScreen';
   static const String teacherProfileScreen = 'teacherProfileScreen';
-  static const String claimsScreen = 'claimsScreen';
-  static const String helpAndSupportScreen = 'helpAndSupportScreen';
-  static const String aboutSomSpotScreen = 'aboutSomSpotScreen';
+
   static const String changePasswordScreen = 'changePasswordScreen';
   static const String privacyPolicyScreen = 'privacyPolicyScreen';
   static const String termsAndConditionsScreen = 'termsAndConditionsScreen';
-  static const String topDealsScreen = 'topDealsScreen';
 }

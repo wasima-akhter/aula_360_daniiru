@@ -8,17 +8,23 @@ enum SessionStatus { canceled, confirmed, pending }
 
 //
 enum UserRole {
-  merchandiser,
-  customer,
-  influencer;
+  teacher,
+  parent;
 
-  bool get isMerchandiser => this == UserRole.merchandiser;
-  bool get isCustomer => this == UserRole.customer;
-  bool get isInfluencer => this == UserRole.influencer;
+  bool get isTeacher => this == UserRole.teacher;
+  bool get isParent => this == UserRole.parent;
+
+  String get label {
+    switch (this) {
+      case UserRole.teacher:
+        return 'Teacher';
+      case UserRole.parent:
+        return 'Parent';
+    }
+  }
 }
 
 extension UserRoleX on UserRole {
-  bool get isCustomer => this == UserRole.customer;
-  bool get isMerchandiser => this == UserRole.merchandiser;
-  bool get isInfluencer => this == UserRole.influencer;
+  bool get isTeacher => this == UserRole.teacher;
+  bool get isParent => this == UserRole.parent;
 }

@@ -1,63 +1,175 @@
+import 'package:aula360/features/parent_all/home/home_screen.dart';
+import 'package:aula360/features/share/schedule/schedule_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class NavigationPage extends StatefulWidget {
+import '../../../../utils/enum/app_enum.dart';
+import '../../user_role/user_role_provider.dart';
+import 'navigation_provider.dart';
+
+class NavigationPage extends ConsumerStatefulWidget {
   const NavigationPage({super.key, this.index = 0});
 
   final int index;
 
   @override
-  State<NavigationPage> createState() => _NavigationPageState();
+  ConsumerState<NavigationPage> createState() => _NavigationPageState();
 }
 
-class _NavigationPageState extends State<NavigationPage> {
-  late int selectedIndex;
-
-  final List<IconData> icons = const [
-    Icons.home_outlined,
-    Icons.search_rounded,
-    Icons.notifications_none_rounded,
-    Icons.person_outline_rounded,
-  ];
-
-  final List<String> labels = const ['Home', 'Search', 'Alerts', 'Profile'];
-
+class _NavigationPageState extends ConsumerState<NavigationPage> {
   @override
   void initState() {
     super.initState();
 
-    selectedIndex = widget.index.clamp(0, 3);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(navigationProvider.notifier).changeTab(widget.index.clamp(0, 4));
+    });
   }
 
-  final List<Widget> pages = const [
-    _NavigationPlaceholder(title: 'Home', icon: Icons.home_outlined),
-    _NavigationPlaceholder(title: 'Search', icon: Icons.search_rounded),
-    _NavigationPlaceholder(
-      title: 'Alerts',
-      icon: Icons.notifications_none_rounded,
-    ),
-    _NavigationPlaceholder(
-      title: 'Profile',
-      icon: Icons.person_outline_rounded,
-    ),
-  ];
+  // ------------------------------------------------------------
+  // PAGES
+  // ------------------------------------------------------------
+
+  List<Widget> _getPages(UserRole role) {
+    switch (role) {
+      case UserRole.teacher:
+        return const [
+          _NavigationPlaceholder(title: 'Home', icon: Icons.home_outlined),
+
+          _NavigationPlaceholder(title: 'Classes', icon: Icons.class_outlined),
+          _NavigationPlaceholder(
+            title: 'Students',
+            icon: Icons.people_outline_rounded,
+          ),
+          _NavigationPlaceholder(
+            title: 'Reports',
+            icon: Icons.bar_chart_outlined,
+          ),
+          _NavigationPlaceholder(
+            title: 'Profile',
+            icon: Icons.person_outline_rounded,
+          ),
+        ];
+
+      case UserRole.parent:
+        return const [
+          // _NavigationPlaceholder(title: 'Home', icon: Icons.home_outlined),
+          HomeScreen(),
+
+          // _NavigationPlaceholder(
+          //   title: 'Schedule',
+          //   icon: Icons.calendar_month_outlined,
+          // ),
+          ScheduleScreen(),
+          _NavigationPlaceholder(
+            title: 'Reports',
+            icon: Icons.bar_chart_outlined,
+          ),
+          _NavigationPlaceholder(
+            title: 'Notifications',
+            icon: Icons.notifications_none_rounded,
+          ),
+          _NavigationPlaceholder(
+            title: 'Profile',
+            icon: Icons.person_outline_rounded,
+          ),
+        ];
+    }
+  }
+
+  // ------------------------------------------------------------
+  // ICONS
+  // ------------------------------------------------------------
+
+  List<IconData> _getIcons(UserRole role) {
+    switch (role) {
+      case UserRole.teacher:
+        return const [
+          Icons.home_outlined,
+          Icons.class_outlined,
+          Icons.people_outline_rounded,
+          Icons.bar_chart_outlined,
+          Icons.person_outline_rounded,
+        ];
+
+      case UserRole.parent:
+        return const [
+          Icons.home_outlined,
+          Icons.calendar_month_outlined,
+          Icons.bar_chart_outlined,
+          Icons.notifications_none_rounded,
+          Icons.person_outline_rounded,
+        ];
+    }
+  }
+
+  // ------------------------------------------------------------
+  // LABELS
+  // ------------------------------------------------------------
+
+  List<String> _getLabels(UserRole role) {
+    switch (role) {
+      case UserRole.teacher:
+        return const ['Home', 'Classes', 'Students', 'Reports', 'Profile'];
+
+      case UserRole.parent:
+        return const [
+          'Home',
+          'Schedule',
+          'Reports',
+          'Notifications',
+          'Profile',
+        ];
+    }
+  }
+
+  // ------------------------------------------------------------
+  // BUILD
+  // ------------------------------------------------------------
 
   @override
   Widget build(BuildContext context) {
+    final role = ref.watch(userRoleProvider);
+
+    if (role == null) {
+      return const Scaffold(body: Center(child: Text('Not authenticated')));
+    }
+
+    final selectedIndex = ref.watch(navigationProvider);
+
+    final pages = _getPages(role);
+    final icons = _getIcons(role);
+    final labels = _getLabels(role);
+
+    final safeIndex = selectedIndex.clamp(0, pages.length - 1);
+
     return Scaffold(
       backgroundColor: Colors.white,
-      body: pages[selectedIndex],
-      bottomNavigationBar: _buildBottomNavBar(),
+      body: IndexedStack(index: safeIndex, children: pages),
+      bottomNavigationBar: _buildBottomNavBar(
+        icons: icons,
+        labels: labels,
+        selectedIndex: safeIndex,
+      ),
     );
   }
 
-  Widget _buildBottomNavBar() {
+  // ------------------------------------------------------------
+  // BOTTOM NAVIGATION
+  // ------------------------------------------------------------
+
+  Widget _buildBottomNavBar({
+    required List<IconData> icons,
+    required List<String> labels,
+    required int selectedIndex,
+  }) {
     return Container(
       padding: const EdgeInsets.only(top: 14, bottom: 4),
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: .05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, -2),
           ),
@@ -69,19 +181,31 @@ class _NavigationPageState extends State<NavigationPage> {
           padding: const EdgeInsets.only(left: 10, right: 10, bottom: 5),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _buildNavItem(0),
-              _buildNavItem(1),
-              _buildNavItem(2),
-              _buildNavItem(3),
-            ],
+            children: List.generate(
+              icons.length,
+              (index) => _buildNavItem(
+                index: index,
+                icon: icons[index],
+                label: labels[index],
+                selectedIndex: selectedIndex,
+              ),
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildNavItem(int index) {
+  // ------------------------------------------------------------
+  // NAV ITEM
+  // ------------------------------------------------------------
+
+  Widget _buildNavItem({
+    required int index,
+    required IconData icon,
+    required String label,
+    required int selectedIndex,
+  }) {
     final isSelected = selectedIndex == index;
 
     final color = isSelected
@@ -92,17 +216,17 @@ class _NavigationPageState extends State<NavigationPage> {
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () {
-          setState(() {
-            selectedIndex = index;
-          });
+          ref.read(navigationProvider.notifier).changeTab(index);
         },
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icons[index], color: color, size: 24),
+            Icon(icon, color: color, size: 24),
             const SizedBox(height: 4),
             Text(
-              labels[index],
+              label,
+              textAlign: TextAlign.center,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
@@ -117,6 +241,10 @@ class _NavigationPageState extends State<NavigationPage> {
     );
   }
 }
+
+// ------------------------------------------------------------
+// TEMPORARY PAGE
+// ------------------------------------------------------------
 
 class _NavigationPlaceholder extends StatelessWidget {
   final String title;

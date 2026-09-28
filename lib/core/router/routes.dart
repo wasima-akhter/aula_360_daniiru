@@ -1,6 +1,8 @@
 import 'package:aula360/features/auth/presentation/parent_auth/profile_setup_screen.dart';
 import 'package:aula360/features/auth/presentation/teacher_auth/teacher_login_screen.dart';
 import 'package:aula360/features/auth/presentation/teacher_auth/teacher_sign_up_screen.dart';
+import 'package:aula360/features/parent_all/class_details/class_details_screen.dart';
+import 'package:aula360/features/share/schedule/schedule_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -14,6 +16,7 @@ import '../../features/entry/presentation/screens/choose_role_screen.dart';
 import '../../features/entry/presentation/screens/onboarding_screen.dart';
 import '../../features/entry/presentation/screens/splash_screen.dart';
 import '../../features/nav/presentation/screens/navigation_page.dart';
+import '../../features/parent_all/helper/parent_home_helper.dart';
 import '../../utils/extension/base_extension.dart';
 import 'route_path.dart';
 
@@ -116,18 +119,8 @@ class AppRouter {
           );
         },
       ),
+
       // ===================================================== // MAIN NAVIGATION
-      // =====================================================
-      // GoRoute(
-      //   name: RoutePath.navigationPages,
-      //   path: RoutePath.navigationPages.addBasePath,
-      //   pageBuilder: (context, state) {
-      //     return _buildPageWithAnimation(
-      //       state: state,
-      //       child: const NavigationPage(),
-      //     );
-      //   },
-      // ),
       GoRoute(
         name: RoutePath.forgetPasswordScreen,
         path: RoutePath.forgetPasswordScreen.addBasePath,
@@ -187,6 +180,29 @@ class AppRouter {
             state: state,
             child: NavigationPage(index: index),
           );
+        },
+      ),
+
+      // ROLE based screens
+      //
+      GoRoute(
+        name: RoutePath.classDetail,
+        path: RoutePath.classDetail.addBasePath,
+        pageBuilder: (context, state) {
+          final extra = state.extra as ClassModel;
+
+          return _buildPageWithAnimation(
+            state: state,
+            child: ClassDetailsScreen(classData: extra),
+          );
+        },
+      ),
+
+      GoRoute(
+        name: RoutePath.schedule,
+        path: RoutePath.schedule.addBasePath,
+        pageBuilder: (context, state) {
+          return _buildPageWithAnimation(state: state, child: ScheduleScreen());
         },
       ),
     ],

@@ -1,6 +1,8 @@
 import 'package:aula360/features/share/export/screen_export.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../nav/user_role/user_role_provider.dart';
 import '../../../share/widgets/button/app_logo.dart';
 import '../../../share/widgets/button/custom_back_button.dart';
 import '../../../share/widgets/text_field/custom_text_field.dart';
@@ -8,14 +10,14 @@ import '../../abc.dart';
 import '../screens/active_otp_screen.dart';
 import '../screens/forget_password_screen.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends ConsumerState<LoginScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
@@ -182,6 +184,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 AulaPrimaryButton(
                   text: 'Log In directly',
                   onTap: () {
+                    ref.read(userRoleProvider.notifier).loginAsParent();
                     context.go(RoutePath.navigationPages);
                   },
                 ),

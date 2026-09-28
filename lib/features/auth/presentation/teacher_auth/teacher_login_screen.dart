@@ -1,6 +1,8 @@
 import 'package:aula360/features/share/export/screen_export.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../nav/user_role/user_role_provider.dart';
 import '../../../share/widgets/button/app_logo.dart';
 import '../../../share/widgets/button/custom_back_button.dart';
 import '../../../share/widgets/text_field/custom_text_field.dart';
@@ -8,14 +10,14 @@ import '../../abc.dart';
 import '../screens/active_otp_screen.dart';
 import '../screens/forget_password_screen.dart';
 
-class TeacherLoginScreen extends StatefulWidget {
+class TeacherLoginScreen extends ConsumerStatefulWidget {
   const TeacherLoginScreen({super.key});
 
   @override
-  State<TeacherLoginScreen> createState() => _TeacherLoginScreenState();
+  ConsumerState<TeacherLoginScreen> createState() => _TeacherLoginScreenState();
 }
 
-class _TeacherLoginScreenState extends State<TeacherLoginScreen> {
+class _TeacherLoginScreenState extends ConsumerState<TeacherLoginScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
@@ -181,6 +183,7 @@ class _TeacherLoginScreenState extends State<TeacherLoginScreen> {
                 AulaPrimaryButton(
                   text: 'Log In directly',
                   onTap: () {
+                    ref.read(userRoleProvider.notifier).loginAsTeacher();
                     context.go(RoutePath.navigationPages);
                   },
                 ),

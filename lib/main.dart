@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'core/router/routes.dart';
 import 'utils/app_keys/app_keys.dart';
 
 void main() {
-  runApp(const Aula360App());
+  runApp(ProviderScope(child: const Aula360App()));
 }
 
 class Aula360App extends StatelessWidget {
