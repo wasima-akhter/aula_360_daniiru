@@ -29,6 +29,10 @@ class RoutePath {
   static const String notification = 'notification';
 
   static const String classDetail = 'classDetail';
+  //
+  static const String reportDetail = 'reportDetail';
+  static const String homework = 'homework';
+  static const String homeworkDetail = 'homeworkDetail';
 
   // Profile and Settings Screens
 

@@ -1,5 +1,5 @@
-import '../../parent_all/helper/parent_home_helper.dart';
-import '../export/screen_export.dart';
+import '../../share/export/screen_export.dart';
+import '../helper/parent_home_helper.dart';
 
 class ScheduleScreen extends StatefulWidget {
   const ScheduleScreen({super.key});
@@ -66,7 +66,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
 
-      appBar: const AulaAppBar(title: 'Schedule', showBack: true),
+      appBar: const AulaAppBar(title: 'Schedule', showBack: false),
 
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
@@ -84,7 +84,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                       'STUDENT',
                       style: TextStyle(
                         color: AppColors.secondaryText,
-                        fontSize: 11.sp,
+                        fontSize: 13.sp,
                         fontWeight: FontWeight.w700,
                         letterSpacing: .4,
                       ),
@@ -94,7 +94,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                       '2 Enrolled',
                       style: TextStyle(
                         color: AppColors.primary,
-                        fontSize: 11.sp,
+                        fontSize: 12.sp,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -147,7 +147,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                               'Today',
                               style: TextStyle(
                                 color: AppColors.primary,
-                                fontSize: 9.sp,
+                                fontSize: 11.sp,
                                 fontWeight: FontWeight.w800,
                               ),
                             ),
@@ -157,7 +157,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                             'Week 9',
                             style: TextStyle(
                               color: AppColors.secondaryText,
-                              fontSize: 11.sp,
+                              fontSize: 12.sp,
                             ),
                           ),
                         ],
@@ -252,7 +252,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       color: AppColors.text,
-                      fontSize: 12.sp,
+                      fontSize: 13.sp,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -263,7 +263,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       color: AppColors.secondaryText,
-                      fontSize: 9.sp,
+                      fontSize: 11.sp,
                     ),
                   ),
                 ],
@@ -300,7 +300,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                 color: selected
                     ? Colors.white.withOpacity(.8)
                     : AppColors.secondaryText,
-                fontSize: 10.sp,
+                fontSize: 11.sp,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -350,7 +350,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                   '${classData.time} – ${classData.duration}',
                   style: TextStyle(
                     color: AppColors.secondaryText,
-                    fontSize: 11.sp,
+                    fontSize: 12.sp,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -392,7 +392,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                     classData.teacher,
                     style: TextStyle(
                       color: AppColors.text,
-                      fontSize: 11.sp,
+                      fontSize: 12.sp,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -407,7 +407,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                   '${classData.room} • ${classData.building}',
                   style: TextStyle(
                     color: AppColors.secondaryText,
-                    fontSize: 10.sp,
+                    fontSize: 11.sp,
                   ),
                 ),
               ],
@@ -431,7 +431,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                 '${classData.time} – ${classData.duration}',
                 style: TextStyle(
                   color: AppColors.secondaryText,
-                  fontSize: 10.sp,
+                  fontSize: 11.sp,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -463,7 +463,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                 classData.teacher,
                 style: TextStyle(
                   color: AppColors.secondaryText,
-                  fontSize: 11.sp,
+                  fontSize: 12.sp,
                 ),
               ),
               const Spacer(),
@@ -477,7 +477,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                 classData.room,
                 style: TextStyle(
                   color: AppColors.secondaryText,
-                  fontSize: 10.sp,
+                  fontSize: 11.sp,
                 ),
               ),
             ],
@@ -491,7 +491,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
               'Class Report →',
               style: TextStyle(
                 color: AppColors.primary,
-                fontSize: 11.sp,
+                fontSize: 12.sp,
                 fontWeight: FontWeight.w700,
               ),
             ),

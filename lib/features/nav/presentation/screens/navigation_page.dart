@@ -1,5 +1,6 @@
 import 'package:aula360/features/parent_all/home/home_screen.dart';
-import 'package:aula360/features/share/schedule/schedule_screen.dart';
+import 'package:aula360/features/parent_all/reports/parent_report_screen.dart';
+import 'package:aula360/features/parent_all/schedule/schedule_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -61,10 +62,11 @@ class _NavigationPageState extends ConsumerState<NavigationPage> {
           //   icon: Icons.calendar_month_outlined,
           // ),
           ScheduleScreen(),
-          _NavigationPlaceholder(
-            title: 'Reports',
-            icon: Icons.bar_chart_outlined,
-          ),
+          // _NavigationPlaceholder(
+          //   title: 'Reports',
+          //   icon: Icons.bar_chart_outlined,
+          // ),
+          ReportsScreen(),
           _NavigationPlaceholder(
             title: 'Notifications',
             icon: Icons.notifications_none_rounded,

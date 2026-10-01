@@ -2,7 +2,11 @@ import 'package:aula360/features/auth/presentation/parent_auth/profile_setup_scr
 import 'package:aula360/features/auth/presentation/teacher_auth/teacher_login_screen.dart';
 import 'package:aula360/features/auth/presentation/teacher_auth/teacher_sign_up_screen.dart';
 import 'package:aula360/features/parent_all/class_details/class_details_screen.dart';
-import 'package:aula360/features/share/schedule/schedule_screen.dart';
+import 'package:aula360/features/parent_all/reports/homework/parent_homework_detail_screen.dart';
+import 'package:aula360/features/parent_all/reports/homework/parent_homework_screen.dart';
+import 'package:aula360/features/parent_all/reports/parent_report_detail_screen.dart';
+import 'package:aula360/features/parent_all/reports/parent_report_screen.dart';
+import 'package:aula360/features/parent_all/schedule/schedule_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -203,6 +207,35 @@ class AppRouter {
         path: RoutePath.schedule.addBasePath,
         pageBuilder: (context, state) {
           return _buildPageWithAnimation(state: state, child: ScheduleScreen());
+        },
+      ),
+      GoRoute(
+        name: RoutePath.reportDetail,
+        path: RoutePath.reportDetail.addBasePath,
+        pageBuilder: (context, state) {
+          final extra = state.extra as ReportModel;
+          return _buildPageWithAnimation(
+            state: state,
+            child: ReportDetailsScreen(report: extra),
+          );
+        },
+      ),
+      GoRoute(
+        name: RoutePath.homework,
+        path: RoutePath.homework.addBasePath,
+        pageBuilder: (context, state) {
+          return _buildPageWithAnimation(state: state, child: HomeworkScreen());
+        },
+      ),
+      GoRoute(
+        name: RoutePath.homeworkDetail,
+        path: RoutePath.homeworkDetail.addBasePath,
+        pageBuilder: (context, state) {
+          final extra = state.extra as HomeworkModel;
+          return _buildPageWithAnimation(
+            state: state,
+            child: HomeworkDetailsScreen(homework: extra),
+          );
         },
       ),
     ],

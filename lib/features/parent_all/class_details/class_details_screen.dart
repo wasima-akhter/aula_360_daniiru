@@ -60,7 +60,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                                   'Lucas Rivera',
                                   style: TextStyle(
                                     color: AppColors.text,
-                                    fontSize: 14.sp,
+                                    fontSize: 15.sp,
                                     fontWeight: FontWeight.w800,
                                   ),
                                 ),
@@ -78,7 +78,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                                     'Grade 8',
                                     style: TextStyle(
                                       color: AppColors.primary,
-                                      fontSize: 9.sp,
+                                      fontSize: 11.sp,
                                       fontWeight: FontWeight.w700,
                                     ),
                                   ),
@@ -90,7 +90,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                               'Room 3B • ID #A360-842',
                               style: TextStyle(
                                 color: AppColors.secondaryText,
-                                fontSize: 10.sp,
+                                fontSize: 12.sp,
                               ),
                             ),
                           ],
@@ -186,7 +186,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                             'Building A',
                             style: TextStyle(
                               color: AppColors.primary,
-                              fontSize: 10.sp,
+                              fontSize: 12.sp,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
@@ -210,7 +210,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                         'West Campus Building A • 2nd Floor, South Corridor',
                         style: TextStyle(
                           color: AppColors.secondaryText,
-                          fontSize: 10.sp,
+                          fontSize: 12.sp,
                         ),
                       ),
 
@@ -258,7 +258,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                                       '${data.room} Schematic',
                                       style: TextStyle(
                                         color: Colors.white,
-                                        fontSize: 10.sp,
+                                        fontSize: 12.sp,
                                         fontWeight: FontWeight.w600,
                                       ),
                                     ),
@@ -283,7 +283,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                                   'View Map ↗',
                                   style: TextStyle(
                                     color: AppColors.primary,
-                                    fontSize: 10.sp,
+                                    fontSize: 12.sp,
                                     fontWeight: FontWeight.w700,
                                   ),
                                 ),
@@ -326,7 +326,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                                   data.teacher,
                                   style: TextStyle(
                                     color: AppColors.text,
-                                    fontSize: 14.sp,
+                                    fontSize: 15.sp,
                                     fontWeight: FontWeight.w800,
                                   ),
                                 ),
@@ -335,7 +335,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                                   '${data.category} & STEM Faculty Lead',
                                   style: TextStyle(
                                     color: AppColors.secondaryText,
-                                    fontSize: 10.sp,
+                                    fontSize: 12.sp,
                                   ),
                                 ),
                               ],
@@ -367,7 +367,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                                 'Office Hours: 03:30 PM – 04:30 PM\n(Room 3B)',
                                 style: TextStyle(
                                   color: AppColors.secondaryText,
-                                  fontSize: 10.sp,
+                                  fontSize: 12.sp,
                                   height: 1.4,
                                 ),
                               ),
@@ -391,7 +391,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
       text,
       style: TextStyle(
         color: AppColors.secondaryText,
-        fontSize: 10.sp,
+        fontSize: 12.sp,
         fontWeight: FontWeight.w700,
         letterSpacing: .45,
       ),
@@ -433,7 +433,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                   label,
                   style: TextStyle(
                     color: AppColors.secondaryText,
-                    fontSize: 9.sp,
+                    fontSize: 11.sp,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -461,7 +461,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                 trailing,
                 style: TextStyle(
                   color: AppColors.primary,
-                  fontSize: 9.sp,
+                  fontSize: 11.sp,
                   fontWeight: FontWeight.w800,
                 ),
               ),
