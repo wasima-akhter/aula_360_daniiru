@@ -55,6 +55,9 @@ class RoutePath {
   static const String teacherPostClassReport = 'teacherPostClassReport';
   static const String teacherReportSubmitted = 'teacherReportSubmitted';
   static const String teacherEndClass = 'teacherEndClass';
+
+  //
+  static const String teacherReportDetail = 'teacherReportDetail';
   //
 
   // Profile and Settings Screens
