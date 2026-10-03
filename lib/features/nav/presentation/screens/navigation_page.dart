@@ -1,10 +1,15 @@
 import 'package:aula360/features/parent_all/home/home_screen.dart';
+import 'package:aula360/features/parent_all/notification/notification_screen.dart';
 import 'package:aula360/features/parent_all/reports/parent_report_screen.dart';
 import 'package:aula360/features/parent_all/schedule/schedule_screen.dart';
-import 'package:flutter/material.dart';
+import 'package:aula360/features/teacher_all/classes/teacher_classes_screen.dart';
+import 'package:aula360/features/teacher_all/home/teacher_home_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../utils/enum/app_enum.dart';
+import '../../../parent_all/profile/parent_profile_screen.dart';
+import '../../../share/export/screen_export.dart';
+import '../../../teacher_all/profile/teacher_profile_screen.dart';
 import '../../user_role/user_role_provider.dart';
 import 'navigation_provider.dart';
 
@@ -35,9 +40,11 @@ class _NavigationPageState extends ConsumerState<NavigationPage> {
     switch (role) {
       case UserRole.teacher:
         return const [
-          _NavigationPlaceholder(title: 'Home', icon: Icons.home_outlined),
+          // _NavigationPlaceholder(title: 'Home', icon: Icons.home_outlined),
 
-          _NavigationPlaceholder(title: 'Classes', icon: Icons.class_outlined),
+          TeacherHomeScreen(),
+          // _NavigationPlaceholder(title: 'Classes', icon: Icons.class_outlined),
+          TeacherClassesScreen(),
           _NavigationPlaceholder(
             title: 'Students',
             icon: Icons.people_outline_rounded,
@@ -46,10 +53,12 @@ class _NavigationPageState extends ConsumerState<NavigationPage> {
             title: 'Reports',
             icon: Icons.bar_chart_outlined,
           ),
-          _NavigationPlaceholder(
-            title: 'Profile',
-            icon: Icons.person_outline_rounded,
-          ),
+          // _NavigationPlaceholder(
+          //   title: 'Profile',
+          //   icon: Icons.person_outline_rounded,
+          // ),
+
+          TeacherProfileScreen(),
         ];
 
       case UserRole.parent:
@@ -67,14 +76,18 @@ class _NavigationPageState extends ConsumerState<NavigationPage> {
           //   icon: Icons.bar_chart_outlined,
           // ),
           ReportsScreen(),
-          _NavigationPlaceholder(
-            title: 'Notifications',
-            icon: Icons.notifications_none_rounded,
-          ),
-          _NavigationPlaceholder(
-            title: 'Profile',
-            icon: Icons.person_outline_rounded,
-          ),
+          // _NavigationPlaceholder(
+          //   title: 'Notifications',
+          //   icon: Icons.notifications_none_rounded,
+          // ),
+
+          NotificationsScreen(),
+          // _NavigationPlaceholder(
+          //   title: 'Profile',
+          //   icon: Icons.person_outline_rounded,
+          // ),
+
+          ParentProfileScreen(),
         ];
     }
   }
@@ -231,8 +244,8 @@ class _NavigationPageState extends ConsumerState<NavigationPage> {
               textAlign: TextAlign.center,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: 11,
+              style: context.style.bodyMedium!.copyWith(
+                fontSize: 13.sp,
                 color: color,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
               ),

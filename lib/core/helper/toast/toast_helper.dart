@@ -1,7 +1,4 @@
-import 'package:aula360/core/router/routes.dart';
-import 'package:flutter/material.dart';
-
-import '../../../utils/color/app_colors.dart';
+import '../../../features/share/export/screen_export.dart';
 import '../../../utils/enum/app_enum.dart';
 
 class AppToast {
@@ -41,7 +38,7 @@ class AppToast {
         SnackBar(
           content: Text(
             displayMessage,
-            style: TextStyle(color: effectiveTextColor),
+            style: TxtStyle.titleLarge(color: effectiveTextColor),
           ),
           behavior: position ?? SnackBarBehavior.floating,
           backgroundColor: defaultBgColor,

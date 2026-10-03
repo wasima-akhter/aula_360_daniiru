@@ -1,117 +1,224 @@
 import 'package:aula360/utils/color/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-/// 10-Year Flutter Developer Best Practice:
-/// Theme structure should always define an explicit [ColorScheme] in addition to
-/// individual widget themes. This ensures Material 3 components render with
-/// cohesive brand colors automatically.
+import '../router/routes.dart';
+
+/// One place that knows how to build a themed style.
+class _TxtVariant {
+  const _TxtVariant(this._pick);
+
+  final TextStyle? Function(TextTheme theme) _pick;
+
+  TextStyle call({
+    Color? color,
+    Color? backgroundColor,
+    double? fontSize,
+    FontWeight? fontWeight,
+    FontStyle? fontStyle,
+    double? letterSpacing,
+    double? wordSpacing,
+    TextBaseline? textBaseline,
+    double? height,
+    Locale? locale,
+    Paint? foreground,
+    Paint? background,
+    List<Shadow>? shadows,
+    List<FontFeature>? fontFeatures,
+    List<FontVariation>? fontVariations,
+    TextDecoration? decoration,
+    Color? decorationColor,
+    TextDecorationStyle? decorationStyle,
+    double? decorationThickness,
+    String? fontFamily,
+    List<String>? fontFamilyFallback,
+    String? package,
+    TextOverflow? overflow,
+    TextLeadingDistribution? leadingDistribution,
+  }) {
+    final navContext = AppRouter.navigatorKey.currentContext;
+    final textTheme = navContext != null
+        ? Theme.of(navContext).textTheme
+        : ThemeData.fallback().textTheme; // no crash before first frame
+
+    return (_pick(textTheme) ?? const TextStyle()).copyWith(
+      color: color,
+      backgroundColor: backgroundColor,
+      fontSize: fontSize?.sp,
+      fontWeight: fontWeight,
+      fontStyle: fontStyle,
+      letterSpacing: letterSpacing,
+      wordSpacing: wordSpacing,
+      textBaseline: textBaseline,
+      height: height,
+      locale: locale,
+      foreground: foreground,
+      background: background,
+      shadows: shadows,
+      fontFeatures: fontFeatures,
+      fontVariations: fontVariations,
+      decoration: decoration,
+      decorationColor: decorationColor,
+      decorationStyle: decorationStyle,
+      decorationThickness: decorationThickness,
+      fontFamily: fontFamily,
+      fontFamilyFallback: fontFamilyFallback,
+      package: package,
+      overflow: overflow,
+      leadingDistribution: leadingDistribution,
+    );
+  }
+}
+
+class TxtStyle {
+  const TxtStyle._();
+
+  // Headlines
+  static final headlineLarge = _TxtVariant((t) => t.headlineLarge);
+  static final headlineMedium = _TxtVariant((t) => t.headlineMedium);
+  static final headlineSmall = _TxtVariant((t) => t.headlineSmall);
+
+  // Titles
+  static final titleLarge = _TxtVariant((t) => t.titleLarge);
+  static final titleMedium = _TxtVariant((t) => t.titleMedium);
+  static final titleSmall = _TxtVariant((t) => t.titleSmall);
+
+  // Body
+  static final bodyLarge = _TxtVariant((t) => t.bodyLarge);
+  static final bodyMedium = _TxtVariant((t) => t.bodyMedium);
+  static final bodySmall = _TxtVariant((t) => t.bodySmall);
+
+  // Labels
+  static final labelLarge = _TxtVariant((t) => t.labelLarge);
+  static final labelMedium = _TxtVariant((t) => t.labelMedium);
+  static final labelSmall = _TxtVariant((t) => t.labelSmall);
+}
+
+extension ThemeTextStyles on BuildContext {
+  TextTheme get style => Theme.of(this).textTheme;
+}
+
+///
+
 final ThemeData lightTheme = ThemeData(
   useMaterial3: true,
   brightness: Brightness.light,
+
   fontFamily: 'Plus Jakarta Sans',
 
+  scaffoldBackgroundColor: AppColors.background,
+
+  // ─────────────────────────────────────────────
+  // APP BAR
+  // ─────────────────────────────────────────────
   appBarTheme: const AppBarTheme(
-    backgroundColor: AppColors.backgroundColorNew,
+    backgroundColor: AppColors.background,
+    surfaceTintColor: Colors.transparent,
     elevation: 0,
+    scrolledUnderElevation: 0,
     centerTitle: true,
     titleTextStyle: TextStyle(
       fontFamily: 'Plus Jakarta Sans',
-      fontWeight: FontWeight.w800,
       fontSize: 18,
-      color: AppColors.darkTextColor,
+      fontWeight: FontWeight.w700,
+      color: AppColors.text,
     ),
-    iconTheme: IconThemeData(color: AppColors.black),
+    iconTheme: IconThemeData(color: AppColors.text, size: 24),
   ),
 
-  // Unified button styles with modern figma rounded shapes
+  // ─────────────────────────────────────────────
+  // ELEVATED BUTTON
+  // ─────────────────────────────────────────────
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
-      backgroundColor: AppColors.primaryColor,
+      backgroundColor: AppColors.primary,
       foregroundColor: AppColors.white,
-      minimumSize: const Size(
-        140,
-        48,
-      ), // Industry standard height for readability and tap-targets
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(
-          12,
-        ), // Matching OutlinedButton corner language
-      ),
+      minimumSize: const Size(140, 48),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 13),
+      elevation: 0,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       textStyle: const TextStyle(
         fontFamily: 'Plus Jakarta Sans',
         fontSize: 14,
-        fontWeight: FontWeight.w600,
-      ),
-    ),
-  ),
-
-  outlinedButtonTheme: OutlinedButtonThemeData(
-    style: OutlinedButton.styleFrom(
-      side: const BorderSide(color: AppColors.primaryColor, width: 1.5),
-      foregroundColor: AppColors.primaryColor,
-      minimumSize: const Size(double.infinity, 50),
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12), // Clean unified corner radius
-      ),
-      textStyle: const TextStyle(
-        fontFamily: 'Plus Jakarta Sans',
-        fontSize: 16,
         fontWeight: FontWeight.w700,
       ),
     ),
   ),
 
-  textButtonTheme: TextButtonThemeData(
-    style: TextButton.styleFrom(
-      foregroundColor: AppColors.primaryColor,
+  // ─────────────────────────────────────────────
+  // OUTLINED BUTTON
+  // ─────────────────────────────────────────────
+  outlinedButtonTheme: OutlinedButtonThemeData(
+    style: OutlinedButton.styleFrom(
+      foregroundColor: AppColors.primary,
+      minimumSize: const Size(double.infinity, 48),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      side: const BorderSide(color: AppColors.primary, width: 1.3),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       textStyle: const TextStyle(
         fontFamily: 'Plus Jakarta Sans',
-        fontWeight: FontWeight.w600,
         fontSize: 14,
+        fontWeight: FontWeight.w700,
       ),
     ),
   ),
 
-  iconTheme: const IconThemeData(
-    color: AppColors.grayTertiaryTextColor,
-    size: 24,
+  // ─────────────────────────────────────────────
+  // TEXT BUTTON
+  // ─────────────────────────────────────────────
+  textButtonTheme: TextButtonThemeData(
+    style: TextButton.styleFrom(
+      foregroundColor: AppColors.primary,
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      textStyle: const TextStyle(
+        fontFamily: 'Plus Jakarta Sans',
+        fontSize: 13,
+        fontWeight: FontWeight.w700,
+      ),
+    ),
   ),
 
-  // Modern input field designs with interactive active/focused states
+  // ─────────────────────────────────────────────
+  // ICONS
+  // ─────────────────────────────────────────────
+  iconTheme: const IconThemeData(color: AppColors.slateIconColor, size: 24),
+
+  // ─────────────────────────────────────────────
+  // INPUT FIELDS
+  // ─────────────────────────────────────────────
   inputDecorationTheme: InputDecorationTheme(
     filled: true,
-    fillColor: AppColors.backgroundColor,
-    iconColor: AppColors.grayTextSecondaryColor,
-    prefixIconColor: AppColors.grayTertiaryTextColor,
-    suffixIconColor: AppColors.grayTertiaryTextColor,
+    fillColor: AppColors.background,
+
+    iconColor: AppColors.secondaryText,
+    prefixIconColor: AppColors.secondaryText,
+    suffixIconColor: AppColors.secondaryText,
+
     contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
 
-    // Normal border
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(12),
-      borderSide: const BorderSide(color: AppColors.linesDarkColor),
+      borderSide: const BorderSide(color: AppColors.border),
     ),
+
     enabledBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(12),
-      borderSide: const BorderSide(color: AppColors.linesDarkColor),
+      borderSide: const BorderSide(color: AppColors.border),
     ),
 
-    // Interactive Focused Border: Highlight with primary color for top UX feedback
     focusedBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(12),
-      borderSide: const BorderSide(color: AppColors.primaryColor, width: 1.5),
+      borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
     ),
 
-    // Error borders
     errorBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(12),
-      borderSide: const BorderSide(width: 1.5, color: AppColors.redColor),
+      borderSide: const BorderSide(color: AppColors.error, width: 1.5),
     ),
+
     focusedErrorBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(12),
-      borderSide: const BorderSide(width: 2, color: AppColors.redColor),
+      borderSide: const BorderSide(color: AppColors.error, width: 2),
     ),
 
     disabledBorder: OutlineInputBorder(
@@ -119,118 +226,156 @@ final ThemeData lightTheme = ThemeData(
       borderSide: const BorderSide(color: AppColors.backgroundsLinesColor),
     ),
 
-    // Figma: Input placeholder → Plus Jakarta Sans, 14px, Regular (400), #9CA3AF
     hintStyle: const TextStyle(
       fontFamily: 'Plus Jakarta Sans',
       fontSize: 14,
-      fontWeight: FontWeight.w400,
+      fontWeight: FontWeight.w500,
       color: AppColors.hintTextColor,
     ),
+
+    labelStyle: const TextStyle(
+      fontFamily: 'Plus Jakarta Sans',
+      fontSize: 14,
+      fontWeight: FontWeight.w500,
+      color: AppColors.labelTextColor,
+    ),
+
+    floatingLabelStyle: const TextStyle(
+      fontFamily: 'Plus Jakarta Sans',
+      fontSize: 14,
+      fontWeight: FontWeight.w600,
+      color: AppColors.primary,
+    ),
+
     errorStyle: const TextStyle(
       fontFamily: 'Plus Jakarta Sans',
       fontSize: 12,
-      fontWeight: FontWeight.w400,
-      color: AppColors.redColor,
+      fontWeight: FontWeight.w500,
+      color: AppColors.error,
     ),
   ),
 
-  // ─── Figma Typography System ───
-  // Extracted from: SomSpot - Business App Figma Design
-  //
-  // Figma Mapping:
-  //   "Create account"  → Plus Jakarta Sans, 24px, Medium (500), #515151
-  //   "Full Name" label  → Plus Jakarta Sans, 16px, Medium (500), #334155
-  //   Subtitle text      → Plus Jakarta Sans, 16px, Regular (400), #64748B
-  //   Tab/chip text      → Plus Jakarta Sans, 14px, Medium (500), #64748B
-  //   Placeholder        → Plus Jakarta Sans, 14px, Regular (400), #9CA3AF
+  // ─────────────────────────────────────────────
+  // TYPOGRAPHY
+  // ─────────────────────────────────────────────
   textTheme: const TextTheme(
-    // ── Headline: Page-level headings ──
+    // HEADLINES
     headlineLarge: TextStyle(
       fontFamily: 'Plus Jakarta Sans',
       fontSize: 28,
-      fontWeight: FontWeight.w600,
-      color: AppColors.headingTextColor,
+      fontWeight: FontWeight.w800,
+      color: AppColors.text,
+      height: 1.2,
     ),
+
     headlineMedium: TextStyle(
       fontFamily: 'Plus Jakarta Sans',
-      fontSize: 24, // Figma: "Create account" = 24px
-      fontWeight: FontWeight.w500, // Figma: Medium
-      color: AppColors.headingTextColor, // Figma: #515151
+      fontSize: 24,
+      fontWeight: FontWeight.w700,
+      color: AppColors.text,
+      height: 1.25,
     ),
+
     headlineSmall: TextStyle(
       fontFamily: 'Plus Jakarta Sans',
       fontSize: 20,
-      fontWeight: FontWeight.w500,
-      color: AppColors.headingTextColor,
+      fontWeight: FontWeight.w700,
+      color: AppColors.text,
+      height: 1.3,
     ),
 
-    // ── Title: Field labels, section titles ──
+    // TITLES
     titleLarge: TextStyle(
       fontFamily: 'Plus Jakarta Sans',
-      fontSize: 18, // Figma: Business name = 18px
-      fontWeight: FontWeight.w500, // Figma: Medium
-      color: AppColors.darkTextColor, // Figma: #0F172A
+      fontSize: 18,
+      fontWeight: FontWeight.w700,
+      color: AppColors.text,
+      height: 1.3,
     ),
+
     titleMedium: TextStyle(
       fontFamily: 'Plus Jakarta Sans',
-      fontSize: 16, // Figma: "Full Name" label = 16px
-      fontWeight: FontWeight.w500, // Figma: Medium
-      color: AppColors.darkTextColor, // Figma: #334155
+      fontSize: 16,
+      fontWeight: FontWeight.w600,
+      color: AppColors.text,
+      height: 1.35,
     ),
+
     titleSmall: TextStyle(
       fontFamily: 'Plus Jakarta Sans',
       fontSize: 14,
-      fontWeight: FontWeight.w500,
-      color: AppColors.darkTextColor,
+      fontWeight: FontWeight.w600,
+      color: AppColors.text,
+      height: 1.35,
     ),
 
-    // ── Body: Content, descriptions, subtitles ──
+    // BODY
     bodyLarge: TextStyle(
       fontFamily: 'Plus Jakarta Sans',
-      fontSize: 16, // Figma: Subtitle text = 16px
-      fontWeight: FontWeight.w400, // Figma: Regular
-      color: AppColors.subtitleTextColor, // Figma: #64748B
+      fontSize: 16,
+      fontWeight: FontWeight.w500,
+      color: AppColors.secondaryText,
+      height: 1.5,
     ),
+
     bodyMedium: TextStyle(
       fontFamily: 'Plus Jakarta Sans',
       fontSize: 14,
-      fontWeight: FontWeight.w400,
-      color: AppColors.subtitleTextColor,
+      fontWeight: FontWeight.w500,
+      color: AppColors.secondaryText,
+      height: 1.5,
     ),
+
     bodySmall: TextStyle(
       fontFamily: 'Plus Jakarta Sans',
       fontSize: 12,
-      fontWeight: FontWeight.w400,
-      color: AppColors.subtitleTextColor,
+      fontWeight: FontWeight.w500,
+      color: AppColors.secondaryText,
+      height: 1.45,
     ),
 
-    // ── Label: Tabs, chips, captions, hints ──
+    // LABELS
     labelLarge: TextStyle(
       fontFamily: 'Plus Jakarta Sans',
-      fontSize: 14, // Figma: Tab text = 14px
-      fontWeight: FontWeight.w500, // Figma: Medium
-      color: AppColors.subtitleTextColor, // Figma: #64748B
+      fontSize: 14,
+      fontWeight: FontWeight.w600,
+      color: AppColors.labelTextColor,
+      height: 1.3,
     ),
+
     labelMedium: TextStyle(
       fontFamily: 'Plus Jakarta Sans',
       fontSize: 12,
-      fontWeight: FontWeight.w400,
-      color: AppColors.hintTextColor, // Figma: #9CA3AF
+      fontWeight: FontWeight.w500,
+      color: AppColors.subtitleTextColor,
+      height: 1.3,
     ),
+
     labelSmall: TextStyle(
       fontFamily: 'Plus Jakarta Sans',
       fontSize: 10,
-      fontWeight: FontWeight.w400,
+      fontWeight: FontWeight.w500,
       color: AppColors.hintTextColor,
+      height: 1.3,
     ),
   ),
+
+  // ─────────────────────────────────────────────
+  // COLOR SCHEME
+  // ─────────────────────────────────────────────
   colorScheme: const ColorScheme.light(
-    primary: AppColors.primaryColor,
-    secondary: AppColors.secondPrimaryColor,
-    error: AppColors.redColor,
-    surface: AppColors.backgroundColor,
+    primary: AppColors.primary,
     onPrimary: AppColors.white,
+
+    secondary: AppColors.blueAccentColor,
     onSecondary: AppColors.white,
-    onSurface: AppColors.blackMainTextColor,
-  ).copyWith(surface: AppColors.backgroundColorNew),
+
+    error: AppColors.error,
+    onError: AppColors.white,
+
+    surface: AppColors.background,
+    onSurface: AppColors.text,
+
+    outline: AppColors.border,
+  ),
 );

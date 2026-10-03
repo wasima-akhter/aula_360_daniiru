@@ -59,7 +59,7 @@ class _HomeworkDetailsScreenState extends State<HomeworkDetailsScreen> {
         children: [
           Text(
             homework.subject.toUpperCase(),
-            style: TextStyle(
+            style: TxtStyle.titleLarge(
               color: AppColors.primary,
               fontSize: 11.sp,
               fontWeight: FontWeight.w800,
@@ -71,7 +71,7 @@ class _HomeworkDetailsScreenState extends State<HomeworkDetailsScreen> {
 
           Text(
             homework.title,
-            style: TextStyle(
+            style: TxtStyle.titleLarge(
               color: AppColors.text,
               fontSize: 19.sp,
               height: 1.25,
@@ -108,7 +108,7 @@ class _HomeworkDetailsScreenState extends State<HomeworkDetailsScreen> {
               children: [
                 Text(
                   homework.teacher,
-                  style: TextStyle(
+                  style: TxtStyle.titleLarge(
                     color: AppColors.text,
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w800,
@@ -117,7 +117,7 @@ class _HomeworkDetailsScreenState extends State<HomeworkDetailsScreen> {
                 SizedBox(height: 3.h),
                 Text(
                   'Faculty of English Literature',
-                  style: TextStyle(
+                  style: TxtStyle.titleLarge(
                     color: AppColors.secondaryText,
                     fontSize: 12.sp,
                   ),
@@ -144,7 +144,7 @@ class _HomeworkDetailsScreenState extends State<HomeworkDetailsScreen> {
         children: [
           Text(
             'INSTRUCTIONS',
-            style: TextStyle(
+            style: TxtStyle.titleLarge(
               color: AppColors.secondaryText,
               fontSize: 11.sp,
               fontWeight: FontWeight.w800,
@@ -156,7 +156,7 @@ class _HomeworkDetailsScreenState extends State<HomeworkDetailsScreen> {
 
           Text(
             'Write a 500-word analysis examining the motivations of a core motif of innocence and moral vulnerability. Cite at least two specific passages from Chapters 10 and 28.',
-            style: TextStyle(
+            style: TxtStyle.bodyMedium(
               color: AppColors.text,
               fontSize: 13.sp,
               height: 1.55,
@@ -175,7 +175,7 @@ class _HomeworkDetailsScreenState extends State<HomeworkDetailsScreen> {
         children: [
           Text(
             'ATTACHMENTS',
-            style: TextStyle(
+            style: TxtStyle.titleLarge(
               color: AppColors.secondaryText,
               fontSize: 11.sp,
               fontWeight: FontWeight.w800,
@@ -230,7 +230,7 @@ class _HomeworkDetailsScreenState extends State<HomeworkDetailsScreen> {
                     title,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
+                    style: TxtStyle.titleLarge(
                       color: AppColors.text,
                       fontSize: 12.sp,
                       fontWeight: FontWeight.w800,
@@ -239,7 +239,7 @@ class _HomeworkDetailsScreenState extends State<HomeworkDetailsScreen> {
                   SizedBox(height: 2.h),
                   Text(
                     subtitle,
-                    style: TextStyle(
+                    style: TxtStyle.titleLarge(
                       color: AppColors.secondaryText,
                       fontSize: 10.5.sp,
                     ),
@@ -265,7 +265,7 @@ class _HomeworkDetailsScreenState extends State<HomeworkDetailsScreen> {
             children: [
               Text(
                 'Submission',
-                style: TextStyle(
+                style: TxtStyle.titleLarge(
                   color: AppColors.text,
                   fontSize: 15.sp,
                   fontWeight: FontWeight.w800,
@@ -281,7 +281,7 @@ class _HomeworkDetailsScreenState extends State<HomeworkDetailsScreen> {
           if (completed)
             Text(
               'Submitted successfully on Oct 22.',
-              style: TextStyle(
+              style: TxtStyle.titleLarge(
                 color: const Color(0xFF2B9D70),
                 fontSize: 12.sp,
                 fontWeight: FontWeight.w600,
@@ -298,7 +298,7 @@ class _HomeworkDetailsScreenState extends State<HomeworkDetailsScreen> {
               child: Center(
                 child: Text(
                   'Awaiting Submission',
-                  style: TextStyle(
+                  style: TxtStyle.titleLarge(
                     color: Colors.white,
                     fontSize: 13.sp,
                     fontWeight: FontWeight.w800,
@@ -324,7 +324,7 @@ class _HomeworkDetailsScreenState extends State<HomeworkDetailsScreen> {
           SizedBox(width: 5.w),
           Text(
             text,
-            style: TextStyle(
+            style: TxtStyle.titleLarge(
               color: AppColors.secondaryText,
               fontSize: 11.sp,
               fontWeight: FontWeight.w700,

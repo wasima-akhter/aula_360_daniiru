@@ -175,7 +175,7 @@ class _TeacherLoginScreenState extends ConsumerState<TeacherLoginScreen> {
                 AulaPrimaryButton(
                   text: 'Teacher Profile setup',
                   onTap: () {
-                    context.go(RoutePath.teacherProfileScreen);
+                    context.go(RoutePath.teacherProfileSetup);
                   },
                 ),
 
@@ -243,7 +243,7 @@ class _TeacherLoginScreenState extends ConsumerState<TeacherLoginScreen> {
                     children: [
                       Text(
                         'Login as Parent',
-                        style: TextStyle(
+                        style: TxtStyle.titleLarge(
                           color: AppColors.primary,
                           fontSize: 15,
                           fontWeight: FontWeight.w600,

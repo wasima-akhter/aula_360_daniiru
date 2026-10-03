@@ -77,7 +77,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               Center(
                 child: Text(
                   'Create your account',
-                  style: TextStyle(
+                  style: TxtStyle.titleLarge(
                     color: AppColors.text,
                     fontSize: 26.sp,
                     fontWeight: FontWeight.w800,
@@ -91,7 +91,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 child: Text(
                   'Enter your basic details to register and connect\nwith your child’s academy.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: AppColors.secondaryText, height: 1.5),
+                  style: TxtStyle.titleLarge(
+                    color: AppColors.secondaryText,
+                    height: 1.5,
+                  ),
                 ),
               ),
 
@@ -151,7 +154,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   const SizedBox(width: 4),
                   Text(
                     'At least 8 characters with numbers and letters',
-                    style: TextStyle(
+                    style: TxtStyle.titleLarge(
                       color: AppColors.secondaryText,
                       fontSize: 13.sp,
                     ),
@@ -173,14 +176,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   child: Text.rich(
                     TextSpan(
                       text: 'Already have an account? ',
-                      style: TextStyle(
+                      style: TxtStyle.titleLarge(
                         color: AppColors.secondaryText,
                         fontSize: 13.sp,
                       ),
                       children: [
                         TextSpan(
                           text: 'Log In',
-                          style: TextStyle(
+                          style: TxtStyle.titleLarge(
                             color: AppColors.primary,
                             fontWeight: FontWeight.w700,
                           ),

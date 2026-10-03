@@ -214,7 +214,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                 children: [
                   Text(
                     "Profile Setup".toUpperCase(),
-                    style: TextStyle(
+                    style: TxtStyle.titleLarge(
                       fontWeight: FontWeight.w600,
                       color: AppColors.primary,
                     ),
@@ -222,7 +222,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                   const SizedBox(height: 2),
                   Text(
                     'PARENT PORTAL',
-                    style: TextStyle(
+                    style: TxtStyle.titleLarge(
                       color: AppColors.secondaryText,
                       fontSize: 11.sp,
                       fontWeight: FontWeight.w600,
@@ -241,7 +241,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                     Center(
                       child: Text(
                         'Complete your profile',
-                        style: TextStyle(
+                        style: TxtStyle.titleLarge(
                           color: AppColors.text,
                           fontSize: 22.sp,
                           fontWeight: FontWeight.w700,
@@ -255,7 +255,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                       child: Text(
                         'Add your parent details to finish setup and\naccess your student’s academy dashboard.',
                         textAlign: TextAlign.center,
-                        style: TextStyle(
+                        style: TxtStyle.titleLarge(
                           color: AppColors.secondaryText,
                           fontSize: 12.sp,
                           height: 1.5,
@@ -323,7 +323,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                     // const Center(
                     //   child: Text(
                     //     'Photo Optional',
-                    //     style: TextStyle(
+                    //     style:  TxtStyle.titleLarge(
                     //       color: AppColors.secondaryText,
                     //       fontSize: 7,
                     //     ),
@@ -399,10 +399,12 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
 
                     const SizedBox(height: 8),
 
-                    const Center(
+                    Center(
                       child: Text(
                         'Navigates to Parent Dashboard',
-                        style: TextStyle(color: AppColors.secondaryText),
+                        style: TxtStyle.titleLarge(
+                          color: AppColors.secondaryText,
+                        ),
                       ),
                     ),
                   ],

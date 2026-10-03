@@ -83,7 +83,7 @@ class _TeacherSignUpScreenState extends State<TeacherSignUpScreen> {
               Center(
                 child: Text(
                   'Register as Faculty',
-                  style: TextStyle(
+                  style: TxtStyle.titleLarge(
                     color: AppColors.text,
                     fontSize: 26.sp,
                     fontWeight: FontWeight.w800,
@@ -97,7 +97,10 @@ class _TeacherSignUpScreenState extends State<TeacherSignUpScreen> {
                 child: Text(
                   'Enter your institutional details to initiate verified \nteacher access.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: AppColors.secondaryText, height: 1.5),
+                  style: TxtStyle.titleLarge(
+                    color: AppColors.secondaryText,
+                    height: 1.5,
+                  ),
                 ),
               ),
 
@@ -178,7 +181,7 @@ class _TeacherSignUpScreenState extends State<TeacherSignUpScreen> {
                       child: Text.rich(
                         TextSpan(
                           text: 'I agree to the ',
-                          style: TextStyle(
+                          style: TxtStyle.titleLarge(
                             color: AppColors.secondaryText,
                             fontSize: 12.5.sp,
                             height: 1.4,
@@ -186,18 +189,20 @@ class _TeacherSignUpScreenState extends State<TeacherSignUpScreen> {
                           children: [
                             TextSpan(
                               text: 'Terms and Conditions',
-                              style: TextStyle(
+                              style: TxtStyle.titleLarge(
                                 color: AppColors.primary,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
                             TextSpan(
                               text: ' and ',
-                              style: TextStyle(color: AppColors.secondaryText),
+                              style: TxtStyle.titleLarge(
+                                color: AppColors.secondaryText,
+                              ),
                             ),
                             TextSpan(
                               text: 'Privacy Policy',
-                              style: TextStyle(
+                              style: TxtStyle.titleLarge(
                                 color: AppColors.primary,
                                 fontWeight: FontWeight.w700,
                               ),
@@ -224,14 +229,14 @@ class _TeacherSignUpScreenState extends State<TeacherSignUpScreen> {
                   child: Text.rich(
                     TextSpan(
                       text: 'Already have an account? ',
-                      style: TextStyle(
+                      style: TxtStyle.titleLarge(
                         color: AppColors.secondaryText,
                         fontSize: 13.sp,
                       ),
                       children: [
                         TextSpan(
                           text: 'Log In',
-                          style: TextStyle(
+                          style: TxtStyle.titleLarge(
                             color: AppColors.primary,
                             fontWeight: FontWeight.w700,
                           ),

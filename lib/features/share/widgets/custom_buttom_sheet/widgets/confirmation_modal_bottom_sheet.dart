@@ -47,7 +47,7 @@ class ConfirmationModalBottomSheet extends StatelessWidget {
                   Gap(24.h),
                   Text(
                     title,
-                    style: TextStyle(
+                    style: TxtStyle.titleLarge(
                       fontWeight: FontWeight.w800,
                       fontSize: 22.sp,
                       color: primaryTextColor,
@@ -57,7 +57,7 @@ class ConfirmationModalBottomSheet extends StatelessWidget {
                   Gap(12.h),
                   Text(
                     message,
-                    style: TextStyle(
+                    style: TxtStyle.titleLarge(
                       color: AppColors.grayTextSecondaryColor,
                       height: 1.5,
                     ),

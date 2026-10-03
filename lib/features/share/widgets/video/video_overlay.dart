@@ -332,7 +332,7 @@ class _VideoErrorView extends StatelessWidget {
 
             Text(
               AppStrings.unableToPlayVideo,
-              style: TextStyle(
+              style: TxtStyle.titleLarge(
                 color: Colors.white,
                 fontWeight: FontWeight.w600,
                 fontSize: 16,
@@ -344,7 +344,7 @@ class _VideoErrorView extends StatelessWidget {
             Text(
               AppStrings.videoUnavailableOrConnectionFailed,
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.white70, fontSize: 13),
+              style: TxtStyle.titleLarge(color: Colors.white70, fontSize: 13),
             ),
 
             const SizedBox(height: 16),

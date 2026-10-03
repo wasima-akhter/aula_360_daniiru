@@ -47,7 +47,7 @@ class _ChooseRoleScreenState extends State<ChooseRoleScreen> {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   'Select your role',
-                  style: TextStyle(
+                  style: TxtStyle.titleLarge(
                     color: AppColors.text,
                     fontSize: 21.sp,
                     fontWeight: FontWeight.w800,
@@ -57,11 +57,14 @@ class _ChooseRoleScreenState extends State<ChooseRoleScreen> {
 
               const SizedBox(height: 5),
 
-              const Align(
+              Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   'Choose how you’ll be accessing your academy portal.',
-                  style: TextStyle(color: AppColors.secondaryText),
+                  style: TxtStyle.bodyMedium(
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.secondaryText,
+                  ),
                 ),
               ),
 
@@ -160,7 +163,7 @@ class _ChooseRoleScreenState extends State<ChooseRoleScreen> {
                     children: [
                       Text(
                         title,
-                        style: TextStyle(
+                        style: TxtStyle.titleLarge(
                           color: AppColors.text,
                           fontSize: 16.sp,
 
@@ -170,7 +173,7 @@ class _ChooseRoleScreenState extends State<ChooseRoleScreen> {
                       if (subtitle.isNotEmpty)
                         Text(
                           ' $subtitle',
-                          style: TextStyle(
+                          style: TxtStyle.titleLarge(
                             color: AppColors.text,
                             fontSize: 16.sp,
 
@@ -198,9 +201,10 @@ class _ChooseRoleScreenState extends State<ChooseRoleScreen> {
 
             Text(
               description,
-              style: TextStyle(
+              style: TxtStyle.titleLarge(
                 color: AppColors.secondaryText,
                 fontSize: 12.sp,
+                fontWeight: FontWeight.w500,
                 height: 1.5,
               ),
             ),
@@ -209,7 +213,7 @@ class _ChooseRoleScreenState extends State<ChooseRoleScreen> {
               const SizedBox(height: 7),
               Text(
                 'Continue as ${role == 'parent' ? 'Parent' : 'Teacher'} Login →',
-                style: TextStyle(
+                style: TxtStyle.titleLarge(
                   color: AppColors.primary,
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w700,

@@ -58,7 +58,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                               children: [
                                 Text(
                                   'Lucas Rivera',
-                                  style: TextStyle(
+                                  style: TxtStyle.titleLarge(
                                     color: AppColors.text,
                                     fontSize: 15.sp,
                                     fontWeight: FontWeight.w800,
@@ -76,7 +76,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                                   ),
                                   child: Text(
                                     'Grade 8',
-                                    style: TextStyle(
+                                    style: TxtStyle.titleLarge(
                                       color: AppColors.primary,
                                       fontSize: 11.sp,
                                       fontWeight: FontWeight.w700,
@@ -88,7 +88,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                             SizedBox(height: 4.h),
                             Text(
                               'Room 3B • ID #A360-842',
-                              style: TextStyle(
+                              style: TxtStyle.titleLarge(
                                 color: AppColors.secondaryText,
                                 fontSize: 12.sp,
                               ),
@@ -111,7 +111,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                     children: [
                       Text(
                         data.subject,
-                        style: TextStyle(
+                        style: TxtStyle.titleLarge(
                           color: AppColors.primary,
                           fontSize: 22.sp,
                           fontWeight: FontWeight.w800,
@@ -122,7 +122,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
 
                       Text(
                         _descriptionFor(data.category),
-                        style: TextStyle(
+                        style: TxtStyle.titleLarge(
                           color: AppColors.secondaryText,
                           fontSize: 13.sp,
                           height: 1.4,
@@ -184,7 +184,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                           SizedBox(width: 4.w),
                           Text(
                             'Building A',
-                            style: TextStyle(
+                            style: TxtStyle.titleLarge(
                               color: AppColors.primary,
                               fontSize: 12.sp,
                               fontWeight: FontWeight.w700,
@@ -197,7 +197,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
 
                       Text(
                         '${data.room}, ${data.building}',
-                        style: TextStyle(
+                        style: TxtStyle.titleLarge(
                           color: AppColors.text,
                           fontSize: 15.sp,
                           fontWeight: FontWeight.w800,
@@ -208,7 +208,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
 
                       Text(
                         'West Campus Building A • 2nd Floor, South Corridor',
-                        style: TextStyle(
+                        style: TxtStyle.titleLarge(
                           color: AppColors.secondaryText,
                           fontSize: 12.sp,
                         ),
@@ -256,7 +256,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                                     SizedBox(width: 4.w),
                                     Text(
                                       '${data.room} Schematic',
-                                      style: TextStyle(
+                                      style: TxtStyle.titleLarge(
                                         color: Colors.white,
                                         fontSize: 12.sp,
                                         fontWeight: FontWeight.w600,
@@ -281,7 +281,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                                 ),
                                 child: Text(
                                   'View Map ↗',
-                                  style: TextStyle(
+                                  style: TxtStyle.titleLarge(
                                     color: AppColors.primary,
                                     fontSize: 12.sp,
                                     fontWeight: FontWeight.w700,
@@ -301,81 +301,94 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                 // =================================================
                 // INSTRUCTOR
                 // =================================================
-                AulaCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _smallTitle('INSTRUCTOR INFORMATION'),
-
-                      SizedBox(height: 13.h),
-
-                      Row(
-                        children: [
-                          UserAvatar(
-                            initials: _teacherInitials(data.teacher),
-                            size: 43,
-                          ),
-
-                          SizedBox(width: 10.w),
-
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  data.teacher,
-                                  style: TextStyle(
-                                    color: AppColors.text,
-                                    fontSize: 15.sp,
-                                    fontWeight: FontWeight.w800,
-                                  ),
-                                ),
-                                SizedBox(height: 3.h),
-                                Text(
-                                  '${data.category} & STEM Faculty Lead',
-                                  style: TextStyle(
-                                    color: AppColors.secondaryText,
-                                    fontSize: 12.sp,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      SizedBox(height: 13.h),
-
-                      Container(
-                        width: double.infinity,
-                        padding: EdgeInsets.all(11.w),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFF8F6FD),
-                          borderRadius: BorderRadius.circular(8.r),
-                        ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
+                    context.push(RoutePath.teacherInformation);
+                  },
+                  child: AulaCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Icon(
-                              Icons.access_time_rounded,
-                              size: 16.sp,
-                              color: AppColors.primary,
+                            _smallTitle('INSTRUCTOR INFORMATION'),
+
+                            Icon(Icons.chevron_right),
+                          ],
+                        ),
+
+                        SizedBox(height: 13.h),
+
+                        Row(
+                          children: [
+                            UserAvatar(
+                              initials: _teacherInitials(data.teacher),
+                              size: 43,
                             ),
-                            SizedBox(width: 7.w),
+
+                            SizedBox(width: 10.w),
+
                             Expanded(
-                              child: Text(
-                                'Office Hours: 03:30 PM – 04:30 PM\n(Room 3B)',
-                                style: TextStyle(
-                                  color: AppColors.secondaryText,
-                                  fontSize: 12.sp,
-                                  height: 1.4,
-                                ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    data.teacher,
+                                    style: TxtStyle.titleLarge(
+                                      color: AppColors.text,
+                                      fontSize: 15.sp,
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                                  ),
+                                  SizedBox(height: 3.h),
+                                  Text(
+                                    '${data.category} & STEM Faculty Lead',
+                                    style: TxtStyle.bodyMedium(
+                                      color: AppColors.secondaryText,
+                                      fontSize: 12.sp,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
                         ),
-                      ),
-                    ],
+
+                        SizedBox(height: 13.h),
+
+                        Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.all(11.w),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF8F6FD),
+                            borderRadius: BorderRadius.circular(8.r),
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Icon(
+                                Icons.access_time_rounded,
+                                size: 16.sp,
+                                color: AppColors.primary,
+                              ),
+                              SizedBox(width: 7.w),
+                              Expanded(
+                                child: Text(
+                                  'Office Hours: 03:30 PM – 04:30 PM\n(Room 3B)',
+                                  style: TxtStyle.titleLarge(
+                                    color: AppColors.secondaryText,
+                                    fontSize: 12.sp,
+                                    height: 1.4,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ]),
@@ -389,7 +402,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
   Widget _smallTitle(String text) {
     return Text(
       text,
-      style: TextStyle(
+      style: TxtStyle.titleLarge(
         color: AppColors.secondaryText,
         fontSize: 12.sp,
         fontWeight: FontWeight.w700,
@@ -431,7 +444,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
               children: [
                 Text(
                   label,
-                  style: TextStyle(
+                  style: TxtStyle.titleLarge(
                     color: AppColors.secondaryText,
                     fontSize: 11.sp,
                     fontWeight: FontWeight.w600,
@@ -440,7 +453,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                 SizedBox(height: 3.h),
                 Text(
                   value,
-                  style: TextStyle(
+                  style: TxtStyle.titleLarge(
                     color: AppColors.text,
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w700,
@@ -459,7 +472,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
               ),
               child: Text(
                 trailing,
-                style: TextStyle(
+                style: TxtStyle.titleLarge(
                   color: AppColors.primary,
                   fontSize: 11.sp,
                   fontWeight: FontWeight.w800,

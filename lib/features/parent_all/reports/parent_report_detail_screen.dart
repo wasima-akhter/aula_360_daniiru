@@ -70,7 +70,7 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
                   children: [
                     Text(
                       report.subject,
-                      style: TextStyle(
+                      style: TxtStyle.titleLarge(
                         color: AppColors.text,
                         fontSize: 19.sp,
                         fontWeight: FontWeight.w800,
@@ -79,7 +79,7 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
                     SizedBox(height: 5.h),
                     Text(
                       report.teacher,
-                      style: TextStyle(
+                      style: TxtStyle.titleLarge(
                         color: AppColors.secondaryText,
                         fontSize: 12.sp,
                       ),
@@ -112,7 +112,7 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
                     Flexible(
                       child: Text(
                         report.dateLabel.replaceAll('TODAY — ', ''),
-                        style: TextStyle(
+                        style: TxtStyle.titleLarge(
                           color: AppColors.secondaryText,
                           fontSize: 11.sp,
                           fontWeight: FontWeight.w600,
@@ -135,7 +135,7 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
                     Flexible(
                       child: Text(
                         report.time,
-                        style: TextStyle(
+                        style: TxtStyle.titleLarge(
                           color: AppColors.secondaryText,
                           fontSize: 11.sp,
                           fontWeight: FontWeight.w600,
@@ -160,7 +160,7 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
         children: [
           Text(
             'Essay Draft: Character Motivations',
-            style: TextStyle(
+            style: TxtStyle.titleLarge(
               color: AppColors.text,
               fontSize: 15.sp,
               fontWeight: FontWeight.w800,
@@ -171,7 +171,7 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
 
           Text(
             'Due Oct 26',
-            style: TextStyle(
+            style: TxtStyle.titleLarge(
               color: const Color(0xFFE68A27),
               fontSize: 11.sp,
               fontWeight: FontWeight.w700,
@@ -182,7 +182,7 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
 
           Text(
             'Write a 500-word analysis explaining how character motivation develops throughout the selected chapter.',
-            style: TextStyle(
+            style: TxtStyle.bodyMedium(
               color: AppColors.secondaryText,
               fontSize: 11.5.sp,
               height: 1.45,
@@ -199,7 +199,7 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
               },
               child: Text(
                 'View Homework →',
-                style: TextStyle(
+                style: TxtStyle.titleLarge(
                   color: AppColors.primary,
                   fontSize: 11.sp,
                   fontWeight: FontWeight.w800,
@@ -230,7 +230,7 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
                   children: [
                     Text(
                       report.teacher,
-                      style: TextStyle(
+                      style: TxtStyle.titleLarge(
                         color: AppColors.text,
                         fontSize: 12.sp,
                         fontWeight: FontWeight.w800,
@@ -239,7 +239,7 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
                     SizedBox(height: 2.h),
                     Text(
                       report.subject,
-                      style: TextStyle(
+                      style: TxtStyle.titleLarge(
                         color: AppColors.secondaryText,
                         fontSize: 10.sp,
                       ),
@@ -265,7 +265,7 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
               overflow: showFullNote
                   ? TextOverflow.visible
                   : TextOverflow.ellipsis,
-              style: TextStyle(
+              style: TxtStyle.bodyMedium(
                 color: AppColors.text,
                 fontSize: 12.sp,
                 height: 1.5,
@@ -283,7 +283,7 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
             },
             child: Text(
               showFullNote ? 'Show Less' : 'Read Full Note',
-              style: TextStyle(
+              style: TxtStyle.titleLarge(
                 color: AppColors.primary,
                 fontSize: 11.sp,
                 fontWeight: FontWeight.w800,
@@ -322,13 +322,16 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
         Text(
           title,
           textAlign: TextAlign.center,
-          style: TextStyle(color: AppColors.secondaryText, fontSize: 10.sp),
+          style: TxtStyle.titleLarge(
+            color: AppColors.secondaryText,
+            fontSize: 10.sp,
+          ),
         ),
         SizedBox(height: 5.h),
         Text(
           value,
           textAlign: TextAlign.center,
-          style: TextStyle(
+          style: TxtStyle.titleLarge(
             color: color,
             fontSize: 12.sp,
             fontWeight: FontWeight.w800,
@@ -353,7 +356,7 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
         child: Center(
           child: Text(
             'Download Report',
-            style: TextStyle(
+            style: TxtStyle.titleLarge(
               color: Colors.white,
               fontSize: 13.sp,
               fontWeight: FontWeight.w800,
@@ -372,7 +375,7 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
         children: [
           Text(
             title,
-            style: TextStyle(
+            style: TxtStyle.titleLarge(
               color: AppColors.text,
               fontSize: 15.sp,
               fontWeight: FontWeight.w800,

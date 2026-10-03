@@ -51,7 +51,7 @@ class NoInternetCard extends StatelessWidget {
             Text(
               effectiveTitle,
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: TxtStyle.titleLarge(
                 fontWeight: FontWeight.w500,
                 fontSize: 14,
                 color: textColor ?? Colors.black,
@@ -62,7 +62,7 @@ class NoInternetCard extends StatelessWidget {
               Text(
                 effectiveSubtitle,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: TxtStyle.titleLarge(
                   fontWeight: FontWeight.w400,
                   fontSize: 12,
                   color: Colors.grey.shade700,

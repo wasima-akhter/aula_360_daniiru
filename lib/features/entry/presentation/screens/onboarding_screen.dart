@@ -100,9 +100,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   const AulaLogo(width: 90),
                   GestureDetector(
                     onTap: _skip,
-                    child: const Text(
+                    child: Text(
                       'Skip',
-                      style: TextStyle(
+                      style: TxtStyle.labelLarge(
                         color: AppColors.text,
                         fontWeight: FontWeight.w500,
                       ),
@@ -183,7 +183,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           Text(
             data.title,
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: TxtStyle.titleLarge(
               color: AppColors.primaryDark,
               fontSize: 22.sp,
               height: 1.25,
@@ -232,7 +232,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       Gap(5),
                       Text(
                         tag.name,
-                        style: TextStyle(
+                        style: TxtStyle.titleLarge(
                           color: AppColors.text,
                           fontSize: 11.sp,
                           fontWeight: FontWeight.w500,

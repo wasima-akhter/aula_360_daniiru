@@ -186,7 +186,7 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
                     student.name,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
+                    style: TxtStyle.titleLarge(
                       color: AppColors.text,
                       fontSize: 12.sp,
                       fontWeight: FontWeight.w800,
@@ -197,7 +197,7 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
                     student.grade,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
+                    style: TxtStyle.titleLarge(
                       color: AppColors.secondaryText,
                       fontSize: 11.sp,
                     ),
@@ -247,7 +247,7 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
         ),
         child: Text(
           tabs[index],
-          style: TextStyle(
+          style: TxtStyle.titleLarge(
             color: selected ? Colors.white : AppColors.secondaryText,
             fontSize: 12.sp,
             fontWeight: FontWeight.w800,
@@ -271,7 +271,7 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
           children: [
             Text(
               item.subject.toUpperCase(),
-              style: TextStyle(
+              style: TxtStyle.titleLarge(
                 color: AppColors.primary,
                 fontSize: 11.sp,
                 fontWeight: FontWeight.w800,
@@ -283,7 +283,7 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
 
             Text(
               item.title,
-              style: TextStyle(
+              style: TxtStyle.titleLarge(
                 color: AppColors.text,
                 fontSize: 15.sp,
                 height: 1.3,
@@ -297,7 +297,7 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
               item.description,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(
+              style: TxtStyle.bodyMedium(
                 color: AppColors.secondaryText,
                 fontSize: 11.sp,
                 height: 1.4,
@@ -320,7 +320,7 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
                 SizedBox(width: 5.w),
                 Text(
                   item.deadline,
-                  style: TextStyle(
+                  style: TxtStyle.titleLarge(
                     color: completed
                         ? const Color(0xFF2B9D70)
                         : const Color(0xFFE68A27),
@@ -333,7 +333,7 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
 
                 Text(
                   'View Details',
-                  style: TextStyle(
+                  style: TxtStyle.titleLarge(
                     color: AppColors.primary,
                     fontSize: 10.sp,
                     fontWeight: FontWeight.w800,

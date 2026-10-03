@@ -84,7 +84,7 @@ class _SplashScreenState extends State<SplashScreen>
                 child: Text(
                   'Empowering Modern Academies &\nConnected Learning',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: TxtStyle.titleLarge(
                     fontSize: 15.sp,
                     height: 1.55,
                     fontWeight: FontWeight.w400,
@@ -119,7 +119,7 @@ class _SplashScreenState extends State<SplashScreen>
           return Center(
             child: Text(
               'AULA360',
-              style: TextStyle(
+              style: TxtStyle.titleLarge(
                 fontSize: 28.sp,
                 fontWeight: FontWeight.w800,
                 color: Color(0xFF123477),
@@ -187,7 +187,7 @@ class _SplashScreenState extends State<SplashScreen>
             const SizedBox(width: 6),
             Text(
               'Initializing secure session...',
-              style: TextStyle(
+              style: TxtStyle.titleLarge(
                 fontSize: 13.sp,
                 color: Color(0xFF7D8AA3),
                 fontWeight: FontWeight.w400,

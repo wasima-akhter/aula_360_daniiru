@@ -92,39 +92,50 @@ class AulaPrimaryButton extends StatelessWidget {
   final VoidCallback onTap;
   final Widget? trailing;
 
+  final Color? textColor;
+
   const AulaPrimaryButton({
     super.key,
     required this.text,
     required this.onTap,
     this.trailing,
+    this.textColor,
   });
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: 50,
+      // height: 50,
       child: ElevatedButton(
         onPressed: onTap,
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
           foregroundColor: Colors.white,
           elevation: 0,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(7.r),
+          ),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+
+            
             Flexible(
               child: Text(
                 text,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w700),
+                style: TxtStyle.titleSmall(
+                  fontSize: 15.sp,
+                  fontWeight: FontWeight.w600,
+                  color: textColor ?? AppColors.white,
+                ),
               ),
             ),
-            const SizedBox(width: 6),
-            trailing ?? const Icon(Icons.arrow_forward_rounded, size: 18),
+            SizedBox(width: 6.w),
+            trailing ?? Icon(Icons.arrow_forward_rounded, size: 18.sp),
           ],
         ),
       ),

@@ -77,7 +77,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                 child: Text(
                   'Forgot your password?',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: TxtStyle.titleLarge(
                     color: AppColors.text,
                     fontSize: 26.sp,
                     fontWeight: FontWeight.w800,
@@ -87,11 +87,14 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
 
               const SizedBox(height: 7),
 
-              const Center(
+              Center(
                 child: Text(
                   'Enter the email address associated with your\naccount and we’ll send you a verification code.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: AppColors.secondaryText, height: 1.5),
+                  style: TxtStyle.titleLarge(
+                    color: AppColors.secondaryText,
+                    height: 1.5,
+                  ),
                 ),
               ),
 

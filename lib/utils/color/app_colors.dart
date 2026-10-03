@@ -27,6 +27,7 @@ class AppColors {
   static const Color tertiaryTextColor = Color(0xFF939393);
   static const Color grayTabBgColor = Color(0xFFF7F7F7);
   static const Color greenTextColor = Color(0xFF0C8A8A);
+  static const Color tealTextColor = Color(0xFF006398);
   static const Color blueTextColor = Color(0xFF355979);
   static const Color blueTextColor400 = Color(0xFF5382A2);
   static const Color blueTextColor200 = Color(0xFF9CB7CA);

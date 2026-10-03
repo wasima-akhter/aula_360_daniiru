@@ -1,12 +1,21 @@
 import 'package:aula360/features/auth/presentation/parent_auth/profile_setup_screen.dart';
 import 'package:aula360/features/auth/presentation/teacher_auth/teacher_login_screen.dart';
 import 'package:aula360/features/auth/presentation/teacher_auth/teacher_sign_up_screen.dart';
+import 'package:aula360/features/parent_all/chat/chat_inbox_screen.dart';
+import 'package:aula360/features/parent_all/children/add_children_screen.dart';
+import 'package:aula360/features/parent_all/children/child_profile_screen.dart';
+import 'package:aula360/features/parent_all/children/my_children_screen.dart';
 import 'package:aula360/features/parent_all/class_details/class_details_screen.dart';
+import 'package:aula360/features/parent_all/payment/payment_screen.dart';
 import 'package:aula360/features/parent_all/reports/homework/parent_homework_detail_screen.dart';
 import 'package:aula360/features/parent_all/reports/homework/parent_homework_screen.dart';
 import 'package:aula360/features/parent_all/reports/parent_report_detail_screen.dart';
 import 'package:aula360/features/parent_all/reports/parent_report_screen.dart';
 import 'package:aula360/features/parent_all/schedule/schedule_screen.dart';
+import 'package:aula360/features/parent_all/settings/settings_screen.dart';
+import 'package:aula360/features/teacher_all/attendance/teacher_end_class_screen.dart';
+import 'package:aula360/features/teacher_all/attendance/teacher_report_submit_confirm_screen.dart';
+import 'package:aula360/features/teacher_all/attendance/teacher_submit_report_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -20,7 +29,15 @@ import '../../features/entry/presentation/screens/choose_role_screen.dart';
 import '../../features/entry/presentation/screens/onboarding_screen.dart';
 import '../../features/entry/presentation/screens/splash_screen.dart';
 import '../../features/nav/presentation/screens/navigation_page.dart';
+import '../../features/parent_all/attendance/attendance_screen.dart';
 import '../../features/parent_all/helper/parent_home_helper.dart';
+import '../../features/parent_all/payment/payment_receipt_screen.dart';
+import '../../features/parent_all/profile/parent_edit_profile_screen.dart';
+import '../../features/parent_all/teacher_info/teacher_info_screen.dart';
+import '../../features/teacher_all/attendance/teacher_attendance_screen.dart';
+import '../../features/teacher_all/classes/teacher_class_detail_screen.dart';
+import '../../features/teacher_all/profile/teacher_edit_profile_screen.dart';
+import '../../features/teacher_all/settings/teacher_settings_screen.dart';
 import '../../utils/extension/base_extension.dart';
 import 'route_path.dart';
 
@@ -154,8 +171,8 @@ class AppRouter {
       //
       //
       GoRoute(
-        name: RoutePath.profileScreen,
-        path: RoutePath.profileScreen.addBasePath,
+        name: RoutePath.profileSetup,
+        path: RoutePath.profileSetup.addBasePath,
         pageBuilder: (context, state) {
           return _buildPageWithAnimation(
             state: state,
@@ -164,8 +181,8 @@ class AppRouter {
         },
       ),
       GoRoute(
-        name: RoutePath.teacherProfileScreen,
-        path: RoutePath.teacherProfileScreen.addBasePath,
+        name: RoutePath.teacherProfileSetup,
+        path: RoutePath.teacherProfileSetup.addBasePath,
         pageBuilder: (context, state) {
           return _buildPageWithAnimation(
             state: state,
@@ -235,6 +252,176 @@ class AppRouter {
           return _buildPageWithAnimation(
             state: state,
             child: HomeworkDetailsScreen(homework: extra),
+          );
+        },
+      ),
+      GoRoute(
+        name: RoutePath.teacherInformation,
+        path: RoutePath.teacherInformation.addBasePath,
+        pageBuilder: (context, state) {
+          return _buildPageWithAnimation(
+            state: state,
+            child: TeacherInformationScreen(),
+          );
+        },
+      ),
+      // -------------
+      GoRoute(
+        name: RoutePath.chatInbox,
+        path: RoutePath.chatInbox.addBasePath,
+        pageBuilder: (context, state) {
+          return _buildPageWithAnimation(
+            state: state,
+            child: TeacherChatScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        name: RoutePath.payment,
+        path: RoutePath.payment.addBasePath,
+        pageBuilder: (context, state) {
+          return _buildPageWithAnimation(
+            state: state,
+            child: TuitionPaymentScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        name: RoutePath.paymentReceipt,
+        path: RoutePath.paymentReceipt.addBasePath,
+        pageBuilder: (context, state) {
+          return _buildPageWithAnimation(
+            state: state,
+            child: PaymentReceiptScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        name: RoutePath.settings,
+        path: RoutePath.settings.addBasePath,
+        pageBuilder: (context, state) {
+          return _buildPageWithAnimation(state: state, child: SettingsScreen());
+        },
+      ),
+      GoRoute(
+        name: RoutePath.children,
+        path: RoutePath.children.addBasePath,
+        pageBuilder: (context, state) {
+          return _buildPageWithAnimation(
+            state: state,
+            child: MyChildrenScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        name: RoutePath.addChild,
+        path: RoutePath.addChild.addBasePath,
+        pageBuilder: (context, state) {
+          return _buildPageWithAnimation(state: state, child: AddChildScreen());
+        },
+      ),
+
+      GoRoute(
+        name: RoutePath.editProfile,
+        path: RoutePath.editProfile.addBasePath,
+        pageBuilder: (context, state) {
+          return _buildPageWithAnimation(
+            state: state,
+            child: EditProfileScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        name: RoutePath.childProfile,
+        path: RoutePath.childProfile.addBasePath,
+        pageBuilder: (context, state) {
+          return _buildPageWithAnimation(
+            state: state,
+            child: ChildProfileScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        name: RoutePath.attendance,
+        path: RoutePath.attendance.addBasePath,
+        pageBuilder: (context, state) {
+          return _buildPageWithAnimation(
+            state: state,
+            child: AttendanceScreen(),
+          );
+        },
+      ),
+
+      // -----------------------------------------------------
+      // TEACHER
+      // -----------------------------------------------------
+      GoRoute(
+        name: RoutePath.teacherSettings,
+        path: RoutePath.teacherSettings.addBasePath,
+        pageBuilder: (context, state) {
+          return _buildPageWithAnimation(
+            state: state,
+            child: TeacherSettingsScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        name: RoutePath.teacherEditProfile,
+        path: RoutePath.teacherEditProfile.addBasePath,
+        pageBuilder: (context, state) {
+          return _buildPageWithAnimation(
+            state: state,
+            child: EditTeacherProfileScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        name: RoutePath.teacherAttendance,
+        path: RoutePath.teacherAttendance.addBasePath,
+        pageBuilder: (context, state) {
+          return _buildPageWithAnimation(
+            state: state,
+            child: TeacherAttendanceScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        name: RoutePath.teacherClassDetail,
+        path: RoutePath.teacherClassDetail.addBasePath,
+        pageBuilder: (context, state) {
+          return _buildPageWithAnimation(
+            state: state,
+            child: TeacherClassDetailScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        name: RoutePath.teacherPostClassReport,
+        path: RoutePath.teacherPostClassReport.addBasePath,
+        pageBuilder: (context, state) {
+          return _buildPageWithAnimation(
+            state: state,
+            child: TeacherPostClassReportScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        name: RoutePath.teacherReportSubmitted,
+        path: RoutePath.teacherReportSubmitted.addBasePath,
+        pageBuilder: (context, state) {
+          return _buildPageWithAnimation(
+            state: state,
+            child: TeacherReportSubmittedScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        name: RoutePath.teacherEndClass,
+        path: RoutePath.teacherEndClass.addBasePath,
+        pageBuilder: (context, state) {
+          return _buildPageWithAnimation(
+            state: state,
+            child: TeacherEndClassScreen(),
           );
         },
       ),

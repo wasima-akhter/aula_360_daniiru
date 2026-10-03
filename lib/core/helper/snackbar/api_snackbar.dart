@@ -31,7 +31,7 @@ class ApiSnackbar {
               if (title != null && title.isNotEmpty)
                 Text(
                   title,
-                  style: TextStyle(
+                  style: TxtStyle.titleLarge(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                     fontSize: 14.sp,
@@ -40,7 +40,10 @@ class ApiSnackbar {
               if (title != null && title.isNotEmpty) const SizedBox(height: 4),
               Text(
                 message,
-                style: TextStyle(fontSize: 13.sp, color: Colors.white),
+                style: TxtStyle.titleLarge(
+                  fontSize: 13.sp,
+                  color: Colors.white,
+                ),
               ),
             ],
           ),

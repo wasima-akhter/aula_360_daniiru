@@ -80,7 +80,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 child: Text(
                   'Create a new password',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: TxtStyle.titleLarge(
                     color: AppColors.text,
                     fontSize: 24.sp,
                     fontWeight: FontWeight.w800,
@@ -90,11 +90,14 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
               const SizedBox(height: 7),
 
-              const Center(
+              Center(
                 child: Text(
                   'Choose a strong password that you haven’t\nused before.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: AppColors.secondaryText, height: 1.5),
+                  style: TxtStyle.titleLarge(
+                    color: AppColors.secondaryText,
+                    height: 1.5,
+                  ),
                 ),
               ),
 

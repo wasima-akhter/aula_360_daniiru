@@ -1,0 +1,680 @@
+import 'dart:io';
+
+import 'package:image_picker/image_picker.dart';
+
+import '../../share/export/screen_export.dart';
+
+/// ===============================================================
+/// EDIT FACULTY PROFILE
+/// ===============================================================
+
+class EditTeacherProfileScreen extends StatefulWidget {
+  const EditTeacherProfileScreen({super.key, this.initialData});
+
+  final Map<String, dynamic>? initialData;
+
+  @override
+  State<EditTeacherProfileScreen> createState() =>
+      _EditTeacherProfileScreenState();
+}
+
+class _EditTeacherProfileScreenState extends State<EditTeacherProfileScreen> {
+  final _formKey = GlobalKey<FormState>();
+
+  late final TextEditingController nameController;
+  late final TextEditingController emailController;
+  late final TextEditingController phoneController;
+  late final TextEditingController departmentController;
+  late final TextEditingController officeController;
+  late final TextEditingController bioController;
+
+  final ImagePicker _imagePicker = ImagePicker();
+
+  File? _profileImage;
+
+  String language = 'English (US)';
+  bool _saving = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    final data = widget.initialData ?? {};
+
+    nameController = TextEditingController(
+      text: data['name'] ?? 'Dr. Sarah Jenkins',
+    );
+
+    emailController = TextEditingController(
+      text: data['email'] ?? 's.jenkins@aula360.academy',
+    );
+
+    phoneController = TextEditingController(
+      text: data['phone'] ?? '+1 (555) 234-8901',
+    );
+
+    departmentController = TextEditingController(
+      text: data['department'] ?? 'Mathematics & Calculus',
+    );
+
+    officeController = TextEditingController(
+      text: data['office'] ?? 'Hall A, Room 204',
+    );
+
+    bioController = TextEditingController(
+      text:
+          data['bio'] ??
+          'Senior mathematics instructor specializing in advanced '
+              'calculus, analytical geometry, and physical academy '
+              'curriculum coordination.',
+    );
+
+    language = data['language'] ?? 'English (US)';
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    phoneController.dispose();
+    departmentController.dispose();
+    officeController.dispose();
+    bioController.dispose();
+
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFF8F7FC),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        centerTitle: true,
+        leading: IconButton(
+          onPressed: () => context.pop(),
+          icon: Icon(
+            Icons.arrow_back,
+            color: AppColors.primaryDark,
+            size: 21.sp,
+          ),
+        ),
+        title: Text(
+          'Edit Profile',
+          style: TxtStyle.titleLarge(
+            color: AppColors.primaryDark,
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => context.pop(),
+            child: Text(
+              'Cancel',
+              style: TxtStyle.titleLarge(
+                color: AppColors.subtitleTextColor,
+                fontSize: 12.sp,
+              ),
+            ),
+          ),
+        ],
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(1.h),
+          child: Container(height: 1, color: AppColors.backgroundsLinesColor),
+        ),
+      ),
+      body: SafeArea(
+        child: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            padding: EdgeInsets.fromLTRB(14.w, 15.h, 14.w, 30.h),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _profilePhotoCard(),
+
+                SizedBox(height: 20.h),
+
+                _sectionLabel('FACULTY INFORMATION'),
+
+                SizedBox(height: 9.h),
+
+                _field(
+                  label: 'Full Name',
+                  controller: nameController,
+                  icon: Icons.person_outline,
+                  requiredField: true,
+                ),
+
+                _field(
+                  label: 'Email Address',
+                  controller: emailController,
+                  icon: Icons.mail_outline,
+                  keyboardType: TextInputType.emailAddress,
+                  requiredField: true,
+                  validator: _validateEmail,
+                ),
+
+                _field(
+                  label: 'Phone Number',
+                  controller: phoneController,
+                  icon: Icons.phone_outlined,
+                  keyboardType: TextInputType.phone,
+                  requiredField: true,
+                ),
+
+                _field(
+                  label: 'Department / Subject',
+                  controller: departmentController,
+                  icon: Icons.school_outlined,
+                  requiredField: true,
+                ),
+
+                _field(
+                  label: 'Office / Room',
+                  controller: officeController,
+                  icon: Icons.meeting_room_outlined,
+                  requiredField: true,
+                ),
+
+                _bioField(),
+
+                SizedBox(height: 10.h),
+
+                _languageDropdown(),
+
+                SizedBox(height: 20.h),
+
+                _saveButton(),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ===============================================================
+  // PHOTO
+  // ===============================================================
+
+  Widget _profilePhotoCard() {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.fromLTRB(15.w, 14.h, 15.w, 15.h),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(9.r),
+        border: Border.all(color: AppColors.border),
+      ),
+      child: Column(
+        children: [
+          Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Container(
+                width: 86.w,
+                height: 86.w,
+                padding: EdgeInsets.all(3.w),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white,
+                  border: Border.all(color: AppColors.blueSoft, width: 2),
+                ),
+                child: ClipOval(
+                  child: _profileImage != null
+                      ? Image.file(_profileImage!, fit: BoxFit.cover)
+                      : Image.network(
+                          'https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=500',
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, _, _) {
+                            return Container(
+                              color: AppColors.softBackground,
+                              child: Icon(
+                                Icons.person,
+                                size: 38.sp,
+                                color: AppColors.subtitleTextColor,
+                              ),
+                            );
+                          },
+                        ),
+                ),
+              ),
+
+              Positioned(
+                right: -2.w,
+                bottom: 0,
+                child: GestureDetector(
+                  onTap: _showImageSource,
+                  child: Container(
+                    width: 30.w,
+                    height: 30.w,
+                    decoration: BoxDecoration(
+                      color: AppColors.primary,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white, width: 2),
+                    ),
+                    child: Icon(
+                      Icons.camera_alt_rounded,
+                      color: Colors.white,
+                      size: 15.sp,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          SizedBox(height: 10.h),
+
+          Text(
+            nameController.text,
+            style: TxtStyle.titleLarge(
+              color: AppColors.text,
+              fontSize: 15.sp,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+
+          SizedBox(height: 5.h),
+
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 9.w, vertical: 4.h),
+            decoration: BoxDecoration(
+              color: AppColors.blueSoft,
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+            child: Text(
+              'Faculty ID: #FAC-1042',
+              style: TxtStyle.titleLarge(
+                color: AppColors.primaryDark,
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+
+          SizedBox(height: 9.h),
+
+          Text(
+            'JPG or PNG • Maximum 5MB',
+            style: TxtStyle.titleLarge(
+              color: AppColors.subtitleTextColor,
+              fontSize: 11.5.sp,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _showImageSource() async {
+    await showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.white,
+      showDragHandle: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(18.r)),
+      ),
+      builder: (sheetContext) {
+        return SafeArea(
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(16.w, 5.h, 16.w, 20.h),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.camera_alt_outlined),
+                  title: const Text('Take Photo'),
+                  onTap: () {
+                    Navigator.pop(sheetContext);
+                    _pickImage(ImageSource.camera);
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.photo_library_outlined),
+                  title: const Text('Choose from Gallery'),
+                  onTap: () {
+                    Navigator.pop(sheetContext);
+                    _pickImage(ImageSource.gallery);
+                  },
+                ),
+                if (_profileImage != null)
+                  ListTile(
+                    leading: Icon(Icons.delete_outline, color: AppColors.error),
+                    title: Text(
+                      'Remove Photo',
+                      style: TxtStyle.titleLarge(color: AppColors.error),
+                    ),
+                    onTap: () {
+                      Navigator.pop(sheetContext);
+                      setState(() {
+                        _profileImage = null;
+                      });
+                    },
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
+    try {
+      final XFile? picked = await _imagePicker.pickImage(
+        source: source,
+        imageQuality: 85,
+        maxWidth: 1200,
+        maxHeight: 1200,
+      );
+
+      if (picked == null) return;
+
+      final file = File(picked.path);
+
+      final size = await file.length();
+
+      // 5 MB limit
+      if (size > 5 * 1024 * 1024) {
+        if (!mounted) return;
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Image must be smaller than 5MB.')),
+        );
+
+        return;
+      }
+
+      setState(() {
+        _profileImage = file;
+      });
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Unable to select image.')));
+    }
+  }
+
+  // ===============================================================
+  // FIELDS
+  // ===============================================================
+
+  Widget _field({
+    required String label,
+    required TextEditingController controller,
+    required IconData icon,
+    bool requiredField = false,
+    TextInputType? keyboardType,
+    String? Function(String?)? validator,
+  }) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 10.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _fieldLabel(label, requiredField: requiredField),
+
+          SizedBox(height: 5.h),
+
+          TextFormField(
+            controller: controller,
+            keyboardType: keyboardType,
+            validator:
+                validator ??
+                (value) {
+                  if (requiredField &&
+                      (value == null || value.trim().isEmpty)) {
+                    return '$label is required';
+                  }
+
+                  return null;
+                },
+            style: TxtStyle.titleLarge(
+              color: AppColors.text,
+              fontSize: 12.sp,
+              fontWeight: FontWeight.w500,
+            ),
+            decoration: _inputDecoration(icon: icon),
+            onChanged: (_) {
+              if (label == 'Full Name') {
+                setState(() {});
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _bioField() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _fieldLabel('Short Bio / Notes'),
+
+        SizedBox(height: 5.h),
+
+        TextFormField(
+          controller: bioController,
+          minLines: 4,
+          maxLines: 6,
+          maxLength: 500,
+          style: TxtStyle.titleLarge(color: AppColors.text, fontSize: 12.sp),
+          decoration: _inputDecoration(icon: Icons.notes_outlined).copyWith(
+            alignLabelWithHint: true,
+            counterStyle: TextStyle(
+              color: AppColors.hintTextColor,
+              fontSize: 10.sp,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  InputDecoration _inputDecoration({required IconData icon}) {
+    return InputDecoration(
+      prefixIcon: Icon(icon, size: 17.sp, color: AppColors.subtitleTextColor),
+      filled: true,
+      fillColor: Colors.white,
+      contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 13.h),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(7.r),
+        borderSide: BorderSide(color: AppColors.border),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(7.r),
+        borderSide: BorderSide(color: AppColors.border),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(7.r),
+        borderSide: BorderSide(color: AppColors.primary, width: 1.3),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(7.r),
+        borderSide: BorderSide(color: AppColors.error),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(7.r),
+        borderSide: BorderSide(color: AppColors.error, width: 1.3),
+      ),
+    );
+  }
+
+  Widget _fieldLabel(String text, {bool requiredField = false}) {
+    return RichText(
+      text: TextSpan(
+        text: text,
+        style: TxtStyle.titleLarge(
+          color: AppColors.labelTextColor,
+          fontSize: 12.5.sp,
+          fontWeight: FontWeight.w700,
+        ),
+        children: [
+          if (requiredField)
+            TextSpan(
+              text: ' *',
+              style: TxtStyle.titleLarge(color: AppColors.error),
+            ),
+        ],
+      ),
+    );
+  }
+
+  // ===============================================================
+  // LANGUAGE
+  // ===============================================================
+
+  Widget _languageDropdown() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _fieldLabel('Preferred Language'),
+
+        SizedBox(height: 5.h),
+
+        DropdownButtonFormField<String>(
+          initialValue: language,
+          decoration: _inputDecoration(icon: Icons.translate),
+          items: const [
+            DropdownMenuItem(
+              value: 'English (US)',
+              child: Text('English (US)'),
+            ),
+            DropdownMenuItem(
+              value: 'English (UK)',
+              child: Text('English (UK)'),
+            ),
+            DropdownMenuItem(value: 'Spanish', child: Text('Spanish')),
+          ],
+          onChanged: (value) {
+            if (value == null) return;
+
+            setState(() {
+              language = value;
+            });
+          },
+        ),
+      ],
+    );
+  }
+
+  // ===============================================================
+  // SAVE
+  // ===============================================================
+
+  Widget _saveButton() {
+    return SizedBox(
+      width: double.infinity,
+      height: 45.h,
+      child: ElevatedButton(
+        onPressed: _saving ? null : _save,
+        style: ElevatedButton.styleFrom(
+          elevation: 0,
+          backgroundColor: AppColors.primaryDark,
+          disabledBackgroundColor: AppColors.primaryDark.withValues(alpha: .6),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(7.r),
+          ),
+        ),
+        child: _saving
+            ? SizedBox(
+                width: 19.w,
+                height: 19.w,
+                child: const CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Colors.white,
+                ),
+              )
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.check, size: 15.sp, color: Colors.white),
+                  SizedBox(width: 5.w),
+                  Text(
+                    'Save Changes',
+                    style: TxtStyle.titleLarge(
+                      color: Colors.white,
+                      fontSize: 13.5.sp,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ],
+              ),
+      ),
+    );
+  }
+
+  Future<void> _save() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    setState(() {
+      _saving = true;
+    });
+
+    // Simulate API request.
+    await Future.delayed(const Duration(milliseconds: 700));
+
+    if (!mounted) return;
+
+    setState(() {
+      _saving = false;
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Profile updated successfully.'),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+
+    await Future.delayed(const Duration(milliseconds: 250));
+
+    if (!mounted) return;
+
+    context.pop({
+      'name': nameController.text.trim(),
+      'email': emailController.text.trim(),
+      'phone': phoneController.text.trim(),
+      'department': departmentController.text.trim(),
+      'office': officeController.text.trim(),
+      'bio': bioController.text.trim(),
+      'language': language,
+    });
+  }
+
+  String? _validateEmail(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Email Address is required';
+    }
+
+    final emailRegex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
+
+    if (!emailRegex.hasMatch(value.trim())) {
+      return 'Enter a valid email address';
+    }
+
+    return null;
+  }
+
+  Widget _sectionLabel(String text) {
+    return Text(
+      text,
+      style: TxtStyle.titleLarge(
+        color: AppColors.subtitleTextColor,
+        fontSize: 12.5.sp,
+        fontWeight: FontWeight.w800,
+        letterSpacing: .4,
+      ),
+    );
+  }
+}

@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
+import '../../export/screen_export.dart';
 
 class CertificateDialog extends StatelessWidget {
   final String title;
@@ -30,7 +28,7 @@ class CertificateDialog extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: TextStyle(
+                  style: TxtStyle.titleLarge(
                     fontSize: 20.sp,
                     fontWeight: FontWeight.w800,
                     color: const Color(0xFF102039),
@@ -66,7 +64,7 @@ class CertificateDialog extends StatelessWidget {
                       Expanded(
                         child: Text(
                           text,
-                          style: TextStyle(
+                          style: TxtStyle.titleLarge(
                             fontSize: 15.sp,
                             fontWeight: FontWeight.w500,
                             color: const Color(0xFF243048),

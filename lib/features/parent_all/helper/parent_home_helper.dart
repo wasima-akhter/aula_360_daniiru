@@ -1,7 +1,4 @@
-import 'package:aula360/utils/color/app_colors.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
+import '../../share/export/screen_export.dart';
 
 // ================================================================
 // MODELS
@@ -29,59 +26,71 @@ class ClassModel {
   });
 }
 
-// ================================================================
-// COMMON APP BAR
-// ================================================================
-
 class AulaAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final bool showBack;
   final List<Widget>? actions;
-  final VoidCallback? onBack;
+  final Widget? leading;
+  final double? leadingWidth;
 
   const AulaAppBar({
     super.key,
     required this.title,
     this.showBack = false,
     this.actions,
-    this.onBack,
+    this.leading,
+    this.leadingWidth,
   });
 
   @override
-  Size get preferredSize => Size.fromHeight(58.h);
+  Size get preferredSize => const Size.fromHeight(62);
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      backgroundColor: Colors.white,
       elevation: 0,
       scrolledUnderElevation: 0,
-      backgroundColor: Colors.white,
-      surfaceTintColor: Colors.white,
-      centerTitle: false,
       automaticallyImplyLeading: false,
-      titleSpacing: 18.w,
-      leading: showBack
-          ? IconButton(
-              onPressed: onBack ?? () => context.pop(),
-              icon: Icon(
-                Icons.arrow_back_ios_new_rounded,
-                size: 19.sp,
+      centerTitle: false,
+
+      leadingWidth:
+          leadingWidth ??
+          (leading != null
+              ? 135
+              : showBack
+              ? 52
+              : null),
+
+      leading:
+          leading ??
+          (showBack
+              ? IconButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  icon: Icon(
+                    Icons.arrow_back_rounded,
+                    color: AppColors.primaryDark,
+                    size: 24,
+                  ),
+                )
+              : null),
+
+      title: title.isEmpty
+          ? null
+          : Text(
+              title,
+              style: TxtStyle.titleLarge(
                 color: AppColors.text,
+                fontSize: 17,
+                fontWeight: FontWeight.w700,
               ),
-            )
-          : null,
-      title: Text(
-        title,
-        style: TextStyle(
-          color: AppColors.text,
-          fontSize: 19.sp,
-          fontWeight: FontWeight.w800,
-        ),
-      ),
+            ),
+
       actions: actions,
+
       bottom: PreferredSize(
-        preferredSize: Size.fromHeight(1.h),
-        child: Container(height: 1.h, color: AppColors.backgroundsLinesColor),
+        preferredSize: const Size.fromHeight(1),
+        child: Container(height: 1, color: AppColors.backgroundsLinesColor),
       ),
     );
   }
@@ -110,7 +119,7 @@ class SectionHeader extends StatelessWidget {
         Expanded(
           child: Text(
             title,
-            style: TextStyle(
+            style: TxtStyle.titleLarge(
               color: AppColors.text,
               fontSize: 17.sp,
               fontWeight: FontWeight.w800,
@@ -122,7 +131,7 @@ class SectionHeader extends StatelessWidget {
             onTap: onAction,
             child: Text(
               actionText!,
-              style: TextStyle(
+              style: TxtStyle.titleLarge(
                 color: AppColors.primary,
                 fontSize: 12.sp,
                 fontWeight: FontWeight.w700,
@@ -195,7 +204,7 @@ class UserAvatar extends StatelessWidget {
       ),
       child: Text(
         initials,
-        style: TextStyle(
+        style: TxtStyle.titleLarge(
           color: AppColors.primary,
           fontSize: (size * .30).sp,
           fontWeight: FontWeight.w800,
@@ -238,10 +247,10 @@ class StatusPill extends StatelessWidget {
           SizedBox(width: 5.w),
           Text(
             text,
-            style: TextStyle(
+            style: TxtStyle.titleLarge(
               color: color,
               fontSize: 10.sp,
-              fontWeight: FontWeight.w700,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ],

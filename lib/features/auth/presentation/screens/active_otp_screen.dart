@@ -125,11 +125,11 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
       case OtpPurpose.signup:
         switch (role) {
           case OtpRole.parent:
-            context.go(RoutePath.profileScreen);
+            context.go(RoutePath.profileSetup);
             break;
 
           case OtpRole.teacher:
-            context.go(RoutePath.teacherProfileScreen);
+            context.go(RoutePath.teacherProfileSetup);
             break;
         }
         break;
@@ -200,7 +200,7 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
               Center(
                 child: Text(
                   purposeTitle,
-                  style: TextStyle(
+                  style: TxtStyle.titleLarge(
                     color: AppColors.text,
                     fontSize: 28.sp,
                     fontWeight: FontWeight.w800,
@@ -245,9 +245,9 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'ENTER 6-DIGIT CODE',
-                      style: TextStyle(
+                      style: TxtStyle.titleLarge(
                         color: AppColors.secondaryText,
 
                         fontWeight: FontWeight.w600,
@@ -260,7 +260,7 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
 
                     const SizedBox(height: 8),
 
-                    const Row(
+                    Row(
                       children: [
                         Icon(
                           Icons.keyboard_alt_outlined,
@@ -270,7 +270,9 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
                         SizedBox(width: 4),
                         Text(
                           'Numeric keypad activated automatically',
-                          style: TextStyle(color: AppColors.secondaryText),
+                          style: TxtStyle.titleLarge(
+                            color: AppColors.secondaryText,
+                          ),
                         ),
                       ],
                     ),
@@ -321,9 +323,9 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
                             minimumSize: Size.zero,
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           ),
-                          child: const Text(
+                          child: Text(
                             'Resend Code',
-                            style: TextStyle(
+                            style: TxtStyle.titleLarge(
                               color: AppColors.blackMainTextColor,
                             ),
                           ),
@@ -336,7 +338,7 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
                     Text(
                       'Didn’t receive a message? Check spam or resend once the timer expires.',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style: TxtStyle.titleLarge(
                         color: AppColors.secondaryText,
                         fontSize: 12.sp,
                       ),

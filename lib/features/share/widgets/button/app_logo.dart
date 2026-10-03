@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-
-import '../../../../utils/color/app_colors.dart';
+import '../../export/screen_export.dart';
 
 class AulaLogo extends StatelessWidget {
   final double width;
@@ -16,7 +14,7 @@ class AulaLogo extends StatelessWidget {
       errorBuilder: (_, _, _) {
         return Text(
           'AULA360°',
-          style: TextStyle(
+          style: TxtStyle.titleLarge(
             fontSize: width * .20,
             fontWeight: FontWeight.w900,
             color: AppColors.primary,

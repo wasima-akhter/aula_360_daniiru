@@ -372,7 +372,7 @@ class _TeacherProfileSetupScreenState extends State<TeacherProfileSetupScreen> {
                 children: [
                   Text(
                     "Teacher Profile Setup".toUpperCase(),
-                    style: TextStyle(
+                    style: TxtStyle.titleLarge(
                       fontWeight: FontWeight.w600,
                       color: AppColors.primary,
                     ),
@@ -380,7 +380,7 @@ class _TeacherProfileSetupScreenState extends State<TeacherProfileSetupScreen> {
                   const SizedBox(height: 2),
                   Text(
                     'PARENT PORTAL',
-                    style: TextStyle(
+                    style: TxtStyle.titleLarge(
                       color: AppColors.secondaryText,
                       fontSize: 11.sp,
                       fontWeight: FontWeight.w600,
@@ -397,10 +397,10 @@ class _TeacherProfileSetupScreenState extends State<TeacherProfileSetupScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Center(
+                    Center(
                       child: Text(
                         'Faculty profile',
-                        style: TextStyle(
+                        style: TxtStyle.titleLarge(
                           color: AppColors.text,
                           fontSize: 20,
                           fontWeight: FontWeight.w800,
@@ -410,11 +410,11 @@ class _TeacherProfileSetupScreenState extends State<TeacherProfileSetupScreen> {
 
                     const SizedBox(height: 6),
 
-                    const Center(
+                    Center(
                       child: Text(
                         'Set up your instructor credentials and campus\nworkspace assignments.',
                         textAlign: TextAlign.center,
-                        style: TextStyle(
+                        style: TxtStyle.titleLarge(
                           color: AppColors.secondaryText,
                           height: 1.5,
                         ),
@@ -524,7 +524,7 @@ class _TeacherProfileSetupScreenState extends State<TeacherProfileSetupScreen> {
                         ...subjects.map(_subjectChip),
                         GestureDetector(
                           onTap: _addSubject,
-                          child: const Padding(
+                          child: Padding(
                             padding: EdgeInsets.only(
                               left: 2,
                               top: 6,
@@ -532,7 +532,7 @@ class _TeacherProfileSetupScreenState extends State<TeacherProfileSetupScreen> {
                             ),
                             child: Text(
                               '+ Add Subject',
-                              style: TextStyle(
+                              style: TxtStyle.titleLarge(
                                 color: AppColors.primary,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -609,7 +609,7 @@ class _TeacherProfileSetupScreenState extends State<TeacherProfileSetupScreen> {
                         const Spacer(),
                         Text(
                           'Optional',
-                          style: TextStyle(
+                          style: TxtStyle.titleLarge(
                             color: AppColors.secondaryText,
                             fontSize: 12.sp,
                           ),
@@ -639,7 +639,7 @@ class _TeacherProfileSetupScreenState extends State<TeacherProfileSetupScreen> {
                     Center(
                       child: Text(
                         'Navigates to Faculty Dashboard',
-                        style: TextStyle(
+                        style: TxtStyle.titleLarge(
                           color: AppColors.secondaryText,
                           fontSize: 12.sp,
                         ),
@@ -658,7 +658,7 @@ class _TeacherProfileSetupScreenState extends State<TeacherProfileSetupScreen> {
   Widget _sectionTitle(String title) {
     return Text(
       title,
-      style: TextStyle(
+      style: TxtStyle.titleLarge(
         color: AppColors.secondaryText,
         fontSize: 12.sp,
         fontWeight: FontWeight.w500,

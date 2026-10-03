@@ -1,4 +1,5 @@
 import '../../share/export/screen_export.dart';
+import '../../share/widgets/button/app_logo.dart';
 import '../helper/parent_home_helper.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -55,10 +56,17 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: const Color(0xFFF8F7FC),
 
       appBar: AulaAppBar(
-        title: 'AULA360',
+        title: '',
+        leading: const Padding(
+          padding: EdgeInsets.only(left: 14),
+          child: AulaLogo(width: 105),
+        ),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              // Open notifications
+            },
+            splashRadius: 22,
             icon: Icon(
               Icons.notifications_none_rounded,
               color: AppColors.text,
@@ -66,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(right: 15.w),
+            padding: EdgeInsets.only(left: 2.w, right: 15.w),
             child: const UserAvatar(initials: 'EV', size: 38),
           ),
         ],
@@ -82,14 +90,20 @@ class _HomeScreenState extends State<HomeScreen> {
                 // ------------------------------------------------
                 // DATE / GREETING
                 // ------------------------------------------------
-                Text(
-                  'WEDNESDAY, OCT 24',
-                  style: TextStyle(
-                    color: AppColors.secondaryText,
-                    fontSize: 11.sp,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: .5,
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'WEDNESDAY, OCT 24',
+                      style: TxtStyle.titleLarge(
+                        color: AppColors.secondaryText,
+                        fontSize: 11.sp,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: .5,
+                      ),
+                    ),
+                    const StatusPill(text: 'Campus Open'),
+                  ],
                 ),
 
                 SizedBox(height: 7.h),
@@ -99,14 +113,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     Expanded(
                       child: Text(
                         'Good morning, Eleanor',
-                        style: TextStyle(
+                        style: TxtStyle.titleLarge(
                           color: AppColors.text,
                           fontSize: 24.sp,
                           fontWeight: FontWeight.w800,
                         ),
                       ),
                     ),
-                    const StatusPill(text: 'Campus Open'),
                   ],
                 ),
 
@@ -129,7 +142,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           children: [
                             Text(
                               'Lucas Rivera',
-                              style: TextStyle(
+                              style: TxtStyle.titleLarge(
                                 color: AppColors.text,
                                 fontSize: 15.sp,
                                 fontWeight: FontWeight.w800,
@@ -138,7 +151,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             SizedBox(height: 3.h),
                             Text(
                               'Grade 8 • Section A',
-                              style: TextStyle(
+                              style: TxtStyle.bodyMedium(
                                 color: AppColors.secondaryText,
                                 fontSize: 12.sp,
                               ),
@@ -166,7 +179,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             SizedBox(width: 4.w),
                             Text(
                               'Switch',
-                              style: TextStyle(
+                              style: TxtStyle.titleLarge(
                                 color: AppColors.primary,
                                 fontSize: 11.sp,
                                 fontWeight: FontWeight.w700,
@@ -204,7 +217,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             const Spacer(),
                             Text(
                               'Starts 10:30 AM',
-                              style: TextStyle(
+                              style: TxtStyle.titleLarge(
                                 color: Colors.white,
                                 fontSize: 11.sp,
                                 fontWeight: FontWeight.w600,
@@ -217,7 +230,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                         Text(
                           'Advanced Mathematics',
-                          style: TextStyle(
+                          style: TxtStyle.titleLarge(
                             color: Colors.white,
                             fontSize: 18.sp,
                             fontWeight: FontWeight.w800,
@@ -228,7 +241,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                         Text(
                           'Linear Quadratic Systems & Practice',
-                          style: TextStyle(
+                          style: TxtStyle.titleLarge(
                             color: Colors.white.withOpacity(.75),
                             fontSize: 12.sp,
                           ),
@@ -257,7 +270,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 children: [
                                   Text(
                                     'Mr. Robert Hayes',
-                                    style: TextStyle(
+                                    style: TxtStyle.titleLarge(
                                       color: Colors.white,
                                       fontSize: 12.sp,
                                       fontWeight: FontWeight.w700,
@@ -266,7 +279,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   SizedBox(height: 2.h),
                                   Text(
                                     'Classroom 3B',
-                                    style: TextStyle(
+                                    style: TxtStyle.titleLarge(
                                       color: Colors.white.withOpacity(.65),
                                       fontSize: 10.sp,
                                     ),
@@ -276,7 +289,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             Text(
                               'Details',
-                              style: TextStyle(
+                              style: TxtStyle.titleLarge(
                                 color: Colors.white,
                                 fontSize: 11.sp,
                                 fontWeight: FontWeight.w700,
@@ -315,6 +328,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       _homeScheduleRow(
                         todayClasses[0],
                         onTap: () => _openDetails(todayClasses[0]),
+                        color: AppColors.darkTextColor,
                       ),
                       Divider(
                         height: 1,
@@ -341,7 +355,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: [
                           Text(
                             'ATTENDANCE',
-                            style: TextStyle(
+                            style: TxtStyle.titleLarge(
                               color: AppColors.secondaryText,
                               fontSize: 11.sp,
                               fontWeight: FontWeight.w700,
@@ -357,7 +371,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                       Text(
                         '96.4%',
-                        style: TextStyle(
+                        style: TxtStyle.titleLarge(
                           color: AppColors.text,
                           fontSize: 22.sp,
                           fontWeight: FontWeight.w800,
@@ -368,7 +382,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                       Text(
                         '27 of 28 sessions attended this term',
-                        style: TextStyle(
+                        style: TxtStyle.titleLarge(
                           color: AppColors.secondaryText,
                           fontSize: 12.sp,
                         ),
@@ -378,12 +392,26 @@ class _HomeScreenState extends State<HomeScreen> {
 
                       Align(
                         alignment: Alignment.centerRight,
-                        child: Text(
-                          'Attendance History →',
-                          style: TextStyle(
-                            color: AppColors.primary,
-                            fontSize: 11.sp,
-                            fontWeight: FontWeight.w700,
+                        child: InkWell(
+                          focusColor: Colors.blue,
+                          onTap: () {
+                            // Navigate to Attendance History
+                            context.push(RoutePath.attendance);
+                          },
+                          borderRadius: BorderRadius.circular(8.r),
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 10.w,
+                              vertical: 4.h,
+                            ),
+                            child: Text(
+                              'Attendance History →',
+                              style: TxtStyle.titleLarge(
+                                color: AppColors.primary,
+                                fontSize: 11.sp,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -398,7 +426,11 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _homeScheduleRow(ClassModel classData, {required VoidCallback onTap}) {
+  Widget _homeScheduleRow(
+    ClassModel classData, {
+    required VoidCallback onTap,
+    Color? color,
+  }) {
     return InkWell(
       onTap: onTap,
       child: Padding(
@@ -413,9 +445,9 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               child: Text(
                 classData.time,
-                style: TextStyle(
-                  color: AppColors.secondaryText,
-                  fontSize: 10.sp,
+                style: TxtStyle.titleLarge(
+                  color: color ?? AppColors.tertiaryTextColor,
+                  fontSize: color != null ? 12.sp : 11.sp,
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -429,7 +461,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Text(
                     classData.subject,
-                    style: TextStyle(
+                    style: TxtStyle.titleLarge(
                       color: AppColors.text,
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w800,
@@ -438,7 +470,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   SizedBox(height: 3.h),
                   Text(
                     '${classData.room} • ${classData.building}',
-                    style: TextStyle(
+                    style: TxtStyle.bodyMedium(
                       color: AppColors.secondaryText,
                       fontSize: 11.sp,
                     ),

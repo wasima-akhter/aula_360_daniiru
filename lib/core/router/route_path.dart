@@ -25,7 +25,6 @@ class RoutePath {
   static const String classes = 'classes';
   static const String students = 'students';
   static const String teacherReports = 'teacherReports';
-  static const String profile = 'profile';
   static const String notification = 'notification';
 
   static const String classDetail = 'classDetail';
@@ -33,11 +32,35 @@ class RoutePath {
   static const String reportDetail = 'reportDetail';
   static const String homework = 'homework';
   static const String homeworkDetail = 'homeworkDetail';
+  static const String teacherInformation = 'teacherInformation';
+
+  static const String payment = 'payment';
+  static const String paymentReceipt = 'paymentReceipt';
+  static const String settings = 'settings';
+  static const String chatInbox = 'chatInbox';
+
+  //
+  static const String editProfile = 'editProfile';
+  static const String children = 'children';
+  static const String addChild = 'addChild';
+  static const String childProfile = 'childProfile';
+  static const String attendance = 'attendance';
+
+  // TEACHER
+  static const String teacherSettings = 'teacherSettings';
+  static const String teacherEditProfile = 'teacherEditProfile';
+  static const String teacherAttendance = 'teacherAttendance';
+  static const String teacherClassDetail = 'teacherClassDetail';
+
+  static const String teacherPostClassReport = 'teacherPostClassReport';
+  static const String teacherReportSubmitted = 'teacherReportSubmitted';
+  static const String teacherEndClass = 'teacherEndClass';
+  //
 
   // Profile and Settings Screens
 
-  static const String profileScreen = 'profileScreen';
-  static const String teacherProfileScreen = 'teacherProfileScreen';
+  static const String profileSetup = 'profileSetup';
+  static const String teacherProfileSetup = 'teacherProfileSetup';
 
   static const String changePasswordScreen = 'changePasswordScreen';
   static const String privacyPolicyScreen = 'privacyPolicyScreen';

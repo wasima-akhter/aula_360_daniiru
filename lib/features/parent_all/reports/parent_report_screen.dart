@@ -128,7 +128,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                   alignment: Alignment.centerLeft,
                   child: Text(
                     entry.key,
-                    style: TextStyle(
+                    style: TxtStyle.titleLarge(
                       color: AppColors.secondaryText,
                       fontSize: 11.sp,
                       fontWeight: FontWeight.w800,
@@ -173,7 +173,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
           children: [
             Text(
               'STUDENT',
-              style: TextStyle(
+              style: TxtStyle.titleLarge(
                 color: AppColors.secondaryText,
                 fontSize: 13.sp,
                 fontWeight: FontWeight.w800,
@@ -183,7 +183,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
             const Spacer(),
             Text(
               '${students.length} Enrolled',
-              style: TextStyle(
+              style: TxtStyle.titleLarge(
                 color: AppColors.primary,
                 fontSize: 12.sp,
                 fontWeight: FontWeight.w800,
@@ -261,7 +261,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                     student.name,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
+                    style: TxtStyle.titleLarge(
                       color: AppColors.text,
                       fontSize: 13.sp,
                       fontWeight: FontWeight.w800,
@@ -274,7 +274,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                     student.grade,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
+                    style: TxtStyle.titleLarge(
                       color: AppColors.secondaryText,
                       fontSize: 11.sp,
                       fontWeight: FontWeight.w500,
@@ -341,7 +341,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
         ),
         child: Text(
           categories[index],
-          style: TextStyle(
+          style: TxtStyle.titleLarge(
             color: selected ? Colors.white : AppColors.secondaryText,
             fontSize: 12.sp,
             fontWeight: FontWeight.w800,
@@ -379,7 +379,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                         report.subject,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
+                        style: TxtStyle.titleLarge(
                           color: AppColors.text,
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w800,
@@ -390,7 +390,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
                       Text(
                         report.teacher,
-                        style: TextStyle(
+                        style: TxtStyle.titleLarge(
                           color: AppColors.secondaryText,
                           fontSize: 13.sp,
                           fontWeight: FontWeight.w500,
@@ -425,7 +425,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                 SizedBox(width: 6.w),
                 Text(
                   report.time,
-                  style: TextStyle(
+                  style: TxtStyle.titleLarge(
                     color: AppColors.secondaryText,
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w600,
@@ -454,7 +454,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                 children: [
                   Text(
                     'Teacher Note',
-                    style: TextStyle(
+                    style: TxtStyle.titleLarge(
                       color: AppColors.primary,
                       fontSize: 12.sp,
                       fontWeight: FontWeight.w800,
@@ -467,7 +467,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                     '"${report.note}"',
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
+                    style: TxtStyle.titleLarge(
                       color: AppColors.text,
                       fontSize: 12.5.sp,
                       height: 1.45,
@@ -494,7 +494,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                     report.teacher,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
+                    style: TxtStyle.titleLarge(
                       color: AppColors.secondaryText,
                       fontSize: 12.sp,
                       fontWeight: FontWeight.w600,
@@ -504,7 +504,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
                 Text(
                   'View Report',
-                  style: TextStyle(
+                  style: TxtStyle.titleLarge(
                     color: AppColors.primary,
                     fontSize: 11.sp,
                     fontWeight: FontWeight.w800,
@@ -555,7 +555,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
             Text(
               'No Reports Found',
-              style: TextStyle(
+              style: TxtStyle.titleLarge(
                 color: AppColors.text,
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w800,
@@ -567,7 +567,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
             Text(
               'There are no reports available for this category.',
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: TxtStyle.titleLarge(
                 color: AppColors.secondaryText,
                 fontSize: 12.sp,
                 height: 1.4,

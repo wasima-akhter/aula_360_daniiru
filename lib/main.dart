@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'core/router/routes.dart';
+import 'core/theme/light_theme.dart';
 import 'utils/app_keys/app_keys.dart';
 
 void main() {
@@ -15,7 +16,7 @@ class Aula360App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-      designSize: const Size(375, 812),
+      designSize: const Size(390, 884),
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
@@ -25,11 +26,7 @@ class Aula360App extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         scaffoldMessengerKey: AppKeys.scaffoldMessengerKey,
         routerConfig: AppRouter.router,
-        theme: ThemeData(
-          useMaterial3: true,
-          fontFamily: 'Inter',
-          scaffoldBackgroundColor: Colors.white,
-        ),
+        theme: lightTheme,
       ),
     );
   }
