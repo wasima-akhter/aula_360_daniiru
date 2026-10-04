@@ -1,35 +1,43 @@
-﻿import '../../../../core/helper/snackbar/api_snackbar.dart';
-import '../../../share/export/screen_export.dart';
-import '../../../share/widgets/button/app_logo.dart';
-import '../../../share/widgets/button/custom_back_button.dart';
-import '../../../share/widgets/text_field/custom_text_field.dart';
-import '../../abc.dart';
+import '../../../../core/helper/snackbar/api_snackbar.dart';
+import '../../auth/abc.dart';
+import '../../share/export/screen_export.dart';
+import '../../share/widgets/button/app_logo.dart';
+import '../../share/widgets/button/custom_back_button.dart';
+import '../../share/widgets/text_field/custom_text_field.dart';
 
-class ResetPasswordScreen extends StatefulWidget {
-  final String? email;
-
-  const ResetPasswordScreen({super.key, this.email});
+class ChangePasswordScreen extends StatefulWidget {
+  const ChangePasswordScreen({super.key});
 
   @override
-  State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
+  State<ChangePasswordScreen> createState() => _ChangePasswordScreenState();
 }
 
-class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
-  final passwordController = TextEditingController();
+class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
+  final currentPasswordController = TextEditingController();
+  final newPasswordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
 
-  bool obscurePassword = true;
+  bool obscureCurrentPassword = true;
+  bool obscureNewPassword = true;
   bool obscureConfirmPassword = true;
 
   @override
   void dispose() {
-    passwordController.dispose();
+    currentPasswordController.dispose();
+    newPasswordController.dispose();
     confirmPasswordController.dispose();
     super.dispose();
   }
 
-  void _resetPassword() {
-    if (!AulaValidation.password(passwordController.text)) {
+  void _changePassword() {
+    if (!AulaValidation.required(
+      value: currentPasswordController.text,
+      fieldName: 'Current Password',
+    )) {
+      return;
+    }
+
+    if (!AulaValidation.password(newPasswordController.text)) {
       return;
     }
 
@@ -40,7 +48,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       return;
     }
 
-    if (passwordController.text != confirmPasswordController.text) {
+    if (newPasswordController.text != confirmPasswordController.text) {
       ApiSnackbar.show(
         'Both passwords must match.',
         title: 'Password Mismatch',
@@ -49,13 +57,24 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       return;
     }
 
+    if (currentPasswordController.text == newPasswordController.text) {
+      ApiSnackbar.show(
+        'Your new password must be different from your current password.',
+        title: 'Invalid Password',
+        type: SnackbarType.error,
+      );
+      return;
+    }
+
+    // TODO: Call change-password API here.
+
     ApiSnackbar.show(
-      'Your password has been reset successfully.',
+      'Your password has been changed successfully.',
       title: 'Password Updated',
       type: SnackbarType.success,
     );
 
-    context.go(RoutePath.loginScreen.addBasePath);
+    context.pop();
   }
 
   @override
@@ -68,7 +87,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const AuthBackButton(title: 'Reset Password'),
+              const AuthBackButton(title: 'Change Password'),
 
               const SizedBox(height: 43),
 
@@ -78,7 +97,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
               Center(
                 child: Text(
-                  'Create a new password',
+                  'Change your password',
                   textAlign: TextAlign.center,
                   style: TxtStyle.titleLarge(
                     color: AppColors.text,
@@ -92,7 +111,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
               Center(
                 child: Text(
-                  'Choose a strong password that you haven’t\nused before.',
+                  'Enter your current password and choose a\nnew password for your account.',
                   textAlign: TextAlign.center,
                   style: TxtStyle.titleLarge(
                     color: AppColors.secondaryText,
@@ -104,14 +123,29 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
               const SizedBox(height: 30),
 
               AppTextField(
-                controller: passwordController,
+                controller: currentPasswordController,
+                label: 'Current Password',
+                hint: 'Enter current password',
+                icon: Icons.lock_outline_rounded,
+                obscureText: obscureCurrentPassword,
+                onTogglePassword: () {
+                  setState(() {
+                    obscureCurrentPassword = !obscureCurrentPassword;
+                  });
+                },
+              ),
+
+              const SizedBox(height: 16),
+
+              AppTextField(
+                controller: newPasswordController,
                 label: 'New Password',
                 hint: 'Enter new password',
                 icon: Icons.lock_outline_rounded,
-                obscureText: obscurePassword,
+                obscureText: obscureNewPassword,
                 onTogglePassword: () {
                   setState(() {
-                    obscurePassword = !obscurePassword;
+                    obscureNewPassword = !obscureNewPassword;
                   });
                 },
               ),
@@ -133,7 +167,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
               const SizedBox(height: 23),
 
-              AulaPrimaryButton(text: 'Reset Password', onTap: _resetPassword),
+              AulaPrimaryButton(
+                text: 'Change Password',
+                onTap: _changePassword,
+              ),
             ],
           ),
         ),

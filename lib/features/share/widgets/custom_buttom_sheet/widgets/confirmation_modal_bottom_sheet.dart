@@ -1,4 +1,4 @@
-import 'package:aula360/features/share/export/screen_export.dart';
+﻿import 'package:aula360/features/share/export/screen_export.dart';
 
 import '../../../../../core/custom_assets/assets.gen.dart';
 import '../custom_buttom_sheet.dart';
@@ -49,7 +49,7 @@ class ConfirmationModalBottomSheet extends StatelessWidget {
                     title,
                     style: TxtStyle.titleLarge(
                       fontWeight: FontWeight.w800,
-                      fontSize: 22.sp,
+                      fontSize: 25.5.sp,
                       color: primaryTextColor,
                     ),
                     textAlign: TextAlign.center,
@@ -58,6 +58,7 @@ class ConfirmationModalBottomSheet extends StatelessWidget {
                   Text(
                     message,
                     style: TxtStyle.titleLarge(
+                      fontSize: 16.5.sp,
                       color: AppColors.grayTextSecondaryColor,
                       height: 1.5,
                     ),

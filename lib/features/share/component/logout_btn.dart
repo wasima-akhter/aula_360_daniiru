@@ -1,4 +1,4 @@
-import '../export/screen_export.dart';
+﻿import '../export/screen_export.dart';
 
 class LogoutBtn extends StatelessWidget {
   const LogoutBtn({super.key});
@@ -33,7 +33,7 @@ class LogoutBtn extends StatelessWidget {
                 'Log Out',
                 style: TxtStyle.titleLarge(
                   color: AppColors.error,
-                  fontSize: 13.sp,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -79,7 +79,7 @@ class LogoutBtn extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: TxtStyle.titleLarge(
                     color: AppColors.text,
-                    fontSize: 17.sp,
+                    fontSize: 20.sp,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
@@ -89,14 +89,14 @@ class LogoutBtn extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: TxtStyle.titleLarge(
                     color: AppColors.subtitleTextColor,
-                    fontSize: 12.5.sp,
+                    fontSize: 15.5.sp,
                     height: 1.5,
                   ),
                 ),
                 SizedBox(height: 23.h),
                 SizedBox(
                   width: double.infinity,
-                  height: 45.h,
+                  height: 48.h,
                   child: ElevatedButton(
                     onPressed: () {
                       Navigator.of(dialogContext).pop();
@@ -115,7 +115,7 @@ class LogoutBtn extends StatelessWidget {
                       'Log Out',
                       style: TxtStyle.titleLarge(
                         color: Colors.white,
-                        fontSize: 12.sp,
+                        fontSize: 15.sp,
                         fontWeight: FontWeight.w800,
                       ),
                     ),
@@ -124,7 +124,7 @@ class LogoutBtn extends StatelessWidget {
                 SizedBox(height: 10.h),
                 SizedBox(
                   width: double.infinity,
-                  height: 45.h,
+                  height: 48.h,
                   child: OutlinedButton(
                     onPressed: () => Navigator.of(dialogContext).pop(),
                     style: OutlinedButton.styleFrom(
@@ -137,7 +137,7 @@ class LogoutBtn extends StatelessWidget {
                     child: Text(
                       'Cancel',
                       style: TxtStyle.titleLarge(
-                        fontSize: 12.sp,
+                        fontSize: 15.sp,
                         fontWeight: FontWeight.w700,
                       ),
                     ),

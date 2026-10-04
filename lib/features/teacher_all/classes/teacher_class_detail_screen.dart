@@ -1,4 +1,4 @@
-import '../../parent_all/helper/parent_home_helper.dart';
+﻿import '../../parent_all/helper/parent_home_helper.dart';
 import '../../share/export/screen_export.dart';
 import '../helper/teacher_models.dart';
 
@@ -32,7 +32,7 @@ class TeacherClassDetailScreen extends StatelessWidget {
                     'Advanced Mathematics\n(Calculus AB)',
                     style: TxtStyle.titleLarge(
                       color: AppColors.text,
-                      fontSize: 24.sp,
+                      fontSize: 27.sp,
                       height: 1.16,
                       fontWeight: FontWeight.w700,
                       letterSpacing: -.4,
@@ -71,7 +71,7 @@ class TeacherClassDetailScreen extends StatelessWidget {
                     'PHYSICAL SESSION INFO',
                     style: TxtStyle.titleLarge(
                       color: AppColors.subtitleTextColor,
-                      fontSize: 11.sp,
+                      fontSize: 14.sp,
                       fontWeight: FontWeight.w800,
                       letterSpacing: .6,
                     ),
@@ -119,7 +119,7 @@ class TeacherClassDetailScreen extends StatelessWidget {
       'GROUP A • GRADE 11',
       style: TxtStyle.titleLarge(
         color: AppColors.tealTextColor,
-        fontSize: 12.5.sp,
+        fontSize: 15.5.sp,
         fontWeight: FontWeight.w600,
         letterSpacing: .5,
       ),
@@ -138,7 +138,7 @@ class TeacherClassDetailScreen extends StatelessWidget {
               label,
               style: TxtStyle.bodyMedium(
                 color: AppColors.subtitleTextColor,
-                fontSize: 13.sp,
+                fontSize: 16.sp,
                 height: 1.35,
               ),
             ),
@@ -149,7 +149,7 @@ class TeacherClassDetailScreen extends StatelessWidget {
               textAlign: TextAlign.right,
               style: TxtStyle.labelLarge(
                 color: AppColors.text,
-                fontSize: 13.sp,
+                fontSize: 16.sp,
                 height: 1.35,
                 fontWeight: FontWeight.w600,
               ),
@@ -180,7 +180,7 @@ class TeacherClassDetailScreen extends StatelessWidget {
             title,
             style: TxtStyle.titleLarge(
               color: AppColors.subtitleTextColor,
-              fontSize: 11.sp,
+              fontSize: 14.sp,
             ),
           ),
           SizedBox(height: 5.h),
@@ -188,7 +188,7 @@ class TeacherClassDetailScreen extends StatelessWidget {
             value,
             style: TxtStyle.titleLarge(
               color: AppColors.text,
-              fontSize: 13.sp,
+              fontSize: 16.sp,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -213,7 +213,7 @@ class TeacherClassDetailScreen extends StatelessWidget {
             'Physical Room Status',
             style: TxtStyle.titleLarge(
               color: AppColors.subtitleTextColor,
-              fontSize: 11.sp,
+              fontSize: 14.sp,
             ),
           ),
           SizedBox(height: 6.h),
@@ -233,7 +233,7 @@ class TeacherClassDetailScreen extends StatelessWidget {
                   'Board & desks prepared • Turnstiles active',
                   style: TxtStyle.titleLarge(
                     color: AppColors.text,
-                    fontSize: 12.5.sp,
+                    fontSize: 15.5.sp,
                     fontWeight: FontWeight.w600,
                   ),
                 ),

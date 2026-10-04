@@ -34,10 +34,14 @@ class UiSnackbar {
                         style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
+                          fontSize: 17,
                         ),
                       ),
 
-                    Text(message, style: const TextStyle(color: Colors.white)),
+                    Text(
+                      message,
+                      style: const TextStyle(color: Colors.white, fontSize: 15.5),
+                    ),
                   ],
                 ),
               ),

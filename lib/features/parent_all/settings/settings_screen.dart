@@ -1,4 +1,4 @@
-import '../../share/export/screen_export.dart';
+﻿import '../../share/export/screen_export.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -59,7 +59,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         'Settings',
         style: TxtStyle.titleLarge(
           color: AppColors.primaryDark,
-          fontSize: 14.sp,
+          fontSize: 17.sp,
           fontWeight: FontWeight.w800,
         ),
       ),
@@ -77,7 +77,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           'Profile',
           style: TxtStyle.titleLarge(
             color: AppColors.subtitleTextColor,
-            fontSize: 13.5.sp,
+            fontSize: 16.5.sp,
           ),
         ),
         Padding(
@@ -86,7 +86,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             '›',
             style: TxtStyle.titleLarge(
               color: AppColors.hintTextColor,
-              fontSize: 13.sp,
+              fontSize: 16.sp,
             ),
           ),
         ),
@@ -94,7 +94,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           'Settings',
           style: TxtStyle.titleLarge(
             color: AppColors.primaryDark,
-            fontSize: 13.5.sp,
+            fontSize: 16.5.sp,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -107,7 +107,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       text,
       style: TxtStyle.titleLarge(
         color: AppColors.subtitleTextColor,
-        fontSize: 12.5.sp,
+        fontSize: 15.5.sp,
         fontWeight: FontWeight.w800,
         letterSpacing: .5,
       ),
@@ -135,7 +135,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
             icon: Icons.lock_outline,
             title: 'Change Password',
             subtitle: 'Update your academy account password',
-            onTap: () {},
+            onTap: () {
+              context.push(RoutePath.changePassword);
+            },
           ),
         ],
       ),
@@ -161,7 +163,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               'English (US)',
               style: TxtStyle.titleLarge(
                 color: AppColors.primaryDark,
-                fontSize: 12.5.sp,
+                fontSize: 15.5.sp,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -248,7 +250,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     title,
                     style: TxtStyle.titleLarge(
                       color: AppColors.text,
-                      fontSize: 13.sp,
+                      fontSize: 16.sp,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -257,7 +259,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     subtitle,
                     style: TxtStyle.bodyMedium(
                       color: AppColors.subtitleTextColor,
-                      fontSize: 12.sp,
+                      fontSize: 15.sp,
                       height: 1.25,
                     ),
                   ),
@@ -307,7 +309,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   title,
                   style: TxtStyle.titleLarge(
                     color: AppColors.text,
-                    fontSize: 13.sp,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -316,7 +318,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   subtitle,
                   style: TxtStyle.bodyMedium(
                     color: AppColors.subtitleTextColor,
-                    fontSize: 12.sp,
+                    fontSize: 15.sp,
                   ),
                 ),
               ],

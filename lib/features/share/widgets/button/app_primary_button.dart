@@ -1,4 +1,4 @@
-import 'package:aula360/features/share/widgets/loading/loading_widget.dart';
+﻿import 'package:aula360/features/share/widgets/loading/loading_widget.dart';
 
 import '../../export/screen_export.dart';
 
@@ -128,7 +128,7 @@ class AulaPrimaryButton extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TxtStyle.titleSmall(
-                  fontSize: 15.sp,
+                  fontSize: 18.sp,
                   fontWeight: FontWeight.w600,
                   color: textColor ?? AppColors.white,
                 ),

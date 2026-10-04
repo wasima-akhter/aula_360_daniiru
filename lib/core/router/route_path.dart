@@ -37,6 +37,7 @@ class RoutePath {
   static const String payment = 'payment';
   static const String paymentReceipt = 'paymentReceipt';
   static const String settings = 'settings';
+  static const String changePassword = 'changePassword';
   static const String chatInbox = 'chatInbox';
 
   //
@@ -66,7 +67,6 @@ class RoutePath {
   static const String profileSetup = 'profileSetup';
   static const String teacherProfileSetup = 'teacherProfileSetup';
 
-  static const String changePasswordScreen = 'changePasswordScreen';
   static const String privacyPolicyScreen = 'privacyPolicyScreen';
   static const String termsAndConditionsScreen = 'termsAndConditionsScreen';
 }

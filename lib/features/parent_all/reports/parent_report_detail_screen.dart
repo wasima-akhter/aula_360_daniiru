@@ -1,4 +1,4 @@
-import '../../parent_all/helper/parent_home_helper.dart';
+﻿import '../../parent_all/helper/parent_home_helper.dart';
 import '../../share/export/screen_export.dart';
 import 'parent_report_screen.dart';
 
@@ -72,7 +72,7 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
                       report.subject,
                       style: TxtStyle.titleLarge(
                         color: AppColors.text,
-                        fontSize: 19.sp,
+                        fontSize: 22.sp,
                         fontWeight: FontWeight.w800,
                       ),
                     ),
@@ -81,7 +81,7 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
                       report.teacher,
                       style: TxtStyle.titleLarge(
                         color: AppColors.secondaryText,
-                        fontSize: 12.sp,
+                        fontSize: 15.sp,
                       ),
                     ),
                   ],
@@ -114,7 +114,7 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
                         report.dateLabel.replaceAll('TODAY — ', ''),
                         style: TxtStyle.titleLarge(
                           color: AppColors.secondaryText,
-                          fontSize: 11.sp,
+                          fontSize: 14.sp,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -137,7 +137,7 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
                         report.time,
                         style: TxtStyle.titleLarge(
                           color: AppColors.secondaryText,
-                          fontSize: 11.sp,
+                          fontSize: 14.sp,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -162,7 +162,7 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
             'Essay Draft: Character Motivations',
             style: TxtStyle.titleLarge(
               color: AppColors.text,
-              fontSize: 15.sp,
+              fontSize: 18.sp,
               fontWeight: FontWeight.w800,
             ),
           ),
@@ -173,7 +173,7 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
             'Due Oct 26',
             style: TxtStyle.titleLarge(
               color: const Color(0xFFE68A27),
-              fontSize: 11.sp,
+              fontSize: 14.sp,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -184,7 +184,7 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
             'Write a 500-word analysis explaining how character motivation develops throughout the selected chapter.',
             style: TxtStyle.bodyMedium(
               color: AppColors.secondaryText,
-              fontSize: 11.5.sp,
+              fontSize: 14.5.sp,
               height: 1.45,
             ),
           ),
@@ -201,7 +201,7 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
                 'View Homework →',
                 style: TxtStyle.titleLarge(
                   color: AppColors.primary,
-                  fontSize: 11.sp,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w800,
                 ),
               ),
@@ -232,7 +232,7 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
                       report.teacher,
                       style: TxtStyle.titleLarge(
                         color: AppColors.text,
-                        fontSize: 12.sp,
+                        fontSize: 15.sp,
                         fontWeight: FontWeight.w800,
                       ),
                     ),
@@ -241,7 +241,7 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
                       report.subject,
                       style: TxtStyle.titleLarge(
                         color: AppColors.secondaryText,
-                        fontSize: 10.sp,
+                        fontSize: 13.sp,
                       ),
                     ),
                   ],
@@ -267,7 +267,7 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
                   : TextOverflow.ellipsis,
               style: TxtStyle.bodyMedium(
                 color: AppColors.text,
-                fontSize: 12.sp,
+                fontSize: 15.sp,
                 height: 1.5,
               ),
             ),
@@ -285,7 +285,7 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
               showFullNote ? 'Show Less' : 'Read Full Note',
               style: TxtStyle.titleLarge(
                 color: AppColors.primary,
-                fontSize: 11.sp,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.w800,
               ),
             ),
@@ -324,7 +324,7 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
           textAlign: TextAlign.center,
           style: TxtStyle.titleLarge(
             color: AppColors.secondaryText,
-            fontSize: 10.sp,
+            fontSize: 13.sp,
           ),
         ),
         SizedBox(height: 5.h),
@@ -333,7 +333,7 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
           textAlign: TextAlign.center,
           style: TxtStyle.titleLarge(
             color: color,
-            fontSize: 12.sp,
+            fontSize: 15.sp,
             fontWeight: FontWeight.w800,
           ),
         ),
@@ -358,7 +358,7 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
             'Download Report',
             style: TxtStyle.titleLarge(
               color: Colors.white,
-              fontSize: 13.sp,
+              fontSize: 16.sp,
               fontWeight: FontWeight.w800,
             ),
           ),
@@ -377,7 +377,7 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
             title,
             style: TxtStyle.titleLarge(
               color: AppColors.text,
-              fontSize: 15.sp,
+              fontSize: 18.sp,
               fontWeight: FontWeight.w800,
             ),
           ),

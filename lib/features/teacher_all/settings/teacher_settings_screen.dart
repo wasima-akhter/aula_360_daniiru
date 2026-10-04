@@ -1,4 +1,4 @@
-import '../../share/export/screen_export.dart';
+﻿import '../../share/export/screen_export.dart';
 
 /// ===============================================================
 /// SETTINGS
@@ -77,7 +77,7 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
         'Settings',
         style: TxtStyle.titleLarge(
           color: AppColors.primaryDark,
-          fontSize: 14.sp,
+          fontSize: 17.sp,
           fontWeight: FontWeight.w800,
         ),
       ),
@@ -101,7 +101,7 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
             'Profile',
             style: TxtStyle.titleLarge(
               color: AppColors.subtitleTextColor,
-              fontSize: 13.sp,
+              fontSize: 16.sp,
             ),
           ),
         ),
@@ -112,7 +112,7 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
             '›',
             style: TxtStyle.titleLarge(
               color: AppColors.hintTextColor,
-              fontSize: 13.sp,
+              fontSize: 16.sp,
             ),
           ),
         ),
@@ -121,7 +121,7 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
           'Settings',
           style: TxtStyle.titleLarge(
             color: AppColors.primaryDark,
-            fontSize: 13.sp,
+            fontSize: 16.sp,
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -146,7 +146,7 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
               language,
               style: TxtStyle.titleLarge(
                 color: AppColors.primaryDark,
-                fontSize: 11.5.sp,
+                fontSize: 14.5.sp,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -191,7 +191,7 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
                       'Select Language',
                       style: TxtStyle.titleLarge(
                         color: AppColors.text,
-                        fontSize: 16.sp,
+                        fontSize: 19.sp,
                         fontWeight: FontWeight.w800,
                       ),
                     ),
@@ -204,7 +204,7 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
                     activeColor: AppColors.primary,
                     title: Text(
                       item,
-                      style: TxtStyle.titleLarge(fontSize: 13.sp),
+                      style: TxtStyle.titleLarge(fontSize: 16.sp),
                     ),
                     onChanged: (value) {
                       if (value != null) {
@@ -317,7 +317,10 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
             icon: Icons.lock_outline,
             title: 'Change Password',
             subtitle: 'Update your academy account password',
-            onTap: _showChangePassword,
+            onTap: () {
+              debugPrint("change password screen");
+              context.push(RoutePath.changePassword);
+            },
           ),
 
           _divider(),
@@ -342,7 +345,7 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
                   'iPhone 15 Pro',
                   style: TxtStyle.titleLarge(
                     color: AppColors.subtitleTextColor,
-                    fontSize: 11.sp,
+                    fontSize: 14.sp,
                   ),
                 ),
                 SizedBox(width: 3.w),
@@ -375,134 +378,6 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
 
     // For real biometric authentication, connect this to
     // the `local_auth` package.
-  }
-
-  // ===============================================================
-  // CHANGE PASSWORD
-  // ===============================================================
-
-  Future<void> _showChangePassword() async {
-    final formKey = GlobalKey<FormState>();
-
-    final currentController = TextEditingController();
-    final newController = TextEditingController();
-    final confirmController = TextEditingController();
-
-    bool obscureCurrent = true;
-    bool obscureNew = true;
-    bool obscureConfirm = true;
-
-    await showDialog<void>(
-      context: context,
-      builder: (dialogContext) {
-        return StatefulBuilder(
-          builder: (context, setDialogState) {
-            return AlertDialog(
-              backgroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16.r),
-              ),
-              title: Text(
-                'Change Password',
-                style: TxtStyle.titleLarge(
-                  fontSize: 17.sp,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.text,
-                ),
-              ),
-              content: Form(
-                key: formKey,
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _passwordField(
-                        controller: currentController,
-                        label: 'Current Password',
-                        obscure: obscureCurrent,
-                        onToggle: () {
-                          setDialogState(() {
-                            obscureCurrent = !obscureCurrent;
-                          });
-                        },
-                      ),
-
-                      SizedBox(height: 12.h),
-
-                      _passwordField(
-                        controller: newController,
-                        label: 'New Password',
-                        obscure: obscureNew,
-                        onToggle: () {
-                          setDialogState(() {
-                            obscureNew = !obscureNew;
-                          });
-                        },
-                        validator: (value) {
-                          if (value == null || value.length < 8) {
-                            return 'Minimum 8 characters';
-                          }
-                          return null;
-                        },
-                      ),
-
-                      SizedBox(height: 12.h),
-
-                      _passwordField(
-                        controller: confirmController,
-                        label: 'Confirm Password',
-                        obscure: obscureConfirm,
-                        onToggle: () {
-                          setDialogState(() {
-                            obscureConfirm = !obscureConfirm;
-                          });
-                        },
-                        validator: (value) {
-                          if (value != newController.text) {
-                            return 'Passwords do not match';
-                          }
-                          return null;
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(dialogContext);
-                  },
-                  child: const Text('Cancel'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    if (!formKey.currentState!.validate()) {
-                      return;
-                    }
-
-                    Navigator.pop(dialogContext);
-
-                    _showMessage('Password updated successfully');
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primaryDark,
-                  ),
-                  child: Text(
-                    'Update',
-                    style: TxtStyle.titleLarge(color: Colors.white),
-                  ),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
-
-    currentController.dispose();
-    newController.dispose();
-    confirmController.dispose();
   }
 
   Widget _passwordField({
@@ -561,7 +436,7 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
                     'Active Sessions',
                     style: TxtStyle.titleLarge(
                       color: AppColors.text,
-                      fontSize: 17.sp,
+                      fontSize: 20.sp,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -575,7 +450,7 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
                     'These devices currently have access to your account.',
                     style: TxtStyle.titleLarge(
                       color: AppColors.subtitleTextColor,
-                      fontSize: 11.5.sp,
+                      fontSize: 14.5.sp,
                     ),
                   ),
                 ),
@@ -659,7 +534,7 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
                   device,
                   style: TxtStyle.titleLarge(
                     color: AppColors.text,
-                    fontSize: 12.5.sp,
+                    fontSize: 15.5.sp,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -668,7 +543,7 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
                   location,
                   style: TxtStyle.titleLarge(
                     color: AppColors.subtitleTextColor,
-                    fontSize: 11.sp,
+                    fontSize: 14.sp,
                   ),
                 ),
               ],
@@ -686,7 +561,7 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
                 'Active',
                 style: TxtStyle.titleLarge(
                   color: AppColors.emeraldGreenColor,
-                  fontSize: 10.sp,
+                  fontSize: 13.sp,
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -720,7 +595,10 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
     Widget? trailing,
   }) {
     return InkWell(
-      onTap: onTap,
+      onTap: () {
+        debugPrint('TAPPED: $title');
+        onTap();
+      },
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 11.w, vertical: 12.h),
         child: Row(
@@ -745,7 +623,7 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
                     title,
                     style: TxtStyle.titleLarge(
                       color: AppColors.text,
-                      fontSize: 13.sp,
+                      fontSize: 16.sp,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -754,7 +632,7 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
                     subtitle,
                     style: TxtStyle.bodyMedium(
                       color: AppColors.subtitleTextColor,
-                      fontSize: 11.5.sp,
+                      fontSize: 14.5.sp,
                       height: 1.25,
                     ),
                   ),
@@ -807,7 +685,7 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
                   title,
                   style: TxtStyle.titleLarge(
                     color: AppColors.text,
-                    fontSize: 13.sp,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -816,7 +694,7 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
                   subtitle,
                   style: TxtStyle.bodyMedium(
                     color: AppColors.subtitleTextColor,
-                    fontSize: 11.5.sp,
+                    fontSize: 14.5.sp,
                     height: 1.25,
                   ),
                 ),
@@ -849,7 +727,7 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
       text,
       style: TxtStyle.titleLarge(
         color: AppColors.subtitleTextColor,
-        fontSize: 12.5.sp,
+        fontSize: 15.5.sp,
         fontWeight: FontWeight.w800,
         letterSpacing: .5,
       ),
@@ -861,7 +739,7 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
       SnackBar(
         content: Text(
           message,
-          style: TxtStyle.titleLarge(fontSize: 12.sp, color: Colors.white),
+          style: TxtStyle.titleLarge(fontSize: 15.sp, color: Colors.white),
         ),
         behavior: SnackBarBehavior.floating,
       ),

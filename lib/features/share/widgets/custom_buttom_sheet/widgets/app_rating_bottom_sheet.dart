@@ -1,4 +1,4 @@
-// import 'package:aula360/features/share/export/screen_export.dart';
+﻿// import 'package:aula360/features/share/export/screen_export.dart';
 // import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 // import '../../../../../core/features/other/controller/other_controller.dart';
@@ -157,7 +157,7 @@
 //                     AppStrings.submitRating,
 //                     style: context.bodyMedium.copyWith(
 //                       color: Colors.white,
-//                       fontSize: 14.sp,
+//                       fontSize: 15.5.sp,
 //                     ),
 //                   ),
 

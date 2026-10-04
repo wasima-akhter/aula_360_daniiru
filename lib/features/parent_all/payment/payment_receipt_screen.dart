@@ -1,4 +1,4 @@
-import '../../share/export/screen_export.dart';
+﻿import '../../share/export/screen_export.dart';
 
 class PaymentReceiptScreen extends StatelessWidget {
   const PaymentReceiptScreen({super.key});
@@ -21,7 +21,7 @@ class PaymentReceiptScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: TxtStyle.titleLarge(
                   color: AppColors.text,
-                  fontSize: 19.sp,
+                  fontSize: 22.sp,
                   fontWeight: FontWeight.w800,
                 ),
               ),
@@ -31,7 +31,7 @@ class PaymentReceiptScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: TxtStyle.titleLarge(
                   color: AppColors.subtitleTextColor,
-                  fontSize: 12.5.sp,
+                  fontSize: 15.5.sp,
                 ),
               ),
               SizedBox(height: 14.h),
@@ -43,7 +43,7 @@ class PaymentReceiptScreen extends StatelessWidget {
                     '€340.00',
                     style: TxtStyle.titleLarge(
                       color: AppColors.primaryDark,
-                      fontSize: 24.sp,
+                      fontSize: 27.sp,
                       fontWeight: FontWeight.w900,
                     ),
                   ),
@@ -54,7 +54,7 @@ class PaymentReceiptScreen extends StatelessWidget {
                       'EUR',
                       style: TxtStyle.titleLarge(
                         color: AppColors.subtitleTextColor,
-                        fontSize: 8.sp,
+                        fontSize: 11.sp,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -72,7 +72,7 @@ class PaymentReceiptScreen extends StatelessWidget {
                   '● PAID & SETTLED',
                   style: TxtStyle.titleLarge(
                     color: AppColors.emeraldGreenColor,
-                    fontSize: 10.sp,
+                    fontSize: 13.sp,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
@@ -87,7 +87,7 @@ class PaymentReceiptScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: TxtStyle.titleLarge(
                   color: AppColors.subtitleTextColor,
-                  fontSize: 11.sp,
+                  fontSize: 14.sp,
                 ),
               ),
             ],
@@ -114,7 +114,7 @@ class PaymentReceiptScreen extends StatelessWidget {
         'Payment Receipt',
         style: TxtStyle.titleLarge(
           color: AppColors.primaryDark,
-          fontSize: 14.sp,
+          fontSize: 17.sp,
           fontWeight: FontWeight.w800,
         ),
       ),
@@ -191,7 +191,7 @@ class PaymentReceiptScreen extends StatelessWidget {
                   'Download Receipt (PDF)',
                   style: TxtStyle.titleLarge(
                     color: AppColors.primaryDark,
-                    fontSize: 14.sp,
+                    fontSize: 17.sp,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -220,7 +220,7 @@ class PaymentReceiptScreen extends StatelessWidget {
               title,
               style: TxtStyle.titleLarge(
                 color: AppColors.subtitleTextColor,
-                fontSize: 11.5.sp,
+                fontSize: 14.5.sp,
               ),
             ),
           ),
@@ -234,7 +234,7 @@ class PaymentReceiptScreen extends StatelessWidget {
                 textAlign: TextAlign.right,
                 style: TxtStyle.titleLarge(
                   color: AppColors.text,
-                  fontSize: 12.5.sp,
+                  fontSize: 15.5.sp,
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -244,7 +244,7 @@ class PaymentReceiptScreen extends StatelessWidget {
                   subValue,
                   style: TxtStyle.titleLarge(
                     color: AppColors.subtitleTextColor,
-                    fontSize: 11.5.sp,
+                    fontSize: 14.5.sp,
                   ),
                 ),
               ],
@@ -270,7 +270,7 @@ class PaymentReceiptScreen extends StatelessWidget {
         text,
         style: TxtStyle.titleLarge(
           color: AppColors.blueTextColor,
-          fontSize: 10.sp,
+          fontSize: 13.sp,
           fontWeight: FontWeight.w800,
         ),
       ),
@@ -280,7 +280,6 @@ class PaymentReceiptScreen extends StatelessWidget {
   Widget _doneButton(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: 43.h,
       child: ElevatedButton(
         onPressed: () => context.go(RoutePath.navigationPages),
         style: ElevatedButton.styleFrom(
@@ -297,7 +296,7 @@ class PaymentReceiptScreen extends StatelessWidget {
               'Done',
               style: TxtStyle.titleLarge(
                 color: Colors.white,
-                fontSize: 14.sp,
+                fontSize: 17.sp,
                 fontWeight: FontWeight.w800,
               ),
             ),

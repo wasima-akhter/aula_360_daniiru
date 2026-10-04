@@ -1,4 +1,4 @@
-import 'package:aula360/features/share/export/screen_export.dart';
+﻿import 'package:aula360/features/share/export/screen_export.dart';
 
 class ErrorCard extends StatelessWidget {
   const ErrorCard({
@@ -121,7 +121,7 @@ class RetryButton extends StatelessWidget {
           AppStrings.retry,
           style: context.bodySmall.copyWith(
             color: Colors.white,
-            fontSize: 13.sp,
+            fontSize: 16.sp,
             fontWeight: FontWeight.w600,
           ),
         ),

@@ -202,7 +202,7 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
                   purposeTitle,
                   style: TxtStyle.titleLarge(
                     color: AppColors.text,
-                    fontSize: 28.sp,
+                    fontSize: 31.5.sp,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
@@ -340,7 +340,7 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
                       textAlign: TextAlign.center,
                       style: TxtStyle.titleLarge(
                         color: AppColors.secondaryText,
-                        fontSize: 12.sp,
+                        fontSize: 15.sp,
                       ),
                     ),
                   ],
@@ -371,7 +371,7 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
             textAlign: TextAlign.center,
             style: const TextStyle(
               color: AppColors.primaryDark,
-              fontSize: 17,
+              fontSize: 20,
               fontWeight: FontWeight.w700,
             ),
             onChanged: (value) {

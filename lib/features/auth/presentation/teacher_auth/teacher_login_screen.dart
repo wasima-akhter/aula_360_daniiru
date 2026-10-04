@@ -68,7 +68,7 @@ class _TeacherLoginScreenState extends ConsumerState<TeacherLoginScreen> {
                   'Welcome back',
                   style: context.titleLarge.copyWith(
                     color: AppColors.text,
-                    fontSize: 30.sp,
+                    fontSize: 33.5.sp,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
@@ -161,7 +161,7 @@ class _TeacherLoginScreenState extends ConsumerState<TeacherLoginScreen> {
                     child: Text(
                       'Forgot password?',
                       style: context.titleSmall.copyWith(
-                        fontSize: 13.sp,
+                        fontSize: 16.sp,
                         color: AppColors.primary,
                         fontWeight: FontWeight.w600,
                       ),
@@ -247,7 +247,7 @@ class _TeacherLoginScreenState extends ConsumerState<TeacherLoginScreen> {
                         'Login as Parent',
                         style: TxtStyle.titleLarge(
                           color: AppColors.primary,
-                          fontSize: 15,
+                          fontSize: 18,
                           fontWeight: FontWeight.w600,
                           decorationColor: AppColors.primary,
                           decorationThickness: 1.5,

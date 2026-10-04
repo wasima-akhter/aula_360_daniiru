@@ -1,4 +1,4 @@
-import '../../share/export/screen_export.dart';
+﻿import '../../share/export/screen_export.dart';
 
 class TuitionPaymentScreen extends StatefulWidget {
   const TuitionPaymentScreen({super.key});
@@ -51,7 +51,7 @@ class _TuitionPaymentScreenState extends State<TuitionPaymentScreen> {
         'Tuition Payment',
         style: TxtStyle.titleLarge(
           color: AppColors.primaryDark,
-          fontSize: 14.sp,
+          fontSize: 17.sp,
           fontWeight: FontWeight.w800,
         ),
       ),
@@ -97,7 +97,7 @@ class _TuitionPaymentScreenState extends State<TuitionPaymentScreen> {
                   'LR',
                   style: TxtStyle.titleLarge(
                     color: AppColors.primaryDark,
-                    fontSize: 13.sp,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
@@ -111,7 +111,7 @@ class _TuitionPaymentScreenState extends State<TuitionPaymentScreen> {
                       'Lucas Rivera',
                       style: TxtStyle.titleLarge(
                         color: AppColors.text,
-                        fontSize: 14.sp,
+                        fontSize: 17.sp,
                         fontWeight: FontWeight.w800,
                       ),
                     ),
@@ -120,7 +120,7 @@ class _TuitionPaymentScreenState extends State<TuitionPaymentScreen> {
                       'Grade 8 • Section A',
                       style: TxtStyle.titleLarge(
                         color: AppColors.subtitleTextColor,
-                        fontSize: 12.sp,
+                        fontSize: 15.sp,
                       ),
                     ),
                   ],
@@ -136,7 +136,7 @@ class _TuitionPaymentScreenState extends State<TuitionPaymentScreen> {
                   'Invoice #A360-8492',
                   style: TxtStyle.titleLarge(
                     color: AppColors.primaryDark,
-                    fontSize: 11.5.sp,
+                    fontSize: 14.5.sp,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -163,7 +163,7 @@ class _TuitionPaymentScreenState extends State<TuitionPaymentScreen> {
                       'AMOUNT DUE',
                       style: TxtStyle.titleLarge(
                         color: AppColors.subtitleTextColor,
-                        fontSize: 11.5.sp,
+                        fontSize: 14.5.sp,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -172,7 +172,7 @@ class _TuitionPaymentScreenState extends State<TuitionPaymentScreen> {
                       '€340.00',
                       style: TxtStyle.titleLarge(
                         color: AppColors.primaryDark,
-                        fontSize: 24.sp,
+                        fontSize: 27.sp,
                         fontWeight: FontWeight.w800,
                       ),
                     ),
@@ -189,7 +189,7 @@ class _TuitionPaymentScreenState extends State<TuitionPaymentScreen> {
                   'Due Oct 15, 2024',
                   style: TxtStyle.titleLarge(
                     color: AppColors.subtitleTextColor,
-                    fontSize: 11.5.sp,
+                    fontSize: 14.5.sp,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -209,7 +209,7 @@ class _TuitionPaymentScreenState extends State<TuitionPaymentScreen> {
             title,
             style: TxtStyle.titleLarge(
               color: AppColors.subtitleTextColor,
-              fontSize: 13.sp,
+              fontSize: 16.sp,
             ),
           ),
         ),
@@ -217,7 +217,7 @@ class _TuitionPaymentScreenState extends State<TuitionPaymentScreen> {
           amount,
           style: TxtStyle.titleLarge(
             color: AppColors.text,
-            fontSize: 13.sp,
+            fontSize: 16.sp,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -233,7 +233,7 @@ class _TuitionPaymentScreenState extends State<TuitionPaymentScreen> {
             title,
             style: TxtStyle.titleLarge(
               color: AppColors.text,
-              fontSize: 14.sp,
+              fontSize: 17.sp,
               fontWeight: FontWeight.w800,
             ),
           ),
@@ -246,7 +246,7 @@ class _TuitionPaymentScreenState extends State<TuitionPaymentScreen> {
               'Powered by stripe',
               style: TxtStyle.titleLarge(
                 color: AppColors.subtitleTextColor,
-                fontSize: 11.5.sp,
+                fontSize: 14.5.sp,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -339,7 +339,7 @@ class _TuitionPaymentScreenState extends State<TuitionPaymentScreen> {
             title,
             style: TxtStyle.titleLarge(
               color: AppColors.blueTextColor,
-              fontSize: 11.5.sp,
+              fontSize: 14.5.sp,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -351,7 +351,7 @@ class _TuitionPaymentScreenState extends State<TuitionPaymentScreen> {
                   value,
                   style: TxtStyle.titleLarge(
                     color: AppColors.text,
-                    fontSize: 13.sp,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -375,7 +375,7 @@ class _TuitionPaymentScreenState extends State<TuitionPaymentScreen> {
         text,
         style: TxtStyle.titleLarge(
           color: AppColors.blueTextColor,
-          fontSize: 6.sp,
+          fontSize: 9.sp,
           fontWeight: FontWeight.w800,
         ),
       ),
@@ -401,7 +401,7 @@ class _TuitionPaymentScreenState extends State<TuitionPaymentScreen> {
                   'Save card for future academy tuition',
                   style: TxtStyle.titleLarge(
                     color: AppColors.text,
-                    fontSize: 13.sp,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -410,7 +410,7 @@ class _TuitionPaymentScreenState extends State<TuitionPaymentScreen> {
                   'Instant checkout for next term',
                   style: TxtStyle.titleLarge(
                     color: AppColors.subtitleTextColor,
-                    fontSize: 11.5.sp,
+                    fontSize: 14.5.sp,
                   ),
                 ),
               ],
@@ -434,7 +434,7 @@ class _TuitionPaymentScreenState extends State<TuitionPaymentScreen> {
   Widget _payButton() {
     return SizedBox(
       width: double.infinity,
-      height: 43.h,
+
       child: ElevatedButton.icon(
         onPressed: () {
           context.go(RoutePath.paymentReceipt);
@@ -444,7 +444,7 @@ class _TuitionPaymentScreenState extends State<TuitionPaymentScreen> {
           'Pay €340.00',
           style: TxtStyle.titleLarge(
             color: Colors.white,
-            fontSize: 12.sp,
+            fontSize: 15.sp,
             fontWeight: FontWeight.w800,
           ),
         ),

@@ -1,4 +1,4 @@
-import '../../../share/export/screen_export.dart';
+﻿import '../../../share/export/screen_export.dart';
 import '../../helper/parent_home_helper.dart';
 import '../parent_report_screen.dart';
 
@@ -188,7 +188,7 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
                     overflow: TextOverflow.ellipsis,
                     style: TxtStyle.titleLarge(
                       color: AppColors.text,
-                      fontSize: 12.sp,
+                      fontSize: 15.sp,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -199,7 +199,7 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
                     overflow: TextOverflow.ellipsis,
                     style: TxtStyle.titleLarge(
                       color: AppColors.secondaryText,
-                      fontSize: 11.sp,
+                      fontSize: 14.sp,
                     ),
                   ),
                 ],
@@ -249,7 +249,7 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
           tabs[index],
           style: TxtStyle.titleLarge(
             color: selected ? Colors.white : AppColors.secondaryText,
-            fontSize: 12.sp,
+            fontSize: 15.sp,
             fontWeight: FontWeight.w800,
           ),
         ),
@@ -273,7 +273,7 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
               item.subject.toUpperCase(),
               style: TxtStyle.titleLarge(
                 color: AppColors.primary,
-                fontSize: 11.sp,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.w800,
                 letterSpacing: .4,
               ),
@@ -285,7 +285,7 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
               item.title,
               style: TxtStyle.titleLarge(
                 color: AppColors.text,
-                fontSize: 15.sp,
+                fontSize: 18.sp,
                 height: 1.3,
                 fontWeight: FontWeight.w800,
               ),
@@ -299,7 +299,7 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
               overflow: TextOverflow.ellipsis,
               style: TxtStyle.bodyMedium(
                 color: AppColors.secondaryText,
-                fontSize: 11.sp,
+                fontSize: 14.sp,
                 height: 1.4,
               ),
             ),
@@ -324,7 +324,7 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
                     color: completed
                         ? const Color(0xFF2B9D70)
                         : const Color(0xFFE68A27),
-                    fontSize: 11.5.sp,
+                    fontSize: 14.5.sp,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -335,7 +335,7 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
                   'View Details',
                   style: TxtStyle.titleLarge(
                     color: AppColors.primary,
-                    fontSize: 10.sp,
+                    fontSize: 13.sp,
                     fontWeight: FontWeight.w800,
                   ),
                 ),

@@ -1,4 +1,4 @@
-import '../../parent_all/helper/parent_home_helper.dart';
+﻿import '../../parent_all/helper/parent_home_helper.dart';
 import '../../share/export/screen_export.dart';
 import '../helper/teacher_enums.dart';
 import '../helper/teacher_models.dart';
@@ -77,7 +77,7 @@ class _TeacherClassesScreenState extends State<TeacherClassesScreen> {
             'TODAY • THU, OCT 24',
             style: TxtStyle.titleLarge(
               color: AppColors.subtitleTextColor,
-              fontSize: 12.sp,
+              fontSize: 15.sp,
               fontWeight: FontWeight.w600,
               letterSpacing: .5,
             ),
@@ -87,7 +87,7 @@ class _TeacherClassesScreenState extends State<TeacherClassesScreen> {
             'Assigned Classes',
             style: TxtStyle.titleLarge(
               color: AppColors.text,
-              fontSize: 23.sp,
+              fontSize: 26.sp,
               fontWeight: FontWeight.w700,
               letterSpacing: -.3,
             ),
@@ -139,7 +139,7 @@ class _TeacherClassesScreenState extends State<TeacherClassesScreen> {
                 color: selected
                     ? AppColors.primaryDark
                     : AppColors.subtitleTextColor,
-                fontSize: 14.sp,
+                fontSize: 17.sp,
                 fontWeight: selected ? FontWeight.w800 : FontWeight.w500,
               ),
             ),
@@ -156,7 +156,7 @@ class _TeacherClassesScreenState extends State<TeacherClassesScreen> {
                   color: selected
                       ? AppColors.primaryDark
                       : AppColors.subtitleTextColor,
-                  fontSize: 13.sp,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -191,7 +191,7 @@ class _TeacherClassesScreenState extends State<TeacherClassesScreen> {
                     color: item.status == ClassStatus.next
                         ? AppColors.primaryDark
                         : AppColors.subtitleTextColor,
-                    fontSize: 12.sp,
+                    fontSize: 15.sp,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -210,7 +210,7 @@ class _TeacherClassesScreenState extends State<TeacherClassesScreen> {
                     item.title,
                     style: TxtStyle.titleLarge(
                       color: AppColors.text,
-                      fontSize: 17.sp,
+                      fontSize: 20.sp,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -230,7 +230,7 @@ class _TeacherClassesScreenState extends State<TeacherClassesScreen> {
               item.subtitle,
               style: TxtStyle.bodyMedium(
                 color: AppColors.subtitleTextColor,
-                fontSize: 13.sp,
+                fontSize: 16.sp,
               ),
             ),
 
@@ -248,7 +248,7 @@ class _TeacherClassesScreenState extends State<TeacherClassesScreen> {
                   item.room,
                   style: TxtStyle.bodyMedium(
                     color: AppColors.subtitleTextColor,
-                    fontSize: 12.sp,
+                    fontSize: 15.sp,
                   ),
                 ),
                 SizedBox(width: 8.w),
@@ -256,7 +256,7 @@ class _TeacherClassesScreenState extends State<TeacherClassesScreen> {
                   '•',
                   style: TxtStyle.bodyMedium(
                     color: AppColors.subtitleTextColor,
-                    fontSize: 12.sp,
+                    fontSize: 15.sp,
                   ),
                 ),
                 SizedBox(width: 8.w),
@@ -264,7 +264,7 @@ class _TeacherClassesScreenState extends State<TeacherClassesScreen> {
                   item.group,
                   style: TxtStyle.bodyMedium(
                     color: AppColors.subtitleTextColor,
-                    fontSize: 12.sp,
+                    fontSize: 15.sp,
                   ),
                 ),
                 SizedBox(width: 8.w),
@@ -272,7 +272,7 @@ class _TeacherClassesScreenState extends State<TeacherClassesScreen> {
                   '•',
                   style: TxtStyle.bodyMedium(
                     color: AppColors.subtitleTextColor,
-                    fontSize: 12.sp,
+                    fontSize: 15.sp,
                   ),
                 ),
                 SizedBox(width: 8.w),
@@ -280,7 +280,7 @@ class _TeacherClassesScreenState extends State<TeacherClassesScreen> {
                   '${item.students} students',
                   style: TxtStyle.bodyMedium(
                     color: AppColors.subtitleTextColor,
-                    fontSize: 12.sp,
+                    fontSize: 15.sp,
                   ),
                 ),
               ],
@@ -315,7 +315,7 @@ class _TeacherClassesScreenState extends State<TeacherClassesScreen> {
               status.label,
               style: TxtStyle.titleLarge(
                 color: AppColors.greenTextColor,
-                fontSize: 10.sp,
+                fontSize: 13.sp,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -328,7 +328,7 @@ class _TeacherClassesScreenState extends State<TeacherClassesScreen> {
       status.label,
       style: TxtStyle.titleLarge(
         color: AppColors.subtitleTextColor,
-        fontSize: 11.sp,
+        fontSize: 14.sp,
         fontWeight: FontWeight.w600,
       ),
     );

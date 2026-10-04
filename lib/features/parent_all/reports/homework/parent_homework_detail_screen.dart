@@ -1,4 +1,4 @@
-import '../../../share/export/screen_export.dart';
+﻿import '../../../share/export/screen_export.dart';
 import '../../helper/parent_home_helper.dart';
 import 'parent_homework_screen.dart';
 
@@ -61,7 +61,7 @@ class _HomeworkDetailsScreenState extends State<HomeworkDetailsScreen> {
             homework.subject.toUpperCase(),
             style: TxtStyle.titleLarge(
               color: AppColors.primary,
-              fontSize: 11.sp,
+              fontSize: 14.sp,
               fontWeight: FontWeight.w800,
               letterSpacing: .5,
             ),
@@ -73,7 +73,7 @@ class _HomeworkDetailsScreenState extends State<HomeworkDetailsScreen> {
             homework.title,
             style: TxtStyle.titleLarge(
               color: AppColors.text,
-              fontSize: 19.sp,
+              fontSize: 22.sp,
               height: 1.25,
               fontWeight: FontWeight.w800,
             ),
@@ -110,7 +110,7 @@ class _HomeworkDetailsScreenState extends State<HomeworkDetailsScreen> {
                   homework.teacher,
                   style: TxtStyle.titleLarge(
                     color: AppColors.text,
-                    fontSize: 14.sp,
+                    fontSize: 17.sp,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
@@ -119,7 +119,7 @@ class _HomeworkDetailsScreenState extends State<HomeworkDetailsScreen> {
                   'Faculty of English Literature',
                   style: TxtStyle.titleLarge(
                     color: AppColors.secondaryText,
-                    fontSize: 12.sp,
+                    fontSize: 15.sp,
                   ),
                 ),
               ],
@@ -146,7 +146,7 @@ class _HomeworkDetailsScreenState extends State<HomeworkDetailsScreen> {
             'INSTRUCTIONS',
             style: TxtStyle.titleLarge(
               color: AppColors.secondaryText,
-              fontSize: 11.sp,
+              fontSize: 14.sp,
               fontWeight: FontWeight.w800,
               letterSpacing: .5,
             ),
@@ -158,7 +158,7 @@ class _HomeworkDetailsScreenState extends State<HomeworkDetailsScreen> {
             'Write a 500-word analysis examining the motivations of a core motif of innocence and moral vulnerability. Cite at least two specific passages from Chapters 10 and 28.',
             style: TxtStyle.bodyMedium(
               color: AppColors.text,
-              fontSize: 13.sp,
+              fontSize: 16.sp,
               height: 1.55,
             ),
           ),
@@ -177,7 +177,7 @@ class _HomeworkDetailsScreenState extends State<HomeworkDetailsScreen> {
             'ATTACHMENTS',
             style: TxtStyle.titleLarge(
               color: AppColors.secondaryText,
-              fontSize: 11.sp,
+              fontSize: 14.sp,
               fontWeight: FontWeight.w800,
               letterSpacing: .5,
             ),
@@ -232,7 +232,7 @@ class _HomeworkDetailsScreenState extends State<HomeworkDetailsScreen> {
                     overflow: TextOverflow.ellipsis,
                     style: TxtStyle.titleLarge(
                       color: AppColors.text,
-                      fontSize: 12.sp,
+                      fontSize: 15.sp,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -241,7 +241,7 @@ class _HomeworkDetailsScreenState extends State<HomeworkDetailsScreen> {
                     subtitle,
                     style: TxtStyle.titleLarge(
                       color: AppColors.secondaryText,
-                      fontSize: 10.5.sp,
+                      fontSize: 13.5.sp,
                     ),
                   ),
                 ],
@@ -267,7 +267,7 @@ class _HomeworkDetailsScreenState extends State<HomeworkDetailsScreen> {
                 'Submission',
                 style: TxtStyle.titleLarge(
                   color: AppColors.text,
-                  fontSize: 15.sp,
+                  fontSize: 18.sp,
                   fontWeight: FontWeight.w800,
                 ),
               ),
@@ -283,7 +283,7 @@ class _HomeworkDetailsScreenState extends State<HomeworkDetailsScreen> {
               'Submitted successfully on Oct 22.',
               style: TxtStyle.titleLarge(
                 color: const Color(0xFF2B9D70),
-                fontSize: 12.sp,
+                fontSize: 15.sp,
                 fontWeight: FontWeight.w600,
               ),
             )
@@ -300,7 +300,7 @@ class _HomeworkDetailsScreenState extends State<HomeworkDetailsScreen> {
                   'Awaiting Submission',
                   style: TxtStyle.titleLarge(
                     color: Colors.white,
-                    fontSize: 13.sp,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
@@ -326,7 +326,7 @@ class _HomeworkDetailsScreenState extends State<HomeworkDetailsScreen> {
             text,
             style: TxtStyle.titleLarge(
               color: AppColors.secondaryText,
-              fontSize: 11.sp,
+              fontSize: 14.sp,
               fontWeight: FontWeight.w700,
             ),
           ),

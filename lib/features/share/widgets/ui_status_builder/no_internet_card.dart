@@ -53,7 +53,7 @@ class NoInternetCard extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TxtStyle.titleLarge(
                 fontWeight: FontWeight.w500,
-                fontSize: 14,
+                fontSize: 17,
                 color: textColor ?? Colors.black,
               ),
             ),
@@ -64,7 +64,7 @@ class NoInternetCard extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: TxtStyle.titleLarge(
                   fontWeight: FontWeight.w400,
-                  fontSize: 12,
+                  fontSize: 15,
                   color: Colors.grey.shade700,
                 ),
               ),
@@ -85,7 +85,7 @@ class NoInternetCard extends StatelessWidget {
               child: Text(
                 effectiveButtonText,
                 style: const TextStyle(
-                  fontSize: 16,
+                  fontSize: 19,
                   fontWeight: FontWeight.w500,
                   color: Colors.white,
                 ),

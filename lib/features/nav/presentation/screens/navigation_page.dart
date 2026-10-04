@@ -233,29 +233,33 @@ class _NavigationPageState extends ConsumerState<NavigationPage> {
         : const Color(0xFF8A93A3);
 
     return Expanded(
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () {
-          ref.read(navigationProvider.notifier).changeTab(index);
-        },
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, color: color, size: 24),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: context.style.bodyMedium!.copyWith(
-                fontSize: 13.sp,
-                color: color,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+      child: Container(
+        // color: Colors.amber,
+        margin: EdgeInsets.only(right: 1),
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () {
+            ref.read(navigationProvider.notifier).changeTab(index);
+          },
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, color: color, size: 24),
+              const SizedBox(height: 4),
+              Text(
+                label,
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: context.style.bodyMedium!.copyWith(
+                  fontSize: 11.sp,
+                  color: color,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -283,7 +287,10 @@ class _NavigationPlaceholder extends StatelessWidget {
             const SizedBox(height: 12),
             Text(
               title,
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
+              style: const TextStyle(
+                fontSize: 25.5,
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ],
         ),

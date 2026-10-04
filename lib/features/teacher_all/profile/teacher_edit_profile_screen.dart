@@ -1,4 +1,4 @@
-import 'dart:io';
+﻿import 'dart:io';
 
 import 'package:image_picker/image_picker.dart';
 
@@ -104,7 +104,7 @@ class _EditTeacherProfileScreenState extends State<EditTeacherProfileScreen> {
           'Edit Profile',
           style: TxtStyle.titleLarge(
             color: AppColors.primaryDark,
-            fontSize: 14.sp,
+            fontSize: 17.sp,
             fontWeight: FontWeight.w800,
           ),
         ),
@@ -115,7 +115,7 @@ class _EditTeacherProfileScreenState extends State<EditTeacherProfileScreen> {
               'Cancel',
               style: TxtStyle.titleLarge(
                 color: AppColors.subtitleTextColor,
-                fontSize: 12.sp,
+                fontSize: 15.sp,
               ),
             ),
           ),
@@ -274,7 +274,7 @@ class _EditTeacherProfileScreenState extends State<EditTeacherProfileScreen> {
             nameController.text,
             style: TxtStyle.titleLarge(
               color: AppColors.text,
-              fontSize: 15.sp,
+              fontSize: 18.sp,
               fontWeight: FontWeight.w800,
             ),
           ),
@@ -291,7 +291,7 @@ class _EditTeacherProfileScreenState extends State<EditTeacherProfileScreen> {
               'Faculty ID: #FAC-1042',
               style: TxtStyle.titleLarge(
                 color: AppColors.primaryDark,
-                fontSize: 12.sp,
+                fontSize: 15.sp,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -303,7 +303,7 @@ class _EditTeacherProfileScreenState extends State<EditTeacherProfileScreen> {
             'JPG or PNG • Maximum 5MB',
             style: TxtStyle.titleLarge(
               color: AppColors.subtitleTextColor,
-              fontSize: 11.5.sp,
+              fontSize: 14.5.sp,
             ),
           ),
         ],
@@ -438,7 +438,7 @@ class _EditTeacherProfileScreenState extends State<EditTeacherProfileScreen> {
                 },
             style: TxtStyle.titleLarge(
               color: AppColors.text,
-              fontSize: 12.sp,
+              fontSize: 15.sp,
               fontWeight: FontWeight.w500,
             ),
             decoration: _inputDecoration(icon: icon),
@@ -466,12 +466,12 @@ class _EditTeacherProfileScreenState extends State<EditTeacherProfileScreen> {
           minLines: 4,
           maxLines: 6,
           maxLength: 500,
-          style: TxtStyle.titleLarge(color: AppColors.text, fontSize: 12.sp),
+          style: TxtStyle.titleLarge(color: AppColors.text, fontSize: 15.sp),
           decoration: _inputDecoration(icon: Icons.notes_outlined).copyWith(
             alignLabelWithHint: true,
             counterStyle: TextStyle(
               color: AppColors.hintTextColor,
-              fontSize: 10.sp,
+              fontSize: 13.sp,
             ),
           ),
         ),
@@ -514,7 +514,7 @@ class _EditTeacherProfileScreenState extends State<EditTeacherProfileScreen> {
         text: text,
         style: TxtStyle.titleLarge(
           color: AppColors.labelTextColor,
-          fontSize: 12.5.sp,
+          fontSize: 15.5.sp,
           fontWeight: FontWeight.w700,
         ),
         children: [
@@ -602,7 +602,7 @@ class _EditTeacherProfileScreenState extends State<EditTeacherProfileScreen> {
                     'Save Changes',
                     style: TxtStyle.titleLarge(
                       color: Colors.white,
-                      fontSize: 13.5.sp,
+                      fontSize: 16.5.sp,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -671,7 +671,7 @@ class _EditTeacherProfileScreenState extends State<EditTeacherProfileScreen> {
       text,
       style: TxtStyle.titleLarge(
         color: AppColors.subtitleTextColor,
-        fontSize: 12.5.sp,
+        fontSize: 15.5.sp,
         fontWeight: FontWeight.w800,
         letterSpacing: .4,
       ),

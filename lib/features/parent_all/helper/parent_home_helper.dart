@@ -1,4 +1,4 @@
-import '../../share/export/screen_export.dart';
+﻿import '../../share/export/screen_export.dart';
 
 // ================================================================
 // MODELS
@@ -81,7 +81,7 @@ class AulaAppBar extends StatelessWidget implements PreferredSizeWidget {
               title,
               style: TxtStyle.titleLarge(
                 color: AppColors.text,
-                fontSize: 17,
+                fontSize: 18.5,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -121,7 +121,7 @@ class SectionHeader extends StatelessWidget {
             title,
             style: TxtStyle.titleLarge(
               color: AppColors.text,
-              fontSize: 17.sp,
+              fontSize: 20.sp,
               fontWeight: FontWeight.w800,
             ),
           ),
@@ -133,7 +133,7 @@ class SectionHeader extends StatelessWidget {
               actionText!,
               style: TxtStyle.titleLarge(
                 color: AppColors.primary,
-                fontSize: 12.sp,
+                fontSize: 15.sp,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -249,7 +249,7 @@ class StatusPill extends StatelessWidget {
             text,
             style: TxtStyle.titleLarge(
               color: color,
-              fontSize: 10.sp,
+              fontSize: 13.sp,
               fontWeight: FontWeight.w600,
             ),
           ),

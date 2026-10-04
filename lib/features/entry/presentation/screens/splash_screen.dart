@@ -1,4 +1,4 @@
-import 'package:aula360/features/share/export/screen_export.dart';
+﻿import 'package:aula360/features/share/export/screen_export.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key, this.onInitializationComplete});
@@ -69,7 +69,7 @@ class _SplashScreenState extends State<SplashScreen>
               Text(
                 'Aula 360',
                 style: context.titleLarge.copyWith(
-                  fontSize: 32.sp,
+                  fontSize: 35.5.sp,
                   fontWeight: FontWeight.w800,
                   color: Color(0xFF123477),
                   letterSpacing: 0.1,
@@ -80,12 +80,12 @@ class _SplashScreenState extends State<SplashScreen>
 
               // App description
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 50),
+                padding: const EdgeInsets.symmetric(horizontal: 40),
                 child: Text(
                   'Empowering Modern Academies &\nConnected Learning',
                   textAlign: TextAlign.center,
                   style: TxtStyle.titleLarge(
-                    fontSize: 15.sp,
+                    fontSize: 18.sp,
                     height: 1.55,
                     fontWeight: FontWeight.w400,
                     color: Color(0xFF7D8AA3),
@@ -120,7 +120,7 @@ class _SplashScreenState extends State<SplashScreen>
             child: Text(
               'AULA360',
               style: TxtStyle.titleLarge(
-                fontSize: 28.sp,
+                fontSize: 31.5.sp,
                 fontWeight: FontWeight.w800,
                 color: Color(0xFF123477),
               ),
@@ -188,7 +188,7 @@ class _SplashScreenState extends State<SplashScreen>
             Text(
               'Initializing secure session...',
               style: TxtStyle.titleLarge(
-                fontSize: 13.sp,
+                fontSize: 16.sp,
                 color: Color(0xFF7D8AA3),
                 fontWeight: FontWeight.w400,
               ),

@@ -1,4 +1,4 @@
-import '../../../../core/helper/snackbar/api_snackbar.dart';
+﻿import '../../../../core/helper/snackbar/api_snackbar.dart';
 import '../../../share/export/screen_export.dart';
 import '../../../share/widgets/button/app_logo.dart';
 import '../../../share/widgets/button/custom_back_button.dart';
@@ -85,7 +85,7 @@ class _TeacherSignUpScreenState extends State<TeacherSignUpScreen> {
                   'Register as Faculty',
                   style: TxtStyle.titleLarge(
                     color: AppColors.text,
-                    fontSize: 26.sp,
+                    fontSize: 29.5.sp,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
@@ -183,7 +183,7 @@ class _TeacherSignUpScreenState extends State<TeacherSignUpScreen> {
                           text: 'I agree to the ',
                           style: TxtStyle.titleLarge(
                             color: AppColors.secondaryText,
-                            fontSize: 12.5.sp,
+                            fontSize: 15.5.sp,
                             height: 1.4,
                           ),
                           children: [
@@ -231,7 +231,7 @@ class _TeacherSignUpScreenState extends State<TeacherSignUpScreen> {
                       text: 'Already have an account? ',
                       style: TxtStyle.titleLarge(
                         color: AppColors.secondaryText,
-                        fontSize: 13.sp,
+                        fontSize: 16.sp,
                       ),
                       children: [
                         TextSpan(

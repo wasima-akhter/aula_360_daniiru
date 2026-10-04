@@ -1,4 +1,4 @@
-import '../../parent_all/helper/parent_home_helper.dart';
+﻿import '../../parent_all/helper/parent_home_helper.dart';
 import '../../share/export/screen_export.dart';
 import '../helper/teacher_enums.dart';
 import '../helper/teacher_models.dart';
@@ -105,7 +105,7 @@ class _TeacherReportsScreenState extends State<TeacherReportsScreen> {
                   'Filed Sessions',
                   style: TxtStyle.titleLarge(
                     color: AppColors.text,
-                    fontSize: 19.sp,
+                    fontSize: 22.sp,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -114,7 +114,7 @@ class _TeacherReportsScreenState extends State<TeacherReportsScreen> {
                   'Attendance, curriculum logs, and verification records.',
                   style: TxtStyle.bodyMedium(
                     color: AppColors.subtitleTextColor,
-                    fontSize: 12.sp,
+                    fontSize: 15.sp,
                   ),
                 ),
               ],
@@ -124,7 +124,7 @@ class _TeacherReportsScreenState extends State<TeacherReportsScreen> {
             '18 Total',
             style: TxtStyle.bodyMedium(
               color: AppColors.subtitleTextColor,
-              fontSize: 12.sp,
+              fontSize: 15.sp,
             ),
           ),
         ],
@@ -157,7 +157,7 @@ class _TeacherReportsScreenState extends State<TeacherReportsScreen> {
           filter.label,
           style: TxtStyle.bodyMedium(
             color: selected ? Colors.white : AppColors.subtitleTextColor,
-            fontSize: 12.sp,
+            fontSize: 15.sp,
             fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
           ),
         ),
@@ -188,7 +188,7 @@ class _TeacherReportsScreenState extends State<TeacherReportsScreen> {
                     _reportLocation(report),
                     style: TxtStyle.bodyMedium(
                       color: AppColors.subtitleTextColor,
-                      fontSize: 12.5.sp,
+                      fontSize: 15.5.sp,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -199,7 +199,7 @@ class _TeacherReportsScreenState extends State<TeacherReportsScreen> {
                     color: report.status == ReportStatus.submitted
                         ? AppColors.primaryDark
                         : const Color(0xff18b86b),
-                    fontSize: 12.sp,
+                    fontSize: 15.sp,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -214,7 +214,7 @@ class _TeacherReportsScreenState extends State<TeacherReportsScreen> {
                     report.title,
                     style: TxtStyle.titleLarge(
                       color: AppColors.text,
-                      fontSize: 13.5.sp,
+                      fontSize: 16.5.sp,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -231,7 +231,7 @@ class _TeacherReportsScreenState extends State<TeacherReportsScreen> {
               report.subtitle,
               style: TxtStyle.bodyMedium(
                 color: AppColors.subtitleTextColor,
-                fontSize: 13.sp,
+                fontSize: 16.sp,
               ),
             ),
             SizedBox(height: 8.h),
@@ -239,7 +239,7 @@ class _TeacherReportsScreenState extends State<TeacherReportsScreen> {
               '${report.date}  •  ${report.time}',
               style: TxtStyle.bodyMedium(
                 color: AppColors.subtitleTextColor,
-                fontSize: 11.sp,
+                fontSize: 14.sp,
               ),
             ),
           ],

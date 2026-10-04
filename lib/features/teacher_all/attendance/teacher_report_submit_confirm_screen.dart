@@ -1,4 +1,4 @@
-import '../../share/export/screen_export.dart';
+﻿import '../../share/export/screen_export.dart';
 
 /// ===============================================================
 /// 3. REPORT SUBMITTED SCREEN
@@ -19,7 +19,7 @@ class TeacherReportSubmittedScreen extends StatelessWidget {
           'Report Submitted',
           style: TxtStyle.titleLarge(
             color: AppColors.primaryColor,
-            fontSize: 16.sp,
+            fontSize: 19.sp,
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -64,7 +64,7 @@ class TeacherReportSubmittedScreen extends StatelessWidget {
                     'Report Submitted',
                     style: TxtStyle.titleLarge(
                       color: AppColors.text,
-                      fontSize: 19.sp,
+                      fontSize: 22.sp,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -76,7 +76,7 @@ class TeacherReportSubmittedScreen extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: TxtStyle.bodyMedium(
                       color: AppColors.subtitleTextColor,
-                      fontSize: 13.5.sp,
+                      fontSize: 16.5.sp,
                       height: 1.5,
                     ),
                   ),
@@ -138,7 +138,7 @@ class TeacherReportSubmittedScreen extends StatelessWidget {
           label,
           style: TxtStyle.bodyMedium(
             color: AppColors.subtitleTextColor,
-            fontSize: 14.sp,
+            fontSize: 17.sp,
           ),
         ),
         const Spacer(),
@@ -148,7 +148,7 @@ class TeacherReportSubmittedScreen extends StatelessWidget {
           maxLines: 3,
           style: TxtStyle.labelLarge(
             color: AppColors.text,
-            fontSize: 14.sp,
+            fontSize: 17.sp,
             fontWeight: FontWeight.w600,
           ),
         ),

@@ -59,7 +59,7 @@ class CustomDropdownField<T> extends StatelessWidget {
             child: Text(
               labelBuilder?.call(item) ?? item.toString(),
               style: context.bodyMedium.copyWith(
-                fontSize: 15,
+                fontSize: 18,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
                 color: isSelected
                     ? AppColors.primaryColor
@@ -156,7 +156,7 @@ class CustomDropdownField<T> extends StatelessWidget {
             child: Text(
               labelBuilder?.call(item) ?? item.toString(),
               style: context.bodyMedium.copyWith(
-                fontSize: 14.sp,
+                fontSize: 17.sp,
                 fontWeight: FontWeight.w600,
                 color: AppColors.darkTextColor,
                 letterSpacing: 0.2,

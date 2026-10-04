@@ -185,7 +185,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             textAlign: TextAlign.center,
             style: TxtStyle.titleLarge(
               color: AppColors.primaryDark,
-              fontSize: 22.sp,
+              fontSize: 25.5.sp,
               height: 1.25,
               letterSpacing: -0.3,
               fontWeight: FontWeight.w800,
@@ -199,7 +199,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             textAlign: TextAlign.center,
             style: const TextStyle(
               color: AppColors.secondaryText,
-
+              fontSize: 16,
               height: 1.55,
             ),
           ),
@@ -234,7 +234,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         tag.name,
                         style: TxtStyle.titleLarge(
                           color: AppColors.text,
-                          fontSize: 11.sp,
+                          fontSize: 14.sp,
                           fontWeight: FontWeight.w500,
                         ),
                       ),

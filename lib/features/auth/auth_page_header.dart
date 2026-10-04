@@ -24,7 +24,7 @@ class AulaPageHeader extends StatelessWidget {
           textAlign: TextAlign.center,
           style: const TextStyle(
             color: AppColors.text,
-            fontSize: 21,
+            fontSize: 24.5,
             fontWeight: FontWeight.w800,
             letterSpacing: -.4,
           ),
@@ -35,7 +35,7 @@ class AulaPageHeader extends StatelessWidget {
           textAlign: TextAlign.center,
           style: const TextStyle(
             color: AppColors.secondaryText,
-            fontSize: 11,
+            fontSize: 14,
             height: 1.45,
           ),
         ),

@@ -60,7 +60,7 @@ class MoreDataErrorCard extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: theme.textTheme.bodySmall?.copyWith(
                     fontWeight: FontWeight.w600,
-                    fontSize: 12,
+                    fontSize: 15,
                     color: textColor ?? theme.colorScheme.onSurface,
                   ),
                 ),

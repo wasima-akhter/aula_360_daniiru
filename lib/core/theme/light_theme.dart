@@ -119,7 +119,7 @@ final ThemeData lightTheme = ThemeData(
     centerTitle: true,
     titleTextStyle: TextStyle(
       fontFamily: 'Plus Jakarta Sans',
-      fontSize: 18,
+      fontSize: 22,
       fontWeight: FontWeight.w700,
       color: AppColors.text,
     ),
@@ -139,7 +139,7 @@ final ThemeData lightTheme = ThemeData(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       textStyle: const TextStyle(
         fontFamily: 'Plus Jakarta Sans',
-        fontSize: 14,
+        fontSize: 17,
         fontWeight: FontWeight.w700,
       ),
     ),
@@ -157,7 +157,7 @@ final ThemeData lightTheme = ThemeData(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       textStyle: const TextStyle(
         fontFamily: 'Plus Jakarta Sans',
-        fontSize: 14,
+        fontSize: 17,
         fontWeight: FontWeight.w700,
       ),
     ),
@@ -172,7 +172,7 @@ final ThemeData lightTheme = ThemeData(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       textStyle: const TextStyle(
         fontFamily: 'Plus Jakarta Sans',
-        fontSize: 13,
+        fontSize: 16,
         fontWeight: FontWeight.w700,
       ),
     ),
@@ -228,28 +228,28 @@ final ThemeData lightTheme = ThemeData(
 
     hintStyle: const TextStyle(
       fontFamily: 'Plus Jakarta Sans',
-      fontSize: 14,
+      fontSize: 16.5,
       fontWeight: FontWeight.w500,
       color: AppColors.hintTextColor,
     ),
 
     labelStyle: const TextStyle(
       fontFamily: 'Plus Jakarta Sans',
-      fontSize: 14,
+      fontSize: 16.5,
       fontWeight: FontWeight.w500,
       color: AppColors.labelTextColor,
     ),
 
     floatingLabelStyle: const TextStyle(
       fontFamily: 'Plus Jakarta Sans',
-      fontSize: 14,
+      fontSize: 16.5,
       fontWeight: FontWeight.w600,
       color: AppColors.primary,
     ),
 
     errorStyle: const TextStyle(
       fontFamily: 'Plus Jakarta Sans',
-      fontSize: 12,
+      fontSize: 14.5,
       fontWeight: FontWeight.w500,
       color: AppColors.error,
     ),
@@ -262,7 +262,7 @@ final ThemeData lightTheme = ThemeData(
     // HEADLINES
     headlineLarge: TextStyle(
       fontFamily: 'Plus Jakarta Sans',
-      fontSize: 28,
+      fontSize: 32,
       fontWeight: FontWeight.w800,
       color: AppColors.text,
       height: 1.2,
@@ -270,7 +270,7 @@ final ThemeData lightTheme = ThemeData(
 
     headlineMedium: TextStyle(
       fontFamily: 'Plus Jakarta Sans',
-      fontSize: 24,
+      fontSize: 28,
       fontWeight: FontWeight.w700,
       color: AppColors.text,
       height: 1.25,
@@ -278,7 +278,7 @@ final ThemeData lightTheme = ThemeData(
 
     headlineSmall: TextStyle(
       fontFamily: 'Plus Jakarta Sans',
-      fontSize: 20,
+      fontSize: 24,
       fontWeight: FontWeight.w700,
       color: AppColors.text,
       height: 1.3,
@@ -287,7 +287,7 @@ final ThemeData lightTheme = ThemeData(
     // TITLES
     titleLarge: TextStyle(
       fontFamily: 'Plus Jakarta Sans',
-      fontSize: 18,
+      fontSize: 22,
       fontWeight: FontWeight.w700,
       color: AppColors.text,
       height: 1.3,
@@ -295,7 +295,7 @@ final ThemeData lightTheme = ThemeData(
 
     titleMedium: TextStyle(
       fontFamily: 'Plus Jakarta Sans',
-      fontSize: 16,
+      fontSize: 19,
       fontWeight: FontWeight.w600,
       color: AppColors.text,
       height: 1.35,
@@ -303,7 +303,7 @@ final ThemeData lightTheme = ThemeData(
 
     titleSmall: TextStyle(
       fontFamily: 'Plus Jakarta Sans',
-      fontSize: 14,
+      fontSize: 17,
       fontWeight: FontWeight.w600,
       color: AppColors.text,
       height: 1.35,
@@ -312,7 +312,7 @@ final ThemeData lightTheme = ThemeData(
     // BODY
     bodyLarge: TextStyle(
       fontFamily: 'Plus Jakarta Sans',
-      fontSize: 16,
+      fontSize: 19,
       fontWeight: FontWeight.w500,
       color: AppColors.secondaryText,
       height: 1.5,
@@ -320,7 +320,7 @@ final ThemeData lightTheme = ThemeData(
 
     bodyMedium: TextStyle(
       fontFamily: 'Plus Jakarta Sans',
-      fontSize: 14,
+      fontSize: 16.5,
       fontWeight: FontWeight.w500,
       color: AppColors.secondaryText,
       height: 1.5,
@@ -328,7 +328,7 @@ final ThemeData lightTheme = ThemeData(
 
     bodySmall: TextStyle(
       fontFamily: 'Plus Jakarta Sans',
-      fontSize: 12,
+      fontSize: 14.5,
       fontWeight: FontWeight.w500,
       color: AppColors.secondaryText,
       height: 1.45,
@@ -337,7 +337,7 @@ final ThemeData lightTheme = ThemeData(
     // LABELS
     labelLarge: TextStyle(
       fontFamily: 'Plus Jakarta Sans',
-      fontSize: 14,
+      fontSize: 17,
       fontWeight: FontWeight.w600,
       color: AppColors.labelTextColor,
       height: 1.3,
@@ -345,7 +345,7 @@ final ThemeData lightTheme = ThemeData(
 
     labelMedium: TextStyle(
       fontFamily: 'Plus Jakarta Sans',
-      fontSize: 12,
+      fontSize: 14.5,
       fontWeight: FontWeight.w500,
       color: AppColors.subtitleTextColor,
       height: 1.3,
@@ -353,7 +353,7 @@ final ThemeData lightTheme = ThemeData(
 
     labelSmall: TextStyle(
       fontFamily: 'Plus Jakarta Sans',
-      fontSize: 10,
+      fontSize: 13,
       fontWeight: FontWeight.w500,
       color: AppColors.hintTextColor,
       height: 1.3,

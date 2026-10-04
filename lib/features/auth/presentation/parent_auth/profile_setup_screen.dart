@@ -1,4 +1,4 @@
-import 'dart:io';
+﻿import 'dart:io';
 
 import '../../../../core/helper/snackbar/api_snackbar.dart';
 import '../../../share/export/screen_export.dart';
@@ -224,7 +224,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                     'PARENT PORTAL',
                     style: TxtStyle.titleLarge(
                       color: AppColors.secondaryText,
-                      fontSize: 11.sp,
+                      fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -243,7 +243,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                         'Complete your profile',
                         style: TxtStyle.titleLarge(
                           color: AppColors.text,
-                          fontSize: 22.sp,
+                          fontSize: 25.5.sp,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -257,7 +257,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                         textAlign: TextAlign.center,
                         style: TxtStyle.titleLarge(
                           color: AppColors.secondaryText,
-                          fontSize: 12.sp,
+                          fontSize: 15.sp,
                           height: 1.5,
                         ),
                       ),

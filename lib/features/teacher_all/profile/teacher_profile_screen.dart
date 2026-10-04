@@ -1,4 +1,4 @@
-import '../../parent_all/helper/parent_widgets.dart';
+﻿import '../../parent_all/helper/parent_widgets.dart';
 import '../../share/component/logout_btn.dart';
 import '../../share/export/screen_export.dart';
 
@@ -59,7 +59,7 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
                 textAlign: TextAlign.center,
                 style: TxtStyle.titleLarge(
                   color: AppColors.subtitleTextColor,
-                  fontSize: 12.sp,
+                  fontSize: 15.sp,
                 ),
               ),
 
@@ -69,7 +69,7 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
                 'Faculty ID: #FAC-1042',
                 style: TxtStyle.titleLarge(
                   color: AppColors.hintTextColor,
-                  fontSize: 11.5.sp,
+                  fontSize: 14.5.sp,
                 ),
               ),
             ],
@@ -147,7 +147,7 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
             textAlign: TextAlign.center,
             style: TxtStyle.titleLarge(
               color: AppColors.text,
-              fontSize: 18.sp,
+              fontSize: 21.sp,
               fontWeight: FontWeight.w800,
             ),
           ),
@@ -159,7 +159,7 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
             textAlign: TextAlign.center,
             style: TxtStyle.titleLarge(
               color: AppColors.subtitleTextColor,
-              fontSize: 12.sp,
+              fontSize: 15.sp,
             ),
           ),
 
@@ -184,7 +184,7 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
                   'Faculty ID: #FAC-1042',
                   style: TxtStyle.titleLarge(
                     color: AppColors.primaryDark,
-                    fontSize: 11.5.sp,
+                    fontSize: 14.5.sp,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -226,7 +226,7 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
             overflow: TextOverflow.ellipsis,
             style: TxtStyle.titleLarge(
               color: AppColors.subtitleTextColor,
-              fontSize: 12.sp,
+              fontSize: 15.sp,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -272,7 +272,7 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
             title: 'Settings',
             subtitle: 'Notifications, security & preferences',
             onTap: () {
-              context.push(RoutePath.settings);
+              context.push(RoutePath.teacherSettings);
             },
           ),
         ],
@@ -312,7 +312,7 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
                     title,
                     style: TxtStyle.titleLarge(
                       color: AppColors.text,
-                      fontSize: 13.sp,
+                      fontSize: 16.sp,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -321,7 +321,7 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
                     subtitle,
                     style: TxtStyle.bodyMedium(
                       color: AppColors.subtitleTextColor,
-                      fontSize: 11.5.sp,
+                      fontSize: 14.5.sp,
                     ),
                   ),
                 ],
@@ -452,7 +452,7 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
       title: Text(
         title,
         style: TxtStyle.titleLarge(
-          fontSize: 13.sp,
+          fontSize: 16.sp,
           fontWeight: FontWeight.w700,
           color: AppColors.text,
         ),
@@ -460,7 +460,7 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
       subtitle: Text(
         subtitle,
         style: TxtStyle.bodyMedium(
-          fontSize: 11.sp,
+          fontSize: 14.sp,
           color: AppColors.subtitleTextColor,
         ),
       ),
@@ -482,7 +482,7 @@ Widget _sectionLabel(String text) {
       text,
       style: TxtStyle.bodyLarge(
         color: AppColors.subtitleTextColor,
-        fontSize: 12.sp,
+        fontSize: 15.sp,
         fontWeight: FontWeight.w800,
         letterSpacing: .4,
       ),

@@ -1,4 +1,4 @@
-import '../../share/export/screen_export.dart';
+﻿import '../../share/export/screen_export.dart';
 import '../helper/parent_enums.dart';
 import '../helper/parent_models.dart';
 import '../helper/parent_widgets.dart';
@@ -67,7 +67,7 @@ class AttendanceScreen extends StatelessWidget {
                       child.name,
                       style: TxtStyle.titleLarge(
                         color: AppColors.text,
-                        fontSize: 16.sp,
+                        fontSize: 19.sp,
                         fontWeight: FontWeight.w800,
                       ),
                     ),
@@ -76,7 +76,7 @@ class AttendanceScreen extends StatelessWidget {
                       '${child.grade} • ${child.room}',
                       style: TxtStyle.titleLarge(
                         color: AppColors.subtitleTextColor,
-                        fontSize: 12.5.sp,
+                        fontSize: 15.5.sp,
                       ),
                     ),
                   ],
@@ -89,7 +89,7 @@ class AttendanceScreen extends StatelessWidget {
                     '${child.attendance.toStringAsFixed(0)}%',
                     style: TxtStyle.titleLarge(
                       color: AppColors.primaryDark,
-                      fontSize: 17.sp,
+                      fontSize: 20.sp,
                       fontWeight: FontWeight.w900,
                     ),
                   ),
@@ -97,7 +97,7 @@ class AttendanceScreen extends StatelessWidget {
                     'Term Record',
                     style: TxtStyle.titleLarge(
                       color: AppColors.subtitleTextColor,
-                      fontSize: 11.sp,
+                      fontSize: 14.sp,
                     ),
                   ),
                 ],
@@ -144,7 +144,7 @@ class AttendanceScreen extends StatelessWidget {
           value,
           style: TxtStyle.titleLarge(
             color: color,
-            fontSize: 16.sp,
+            fontSize: 19.sp,
             fontWeight: FontWeight.w800,
           ),
         ),
@@ -153,7 +153,7 @@ class AttendanceScreen extends StatelessWidget {
           label,
           style: TxtStyle.titleLarge(
             color: AppColors.subtitleTextColor,
-            fontSize: 12.sp,
+            fontSize: 15.sp,
           ),
         ),
       ],
@@ -167,7 +167,7 @@ class AttendanceScreen extends StatelessWidget {
           'OCTOBER 2024',
           style: TxtStyle.titleLarge(
             color: AppColors.subtitleTextColor,
-            fontSize: 13.sp,
+            fontSize: 16.sp,
             fontWeight: FontWeight.w800,
             letterSpacing: .3,
           ),
@@ -177,7 +177,7 @@ class AttendanceScreen extends StatelessWidget {
           '6 Sessions',
           style: TxtStyle.titleLarge(
             color: AppColors.subtitleTextColor,
-            fontSize: 12.sp,
+            fontSize: 15.sp,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -256,7 +256,7 @@ class AttendanceScreen extends StatelessWidget {
                   style: TxtStyle.titleLarge(
                     letterSpacing: 0.1,
                     color: AppColors.text,
-                    fontSize: 14.5.sp,
+                    fontSize: 17.5.sp,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -265,7 +265,7 @@ class AttendanceScreen extends StatelessWidget {
                   date,
                   style: TxtStyle.titleLarge(
                     color: AppColors.subtitleTextColor,
-                    fontSize: 12.sp,
+                    fontSize: 15.sp,
                   ),
                 ),
               ],
@@ -302,7 +302,7 @@ class AttendanceScreen extends StatelessWidget {
             '${status.label}$suffix',
             style: TxtStyle.titleLarge(
               color: status.textColor,
-              fontSize: 11.sp,
+              fontSize: 14.sp,
               fontWeight: FontWeight.w700,
             ),
           ),

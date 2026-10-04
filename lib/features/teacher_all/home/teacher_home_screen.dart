@@ -1,4 +1,4 @@
-import 'package:aula360/features/parent_all/helper/parent_home_helper.dart';
+﻿import 'package:aula360/features/parent_all/helper/parent_home_helper.dart';
 
 import '../../share/export/screen_export.dart';
 import '../../share/widgets/button/app_logo.dart';
@@ -92,7 +92,7 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
             'Good morning, Dr. Vance',
             style: TxtStyle.titleLarge(
               color: AppColors.primaryDark,
-              fontSize: 17.sp,
+              fontSize: 20.sp,
               fontWeight: FontWeight.w700,
               letterSpacing: -.35,
             ),
@@ -104,7 +104,7 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
             'TODAY • THU, OCT 24',
             style: TxtStyle.titleMedium(
               color: AppColors.subtitleTextColor,
-              fontSize: 11.5.sp,
+              fontSize: 14.5.sp,
               fontWeight: FontWeight.w700,
               letterSpacing: .55,
             ),
@@ -116,7 +116,7 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
             '4 Classes Scheduled',
             style: TxtStyle.titleLarge(
               color: AppColors.text,
-              fontSize: 21.sp,
+              fontSize: 24.sp,
               fontWeight: FontWeight.w700,
               letterSpacing: -.3,
             ),
@@ -160,7 +160,7 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
                   'NEXT • 09:00 – 10:30 AM',
                   style: TxtStyle.titleLarge(
                     color: AppColors.primaryDark,
-                    fontSize: 12.sp,
+                    fontSize: 15.sp,
                     fontWeight: FontWeight.w700,
                     letterSpacing: .35,
                   ),
@@ -180,7 +180,7 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
               'Advanced Mathematics (Calculus AB)',
               style: TxtStyle.titleLarge(
                 color: AppColors.text,
-                fontSize: 19.sp,
+                fontSize: 22.sp,
                 fontWeight: FontWeight.w600,
                 height: 1.25,
               ),
@@ -192,7 +192,7 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
               'Room 204 • Group A • 18 Students',
               style: TxtStyle.titleLarge(
                 color: AppColors.subtitleTextColor,
-                fontSize: 13.sp,
+                fontSize: 16.sp,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -216,7 +216,7 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
             'Schedule',
             style: TxtStyle.titleLarge(
               color: AppColors.text,
-              fontSize: 18.sp,
+              fontSize: 21.sp,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -225,7 +225,7 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
             'In-Person',
             style: TxtStyle.titleLarge(
               color: AppColors.subtitleTextColor,
-              fontSize: 12.sp,
+              fontSize: 15.sp,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -265,7 +265,7 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
                     item.startTime,
                     style: TxtStyle.titleLarge(
                       color: index == 0 ? AppColors.primary : AppColors.text,
-                      fontSize: 12.sp,
+                      fontSize: 15.sp,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -274,7 +274,7 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
                     item.endTime,
                     style: TxtStyle.titleLarge(
                       color: AppColors.subtitleTextColor,
-                      fontSize: 11.5.sp,
+                      fontSize: 14.5.sp,
                       height: 1.3,
                     ),
                   ),
@@ -293,7 +293,7 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
                     item.title,
                     style: TxtStyle.titleLarge(
                       color: AppColors.text,
-                      fontSize: 15.sp,
+                      fontSize: 18.sp,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -305,7 +305,7 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
                     '${item.students} students',
                     style: TxtStyle.labelLarge(
                       color: AppColors.subtitleTextColor,
-                      fontSize: 12.5.sp,
+                      fontSize: 15.5.sp,
                       height: 1.3,
                     ),
                   ),

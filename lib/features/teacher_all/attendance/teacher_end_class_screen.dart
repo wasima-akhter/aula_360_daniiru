@@ -1,4 +1,4 @@
-import '../../parent_all/helper/parent_home_helper.dart';
+﻿import '../../parent_all/helper/parent_home_helper.dart';
 import '../../share/export/screen_export.dart';
 
 /// ===============================================================
@@ -30,7 +30,7 @@ class TeacherEndClassScreen extends StatelessWidget {
                       'End Class Session',
                       style: TxtStyle.titleLarge(
                         color: AppColors.text,
-                        fontSize: 20.sp,
+                        fontSize: 23.sp,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -45,7 +45,7 @@ class TeacherEndClassScreen extends StatelessWidget {
                       textAlign: TextAlign.center,
                       style: TxtStyle.bodyMedium(
                         color: AppColors.subtitleTextColor,
-                        fontSize: 12.5.sp,
+                        fontSize: 15.5.sp,
                         height: 1.45,
                       ),
                     ),
@@ -78,13 +78,18 @@ class TeacherEndClassScreen extends StatelessWidget {
 
                   SizedBox(height: 16.h),
 
-                  Center(
-                    child: Text(
-                      'Return to Attendance',
-                      style: TxtStyle.labelLarge(
-                        color: AppColors.subtitleTextColor,
-                        fontSize: 12.5.sp,
-                        fontWeight: FontWeight.w500,
+                  GestureDetector(
+                    onTap: () {
+                      context.pop();
+                    },
+                    child: Center(
+                      child: Text(
+                        'Return to Attendance',
+                        style: TxtStyle.labelLarge(
+                          color: AppColors.subtitleTextColor,
+                          fontSize: 15.5.sp,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ),
                   ),
@@ -121,7 +126,7 @@ class TeacherEndClassScreen extends StatelessWidget {
               'Session In Progress • 88 mins',
               style: TxtStyle.labelLarge(
                 color: AppColors.primaryColor,
-                fontSize: 10.sp,
+                fontSize: 13.sp,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -150,7 +155,7 @@ class TeacherEndClassScreen extends StatelessWidget {
                   'SUBJECT & COHORT',
                   style: TxtStyle.labelLarge(
                     color: AppColors.primaryColor,
-                    fontSize: 10.sp,
+                    fontSize: 13.sp,
                     fontWeight: FontWeight.w800,
                     letterSpacing: .5,
                   ),
@@ -178,7 +183,7 @@ class TeacherEndClassScreen extends StatelessWidget {
             'Advanced Mathematics',
             style: TxtStyle.titleLarge(
               color: AppColors.text,
-              fontSize: 15.sp,
+              fontSize: 18.sp,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -189,7 +194,7 @@ class TeacherEndClassScreen extends StatelessWidget {
             'Calculus AB • Group A • Grade 11',
             style: TxtStyle.bodyMedium(
               color: AppColors.subtitleTextColor,
-              fontSize: 11.5.sp,
+              fontSize: 14.5.sp,
             ),
           ),
 
@@ -249,7 +254,7 @@ class TeacherEndClassScreen extends StatelessWidget {
                 title,
                 style: TxtStyle.labelLarge(
                   color: AppColors.subtitleTextColor,
-                  fontSize: 9.sp,
+                  fontSize: 12.sp,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -260,7 +265,7 @@ class TeacherEndClassScreen extends StatelessWidget {
             value,
             style: TxtStyle.labelLarge(
               color: AppColors.text,
-              fontSize: 10.5.sp,
+              fontSize: 13.5.sp,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -285,7 +290,7 @@ class TeacherEndClassScreen extends StatelessWidget {
                 'ATTENDANCE SUMMARY',
                 style: TxtStyle.labelLarge(
                   color: AppColors.primaryColor,
-                  fontSize: 9.5.sp,
+                  fontSize: 12.5.sp,
                   fontWeight: FontWeight.w800,
                   letterSpacing: .4,
                 ),
@@ -295,7 +300,7 @@ class TeacherEndClassScreen extends StatelessWidget {
                 '83.3% Present',
                 style: TxtStyle.labelLarge(
                   color: AppColors.emeraldGreenColor,
-                  fontSize: 9.5.sp,
+                  fontSize: 12.5.sp,
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -308,7 +313,7 @@ class TeacherEndClassScreen extends StatelessWidget {
                 '15 of 18 Students Present',
                 style: TxtStyle.titleLarge(
                   color: AppColors.text,
-                  fontSize: 13.sp,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -317,7 +322,7 @@ class TeacherEndClassScreen extends StatelessWidget {
                 '3 Absent',
                 style: TxtStyle.labelLarge(
                   color: Colors.red.shade600,
-                  fontSize: 10.sp,
+                  fontSize: 13.sp,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -364,7 +369,7 @@ class TeacherEndClassScreen extends StatelessWidget {
               'academic records.',
               style: TxtStyle.bodyMedium(
                 color: AppColors.subtitleTextColor,
-                fontSize: 11.5.sp,
+                fontSize: 14.5.sp,
                 height: 1.4,
               ),
             ),

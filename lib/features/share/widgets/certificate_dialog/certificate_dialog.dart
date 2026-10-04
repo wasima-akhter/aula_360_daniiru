@@ -1,4 +1,4 @@
-import '../../export/screen_export.dart';
+﻿import '../../export/screen_export.dart';
 
 class CertificateDialog extends StatelessWidget {
   final String title;
@@ -29,7 +29,7 @@ class CertificateDialog extends StatelessWidget {
                 Text(
                   title,
                   style: TxtStyle.titleLarge(
-                    fontSize: 20.sp,
+                    fontSize: 23.5.sp,
                     fontWeight: FontWeight.w800,
                     color: const Color(0xFF102039),
                   ),
@@ -65,7 +65,7 @@ class CertificateDialog extends StatelessWidget {
                         child: Text(
                           text,
                           style: TxtStyle.titleLarge(
-                            fontSize: 15.sp,
+                            fontSize: 18.sp,
                             fontWeight: FontWeight.w500,
                             color: const Color(0xFF243048),
                           ),

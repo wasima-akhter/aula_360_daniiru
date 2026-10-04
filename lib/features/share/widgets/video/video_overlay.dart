@@ -214,7 +214,7 @@ class _AppVideoPlayerState extends State<AppVideoPlayer> {
                         style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
-                          fontSize: 16,
+                          fontSize: 19,
                         ),
                       ),
                     ),
@@ -335,7 +335,7 @@ class _VideoErrorView extends StatelessWidget {
               style: TxtStyle.titleLarge(
                 color: Colors.white,
                 fontWeight: FontWeight.w600,
-                fontSize: 16,
+                fontSize: 19,
               ),
             ),
 
@@ -344,7 +344,7 @@ class _VideoErrorView extends StatelessWidget {
             Text(
               AppStrings.videoUnavailableOrConnectionFailed,
               textAlign: TextAlign.center,
-              style: TxtStyle.titleLarge(color: Colors.white70, fontSize: 13),
+              style: TxtStyle.titleLarge(color: Colors.white70, fontSize: 16),
             ),
 
             const SizedBox(height: 16),

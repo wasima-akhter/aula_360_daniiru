@@ -1,4 +1,4 @@
-import '../../share/export/screen_export.dart';
+﻿import '../../share/export/screen_export.dart';
 
 class TeacherInformationScreen extends StatelessWidget {
   const TeacherInformationScreen({super.key});
@@ -23,7 +23,7 @@ class TeacherInformationScreen extends StatelessWidget {
           'Teacher Information',
           style: TxtStyle.titleLarge(
             color: const Color(0xFF082E78),
-            fontSize: 18.sp,
+            fontSize: 21.sp,
             fontWeight: FontWeight.w800,
           ),
         ),
@@ -58,7 +58,7 @@ class TeacherInformationScreen extends StatelessWidget {
             'Lucas Rivera',
             style: TxtStyle.titleLarge(
               color: const Color(0xFF123579),
-              fontSize: 12.sp,
+              fontSize: 15.sp,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -67,7 +67,7 @@ class TeacherInformationScreen extends StatelessWidget {
             'Grade 8, Room 3B',
             style: TxtStyle.titleLarge(
               color: const Color(0xFF667085),
-              fontSize: 11.5.sp,
+              fontSize: 14.5.sp,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -85,7 +85,7 @@ class TeacherInformationScreen extends StatelessWidget {
             'Active Term',
             style: TxtStyle.titleLarge(
               color: const Color(0xFF20A779),
-              fontSize: 11.5.sp,
+              fontSize: 14.5.sp,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -140,7 +140,7 @@ class TeacherInformationScreen extends StatelessWidget {
                       'Mr. Robert Hayes',
                       style: TxtStyle.titleLarge(
                         color: const Color(0xFF20283B),
-                        fontSize: 17.sp,
+                        fontSize: 20.sp,
                         fontWeight: FontWeight.w800,
                       ),
                     ),
@@ -149,7 +149,7 @@ class TeacherInformationScreen extends StatelessWidget {
                       'Head of Mathematics & STEM Faculty',
                       style: TxtStyle.titleLarge(
                         color: const Color(0xFF082E78),
-                        fontSize: 12.5.sp,
+                        fontSize: 15.5.sp,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -158,7 +158,7 @@ class TeacherInformationScreen extends StatelessWidget {
                       'St. Matthew Preparatory School •\n#FAC-4092',
                       style: TxtStyle.titleLarge(
                         color: const Color(0xFF687083),
-                        fontSize: 11.5.sp,
+                        fontSize: 14.5.sp,
                         height: 1.35,
                         fontWeight: FontWeight.w500,
                       ),
@@ -181,7 +181,7 @@ class TeacherInformationScreen extends StatelessWidget {
             'foundations, and STEM development.',
             style: TxtStyle.titleLarge(
               color: const Color(0xFF626B7B),
-              fontSize: 12.5.sp,
+              fontSize: 15.5.sp,
               height: 1.55,
               fontWeight: FontWeight.w500,
             ),
@@ -259,7 +259,7 @@ class TeacherInformationScreen extends StatelessWidget {
                 'Direct Communication',
                 style: TxtStyle.titleLarge(
                   color: const Color(0xFF20283B),
-                  fontSize: 16.sp,
+                  fontSize: 19.sp,
                   fontWeight: FontWeight.w800,
                 ),
               ),
@@ -297,7 +297,7 @@ class TeacherInformationScreen extends StatelessWidget {
             'Portal Direct Message',
             style: TxtStyle.titleLarge(
               color: const Color(0xFF263149),
-              fontSize: 12.5.sp,
+              fontSize: 15.5.sp,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -329,7 +329,7 @@ class TeacherInformationScreen extends StatelessWidget {
             'Office Hours & Consultation',
             style: TxtStyle.titleLarge(
               color: const Color(0xFF263149),
-              fontSize: 13.sp,
+              fontSize: 16.sp,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -338,7 +338,7 @@ class TeacherInformationScreen extends StatelessWidget {
             'Wed & Thu • 3:30 – 4:30 PM (Room 3B / Virtual)',
             style: TxtStyle.titleLarge(
               color: const Color(0xFF6B7485),
-              fontSize: 11.8.sp,
+              fontSize: 14.8.sp,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -357,7 +357,7 @@ class TeacherInformationScreen extends StatelessWidget {
                 'Request Meeting',
                 style: TxtStyle.titleLarge(
                   color: const Color(0xFF082E78),
-                  fontSize: 12.5.sp,
+                  fontSize: 15.5.sp,
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -393,7 +393,7 @@ class TeacherInformationScreen extends StatelessWidget {
             'r.hayes@stmatthewprep.edu',
             style: TxtStyle.titleLarge(
               color: const Color(0xFF123A82),
-              fontSize: 11.8.sp,
+              fontSize: 14.8.sp,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -417,7 +417,7 @@ class TeacherInformationScreen extends StatelessWidget {
           text,
           style: TxtStyle.titleLarge(
             color: Colors.white,
-            fontSize: 12.5.sp,
+            fontSize: 15.5.sp,
             fontWeight: FontWeight.w700,
           ),
         ),

@@ -1,4 +1,4 @@
-import '../../../features/share/export/screen_export.dart';
+﻿import '../../../features/share/export/screen_export.dart';
 import '../../../utils/app_keys/app_keys.dart';
 
 enum SnackbarType { success, error, warning, info }
@@ -34,14 +34,14 @@ class ApiSnackbar {
                   style: TxtStyle.titleLarge(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
-                    fontSize: 14.sp,
+                    fontSize: 17.sp,
                   ),
                 ),
               if (title != null && title.isNotEmpty) const SizedBox(height: 4),
               Text(
                 message,
                 style: TxtStyle.titleLarge(
-                  fontSize: 13.sp,
+                  fontSize: 16.sp,
                   color: Colors.white,
                 ),
               ),

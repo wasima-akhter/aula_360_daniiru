@@ -1,4 +1,4 @@
-/// ===============================================================
+﻿/// ===============================================================
 /// 3. MY CHILDREN
 /// ===============================================================
 library;
@@ -78,7 +78,7 @@ class _MyChildrenScreenState extends State<MyChildrenScreen> {
                         child.name,
                         style: TxtStyle.titleLarge(
                           color: AppColors.text,
-                          fontSize: 16.sp,
+                          fontSize: 19.sp,
                           fontWeight: FontWeight.w800,
                         ),
                       ),
@@ -89,7 +89,7 @@ class _MyChildrenScreenState extends State<MyChildrenScreen> {
                             '${child.grade} • ${child.room} • ',
                             style: TxtStyle.titleLarge(
                               color: AppColors.subtitleTextColor,
-                              fontSize: 12.sp,
+                              fontSize: 15.sp,
                             ),
                           ),
 
@@ -108,7 +108,7 @@ class _MyChildrenScreenState extends State<MyChildrenScreen> {
                               '#STU-4821',
                               style: TxtStyle.titleLarge(
                                 color: AppColors.subtitleTextColor,
-                                fontSize: 10.sp,
+                                fontSize: 13.sp,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
@@ -141,7 +141,7 @@ class _MyChildrenScreenState extends State<MyChildrenScreen> {
                     child.parentTeacher,
                     style: TxtStyle.titleLarge(
                       color: AppColors.subtitleTextColor,
-                      fontSize: 12.sp,
+                      fontSize: 15.sp,
                     ),
                   ),
                 ),
@@ -209,7 +209,7 @@ class _MyChildrenScreenState extends State<MyChildrenScreen> {
           '● Active • $text',
           style: TxtStyle.titleLarge(
             color: AppColors.emeraldGreenColor,
-            fontSize: 11.sp,
+            fontSize: 14.sp,
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -249,7 +249,7 @@ class _MyChildrenScreenState extends State<MyChildrenScreen> {
               'Add Another Child',
               style: TxtStyle.titleLarge(
                 color: AppColors.primaryDark,
-                fontSize: 14.sp,
+                fontSize: 17.sp,
                 fontWeight: FontWeight.w800,
               ),
             ),

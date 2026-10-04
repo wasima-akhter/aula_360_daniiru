@@ -1,4 +1,4 @@
-import '../../parent_all/helper/parent_home_helper.dart';
+﻿import '../../parent_all/helper/parent_home_helper.dart';
 import '../../share/export/screen_export.dart';
 
 class ReportsScreen extends StatefulWidget {
@@ -130,7 +130,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                     entry.key,
                     style: TxtStyle.titleLarge(
                       color: AppColors.secondaryText,
-                      fontSize: 11.sp,
+                      fontSize: 14.sp,
                       fontWeight: FontWeight.w800,
                       letterSpacing: .45,
                     ),
@@ -175,7 +175,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
               'STUDENT',
               style: TxtStyle.titleLarge(
                 color: AppColors.secondaryText,
-                fontSize: 13.sp,
+                fontSize: 16.sp,
                 fontWeight: FontWeight.w800,
                 letterSpacing: .5,
               ),
@@ -185,7 +185,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
               '${students.length} Enrolled',
               style: TxtStyle.titleLarge(
                 color: AppColors.primary,
-                fontSize: 12.sp,
+                fontSize: 15.sp,
                 fontWeight: FontWeight.w800,
               ),
             ),
@@ -263,7 +263,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                     overflow: TextOverflow.ellipsis,
                     style: TxtStyle.titleLarge(
                       color: AppColors.text,
-                      fontSize: 13.sp,
+                      fontSize: 16.sp,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -276,7 +276,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                     overflow: TextOverflow.ellipsis,
                     style: TxtStyle.titleLarge(
                       color: AppColors.secondaryText,
-                      fontSize: 11.sp,
+                      fontSize: 14.sp,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -343,7 +343,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
           categories[index],
           style: TxtStyle.titleLarge(
             color: selected ? Colors.white : AppColors.secondaryText,
-            fontSize: 12.sp,
+            fontSize: 15.sp,
             fontWeight: FontWeight.w800,
           ),
         ),
@@ -381,7 +381,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                         overflow: TextOverflow.ellipsis,
                         style: TxtStyle.titleLarge(
                           color: AppColors.text,
-                          fontSize: 16.sp,
+                          fontSize: 19.sp,
                           fontWeight: FontWeight.w800,
                         ),
                       ),
@@ -392,7 +392,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                         report.teacher,
                         style: TxtStyle.titleLarge(
                           color: AppColors.secondaryText,
-                          fontSize: 13.sp,
+                          fontSize: 16.sp,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -427,7 +427,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                   report.time,
                   style: TxtStyle.titleLarge(
                     color: AppColors.secondaryText,
-                    fontSize: 12.sp,
+                    fontSize: 15.sp,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -456,7 +456,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                     'Teacher Note',
                     style: TxtStyle.titleLarge(
                       color: AppColors.primary,
-                      fontSize: 12.sp,
+                      fontSize: 15.sp,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -469,7 +469,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                     overflow: TextOverflow.ellipsis,
                     style: TxtStyle.titleLarge(
                       color: AppColors.text,
-                      fontSize: 12.5.sp,
+                      fontSize: 15.5.sp,
                       height: 1.45,
                       fontWeight: FontWeight.w500,
                     ),
@@ -496,7 +496,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                     overflow: TextOverflow.ellipsis,
                     style: TxtStyle.titleLarge(
                       color: AppColors.secondaryText,
-                      fontSize: 12.sp,
+                      fontSize: 15.sp,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -506,7 +506,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                   'View Report',
                   style: TxtStyle.titleLarge(
                     color: AppColors.primary,
-                    fontSize: 11.sp,
+                    fontSize: 14.sp,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
@@ -557,7 +557,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
               'No Reports Found',
               style: TxtStyle.titleLarge(
                 color: AppColors.text,
-                fontSize: 16.sp,
+                fontSize: 19.sp,
                 fontWeight: FontWeight.w800,
               ),
             ),
@@ -569,7 +569,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
               textAlign: TextAlign.center,
               style: TxtStyle.titleLarge(
                 color: AppColors.secondaryText,
-                fontSize: 12.sp,
+                fontSize: 15.sp,
                 height: 1.4,
               ),
             ),

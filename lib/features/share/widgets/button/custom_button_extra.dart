@@ -78,7 +78,7 @@ class CustomButtonExtra extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   CustomText(
-                    fontSize: fontSize ?? 18.sp,
+                    fontSize: fontSize ?? 19.5.sp,
                     fontWeight: fontWeight ?? FontWeight.w700,
                     color: textColor,
                     textAlign: TextAlign.center,

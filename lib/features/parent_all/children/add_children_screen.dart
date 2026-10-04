@@ -1,4 +1,4 @@
-import '../../share/export/screen_export.dart';
+﻿import '../../share/export/screen_export.dart';
 import '../helper/parent_models.dart';
 import '../helper/parent_widgets.dart';
 
@@ -51,7 +51,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
                   'Student Information',
                   style: TxtStyle.titleLarge(
                     color: AppColors.text,
-                    fontSize: 16.sp,
+                    fontSize: 19.sp,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
@@ -60,7 +60,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
                   'Enter basic details to connect your child to your academy parent account.',
                   style: TxtStyle.titleLarge(
                     color: AppColors.subtitleTextColor,
-                    fontSize: 12.5.sp,
+                    fontSize: 15.5.sp,
                     height: 1.4,
                   ),
                 ),
@@ -89,7 +89,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
                       'Cancel',
                       style: TxtStyle.titleLarge(
                         color: AppColors.subtitleTextColor,
-                        fontSize: 12.5.sp,
+                        fontSize: 15.5.sp,
                       ),
                     ),
                   ),
@@ -113,7 +113,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
         '• NEW STUDENT ENROLLMENT',
         style: TxtStyle.titleLarge(
           color: AppColors.primaryDark,
-          fontSize: 12.sp,
+          fontSize: 15.sp,
           fontWeight: FontWeight.w800,
         ),
       ),
@@ -142,7 +142,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
               'ER',
               style: TxtStyle.titleLarge(
                 color: AppColors.primaryDark,
-                fontSize: 11.sp,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.w800,
               ),
             ),
@@ -156,7 +156,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
                   'PARENT ACCOUNT',
                   style: TxtStyle.titleLarge(
                     color: AppColors.subtitleTextColor,
-                    fontSize: 11.sp,
+                    fontSize: 14.sp,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -165,7 +165,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
                   'Eleanor Rivera',
                   style: TxtStyle.titleLarge(
                     color: AppColors.text,
-                    fontSize: 11.5.sp,
+                    fontSize: 14.5.sp,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
@@ -182,7 +182,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
               'Verified',
               style: TxtStyle.titleLarge(
                 color: AppColors.primaryDark,
-                fontSize: 12.sp,
+                fontSize: 15.sp,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -199,7 +199,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
           SnackBar(
             content: Text(
               'Photo picker opened.',
-              style: TxtStyle.titleLarge(fontSize: 11.sp, color: Colors.white),
+              style: TxtStyle.titleLarge(fontSize: 14.sp, color: Colors.white),
             ),
             behavior: SnackBarBehavior.floating,
           ),
@@ -235,7 +235,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
               'Upload Photo (Optional)',
               style: TxtStyle.titleLarge(
                 color: AppColors.primaryDark,
-                fontSize: 12.sp,
+                fontSize: 15.sp,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -244,7 +244,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
               'JPG or PNG up to 5MB',
               style: TxtStyle.titleLarge(
                 color: AppColors.subtitleTextColor,
-                fontSize: 12.sp,
+                fontSize: 15.sp,
               ),
             ),
           ],
@@ -273,7 +273,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
               }
               return null;
             },
-            style: TxtStyle.titleLarge(color: AppColors.text, fontSize: 11.sp),
+            style: TxtStyle.titleLarge(color: AppColors.text, fontSize: 14.sp),
             decoration: _inputDecoration(icon),
           ),
         ],
@@ -299,7 +299,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
               }
               return null;
             },
-            style: TxtStyle.titleLarge(color: AppColors.text, fontSize: 11.sp),
+            style: TxtStyle.titleLarge(color: AppColors.text, fontSize: 14.sp),
             decoration: _inputDecoration(Icons.calendar_today_outlined),
           ),
         ],
@@ -356,7 +356,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
                 setState(() => grade = value);
               }
             },
-            style: TxtStyle.titleLarge(color: AppColors.text, fontSize: 13.sp),
+            style: TxtStyle.titleLarge(color: AppColors.text, fontSize: 16.sp),
           ),
         ],
       ),
@@ -418,7 +418,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
               color: selected
                   ? AppColors.primaryDark
                   : AppColors.subtitleTextColor,
-              fontSize: 12.sp,
+              fontSize: 15.sp,
               fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
             ),
           ),
@@ -439,14 +439,14 @@ class _AddChildScreenState extends State<AddChildScreen> {
             'Provided by academy',
             style: TxtStyle.titleLarge(
               color: AppColors.subtitleTextColor,
-              fontSize: 12.sp,
+              fontSize: 15.sp,
             ),
           ),
         ),
         SizedBox(height: 4.h),
         TextFormField(
           controller: studentIdController,
-          style: TxtStyle.titleLarge(color: AppColors.text, fontSize: 11.sp),
+          style: TxtStyle.titleLarge(color: AppColors.text, fontSize: 14.sp),
           decoration: _inputDecoration(Icons.badge_outlined),
         ),
         SizedBox(height: 12.h),
@@ -474,7 +474,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
               'Student record connects directly to your parent dashboard upon confirmation.',
               style: TxtStyle.titleLarge(
                 color: AppColors.subtitleTextColor,
-                fontSize: 12.sp,
+                fontSize: 15.sp,
                 height: 1.35,
               ),
             ),
@@ -487,7 +487,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
   Widget _saveChildButton() {
     return SizedBox(
       width: double.infinity,
-      height: 44.h,
+
       child: ElevatedButton(
         onPressed: _saveChild,
         style: ElevatedButton.styleFrom(
@@ -500,13 +500,13 @@ class _AddChildScreenState extends State<AddChildScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.check, color: Colors.white, size: 15.sp),
+            Icon(Icons.check, color: Colors.white, size: 20.sp),
             SizedBox(width: 5.w),
             Text(
               'Save Child',
               style: TxtStyle.titleLarge(
                 color: Colors.white,
-                fontSize: 14.sp,
+                fontSize: 17.sp,
                 fontWeight: FontWeight.w800,
               ),
             ),
@@ -546,7 +546,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
         text: text,
         style: TxtStyle.titleLarge(
           color: AppColors.labelTextColor,
-          fontSize: 13.sp,
+          fontSize: 16.sp,
           fontWeight: FontWeight.w700,
         ),
         children: [
@@ -555,7 +555,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
               text: ' *',
               style: TxtStyle.titleLarge(
                 color: AppColors.error,
-                fontSize: 13.sp,
+                fontSize: 16.sp,
               ),
             ),
         ],

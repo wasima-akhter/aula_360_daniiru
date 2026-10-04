@@ -1,4 +1,4 @@
-import '../../share/export/screen_export.dart';
+﻿import '../../share/export/screen_export.dart';
 
 /// ===============================================================
 /// 1. NOTIFICATIONS SCREEN
@@ -68,7 +68,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           'Notifications',
           style: TxtStyle.titleLarge(
             color: AppColors.text,
-            fontSize: 14.sp,
+            fontSize: 17.sp,
             fontWeight: FontWeight.w800,
           ),
         ),
@@ -125,7 +125,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   'Recent Academy Updates',
                   style: TxtStyle.titleLarge(
                     color: AppColors.text,
-                    fontSize: 13.sp,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
@@ -134,7 +134,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   "Stay up-to-date with your child's progress",
                   style: TxtStyle.titleLarge(
                     color: AppColors.subtitleTextColor,
-                    fontSize: 12.5.sp,
+                    fontSize: 15.5.sp,
                   ),
                 ),
               ],
@@ -151,7 +151,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                 '$unreadCount Unread',
                 style: TxtStyle.titleLarge(
                   color: AppColors.primaryDark,
-                  fontSize: 11.sp,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w800,
                 ),
               ),
@@ -195,7 +195,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                           item.title,
                           style: TxtStyle.titleLarge(
                             color: AppColors.text,
-                            fontSize: 13.5.sp,
+                            fontSize: 16.5.sp,
                             fontWeight: FontWeight.w700,
                             height: 1.25,
                           ),
@@ -218,7 +218,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                     item.description,
                     style: TxtStyle.bodyMedium(
                       color: AppColors.subtitleTextColor,
-                      fontSize: 12.sp,
+                      fontSize: 15.sp,
                       height: 1.35,
                     ),
                   ),
@@ -235,7 +235,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                         item.time,
                         style: TxtStyle.titleLarge(
                           color: AppColors.subtitleTextColor,
-                          fontSize: 11.sp,
+                          fontSize: 14.sp,
                         ),
                       ),
                       const Spacer(),
@@ -244,7 +244,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                           item.action!,
                           style: TxtStyle.titleLarge(
                             color: AppColors.primaryDark,
-                            fontSize: 10.5.sp,
+                            fontSize: 13.5.sp,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -287,7 +287,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
               'All caught up',
               style: TxtStyle.titleLarge(
                 color: AppColors.subtitleTextColor,
-                fontSize: 11.5.sp,
+                fontSize: 14.5.sp,
               ),
             ),
           ),

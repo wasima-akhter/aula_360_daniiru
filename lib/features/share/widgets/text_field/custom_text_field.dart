@@ -220,7 +220,7 @@ class AppTextField extends StatelessWidget {
           readOnly: readOnly,
           onTap: onTap,
           style: context.titleMedium.copyWith(
-            fontSize: 13,
+            fontSize: 14.5,
             color: AppColors.text,
           ),
           decoration: InputDecoration(

@@ -1,4 +1,4 @@
-import '../../parent_all/helper/parent_home_helper.dart';
+﻿import '../../parent_all/helper/parent_home_helper.dart';
 import '../../share/export/screen_export.dart';
 import '../helper/teacher_enums.dart';
 import '../helper/teacher_models.dart';
@@ -167,8 +167,10 @@ class _TeacherAttendanceScreenState extends State<TeacherAttendanceScreen> {
       /// Bottom action only — NOT navigation.
       bottomNavigationBar: SafeArea(
         minimum: EdgeInsets.fromLTRB(16.w, 7.h, 16.w, 10.h),
-        child: SizedBox(
-          height: 47.h,
+
+        child: Container(
+          // height: 47.h,
+          padding: EdgeInsets.only(bottom: 20.h),
           child: ElevatedButton(
             onPressed: _completeAttendance,
             style: ElevatedButton.styleFrom(
@@ -185,7 +187,7 @@ class _TeacherAttendanceScreenState extends State<TeacherAttendanceScreen> {
                   'Complete Attendance',
                   style: TxtStyle.titleLarge(
                     color: Colors.white,
-                    fontSize: 14.sp,
+                    fontSize: 17.sp,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
@@ -215,7 +217,7 @@ class _TeacherAttendanceScreenState extends State<TeacherAttendanceScreen> {
                 'Advanced Mathematics',
                 style: TxtStyle.titleLarge(
                   color: AppColors.text,
-                  fontSize: 22.sp,
+                  fontSize: 25.sp,
                   fontWeight: FontWeight.w800,
                 ),
               ),
@@ -223,7 +225,7 @@ class _TeacherAttendanceScreenState extends State<TeacherAttendanceScreen> {
                 'Period 1 • Rm 204',
                 style: TxtStyle.titleLarge(
                   color: AppColors.subtitleTextColor,
-                  fontSize: 11.5.sp,
+                  fontSize: 14.5.sp,
                 ),
               ),
             ],
@@ -235,7 +237,7 @@ class _TeacherAttendanceScreenState extends State<TeacherAttendanceScreen> {
                 '$presentCount of ${students.length}',
                 style: TxtStyle.titleLarge(
                   color: AppColors.text,
-                  fontSize: 13.sp,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.w800,
                 ),
               ),
@@ -244,7 +246,7 @@ class _TeacherAttendanceScreenState extends State<TeacherAttendanceScreen> {
                 'Present',
                 style: TxtStyle.titleLarge(
                   color: AppColors.subtitleTextColor,
-                  fontSize: 12.sp,
+                  fontSize: 15.sp,
                 ),
               ),
               const Spacer(),
@@ -254,7 +256,7 @@ class _TeacherAttendanceScreenState extends State<TeacherAttendanceScreen> {
                   'Mark all present',
                   style: TxtStyle.titleLarge(
                     color: AppColors.primaryDark,
-                    fontSize: 12.sp,
+                    fontSize: 15.sp,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
@@ -290,7 +292,7 @@ class _TeacherAttendanceScreenState extends State<TeacherAttendanceScreen> {
               student.initials,
               style: TxtStyle.titleLarge(
                 color: AppColors.subtitleTextColor,
-                fontSize: 10.sp,
+                fontSize: 13.sp,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -308,7 +310,7 @@ class _TeacherAttendanceScreenState extends State<TeacherAttendanceScreen> {
                   style: TxtStyle.titleLarge(
                     color: AppColors.text,
 
-                    fontSize: 14.sp,
+                    fontSize: 17.sp,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -318,7 +320,7 @@ class _TeacherAttendanceScreenState extends State<TeacherAttendanceScreen> {
 
                   style: TxtStyle.titleLarge(
                     color: AppColors.subtitleTextColor,
-                    fontSize: 12.sp,
+                    fontSize: 15.sp,
                   ),
                 ),
               ],
@@ -359,8 +361,7 @@ class _TeacherAttendanceScreenState extends State<TeacherAttendanceScreen> {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
-        width: 59.w,
-        height: 25.h,
+        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: selected ? color : AppColors.softSlateBgColor,
@@ -370,7 +371,7 @@ class _TeacherAttendanceScreenState extends State<TeacherAttendanceScreen> {
           label,
           style: TxtStyle.titleLarge(
             color: selected ? Colors.white : AppColors.subtitleTextColor,
-            fontSize: 11.sp,
+            fontSize: 14.sp,
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -398,7 +399,7 @@ class _TeacherAttendanceScreenState extends State<TeacherAttendanceScreen> {
       SnackBar(
         content: Text(
           'All ${students.length} students marked present.',
-          style: TxtStyle.titleLarge(fontSize: 12.sp, color: Colors.white),
+          style: TxtStyle.titleLarge(fontSize: 15.sp, color: Colors.white),
         ),
         behavior: SnackBarBehavior.floating,
       ),
@@ -413,7 +414,7 @@ class _TeacherAttendanceScreenState extends State<TeacherAttendanceScreen> {
           title: Text(
             'Attendance Complete',
             style: TxtStyle.titleLarge(
-              fontSize: 18.sp,
+              fontSize: 21.sp,
               fontWeight: FontWeight.w800,
             ),
           ),
@@ -421,7 +422,7 @@ class _TeacherAttendanceScreenState extends State<TeacherAttendanceScreen> {
             '$presentCount students present and '
             '$absentCount students absent.',
             style: TxtStyle.titleLarge(
-              fontSize: 14.sp,
+              fontSize: 17.sp,
               height: 1.4,
               color: AppColors.subtitleTextColor,
             ),
@@ -438,7 +439,7 @@ class _TeacherAttendanceScreenState extends State<TeacherAttendanceScreen> {
                 style: TxtStyle.titleLarge(
                   color: AppColors.primaryDark,
                   fontWeight: FontWeight.w800,
-                  fontSize: 14.sp,
+                  fontSize: 17.sp,
                 ),
               ),
             ),

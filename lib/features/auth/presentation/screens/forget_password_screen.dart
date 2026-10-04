@@ -1,4 +1,4 @@
-import '../../../share/export/screen_export.dart';
+﻿import '../../../share/export/screen_export.dart';
 import '../../../share/widgets/button/app_logo.dart';
 import '../../../share/widgets/button/custom_back_button.dart';
 import '../../../share/widgets/text_field/custom_text_field.dart';
@@ -79,7 +79,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                   textAlign: TextAlign.center,
                   style: TxtStyle.titleLarge(
                     color: AppColors.text,
-                    fontSize: 26.sp,
+                    fontSize: 29.5.sp,
                     fontWeight: FontWeight.w800,
                   ),
                 ),

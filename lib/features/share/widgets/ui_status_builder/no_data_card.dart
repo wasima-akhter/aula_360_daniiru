@@ -70,7 +70,7 @@ class NoDataCard extends StatelessWidget {
               textAlign: TextAlign.center,
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w600,
-                fontSize: isList ? 16 : 20,
+                fontSize: isList ? 17.5 : 22,
                 color: textColor ?? theme.colorScheme.onSurface,
               ),
             ),

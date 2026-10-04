@@ -39,6 +39,7 @@ import '../../features/parent_all/teacher_info/teacher_info_screen.dart';
 import '../../features/teacher_all/attendance/teacher_attendance_screen.dart';
 import '../../features/teacher_all/classes/teacher_class_detail_screen.dart';
 import '../../features/teacher_all/profile/teacher_edit_profile_screen.dart';
+import '../../features/teacher_all/settings/change_password_screen.dart';
 import '../../features/teacher_all/settings/teacher_settings_screen.dart';
 import '../../utils/extension/base_extension.dart';
 import 'route_path.dart';
@@ -303,6 +304,16 @@ class AppRouter {
         path: RoutePath.settings.addBasePath,
         pageBuilder: (context, state) {
           return _buildPageWithAnimation(state: state, child: SettingsScreen());
+        },
+      ),
+      GoRoute(
+        name: RoutePath.changePassword,
+        path: RoutePath.changePassword.addBasePath,
+        pageBuilder: (context, state) {
+          return _buildPageWithAnimation(
+            state: state,
+            child: ChangePasswordScreen(),
+          );
         },
       ),
       GoRoute(

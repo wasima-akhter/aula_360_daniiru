@@ -1,12 +1,21 @@
-import '../../parent_all/helper/parent_home_helper.dart';
+﻿import '../../parent_all/helper/parent_home_helper.dart';
 import '../../share/export/screen_export.dart';
 
 /// ===============================================================
 /// STUDENT DETAILS SCREEN
 /// ===============================================================
 
-class TeacherStudentDetailsScreen extends StatelessWidget {
+class TeacherStudentDetailsScreen extends StatefulWidget {
   const TeacherStudentDetailsScreen({super.key});
+
+  @override
+  State<TeacherStudentDetailsScreen> createState() =>
+      _TeacherStudentDetailsScreenState();
+}
+
+class _TeacherStudentDetailsScreenState
+    extends State<TeacherStudentDetailsScreen> {
+  final List<String> _facultyNotes = [];
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +35,7 @@ class TeacherStudentDetailsScreen extends StatelessWidget {
               '#ST-2041',
               style: TxtStyle.bodyMedium(
                 color: AppColors.subtitleTextColor,
-                fontSize: 11.sp,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -61,9 +70,11 @@ class TeacherStudentDetailsScreen extends StatelessWidget {
           SizedBox(height: 17.h),
           _sectionTitle('FACULTY NOTE', trailing: 'Dr. S. Jenkins'),
           SizedBox(height: 8.h),
-          _facultyNote(),
+          _facultyNoteWidget(),
           SizedBox(height: 8.h),
           _addNoteButton(),
+
+          Gap(20.h),
         ],
       ),
     );
@@ -86,7 +97,7 @@ class TeacherStudentDetailsScreen extends StatelessWidget {
                   'LR',
                   style: TxtStyle.titleLarge(
                     color: AppColors.primaryDark,
-                    fontSize: 14.sp,
+                    fontSize: 17.sp,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -118,7 +129,7 @@ class TeacherStudentDetailsScreen extends StatelessWidget {
                     'Lucas Rivera',
                     style: TxtStyle.titleLarge(
                       color: AppColors.text,
-                      fontSize: 17.sp,
+                      fontSize: 20.sp,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -136,7 +147,7 @@ class TeacherStudentDetailsScreen extends StatelessWidget {
                       'Active',
                       style: TxtStyle.bodyMedium(
                         color: const Color(0xff15965a),
-                        fontSize: 10.5.sp,
+                        fontSize: 13.5.sp,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -148,7 +159,7 @@ class TeacherStudentDetailsScreen extends StatelessWidget {
                 'Grade 11 • Group A • Calculus AB',
                 style: TxtStyle.bodyMedium(
                   color: AppColors.subtitleTextColor,
-                  fontSize: 12.sp,
+                  fontSize: 15.sp,
                 ),
               ),
               SizedBox(height: 3.h),
@@ -156,7 +167,7 @@ class TeacherStudentDetailsScreen extends StatelessWidget {
                 'Rm 204 • Desk 14    •    94% Attendance',
                 style: TxtStyle.bodyMedium(
                   color: AppColors.subtitleTextColor,
-                  fontSize: 12.sp,
+                  fontSize: 15.sp,
                 ),
               ),
             ],
@@ -198,7 +209,7 @@ class TeacherStudentDetailsScreen extends StatelessWidget {
             value,
             style: TxtStyle.titleLarge(
               color: highlighted ? AppColors.primaryDark : AppColors.text,
-              fontSize: 17.sp,
+              fontSize: 20.sp,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -207,7 +218,7 @@ class TeacherStudentDetailsScreen extends StatelessWidget {
             label,
             style: TxtStyle.bodyMedium(
               color: AppColors.subtitleTextColor,
-              fontSize: 12.5.sp,
+              fontSize: 15.5.sp,
             ),
           ),
         ],
@@ -229,25 +240,31 @@ class TeacherStudentDetailsScreen extends StatelessWidget {
     Widget? trailingWidget,
   }) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           title,
           style: TxtStyle.titleLarge(
             color: AppColors.subtitleTextColor,
-            fontSize: 13.sp,
+            fontSize: 16.sp,
             fontWeight: FontWeight.w700,
             letterSpacing: .45,
           ),
         ),
-        const Spacer(),
-        if (trailing != null)
-          Text(
-            trailing,
-            style: TxtStyle.bodyMedium(
-              color: AppColors.subtitleTextColor,
-              fontSize: 12.5.sp,
+
+        if (trailing != null) ...[
+          Gap(12.w),
+          Flexible(
+            child: Text(
+              trailing,
+              textAlign: TextAlign.end,
+              style: TxtStyle.bodyMedium(
+                color: AppColors.subtitleTextColor,
+                fontSize: 14.5.sp,
+              ),
             ),
           ),
+        ],
         ?trailingWidget,
       ],
     );
@@ -265,7 +282,7 @@ class TeacherStudentDetailsScreen extends StatelessWidget {
         text: TextSpan(
           style: TxtStyle.bodyMedium(
             color: AppColors.subtitleTextColor,
-            fontSize: 12.5.sp,
+            fontSize: 15.5.sp,
             height: 1.45,
           ),
           children: [
@@ -273,7 +290,7 @@ class TeacherStudentDetailsScreen extends StatelessWidget {
               text: 'Blackboard Demo: ',
               style: TxtStyle.bodyMedium(
                 color: AppColors.primaryDark,
-                fontSize: 13.sp,
+                fontSize: 16.sp,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -298,7 +315,7 @@ class TeacherStudentDetailsScreen extends StatelessWidget {
         'Review Due',
         style: TxtStyle.bodyMedium(
           color: const Color(0xffdf8a00),
-          fontSize: 11.5.sp,
+          fontSize: 14.5.sp,
           fontWeight: FontWeight.w600,
         ),
       ),
@@ -320,7 +337,7 @@ class TeacherStudentDetailsScreen extends StatelessWidget {
             'Problem Set 4: Implicit Differentiation',
             style: TxtStyle.titleLarge(
               color: AppColors.text,
-              fontSize: 13.5.sp,
+              fontSize: 16.5.sp,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -329,7 +346,7 @@ class TeacherStudentDetailsScreen extends StatelessWidget {
             'Exercises 12–25 • Printed Binder Submission',
             style: TxtStyle.bodyMedium(
               color: AppColors.subtitleTextColor,
-              fontSize: 13.sp,
+              fontSize: 16.sp,
             ),
           ),
           SizedBox(height: 9.h),
@@ -348,7 +365,7 @@ class TeacherStudentDetailsScreen extends StatelessWidget {
                     'Due Oct 29',
                     style: TxtStyle.bodyMedium(
                       color: AppColors.subtitleTextColor,
-                      fontSize: 12.5.sp,
+                      fontSize: 15.5.sp,
                     ),
                   ),
                 ],
@@ -359,7 +376,7 @@ class TeacherStudentDetailsScreen extends StatelessWidget {
                   'Physical Copy in Hand',
                   style: TxtStyle.bodyMedium(
                     color: AppColors.primaryDark,
-                    fontSize: 12.5.sp,
+                    fontSize: 15.5.sp,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -371,29 +388,41 @@ class TeacherStudentDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _facultyNote() {
-    return Container(
-      padding: EdgeInsets.all(11.w),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(7.r),
-        border: Border.all(color: AppColors.backgroundsLinesColor),
-      ),
-      child: Text(
-        '"Demonstrates strong conceptual grasp during board exercises. Actively assists peers in Group A during problem-solving sessions."',
-        style: TxtStyle.bodyMedium(
-          color: AppColors.subtitleTextColor,
-          fontSize: 13.sp,
-          height: 1.5,
-          fontStyle: FontStyle.italic,
-        ),
-      ),
+  Widget _facultyNoteWidget() {
+    const defaultNote =
+        'Demonstrates strong conceptual grasp during board exercises. '
+        'Actively assists peers in Group A during problem-solving sessions.';
+
+    final notes = [defaultNote, ..._facultyNotes];
+
+    return Column(
+      children: notes.map((note) {
+        return Container(
+          width: double.infinity,
+          margin: EdgeInsets.only(bottom: 8.h),
+          padding: EdgeInsets.all(11.w),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(7.r),
+            border: Border.all(color: AppColors.backgroundsLinesColor),
+          ),
+          child: Text(
+            '"$note"',
+            style: TxtStyle.bodyMedium(
+              color: AppColors.subtitleTextColor,
+              fontSize: 16.sp,
+              height: 1.5,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+        );
+      }).toList(),
     );
   }
 
   Widget _addNoteButton() {
     return OutlinedButton(
-      onPressed: () {},
+      onPressed: _showAddNoteBottomSheet,
       style: OutlinedButton.styleFrom(
         minimumSize: Size(double.infinity, 38.h),
         side: BorderSide(color: AppColors.backgroundsLinesColor),
@@ -403,8 +432,147 @@ class TeacherStudentDetailsScreen extends StatelessWidget {
         '+ Add Note',
         style: TxtStyle.titleLarge(
           color: AppColors.primaryDark,
-          fontSize: 14.sp,
+          fontSize: 17.sp,
           fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _showAddNoteBottomSheet() async {
+    final note = await showModalBottomSheet<String>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      useSafeArea: true,
+      builder: (_) {
+        return const _AddNoteBottomSheet();
+      },
+    );
+
+    if (!mounted) return;
+
+    if (note != null && note.trim().isNotEmpty) {
+      setState(() {
+        _facultyNotes.add(note.trim());
+      });
+    }
+  }
+  //
+}
+
+class _AddNoteBottomSheet extends StatefulWidget {
+  const _AddNoteBottomSheet();
+
+  @override
+  State<_AddNoteBottomSheet> createState() => _AddNoteBottomSheetState();
+}
+
+class _AddNoteBottomSheetState extends State<_AddNoteBottomSheet> {
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _saveNote() {
+    final note = _controller.text.trim();
+
+    if (note.isEmpty) {
+      return;
+    }
+
+    Navigator.of(context).pop(note);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.fromLTRB(16.w, 20.h, 16.w, 16.h),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(18.r)),
+        ),
+        child: SingleChildScrollView(
+          child: SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Add Note',
+                  style: TxtStyle.titleLarge(
+                    color: AppColors.text,
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+
+                SizedBox(height: 16.h),
+
+                TextField(
+                  controller: _controller,
+                  maxLines: 5,
+                  autofocus: true,
+                  textInputAction: TextInputAction.newline,
+                  decoration: InputDecoration(
+                    hintText: 'Write a note about this student...',
+                    hintStyle: TxtStyle.bodyMedium(
+                      color: AppColors.subtitleTextColor,
+                      fontSize: 15.sp,
+                    ),
+                    filled: true,
+                    fillColor: AppColors.softBackground,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.r),
+                      borderSide: BorderSide(
+                        color: AppColors.backgroundsLinesColor,
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.r),
+                      borderSide: BorderSide(
+                        color: AppColors.backgroundsLinesColor,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.r),
+                      borderSide: BorderSide(color: AppColors.primaryDark),
+                    ),
+                  ),
+                ),
+
+                SizedBox(height: 16.h),
+
+                SizedBox(
+                  width: double.infinity,
+                  height: 45.h,
+                  child: ElevatedButton(
+                    onPressed: _saveNote,
+                    child: Text(
+                      'Save Note',
+                      style: TxtStyle.titleLarge(
+                        color: Colors.white,
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

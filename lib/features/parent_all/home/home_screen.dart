@@ -1,4 +1,4 @@
-import '../../share/export/screen_export.dart';
+﻿import '../../share/export/screen_export.dart';
 import '../../share/widgets/button/app_logo.dart';
 import '../helper/parent_home_helper.dart';
 
@@ -97,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       'WEDNESDAY, OCT 24',
                       style: TxtStyle.titleLarge(
                         color: AppColors.secondaryText,
-                        fontSize: 11.sp,
+                        fontSize: 14.sp,
                         fontWeight: FontWeight.w600,
                         letterSpacing: .5,
                       ),
@@ -115,7 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         'Good morning, Eleanor',
                         style: TxtStyle.titleLarge(
                           color: AppColors.text,
-                          fontSize: 24.sp,
+                          fontSize: 27.sp,
                           fontWeight: FontWeight.w800,
                         ),
                       ),
@@ -144,7 +144,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               'Lucas Rivera',
                               style: TxtStyle.titleLarge(
                                 color: AppColors.text,
-                                fontSize: 15.sp,
+                                fontSize: 18.sp,
                                 fontWeight: FontWeight.w800,
                               ),
                             ),
@@ -153,7 +153,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               'Grade 8 • Section A',
                               style: TxtStyle.bodyMedium(
                                 color: AppColors.secondaryText,
-                                fontSize: 12.sp,
+                                fontSize: 15.sp,
                               ),
                             ),
                           ],
@@ -181,7 +181,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               'Switch',
                               style: TxtStyle.titleLarge(
                                 color: AppColors.primary,
-                                fontSize: 11.sp,
+                                fontSize: 14.sp,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
@@ -219,7 +219,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               'Starts 10:30 AM',
                               style: TxtStyle.titleLarge(
                                 color: Colors.white,
-                                fontSize: 11.sp,
+                                fontSize: 14.sp,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -232,7 +232,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           'Advanced Mathematics',
                           style: TxtStyle.titleLarge(
                             color: Colors.white,
-                            fontSize: 18.sp,
+                            fontSize: 21.sp,
                             fontWeight: FontWeight.w800,
                           ),
                         ),
@@ -243,7 +243,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           'Linear Quadratic Systems & Practice',
                           style: TxtStyle.titleLarge(
                             color: Colors.white.withOpacity(.75),
-                            fontSize: 12.sp,
+                            fontSize: 15.sp,
                           ),
                         ),
 
@@ -272,7 +272,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     'Mr. Robert Hayes',
                                     style: TxtStyle.titleLarge(
                                       color: Colors.white,
-                                      fontSize: 12.sp,
+                                      fontSize: 15.sp,
                                       fontWeight: FontWeight.w700,
                                     ),
                                   ),
@@ -281,7 +281,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     'Classroom 3B',
                                     style: TxtStyle.titleLarge(
                                       color: Colors.white.withOpacity(.65),
-                                      fontSize: 10.sp,
+                                      fontSize: 13.sp,
                                     ),
                                   ),
                                 ],
@@ -291,7 +291,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               'Details',
                               style: TxtStyle.titleLarge(
                                 color: Colors.white,
-                                fontSize: 11.sp,
+                                fontSize: 14.sp,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
@@ -357,7 +357,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             'ATTENDANCE',
                             style: TxtStyle.titleLarge(
                               color: AppColors.secondaryText,
-                              fontSize: 11.sp,
+                              fontSize: 14.sp,
                               fontWeight: FontWeight.w700,
                               letterSpacing: .4,
                             ),
@@ -373,7 +373,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         '96.4%',
                         style: TxtStyle.titleLarge(
                           color: AppColors.text,
-                          fontSize: 22.sp,
+                          fontSize: 25.sp,
                           fontWeight: FontWeight.w800,
                         ),
                       ),
@@ -384,7 +384,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         '27 of 28 sessions attended this term',
                         style: TxtStyle.titleLarge(
                           color: AppColors.secondaryText,
-                          fontSize: 12.sp,
+                          fontSize: 15.sp,
                         ),
                       ),
 
@@ -408,7 +408,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               'Attendance History →',
                               style: TxtStyle.titleLarge(
                                 color: AppColors.primary,
-                                fontSize: 11.sp,
+                                fontSize: 14.sp,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
@@ -463,7 +463,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     classData.subject,
                     style: TxtStyle.titleLarge(
                       color: AppColors.text,
-                      fontSize: 14.sp,
+                      fontSize: 17.sp,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -472,7 +472,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     '${classData.room} • ${classData.building}',
                     style: TxtStyle.bodyMedium(
                       color: AppColors.secondaryText,
-                      fontSize: 11.sp,
+                      fontSize: 14.sp,
                     ),
                   ),
                 ],

@@ -1,4 +1,4 @@
-import '../../share/component/logout_btn.dart';
+﻿import '../../share/component/logout_btn.dart';
 import '../../share/export/screen_export.dart';
 import '../helper/parent_widgets.dart';
 
@@ -42,7 +42,7 @@ class _ParentProfileScreenState extends State<ParentProfileScreen> {
                 textAlign: TextAlign.center,
                 style: TxtStyle.titleLarge(
                   color: AppColors.subtitleTextColor,
-                  fontSize: 12.sp,
+                  fontSize: 15.sp,
                   height: 1.4,
                 ),
               ),
@@ -51,7 +51,7 @@ class _ParentProfileScreenState extends State<ParentProfileScreen> {
                 'Academic Year 2024–2025',
                 style: TxtStyle.titleLarge(
                   color: AppColors.hintTextColor,
-                  fontSize: 12.sp,
+                  fontSize: 15.sp,
                 ),
               ),
             ],
@@ -133,7 +133,7 @@ class _ParentProfileScreenState extends State<ParentProfileScreen> {
               parentName,
               style: TxtStyle.titleLarge(
                 color: AppColors.text,
-                fontSize: 18.sp,
+                fontSize: 21.sp,
                 fontWeight: FontWeight.w800,
               ),
             ),
@@ -157,7 +157,7 @@ class _ParentProfileScreenState extends State<ParentProfileScreen> {
                     'Verified Parent ID: #PAR-8924',
                     style: TxtStyle.titleLarge(
                       color: AppColors.primaryDark,
-                      fontSize: 12.sp,
+                      fontSize: 15.sp,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -174,7 +174,6 @@ class _ParentProfileScreenState extends State<ParentProfileScreen> {
             SizedBox(height: 14.h),
             SizedBox(
               width: double.infinity,
-              height: 42.h,
               child: ElevatedButton(
                 onPressed: () async {
                   await context.push(RoutePath.editProfile);
@@ -193,7 +192,7 @@ class _ParentProfileScreenState extends State<ParentProfileScreen> {
                     Text(
                       'Edit Profile',
                       style: TxtStyle.titleLarge(
-                        fontSize: 13.sp,
+                        fontSize: 16.sp,
                         fontWeight: FontWeight.w800,
                       ),
                     ),
@@ -219,7 +218,7 @@ class _ParentProfileScreenState extends State<ParentProfileScreen> {
           text,
           style: TxtStyle.titleLarge(
             color: AppColors.subtitleTextColor,
-            fontSize: 12.sp,
+            fontSize: 15.sp,
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -234,7 +233,7 @@ class _ParentProfileScreenState extends State<ParentProfileScreen> {
         text,
         style: TxtStyle.titleLarge(
           color: AppColors.subtitleTextColor,
-          fontSize: 12.sp,
+          fontSize: 15.sp,
           fontWeight: FontWeight.w800,
           letterSpacing: .4,
         ),
@@ -324,7 +323,7 @@ class _ParentProfileScreenState extends State<ParentProfileScreen> {
                     title,
                     style: TxtStyle.titleLarge(
                       color: AppColors.text,
-                      fontSize: 13.sp,
+                      fontSize: 16.sp,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -333,7 +332,7 @@ class _ParentProfileScreenState extends State<ParentProfileScreen> {
                     subtitle,
                     style: TxtStyle.bodyMedium(
                       color: AppColors.subtitleTextColor,
-                      fontSize: 12.sp,
+                      fontSize: 15.sp,
                     ),
                   ),
                 ],
@@ -350,7 +349,7 @@ class _ParentProfileScreenState extends State<ParentProfileScreen> {
                   badge,
                   style: TxtStyle.titleLarge(
                     color: AppColors.emeraldGreenColor,
-                    fontSize: 12.sp,
+                    fontSize: 15.sp,
                     fontWeight: FontWeight.w700,
                   ),
                 ),

@@ -1,4 +1,4 @@
-import '../../../share/export/screen_export.dart';
+﻿import '../../../share/export/screen_export.dart';
 import '../../../share/widgets/button/app_logo.dart';
 
 class ChooseRoleScreen extends StatefulWidget {
@@ -49,7 +49,7 @@ class _ChooseRoleScreenState extends State<ChooseRoleScreen> {
                   'Select your role',
                   style: TxtStyle.titleLarge(
                     color: AppColors.text,
-                    fontSize: 21.sp,
+                    fontSize: 24.5.sp,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
@@ -165,8 +165,7 @@ class _ChooseRoleScreenState extends State<ChooseRoleScreen> {
                         title,
                         style: TxtStyle.titleLarge(
                           color: AppColors.text,
-                          fontSize: 16.sp,
-
+                          fontSize: 19.sp,
                           fontWeight: FontWeight.w800,
                         ),
                       ),
@@ -175,8 +174,7 @@ class _ChooseRoleScreenState extends State<ChooseRoleScreen> {
                           ' $subtitle',
                           style: TxtStyle.titleLarge(
                             color: AppColors.text,
-                            fontSize: 16.sp,
-
+                            fontSize: 19.sp,
                             fontWeight: FontWeight.w800,
                           ),
                         ),
@@ -203,7 +201,7 @@ class _ChooseRoleScreenState extends State<ChooseRoleScreen> {
               description,
               style: TxtStyle.titleLarge(
                 color: AppColors.secondaryText,
-                fontSize: 12.sp,
+                fontSize: 15.sp,
                 fontWeight: FontWeight.w500,
                 height: 1.5,
               ),
@@ -215,7 +213,7 @@ class _ChooseRoleScreenState extends State<ChooseRoleScreen> {
                 'Continue as ${role == 'parent' ? 'Parent' : 'Teacher'} Login →',
                 style: TxtStyle.titleLarge(
                   color: AppColors.primary,
-                  fontSize: 12.sp,
+                  fontSize: 15.sp,
                   fontWeight: FontWeight.w700,
                 ),
               ),

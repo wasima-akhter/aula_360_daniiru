@@ -1,4 +1,4 @@
-import '../../share/export/screen_export.dart';
+﻿import '../../share/export/screen_export.dart';
 import '../helper/parent_home_helper.dart';
 
 class ClassDetailsScreen extends StatefulWidget {
@@ -60,7 +60,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                                   'Lucas Rivera',
                                   style: TxtStyle.titleLarge(
                                     color: AppColors.text,
-                                    fontSize: 15.sp,
+                                    fontSize: 18.sp,
                                     fontWeight: FontWeight.w800,
                                   ),
                                 ),
@@ -78,7 +78,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                                     'Grade 8',
                                     style: TxtStyle.titleLarge(
                                       color: AppColors.primary,
-                                      fontSize: 11.sp,
+                                      fontSize: 14.sp,
                                       fontWeight: FontWeight.w700,
                                     ),
                                   ),
@@ -90,7 +90,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                               'Room 3B • ID #A360-842',
                               style: TxtStyle.titleLarge(
                                 color: AppColors.secondaryText,
-                                fontSize: 12.sp,
+                                fontSize: 15.sp,
                               ),
                             ),
                           ],
@@ -113,7 +113,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                         data.subject,
                         style: TxtStyle.titleLarge(
                           color: AppColors.primary,
-                          fontSize: 22.sp,
+                          fontSize: 25.sp,
                           fontWeight: FontWeight.w800,
                         ),
                       ),
@@ -124,7 +124,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                         _descriptionFor(data.category),
                         style: TxtStyle.titleLarge(
                           color: AppColors.secondaryText,
-                          fontSize: 13.sp,
+                          fontSize: 16.sp,
                           height: 1.4,
                         ),
                       ),
@@ -186,7 +186,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                             'Building A',
                             style: TxtStyle.titleLarge(
                               color: AppColors.primary,
-                              fontSize: 12.sp,
+                              fontSize: 15.sp,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
@@ -199,7 +199,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                         '${data.room}, ${data.building}',
                         style: TxtStyle.titleLarge(
                           color: AppColors.text,
-                          fontSize: 15.sp,
+                          fontSize: 18.sp,
                           fontWeight: FontWeight.w800,
                         ),
                       ),
@@ -210,7 +210,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                         'West Campus Building A • 2nd Floor, South Corridor',
                         style: TxtStyle.titleLarge(
                           color: AppColors.secondaryText,
-                          fontSize: 12.sp,
+                          fontSize: 15.sp,
                         ),
                       ),
 
@@ -258,7 +258,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                                       '${data.room} Schematic',
                                       style: TxtStyle.titleLarge(
                                         color: Colors.white,
-                                        fontSize: 12.sp,
+                                        fontSize: 15.sp,
                                         fontWeight: FontWeight.w600,
                                       ),
                                     ),
@@ -283,7 +283,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                                   'View Map ↗',
                                   style: TxtStyle.titleLarge(
                                     color: AppColors.primary,
-                                    fontSize: 12.sp,
+                                    fontSize: 15.sp,
                                     fontWeight: FontWeight.w700,
                                   ),
                                 ),
@@ -338,7 +338,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                                     data.teacher,
                                     style: TxtStyle.titleLarge(
                                       color: AppColors.text,
-                                      fontSize: 15.sp,
+                                      fontSize: 18.sp,
                                       fontWeight: FontWeight.w800,
                                     ),
                                   ),
@@ -347,7 +347,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                                     '${data.category} & STEM Faculty Lead',
                                     style: TxtStyle.bodyMedium(
                                       color: AppColors.secondaryText,
-                                      fontSize: 12.sp,
+                                      fontSize: 15.sp,
                                     ),
                                   ),
                                 ],
@@ -379,7 +379,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                                   'Office Hours: 03:30 PM – 04:30 PM\n(Room 3B)',
                                   style: TxtStyle.titleLarge(
                                     color: AppColors.secondaryText,
-                                    fontSize: 12.sp,
+                                    fontSize: 15.sp,
                                     height: 1.4,
                                   ),
                                 ),
@@ -404,7 +404,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
       text,
       style: TxtStyle.titleLarge(
         color: AppColors.secondaryText,
-        fontSize: 12.sp,
+        fontSize: 15.sp,
         fontWeight: FontWeight.w700,
         letterSpacing: .45,
       ),
@@ -446,7 +446,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                   label,
                   style: TxtStyle.titleLarge(
                     color: AppColors.secondaryText,
-                    fontSize: 11.sp,
+                    fontSize: 14.sp,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -455,7 +455,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                   value,
                   style: TxtStyle.titleLarge(
                     color: AppColors.text,
-                    fontSize: 12.sp,
+                    fontSize: 15.sp,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -474,7 +474,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                 trailing,
                 style: TxtStyle.titleLarge(
                   color: AppColors.primary,
-                  fontSize: 11.sp,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w800,
                 ),
               ),

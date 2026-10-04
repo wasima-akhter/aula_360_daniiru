@@ -1,4 +1,4 @@
-import 'dart:io';
+﻿import 'dart:io';
 
 import 'package:image_picker/image_picker.dart';
 
@@ -125,7 +125,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       'Discard Changes',
                       style: TxtStyle.titleLarge(
                         color: AppColors.subtitleTextColor,
-                        fontSize: 13.5.sp,
+                        fontSize: 16.5.sp,
                       ),
                     ),
                   ),
@@ -227,7 +227,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             'Eleanor Rivera',
             style: TxtStyle.titleLarge(
               color: AppColors.text,
-              fontSize: 15.sp,
+              fontSize: 18.sp,
               fontWeight: FontWeight.w800,
             ),
           ),
@@ -251,7 +251,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   'Verified Parent ID: #PAR-8924',
                   style: TxtStyle.titleLarge(
                     color: AppColors.primaryDark,
-                    fontSize: 13.sp,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -264,7 +264,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             'Allowed formats: JPG, PNG • Max 5MB',
             style: TxtStyle.titleLarge(
               color: AppColors.subtitleTextColor,
-              fontSize: 13.sp,
+              fontSize: 16.sp,
             ),
           ),
         ],
@@ -277,7 +277,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       text,
       style: TxtStyle.titleLarge(
         color: AppColors.subtitleTextColor,
-        fontSize: 13.sp,
+        fontSize: 16.sp,
         fontWeight: FontWeight.w800,
         letterSpacing: .4,
       ),
@@ -301,7 +301,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               text: label,
               style: TxtStyle.titleLarge(
                 color: AppColors.labelTextColor,
-                fontSize: 13.sp,
+                fontSize: 16.sp,
                 fontWeight: FontWeight.w700,
               ),
               children: [
@@ -310,7 +310,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     text: ' *',
                     style: TxtStyle.titleLarge(
                       color: AppColors.error,
-                      fontSize: 13.sp,
+                      fontSize: 16.sp,
                     ),
                   ),
               ],
@@ -328,7 +328,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             },
             style: TxtStyle.titleLarge(
               color: AppColors.text,
-              fontSize: 12.sp,
+              fontSize: 15.sp,
               fontWeight: FontWeight.w500,
             ),
             decoration: InputDecoration(
@@ -376,7 +376,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         text,
         style: TxtStyle.bodyMedium(
           color: AppColors.subtitleTextColor,
-          fontSize: 12.sp,
+          fontSize: 15.sp,
           height: 1.35,
         ),
       ),
@@ -391,7 +391,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           'Preferred Language',
           style: TxtStyle.titleLarge(
             color: AppColors.labelTextColor,
-            fontSize: 13.sp,
+            fontSize: 16.sp,
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -424,21 +424,21 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               value: 'English (US)',
               child: Text(
                 'English (US)',
-                style: TxtStyle.titleLarge(fontSize: 13.sp),
+                style: TxtStyle.titleLarge(fontSize: 16.sp),
               ),
             ),
             DropdownMenuItem(
               value: 'English (UK)',
               child: Text(
                 'English (UK)',
-                style: TxtStyle.titleLarge(fontSize: 13.sp),
+                style: TxtStyle.titleLarge(fontSize: 16.sp),
               ),
             ),
             DropdownMenuItem(
               value: 'Spanish',
               child: Text(
                 'Spanish',
-                style: TxtStyle.titleLarge(fontSize: 13.sp),
+                style: TxtStyle.titleLarge(fontSize: 16.sp),
               ),
             ),
           ],
@@ -447,7 +447,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               setState(() => language = value);
             }
           },
-          style: TxtStyle.titleLarge(color: AppColors.text, fontSize: 13.sp),
+          style: TxtStyle.titleLarge(color: AppColors.text, fontSize: 16.sp),
         ),
       ],
     );
@@ -468,7 +468,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               content: Text(
                 'Profile updated successfully.',
                 style: TxtStyle.titleLarge(
-                  fontSize: 11.sp,
+                  fontSize: 14.sp,
                   color: Colors.white,
                 ),
               ),
@@ -494,7 +494,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               'Save Changes',
               style: TxtStyle.titleLarge(
                 color: Colors.white,
-                fontSize: 14.sp,
+                fontSize: 17.sp,
                 fontWeight: FontWeight.w800,
               ),
             ),

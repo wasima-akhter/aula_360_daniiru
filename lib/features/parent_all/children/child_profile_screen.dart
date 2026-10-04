@@ -1,4 +1,4 @@
-import '../../share/export/screen_export.dart';
+﻿import '../../share/export/screen_export.dart';
 import '../helper/parent_models.dart';
 import '../helper/parent_widgets.dart';
 
@@ -68,7 +68,7 @@ class ChildProfileScreen extends StatelessWidget {
                       child.name,
                       style: TxtStyle.titleLarge(
                         color: AppColors.text,
-                        fontSize: 17.sp,
+                        fontSize: 20.sp,
                         fontWeight: FontWeight.w800,
                       ),
                     ),
@@ -77,7 +77,7 @@ class ChildProfileScreen extends StatelessWidget {
                       '${child.grade} • ${child.room} • ID: ${child.id}',
                       style: TxtStyle.titleLarge(
                         color: AppColors.subtitleTextColor,
-                        fontSize: 12.sp,
+                        fontSize: 15.sp,
                       ),
                     ),
                     SizedBox(height: 3.h),
@@ -93,7 +93,7 @@ class ChildProfileScreen extends StatelessWidget {
                           'St. Matthew Preparatory',
                           style: TxtStyle.titleLarge(
                             color: AppColors.subtitleTextColor,
-                            fontSize: 12.sp,
+                            fontSize: 15.sp,
                           ),
                         ),
                       ],
@@ -133,7 +133,7 @@ class ChildProfileScreen extends StatelessWidget {
           title,
           style: TxtStyle.titleLarge(
             color: AppColors.subtitleTextColor,
-            fontSize: 12.sp,
+            fontSize: 15.sp,
           ),
         ),
         SizedBox(height: 3.h),
@@ -141,7 +141,7 @@ class ChildProfileScreen extends StatelessWidget {
           value,
           style: TxtStyle.titleLarge(
             color: color,
-            fontSize: 15.sp,
+            fontSize: 18.sp,
             fontWeight: FontWeight.w800,
           ),
         ),
@@ -156,7 +156,7 @@ class ChildProfileScreen extends StatelessWidget {
         text,
         style: TxtStyle.titleLarge(
           color: AppColors.text,
-          fontSize: 14.sp,
+          fontSize: 17.sp,
           fontWeight: FontWeight.w800,
         ),
       ),
@@ -258,7 +258,7 @@ class ChildProfileScreen extends StatelessWidget {
                     title,
                     style: TxtStyle.titleLarge(
                       color: AppColors.text,
-                      fontSize: 14.sp,
+                      fontSize: 17.sp,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -267,7 +267,7 @@ class ChildProfileScreen extends StatelessWidget {
                     subtitle,
                     style: TxtStyle.bodyMedium(
                       color: AppColors.subtitleTextColor,
-                      fontSize: 12.sp,
+                      fontSize: 15.sp,
                     ),
                   ),
                 ],
@@ -319,7 +319,7 @@ class ChildProfileScreen extends StatelessWidget {
                     'Message Academy',
                     style: TxtStyle.titleLarge(
                       color: AppColors.text,
-                      fontSize: 14.sp,
+                      fontSize: 17.sp,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -328,7 +328,7 @@ class ChildProfileScreen extends StatelessWidget {
                     'Contact homeroom or office',
                     style: TxtStyle.bodyMedium(
                       color: AppColors.subtitleTextColor,
-                      fontSize: 12.sp,
+                      fontSize: 15.sp,
                     ),
                   ),
                 ],
@@ -344,7 +344,7 @@ class ChildProfileScreen extends StatelessWidget {
                 'Contact',
                 style: TxtStyle.titleLarge(
                   color: AppColors.primaryDark,
-                  fontSize: 12.sp,
+                  fontSize: 15.sp,
                   fontWeight: FontWeight.w700,
                 ),
               ),

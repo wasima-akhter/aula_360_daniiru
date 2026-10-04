@@ -382,7 +382,7 @@ class _TeacherProfileSetupScreenState extends State<TeacherProfileSetupScreen> {
                     'PARENT PORTAL',
                     style: TxtStyle.titleLarge(
                       color: AppColors.secondaryText,
-                      fontSize: 11.sp,
+                      fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
                       letterSpacing: .6,
                     ),
@@ -402,7 +402,7 @@ class _TeacherProfileSetupScreenState extends State<TeacherProfileSetupScreen> {
                         'Faculty profile',
                         style: TxtStyle.titleLarge(
                           color: AppColors.text,
-                          fontSize: 20,
+                          fontSize: 23.5,
                           fontWeight: FontWeight.w800,
                         ),
                       ),
@@ -611,7 +611,7 @@ class _TeacherProfileSetupScreenState extends State<TeacherProfileSetupScreen> {
                           'Optional',
                           style: TxtStyle.titleLarge(
                             color: AppColors.secondaryText,
-                            fontSize: 12.sp,
+                            fontSize: 15.sp,
                           ),
                         ),
                       ],
@@ -641,7 +641,7 @@ class _TeacherProfileSetupScreenState extends State<TeacherProfileSetupScreen> {
                         'Navigates to Faculty Dashboard',
                         style: TxtStyle.titleLarge(
                           color: AppColors.secondaryText,
-                          fontSize: 12.sp,
+                          fontSize: 15.sp,
                         ),
                       ),
                     ),
@@ -660,7 +660,7 @@ class _TeacherProfileSetupScreenState extends State<TeacherProfileSetupScreen> {
       title,
       style: TxtStyle.titleLarge(
         color: AppColors.secondaryText,
-        fontSize: 12.sp,
+        fontSize: 15.sp,
         fontWeight: FontWeight.w500,
         letterSpacing: 0.2,
       ),

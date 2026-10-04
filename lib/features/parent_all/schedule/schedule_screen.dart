@@ -1,4 +1,4 @@
-import '../../share/export/screen_export.dart';
+﻿import '../../share/export/screen_export.dart';
 import '../helper/parent_home_helper.dart';
 
 class ScheduleScreen extends StatefulWidget {
@@ -84,7 +84,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                       'STUDENT',
                       style: TxtStyle.titleLarge(
                         color: AppColors.secondaryText,
-                        fontSize: 13.sp,
+                        fontSize: 16.sp,
                         fontWeight: FontWeight.w700,
                         letterSpacing: .4,
                       ),
@@ -94,7 +94,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                       '2 Enrolled',
                       style: TxtStyle.titleLarge(
                         color: AppColors.primary,
-                        fontSize: 12.sp,
+                        fontSize: 15.sp,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -129,7 +129,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                             'Wednesday, Oct 24',
                             style: TxtStyle.titleLarge(
                               color: AppColors.text,
-                              fontSize: 15.sp,
+                              fontSize: 18.sp,
                               fontWeight: FontWeight.w800,
                             ),
                           ),
@@ -147,7 +147,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                               'Today',
                               style: TxtStyle.titleLarge(
                                 color: AppColors.primary,
-                                fontSize: 11.sp,
+                                fontSize: 14.sp,
                                 fontWeight: FontWeight.w800,
                               ),
                             ),
@@ -157,7 +157,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                             'Week 9',
                             style: TxtStyle.titleLarge(
                               color: AppColors.secondaryText,
-                              fontSize: 12.sp,
+                              fontSize: 15.sp,
                             ),
                           ),
                         ],
@@ -252,7 +252,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                     overflow: TextOverflow.ellipsis,
                     style: TxtStyle.titleLarge(
                       color: AppColors.text,
-                      fontSize: 13.sp,
+                      fontSize: 16.sp,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -263,7 +263,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                     overflow: TextOverflow.ellipsis,
                     style: TxtStyle.titleLarge(
                       color: AppColors.secondaryText,
-                      fontSize: 11.sp,
+                      fontSize: 14.sp,
                     ),
                   ),
                 ],
@@ -300,7 +300,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                 color: selected
                     ? Colors.white.withOpacity(.8)
                     : AppColors.secondaryText,
-                fontSize: 11.sp,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -309,7 +309,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
               days[index]['date']!,
               style: TxtStyle.titleLarge(
                 color: selected ? Colors.white : AppColors.text,
-                fontSize: 15.sp,
+                fontSize: 18.sp,
                 fontWeight: FontWeight.w800,
               ),
             ),
@@ -350,7 +350,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                   '${classData.time} – ${classData.duration}',
                   style: TxtStyle.titleLarge(
                     color: AppColors.secondaryText,
-                    fontSize: 12.sp,
+                    fontSize: 15.sp,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -369,7 +369,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
               classData.subject,
               style: TxtStyle.titleLarge(
                 color: AppColors.text,
-                fontSize: 16.sp,
+                fontSize: 19.sp,
                 fontWeight: FontWeight.w800,
               ),
             ),
@@ -392,7 +392,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                     classData.teacher,
                     style: TxtStyle.titleLarge(
                       color: AppColors.text,
-                      fontSize: 12.sp,
+                      fontSize: 15.sp,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -407,7 +407,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                   '${classData.room} • ${classData.building}',
                   style: TxtStyle.titleLarge(
                     color: AppColors.secondaryText,
-                    fontSize: 11.sp,
+                    fontSize: 14.sp,
                   ),
                 ),
               ],
@@ -431,7 +431,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                 '${classData.time} – ${classData.duration}',
                 style: TxtStyle.titleLarge(
                   color: AppColors.secondaryText,
-                  fontSize: 11.sp,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -444,7 +444,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
             classData.subject,
             style: TxtStyle.titleLarge(
               color: AppColors.text,
-              fontSize: 16.sp,
+              fontSize: 19.sp,
               fontWeight: FontWeight.w800,
             ),
           ),
@@ -463,7 +463,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                 classData.teacher,
                 style: TxtStyle.titleLarge(
                   color: AppColors.secondaryText,
-                  fontSize: 12.sp,
+                  fontSize: 15.sp,
                 ),
               ),
               const Spacer(),
@@ -477,7 +477,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                 classData.room,
                 style: TxtStyle.titleLarge(
                   color: AppColors.secondaryText,
-                  fontSize: 11.sp,
+                  fontSize: 14.sp,
                 ),
               ),
             ],
@@ -491,7 +491,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
               'Class Report →',
               style: TxtStyle.titleLarge(
                 color: AppColors.primary,
-                fontSize: 12.sp,
+                fontSize: 15.sp,
                 fontWeight: FontWeight.w700,
               ),
             ),

@@ -1,4 +1,4 @@
-import '../../parent_all/helper/parent_home_helper.dart';
+﻿import '../../parent_all/helper/parent_home_helper.dart';
 import '../../share/export/screen_export.dart';
 import '../helper/teacher_enums.dart';
 import '../helper/teacher_models.dart';
@@ -67,7 +67,7 @@ class _TeacherStudentsScreenState extends State<TeacherStudentsScreen> {
           hintText: 'Search student, ID, or desk...',
           hintStyle: TxtStyle.bodyMedium(
             color: AppColors.subtitleTextColor,
-            fontSize: 13.sp,
+            fontSize: 16.sp,
           ),
           prefixIcon: Icon(
             Icons.search_rounded,
@@ -137,7 +137,7 @@ class _TeacherStudentsScreenState extends State<TeacherStudentsScreen> {
           count == null ? label : '$label ($count)',
           style: TxtStyle.titleLarge(
             color: selected ? Colors.white : AppColors.subtitleTextColor,
-            fontSize: 12.sp,
+            fontSize: 15.sp,
             fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
           ),
         ),
@@ -152,7 +152,7 @@ class _TeacherStudentsScreenState extends State<TeacherStudentsScreen> {
           'ASSIGNED ROSTER • TERM 1',
           style: TxtStyle.titleLarge(
             color: AppColors.subtitleTextColor,
-            fontSize: 11.sp,
+            fontSize: 14.sp,
             fontWeight: FontWeight.w700,
             letterSpacing: .45,
           ),
@@ -171,7 +171,7 @@ class _TeacherStudentsScreenState extends State<TeacherStudentsScreen> {
           '22 Present',
           style: TxtStyle.bodyMedium(
             color: AppColors.subtitleTextColor,
-            fontSize: 11.sp,
+            fontSize: 14.sp,
           ),
         ),
       ],
@@ -235,7 +235,7 @@ class _TeacherStudentsScreenState extends State<TeacherStudentsScreen> {
                           overflow: TextOverflow.ellipsis,
                           style: TxtStyle.titleLarge(
                             color: AppColors.text,
-                            fontSize: 16.sp,
+                            fontSize: 19.sp,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -245,7 +245,7 @@ class _TeacherStudentsScreenState extends State<TeacherStudentsScreen> {
                         student.id,
                         style: TxtStyle.bodyMedium(
                           color: AppColors.subtitleTextColor,
-                          fontSize: 13.sp,
+                          fontSize: 16.sp,
                         ),
                       ),
                     ],
@@ -255,7 +255,7 @@ class _TeacherStudentsScreenState extends State<TeacherStudentsScreen> {
                     '${student.group.label} • ${student.room} (${student.desk})',
                     style: TxtStyle.bodyMedium(
                       color: AppColors.subtitleTextColor,
-                      fontSize: 12.sp,
+                      fontSize: 15.sp,
                     ),
                   ),
                 ],
@@ -290,7 +290,7 @@ class _TeacherStudentsScreenState extends State<TeacherStudentsScreen> {
               student.initials,
               style: TxtStyle.titleLarge(
                 color: AppColors.primaryDark,
-                fontSize: 11.sp,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -325,7 +325,7 @@ class _TeacherStudentsScreenState extends State<TeacherStudentsScreen> {
             color: student.status == StudentStatus.needsCheckIn
                 ? const Color(0xffdf8a00)
                 : const Color(0xff15965a),
-            fontSize: 13.sp,
+            fontSize: 16.sp,
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -334,7 +334,7 @@ class _TeacherStudentsScreenState extends State<TeacherStudentsScreen> {
             student.status.label,
             style: TxtStyle.bodyMedium(
               color: const Color(0xffdf8a00),
-              fontSize: 8.sp,
+              fontSize: 11.sp,
             ),
           ),
       ],

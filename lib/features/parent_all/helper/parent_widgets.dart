@@ -1,4 +1,4 @@
-/// ===============================================================
+﻿/// ===============================================================
 /// COMMON APP BAR
 /// ===============================================================
 library;
@@ -28,7 +28,7 @@ PreferredSizeWidget simpleAppBar(
       title,
       style: TxtStyle.titleLarge(
         color: AppColors.primaryDark,
-        fontSize: 15.sp,
+        fontSize: 18.sp,
         fontWeight: FontWeight.w800,
       ),
     ),

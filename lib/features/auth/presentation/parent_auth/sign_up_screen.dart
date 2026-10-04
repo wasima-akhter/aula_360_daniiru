@@ -1,4 +1,4 @@
-import 'package:aula360/features/auth/presentation/screens/active_otp_screen.dart';
+﻿import 'package:aula360/features/auth/presentation/screens/active_otp_screen.dart';
 
 import '../../../share/export/screen_export.dart';
 import '../../../share/widgets/button/app_logo.dart';
@@ -79,7 +79,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   'Create your account',
                   style: TxtStyle.titleLarge(
                     color: AppColors.text,
-                    fontSize: 26.sp,
+                    fontSize: 29.5.sp,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
@@ -156,7 +156,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     'At least 8 characters with numbers and letters',
                     style: TxtStyle.titleLarge(
                       color: AppColors.secondaryText,
-                      fontSize: 13.sp,
+                      fontSize: 16.sp,
                     ),
                   ),
                 ],
@@ -178,7 +178,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       text: 'Already have an account? ',
                       style: TxtStyle.titleLarge(
                         color: AppColors.secondaryText,
-                        fontSize: 13.sp,
+                        fontSize: 16.sp,
                       ),
                       children: [
                         TextSpan(

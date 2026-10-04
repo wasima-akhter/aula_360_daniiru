@@ -1,4 +1,4 @@
-import '../../share/export/screen_export.dart';
+﻿import '../../share/export/screen_export.dart';
 
 /// ===============================================================
 /// 1. TEACHER CHAT SCREEN
@@ -102,7 +102,7 @@ class _TeacherChatScreenState extends State<TeacherChatScreen> {
                 'Ms. Sarah Vance',
                 style: TxtStyle.titleLarge(
                   color: AppColors.primaryDark,
-                  fontSize: 14.sp,
+                  fontSize: 17.sp,
                   fontWeight: FontWeight.w800,
                 ),
               ),
@@ -122,7 +122,7 @@ class _TeacherChatScreenState extends State<TeacherChatScreen> {
             'Lucas Rivera • Grade 8',
             style: TxtStyle.titleLarge(
               color: AppColors.subtitleTextColor,
-              fontSize: 11.sp,
+              fontSize: 14.sp,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -163,7 +163,7 @@ class _TeacherChatScreenState extends State<TeacherChatScreen> {
                 'Homeroom',
                 style: TxtStyle.titleLarge(
                   color: AppColors.primaryDark,
-                  fontSize: 11.sp,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -175,7 +175,7 @@ class _TeacherChatScreenState extends State<TeacherChatScreen> {
                 'Office',
                 style: TxtStyle.titleLarge(
                   color: AppColors.subtitleTextColor,
-                  fontSize: 11.sp,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -198,7 +198,7 @@ class _TeacherChatScreenState extends State<TeacherChatScreen> {
             'TODAY, OCT 24',
             style: TxtStyle.titleLarge(
               color: AppColors.subtitleTextColor,
-              fontSize: 11.sp,
+              fontSize: 14.sp,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -217,7 +217,7 @@ class _TeacherChatScreenState extends State<TeacherChatScreen> {
         text,
         style: TxtStyle.titleLarge(
           color: AppColors.blueTextColor,
-          fontSize: 13.sp,
+          fontSize: 16.sp,
           fontWeight: FontWeight.w700,
         ),
       ),
@@ -245,7 +245,7 @@ class _TeacherChatScreenState extends State<TeacherChatScreen> {
             message,
             style: TxtStyle.titleLarge(
               color: AppColors.text,
-              fontSize: 12.5.sp,
+              fontSize: 15.5.sp,
               height: 1.5,
               fontWeight: FontWeight.w500,
             ),
@@ -256,7 +256,7 @@ class _TeacherChatScreenState extends State<TeacherChatScreen> {
           time,
           style: TxtStyle.titleLarge(
             color: AppColors.subtitleTextColor,
-            fontSize: 11.sp,
+            fontSize: 14.sp,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -284,7 +284,7 @@ class _TeacherChatScreenState extends State<TeacherChatScreen> {
             message,
             style: TxtStyle.titleLarge(
               color: Colors.white,
-              fontSize: 12.5.sp,
+              fontSize: 15.5.sp,
               height: 1.5,
               fontWeight: FontWeight.w500,
             ),
@@ -298,7 +298,7 @@ class _TeacherChatScreenState extends State<TeacherChatScreen> {
               time,
               style: TxtStyle.titleLarge(
                 color: AppColors.subtitleTextColor,
-                fontSize: 11.sp,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -342,13 +342,13 @@ class _TeacherChatScreenState extends State<TeacherChatScreen> {
                 controller: _messageController,
                 style: TxtStyle.titleLarge(
                   color: AppColors.text,
-                  fontSize: 10.5.sp,
+                  fontSize: 13.5.sp,
                 ),
                 decoration: InputDecoration(
                   hintText: 'Write a message...',
                   hintStyle: TextStyle(
                     color: AppColors.hintTextColor,
-                    fontSize: 11.5.sp,
+                    fontSize: 14.5.sp,
                   ),
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.only(bottom: 9.h),

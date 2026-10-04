@@ -1,4 +1,4 @@
-import '../../parent_all/helper/parent_home_helper.dart';
+﻿import '../../parent_all/helper/parent_home_helper.dart';
 import '../../share/export/screen_export.dart';
 import '../helper/teacher_enums.dart';
 
@@ -63,7 +63,7 @@ class _TeacherPostClassReportScreenState
                   'Optional',
                   style: TxtStyle.bodyMedium(
                     color: AppColors.subtitleTextColor,
-                    fontSize: 10.sp,
+                    fontSize: 13.sp,
                   ),
                 ),
               ],
@@ -83,7 +83,7 @@ class _TeacherPostClassReportScreenState
               value: _conductLabel(conduct),
               children: [
                 _choiceButton(
-                  label: 'Needs Attn',
+                  label: 'Needs Attendance',
                   selected: conduct == StudentConduct.needsAttention,
                   onTap: () {
                     setState(() {
@@ -158,7 +158,7 @@ class _TeacherPostClassReportScreenState
                   'Optional',
                   style: TxtStyle.bodyMedium(
                     color: AppColors.subtitleTextColor,
-                    fontSize: 10.sp,
+                    fontSize: 13.sp,
                   ),
                 ),
               ],
@@ -198,7 +198,7 @@ class _TeacherPostClassReportScreenState
           'GROUP A • GRADE 11 • ROOM 204',
           style: TxtStyle.labelLarge(
             color: AppColors.subtitleTextColor,
-            fontSize: 11.sp,
+            fontSize: 14.sp,
             fontWeight: FontWeight.w700,
             letterSpacing: .5,
           ),
@@ -208,7 +208,7 @@ class _TeacherPostClassReportScreenState
           'Advanced Mathematics (Calculus AB)',
           style: TxtStyle.titleLarge(
             color: AppColors.text,
-            fontSize: 20.sp,
+            fontSize: 23.sp,
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -217,7 +217,7 @@ class _TeacherPostClassReportScreenState
           'Thu, Oct 24 • Dr. Sarah Jenkins',
           style: TxtStyle.bodyMedium(
             color: AppColors.subtitleTextColor,
-            fontSize: 13.sp,
+            fontSize: 16.sp,
           ),
         ),
       ],
@@ -229,7 +229,7 @@ class _TeacherPostClassReportScreenState
       text,
       style: TxtStyle.labelLarge(
         color: AppColors.text,
-        fontSize: 14.sp,
+        fontSize: 17.sp,
         fontWeight: FontWeight.w600,
       ),
     );
@@ -249,7 +249,7 @@ class _TeacherPostClassReportScreenState
         text,
         style: TxtStyle.bodyMedium(
           color: AppColors.subtitleTextColor,
-          fontSize: 11.5.sp,
+          fontSize: 14.5.sp,
           height: 1.45,
         ),
       ),
@@ -269,13 +269,13 @@ class _TeacherPostClassReportScreenState
         maxLines: 2,
         style: TxtStyle.bodyMedium(
           color: AppColors.subtitleTextColor,
-          fontSize: 11.5.sp,
+          fontSize: 14.5.sp,
         ),
         decoration: InputDecoration(
           hintText: hint,
           hintStyle: TxtStyle.bodyMedium(
             color: AppColors.subtitleTextColor,
-            fontSize: 11.5.sp,
+            fontSize: 14.5.sp,
           ),
           border: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(
@@ -293,6 +293,7 @@ class _TeacherPostClassReportScreenState
     required List<Widget> children,
   }) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
@@ -300,19 +301,22 @@ class _TeacherPostClassReportScreenState
             const Spacer(),
             Text(
               value,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
               style: TxtStyle.labelLarge(
-                color: AppColors.primaryColor,
-                fontSize: 10.sp,
+                color: AppColors.grayTertiaryTextColor,
+                fontSize: 13.sp,
                 fontWeight: FontWeight.w700,
               ),
             ),
           ],
         ),
         SizedBox(height: 8.h),
-        Row(
+        Wrap(
+          runSpacing: 8.w,
           children: [
             for (int i = 0; i < children.length; i++) ...[
-              Expanded(child: children[i]),
+              children[i],
               if (i != children.length - 1) SizedBox(width: 7.w),
             ],
           ],
@@ -326,28 +330,34 @@ class _TeacherPostClassReportScreenState
     required bool selected,
     required VoidCallback onTap,
   }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
-        height: 31.h,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: selected ? AppColors.primaryColor : Colors.white,
-          borderRadius: BorderRadius.circular(7.r),
-          border: Border.all(
-            color: selected ? AppColors.primaryColor : AppColors.border,
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        GestureDetector(
+          onTap: onTap,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 150),
+            height: 31.h,
+            alignment: Alignment.center,
+            padding: EdgeInsets.symmetric(horizontal: 12.w),
+            decoration: BoxDecoration(
+              color: selected ? AppColors.primaryColor : Colors.white,
+              borderRadius: BorderRadius.circular(7.r),
+              border: Border.all(
+                color: selected ? AppColors.primaryColor : AppColors.border,
+              ),
+            ),
+            child: Text(
+              label,
+              style: TxtStyle.labelLarge(
+                color: selected ? Colors.white : AppColors.subtitleTextColor,
+                fontSize: 14.5.sp,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ),
         ),
-        child: Text(
-          label,
-          style: TxtStyle.labelLarge(
-            color: selected ? Colors.white : AppColors.subtitleTextColor,
-            fontSize: 11.5.sp,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ),
+      ],
     );
   }
 
@@ -359,12 +369,12 @@ class _TeacherPostClassReportScreenState
       child: TextField(
         controller: notesController,
         maxLines: 3,
-        style: TxtStyle.bodyMedium(color: AppColors.text, fontSize: 11.5.sp),
+        style: TxtStyle.bodyMedium(color: AppColors.text, fontSize: 14.5.sp),
         decoration: InputDecoration(
           hintText: 'Any additional notes or follow-ups...',
           hintStyle: TxtStyle.bodyMedium(
             color: AppColors.subtitleTextColor,
-            fontSize: 11.5.sp,
+            fontSize: 14.5.sp,
           ),
           border: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(

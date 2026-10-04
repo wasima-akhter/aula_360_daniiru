@@ -1,4 +1,4 @@
-import '../../parent_all/helper/parent_home_helper.dart';
+﻿import '../../parent_all/helper/parent_home_helper.dart';
 import '../../share/export/screen_export.dart';
 
 /// ===============================================================
@@ -52,7 +52,7 @@ class TeacherReportDetailsScreen extends StatelessWidget {
           'PHYSICAL RECORD • #AR-8041',
           style: TxtStyle.titleLarge(
             color: AppColors.subtitleTextColor,
-            fontSize: 12.sp,
+            fontSize: 15.sp,
             fontWeight: FontWeight.w700,
             letterSpacing: .5,
           ),
@@ -62,7 +62,7 @@ class TeacherReportDetailsScreen extends StatelessWidget {
           'Advanced Mathematics (Calculus AB)',
           style: TxtStyle.titleLarge(
             color: AppColors.text,
-            fontSize: 19.sp,
+            fontSize: 22.sp,
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -71,7 +71,7 @@ class TeacherReportDetailsScreen extends StatelessWidget {
           'Group A  •  Room 204  •  Oct 24, 2024',
           style: TxtStyle.bodyMedium(
             color: AppColors.subtitleTextColor,
-            fontSize: 12.sp,
+            fontSize: 15.sp,
           ),
         ),
         SizedBox(height: 5.h),
@@ -79,7 +79,7 @@ class TeacherReportDetailsScreen extends StatelessWidget {
           text: TextSpan(
             style: TxtStyle.bodyMedium(
               color: AppColors.subtitleTextColor,
-              fontSize: 12.sp,
+              fontSize: 15.sp,
             ),
             children: [
               const TextSpan(text: 'Teacher: '),
@@ -87,7 +87,7 @@ class TeacherReportDetailsScreen extends StatelessWidget {
                 text: 'Dr. Sarah Jenkins',
                 style: TxtStyle.bodyMedium(
                   color: AppColors.text,
-                  fontSize: 12.sp,
+                  fontSize: 15.sp,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -108,7 +108,7 @@ class TeacherReportDetailsScreen extends StatelessWidget {
             '18 of 18 Present (100%)',
             style: TxtStyle.titleLarge(
               color: AppColors.text,
-              fontSize: 13.sp,
+              fontSize: 16.sp,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -117,7 +117,7 @@ class TeacherReportDetailsScreen extends StatelessWidget {
             'Attitude rating: 5.0 / 5.0 • Work rigor: 4.8 / 5.0',
             style: TxtStyle.bodyMedium(
               color: AppColors.subtitleTextColor,
-              fontSize: 13.sp,
+              fontSize: 16.sp,
             ),
           ),
         ],
@@ -135,7 +135,7 @@ class TeacherReportDetailsScreen extends StatelessWidget {
             'Unit 4: Chain Rule & Implicit Differentiation',
             style: TxtStyle.titleLarge(
               color: AppColors.text,
-              fontSize: 13.sp,
+              fontSize: 16.sp,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -146,7 +146,7 @@ class TeacherReportDetailsScreen extends StatelessWidget {
             'followed by textbook exercises 14–28 from Section 4.2.',
             style: TxtStyle.bodyMedium(
               color: AppColors.subtitleTextColor,
-              fontSize: 13.sp,
+              fontSize: 16.sp,
               height: 1.5,
             ),
           ),
@@ -166,7 +166,7 @@ class TeacherReportDetailsScreen extends StatelessWidget {
             'Problem Set 4: Implicit Differentiation & Composite Functions',
             style: TxtStyle.titleLarge(
               color: AppColors.text,
-              fontSize: 13.sp,
+              fontSize: 16.sp,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -175,7 +175,7 @@ class TeacherReportDetailsScreen extends StatelessWidget {
             'Exercises 12–25 on workbook pages 88–91 with complete written proofs.',
             style: TxtStyle.bodyMedium(
               color: AppColors.subtitleTextColor,
-              fontSize: 13.sp,
+              fontSize: 16.sp,
               height: 1.5,
             ),
           ),
@@ -202,7 +202,7 @@ class TeacherReportDetailsScreen extends StatelessWidget {
           'trigonometric substitutions before moving on to Related Rates."',
           style: TxtStyle.bodyMedium(
             color: AppColors.subtitleTextColor,
-            fontSize: 13.sp,
+            fontSize: 16.sp,
             height: 1.55,
             fontStyle: FontStyle.italic,
           ),
@@ -225,25 +225,31 @@ class TeacherReportDetailsScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 title,
                 style: TxtStyle.titleLarge(
                   color: AppColors.subtitleTextColor,
-                  fontSize: 14.sp,
+                  fontSize: 17.sp,
                   fontWeight: FontWeight.w700,
                   letterSpacing: .45,
                 ),
               ),
-              const Spacer(),
-              if (trailing != null)
-                Text(
-                  trailing,
-                  style: TxtStyle.bodyMedium(
-                    color: AppColors.subtitleTextColor,
-                    fontSize: 13.sp,
+
+              if (trailing != null) ...[
+                Gap(12.w),
+                Flexible(
+                  child: Text(
+                    trailing,
+                    textAlign: TextAlign.end,
+                    style: TxtStyle.bodyMedium(
+                      color: AppColors.subtitleTextColor,
+                      fontSize: 14.sp,
+                    ),
                   ),
                 ),
+              ],
             ],
           ),
           SizedBox(height: 9.h),
@@ -263,7 +269,7 @@ class TeacherReportDetailsScreen extends StatelessWidget {
           'Download Ledger Slip (PDF)',
           style: TxtStyle.titleLarge(
             color: Colors.white,
-            fontSize: 15.sp,
+            fontSize: 18.sp,
             fontWeight: FontWeight.w600,
           ),
         ),
