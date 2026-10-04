@@ -41,6 +41,8 @@ class _TeacherLoginScreenState extends ConsumerState<TeacherLoginScreen> {
     }
 
     // API login will be added here.
+    ref.read(userRoleProvider.notifier).loginAsTeacher();
+    context.go(RoutePath.navigationPages);
   }
 
   @override

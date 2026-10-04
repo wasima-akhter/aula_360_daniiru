@@ -42,6 +42,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     // API login will be added here.
 
+    ref.read(userRoleProvider.notifier).loginAsParent();
     context.go(RoutePath.navigationPages);
   }
 
