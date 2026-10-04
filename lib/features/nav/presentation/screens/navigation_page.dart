@@ -4,6 +4,8 @@ import 'package:aula360/features/parent_all/reports/parent_report_screen.dart';
 import 'package:aula360/features/parent_all/schedule/schedule_screen.dart';
 import 'package:aula360/features/teacher_all/classes/teacher_classes_screen.dart';
 import 'package:aula360/features/teacher_all/home/teacher_home_screen.dart';
+import 'package:aula360/features/teacher_all/reports/teacher_reports_screen.dart';
+import 'package:aula360/features/teacher_all/students/teacher_students_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../utils/enum/app_enum.dart';
@@ -45,14 +47,17 @@ class _NavigationPageState extends ConsumerState<NavigationPage> {
           TeacherHomeScreen(),
           // _NavigationPlaceholder(title: 'Classes', icon: Icons.class_outlined),
           TeacherClassesScreen(),
-          _NavigationPlaceholder(
-            title: 'Students',
-            icon: Icons.people_outline_rounded,
-          ),
-          _NavigationPlaceholder(
-            title: 'Reports',
-            icon: Icons.bar_chart_outlined,
-          ),
+          // _NavigationPlaceholder(
+          //   title: 'Students',
+          //   icon: Icons.people_outline_rounded,
+          // ),
+          TeacherStudentsScreen(),
+          // _NavigationPlaceholder(
+          //   title: 'Reports',
+          //   icon: Icons.bar_chart_outlined,
+          // ),
+
+          TeacherReportsScreen(),
           // _NavigationPlaceholder(
           //   title: 'Profile',
           //   icon: Icons.person_outline_rounded,

@@ -92,7 +92,7 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
             'Good morning, Dr. Vance',
             style: TxtStyle.titleLarge(
               color: AppColors.primaryDark,
-              fontSize: 19.sp,
+              fontSize: 17.sp,
               fontWeight: FontWeight.w700,
               letterSpacing: -.35,
             ),
@@ -116,7 +116,7 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
             '4 Classes Scheduled',
             style: TxtStyle.titleLarge(
               color: AppColors.text,
-              fontSize: 22.sp,
+              fontSize: 21.sp,
               fontWeight: FontWeight.w700,
               letterSpacing: -.3,
             ),
@@ -160,7 +160,7 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
                   'NEXT • 09:00 – 10:30 AM',
                   style: TxtStyle.titleLarge(
                     color: AppColors.primaryDark,
-                    fontSize: 13.sp,
+                    fontSize: 12.sp,
                     fontWeight: FontWeight.w700,
                     letterSpacing: .35,
                   ),
@@ -239,6 +239,7 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
   /// =============================================================
 
   Widget _scheduleItem(HomeScheduleItem item) {
+    final index = homeSchedule.indexOf(item);
     return InkWell(
       // onTap: () => _openClass(item),
       child: Container(
@@ -263,8 +264,8 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
                   Text(
                     item.startTime,
                     style: TxtStyle.titleLarge(
-                      color: AppColors.text,
-                      fontSize: 13.sp,
+                      color: index == 0 ? AppColors.primary : AppColors.text,
+                      fontSize: 12.sp,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -273,7 +274,7 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
                     item.endTime,
                     style: TxtStyle.titleLarge(
                       color: AppColors.subtitleTextColor,
-                      fontSize: 12.5.sp,
+                      fontSize: 11.5.sp,
                       height: 1.3,
                     ),
                   ),

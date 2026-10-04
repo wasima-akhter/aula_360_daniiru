@@ -68,7 +68,7 @@ class ChildProfileScreen extends StatelessWidget {
                       child.name,
                       style: TxtStyle.titleLarge(
                         color: AppColors.text,
-                        fontSize: 14.sp,
+                        fontSize: 17.sp,
                         fontWeight: FontWeight.w800,
                       ),
                     ),
@@ -77,7 +77,7 @@ class ChildProfileScreen extends StatelessWidget {
                       '${child.grade} • ${child.room} • ID: ${child.id}',
                       style: TxtStyle.titleLarge(
                         color: AppColors.subtitleTextColor,
-                        fontSize: 10.sp,
+                        fontSize: 12.sp,
                       ),
                     ),
                     SizedBox(height: 3.h),
@@ -85,7 +85,7 @@ class ChildProfileScreen extends StatelessWidget {
                       children: [
                         Icon(
                           Icons.school_outlined,
-                          size: 12.sp,
+                          size: 17.sp,
                           color: AppColors.primaryDark,
                         ),
                         SizedBox(width: 3.w),
@@ -93,7 +93,7 @@ class ChildProfileScreen extends StatelessWidget {
                           'St. Matthew Preparatory',
                           style: TxtStyle.titleLarge(
                             color: AppColors.subtitleTextColor,
-                            fontSize: 10.sp,
+                            fontSize: 12.sp,
                           ),
                         ),
                       ],
@@ -133,7 +133,7 @@ class ChildProfileScreen extends StatelessWidget {
           title,
           style: TxtStyle.titleLarge(
             color: AppColors.subtitleTextColor,
-            fontSize: 10.sp,
+            fontSize: 12.sp,
           ),
         ),
         SizedBox(height: 3.h),
@@ -141,7 +141,7 @@ class ChildProfileScreen extends StatelessWidget {
           value,
           style: TxtStyle.titleLarge(
             color: color,
-            fontSize: 13.sp,
+            fontSize: 15.sp,
             fontWeight: FontWeight.w800,
           ),
         ),
@@ -156,7 +156,7 @@ class ChildProfileScreen extends StatelessWidget {
         text,
         style: TxtStyle.titleLarge(
           color: AppColors.text,
-          fontSize: 11.sp,
+          fontSize: 14.sp,
           fontWeight: FontWeight.w800,
         ),
       ),
@@ -247,7 +247,7 @@ class ChildProfileScreen extends StatelessWidget {
                 color: color.withValues(alpha: .10),
                 borderRadius: BorderRadius.circular(7.r),
               ),
-              child: Icon(icon, color: color, size: 17.sp),
+              child: Icon(icon, color: color, size: 19.sp),
             ),
             SizedBox(width: 10.w),
             Expanded(
@@ -258,16 +258,16 @@ class ChildProfileScreen extends StatelessWidget {
                     title,
                     style: TxtStyle.titleLarge(
                       color: AppColors.text,
-                      fontSize: 12.sp,
+                      fontSize: 14.sp,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                   SizedBox(height: 2.h),
                   Text(
                     subtitle,
-                    style: TxtStyle.titleLarge(
+                    style: TxtStyle.bodyMedium(
                       color: AppColors.subtitleTextColor,
-                      fontSize: 10.sp,
+                      fontSize: 12.sp,
                     ),
                   ),
                 ],
@@ -307,7 +307,7 @@ class ChildProfileScreen extends StatelessWidget {
               child: Icon(
                 Icons.chat_bubble_outline,
                 color: AppColors.primaryDark,
-                size: 17.sp,
+                size: 18.sp,
               ),
             ),
             SizedBox(width: 10.w),
@@ -319,16 +319,16 @@ class ChildProfileScreen extends StatelessWidget {
                     'Message Academy',
                     style: TxtStyle.titleLarge(
                       color: AppColors.text,
-                      fontSize: 12.sp,
+                      fontSize: 14.sp,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                   SizedBox(height: 2.h),
                   Text(
                     'Contact homeroom or office',
-                    style: TxtStyle.titleLarge(
+                    style: TxtStyle.bodyMedium(
                       color: AppColors.subtitleTextColor,
-                      fontSize: 10.sp,
+                      fontSize: 12.sp,
                     ),
                   ),
                 ],
@@ -344,7 +344,7 @@ class ChildProfileScreen extends StatelessWidget {
                 'Contact',
                 style: TxtStyle.titleLarge(
                   color: AppColors.primaryDark,
-                  fontSize: 10.sp,
+                  fontSize: 12.sp,
                   fontWeight: FontWeight.w700,
                 ),
               ),

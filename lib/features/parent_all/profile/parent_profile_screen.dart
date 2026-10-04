@@ -265,7 +265,9 @@ class _ParentProfileScreenState extends State<ParentProfileScreen> {
             icon: Icons.chat_bubble_outline,
             title: 'Communication',
             subtitle: 'Messages with faculty & academy',
-            onTap: () {},
+            onTap: () {
+              context.push(RoutePath.chatInbox);
+            },
           ),
           _divider(),
           _profileMenu(

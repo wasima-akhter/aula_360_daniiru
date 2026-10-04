@@ -16,6 +16,8 @@ import 'package:aula360/features/parent_all/settings/settings_screen.dart';
 import 'package:aula360/features/teacher_all/attendance/teacher_end_class_screen.dart';
 import 'package:aula360/features/teacher_all/attendance/teacher_report_submit_confirm_screen.dart';
 import 'package:aula360/features/teacher_all/attendance/teacher_submit_report_screen.dart';
+import 'package:aula360/features/teacher_all/reports/teacher_report_detail_screen.dart';
+import 'package:aula360/features/teacher_all/students/teacher_student_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -422,6 +424,26 @@ class AppRouter {
           return _buildPageWithAnimation(
             state: state,
             child: TeacherEndClassScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        name: RoutePath.teacherReportDetail,
+        path: RoutePath.teacherReportDetail.addBasePath,
+        pageBuilder: (context, state) {
+          return _buildPageWithAnimation(
+            state: state,
+            child: TeacherReportDetailsScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        name: RoutePath.teacherStudentDetail,
+        path: RoutePath.teacherStudentDetail.addBasePath,
+        pageBuilder: (context, state) {
+          return _buildPageWithAnimation(
+            state: state,
+            child: TeacherStudentDetailsScreen(),
           );
         },
       ),

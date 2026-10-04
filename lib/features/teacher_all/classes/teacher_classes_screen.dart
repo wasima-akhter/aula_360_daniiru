@@ -230,7 +230,7 @@ class _TeacherClassesScreenState extends State<TeacherClassesScreen> {
               item.subtitle,
               style: TxtStyle.bodyMedium(
                 color: AppColors.subtitleTextColor,
-                fontSize: 12.sp,
+                fontSize: 13.sp,
               ),
             ),
 
@@ -248,7 +248,7 @@ class _TeacherClassesScreenState extends State<TeacherClassesScreen> {
                   item.room,
                   style: TxtStyle.bodyMedium(
                     color: AppColors.subtitleTextColor,
-                    fontSize: 12,
+                    fontSize: 12.sp,
                   ),
                 ),
                 SizedBox(width: 8.w),
@@ -256,7 +256,7 @@ class _TeacherClassesScreenState extends State<TeacherClassesScreen> {
                   '•',
                   style: TxtStyle.bodyMedium(
                     color: AppColors.subtitleTextColor,
-                    fontSize: 12,
+                    fontSize: 12.sp,
                   ),
                 ),
                 SizedBox(width: 8.w),
@@ -264,7 +264,7 @@ class _TeacherClassesScreenState extends State<TeacherClassesScreen> {
                   item.group,
                   style: TxtStyle.bodyMedium(
                     color: AppColors.subtitleTextColor,
-                    fontSize: 12,
+                    fontSize: 12.sp,
                   ),
                 ),
                 SizedBox(width: 8.w),
@@ -272,7 +272,7 @@ class _TeacherClassesScreenState extends State<TeacherClassesScreen> {
                   '•',
                   style: TxtStyle.bodyMedium(
                     color: AppColors.subtitleTextColor,
-                    fontSize: 12,
+                    fontSize: 12.sp,
                   ),
                 ),
                 SizedBox(width: 8.w),
@@ -280,7 +280,7 @@ class _TeacherClassesScreenState extends State<TeacherClassesScreen> {
                   '${item.students} students',
                   style: TxtStyle.bodyMedium(
                     color: AppColors.subtitleTextColor,
-                    fontSize: 12,
+                    fontSize: 12.sp,
                   ),
                 ),
               ],

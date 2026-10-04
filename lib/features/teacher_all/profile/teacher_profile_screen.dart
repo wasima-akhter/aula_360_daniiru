@@ -419,7 +419,8 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
                   'Manage parent communication',
                   () {
                     Navigator.pop(context);
-                    _showMessage('Parent communication opened');
+                    // _showMessage('Parent communication opened');
+                    context.push(RoutePath.chatInbox);
                   },
                 ),
               ],
