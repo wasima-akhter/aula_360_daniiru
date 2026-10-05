@@ -68,7 +68,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const AuthBackButton(title: 'Reset Password'),
+              const AuthBackButton(title: 'Reset Password', showBack: false),
 
               const SizedBox(height: 43),
 

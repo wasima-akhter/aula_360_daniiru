@@ -106,34 +106,36 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
       appBar: const AulaAppBar(title: 'Homework', showBack: true),
-      body: CustomScrollView(
-        physics: const BouncingScrollPhysics(),
-        slivers: [
-          SliverPadding(
-            padding: EdgeInsets.fromLTRB(16.w, 18.h, 16.w, 20.h),
-            sliver: SliverList(
-              delegate: SliverChildListDelegate([
-                _studentSelector(),
+      body: SafeArea(
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            SliverPadding(
+              padding: EdgeInsets.fromLTRB(16.w, 18.h, 16.w, 20.h),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate([
+                  _studentSelector(),
 
-                SizedBox(height: 22.h),
+                  SizedBox(height: 22.h),
 
-                _tabs(),
-              ]),
+                  _tabs(),
+                ]),
+              ),
             ),
-          ),
 
-          SliverPadding(
-            padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 30.h),
-            sliver: SliverList(
-              delegate: SliverChildListDelegate([
-                for (final item in filteredHomework) ...[
-                  _homeworkCard(item),
-                  SizedBox(height: 12.h),
-                ],
-              ]),
+            SliverPadding(
+              padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 30.h),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate([
+                  for (final item in filteredHomework) ...[
+                    _homeworkCard(item),
+                    SizedBox(height: 12.h),
+                  ],
+                ]),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

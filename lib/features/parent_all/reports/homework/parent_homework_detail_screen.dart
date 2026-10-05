@@ -19,34 +19,36 @@ class _HomeworkDetailsScreenState extends State<HomeworkDetailsScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
       appBar: const AulaAppBar(title: 'Homework Details', showBack: true),
-      body: CustomScrollView(
-        physics: const BouncingScrollPhysics(),
-        slivers: [
-          SliverPadding(
-            padding: EdgeInsets.fromLTRB(16.w, 18.h, 16.w, 30.h),
-            sliver: SliverList(
-              delegate: SliverChildListDelegate([
-                _assignmentHeader(homework),
+      body: SafeArea(
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            SliverPadding(
+              padding: EdgeInsets.fromLTRB(16.w, 18.h, 16.w, 30.h),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate([
+                  _assignmentHeader(homework),
 
-                SizedBox(height: 15.h),
+                  SizedBox(height: 15.h),
 
-                _teacherCard(homework),
+                  _teacherCard(homework),
 
-                SizedBox(height: 15.h),
+                  SizedBox(height: 15.h),
 
-                _instructions(homework),
+                  _instructions(homework),
 
-                SizedBox(height: 15.h),
+                  SizedBox(height: 15.h),
 
-                _attachmentSection(),
+                  _attachmentSection(),
 
-                SizedBox(height: 15.h),
+                  SizedBox(height: 15.h),
 
-                _submissionInfo(homework),
-              ]),
+                  _submissionInfo(homework),
+                ]),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -37,75 +37,77 @@ class TeacherReportSubmittedScreen extends StatelessWidget {
           child: Container(height: 1, color: AppColors.backgroundsLinesColor),
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(14.w, 100.h, 14.w, 30.h),
-              child: Column(
-                children: [
-                  Container(
-                    width: 48.w,
-                    height: 48.w,
-                    decoration: const BoxDecoration(
-                      color: Color(0xFFE9FFF5),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.check_rounded,
-                      color: AppColors.emeraldGreenColor,
-                      size: 28.sp,
-                    ),
-                  ),
-
-                  SizedBox(height: 17.h),
-
-                  Text(
-                    'Report Submitted',
-                    style: TxtStyle.titleLarge(
-                      color: AppColors.text,
-                      fontSize: 22.sp,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-
-                  SizedBox(height: 8.h),
-
-                  Text(
-                    'Attendance and session logs have been saved\nto academy records.',
-                    textAlign: TextAlign.center,
-                    style: TxtStyle.bodyMedium(
-                      color: AppColors.subtitleTextColor,
-                      fontSize: 16.5.sp,
-                      height: 1.5,
-                    ),
-                  ),
-
-                  SizedBox(height: 30.h),
-
-                  _reportSummary(),
-
-                  const Spacer(),
-
-                  SizedBox(
-                    width: double.infinity,
-                    child: AulaPrimaryButton(
-                      onTap: () {
-                        context.go(RoutePath.navigationPages);
-                      },
-                      text: 'Done',
-                      trailing: Icon(
-                        Icons.arrow_forward_rounded,
-                        color: Colors.white,
-                        size: 18.sp,
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(14.w, 100.h, 14.w, 30.h),
+                child: Column(
+                  children: [
+                    Container(
+                      width: 48.w,
+                      height: 48.w,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFFE9FFF5),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.check_rounded,
+                        color: AppColors.emeraldGreenColor,
+                        size: 28.sp,
                       ),
                     ),
-                  ),
-                ],
+
+                    SizedBox(height: 17.h),
+
+                    Text(
+                      'Report Submitted',
+                      style: TxtStyle.titleLarge(
+                        color: AppColors.text,
+                        fontSize: 22.sp,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+
+                    SizedBox(height: 8.h),
+
+                    Text(
+                      'Attendance and session logs have been saved\nto academy records.',
+                      textAlign: TextAlign.center,
+                      style: TxtStyle.bodyMedium(
+                        color: AppColors.subtitleTextColor,
+                        fontSize: 16.5.sp,
+                        height: 1.5,
+                      ),
+                    ),
+
+                    SizedBox(height: 30.h),
+
+                    _reportSummary(),
+
+                    const Spacer(),
+
+                    SizedBox(
+                      width: double.infinity,
+                      child: AulaPrimaryButton(
+                        onTap: () {
+                          context.go(RoutePath.navigationPages);
+                        },
+                        text: 'Done',
+                        trailing: Icon(
+                          Icons.arrow_forward_rounded,
+                          color: Colors.white,
+                          size: 18.sp,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

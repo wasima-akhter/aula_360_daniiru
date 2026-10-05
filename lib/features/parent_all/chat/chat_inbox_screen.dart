@@ -137,8 +137,6 @@ class _TeacherChatScreenState extends State<TeacherChatScreen> {
 
   Widget _chatTabs() {
     return Container(
-      height: 31.h,
-      width: 150.w,
       padding: EdgeInsets.all(3.w),
       decoration: BoxDecoration(
         color: const Color(0xFFF0F3F7),
@@ -149,6 +147,7 @@ class _TeacherChatScreenState extends State<TeacherChatScreen> {
           Expanded(
             child: Container(
               alignment: Alignment.center,
+              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(15.r),
@@ -330,14 +329,8 @@ class _TeacherChatScreenState extends State<TeacherChatScreen> {
             ),
           ),
           Expanded(
-            child: Container(
+            child: SizedBox(
               height: 39.h,
-              padding: EdgeInsets.symmetric(horizontal: 13.w),
-              decoration: BoxDecoration(
-                color: AppColors.softSlateBgColor,
-                borderRadius: BorderRadius.circular(20.r),
-                border: Border.all(color: AppColors.border),
-              ),
               child: TextField(
                 controller: _messageController,
                 style: TxtStyle.titleLarge(

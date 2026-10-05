@@ -24,22 +24,24 @@ class TeacherReportDetailsScreen extends StatelessWidget {
           SizedBox(width: 14.w),
         ],
       ),
-      body: ListView(
-        physics: const BouncingScrollPhysics(),
-        padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 30.h),
-        children: [
-          _recordHeader(),
-          SizedBox(height: 17.h),
-          _attendanceSection(),
-          SizedBox(height: 17.h),
-          _contentSection(),
-          SizedBox(height: 17.h),
-          _homeworkSection(),
-          SizedBox(height: 17.h),
-          _facultyObservation(),
-          SizedBox(height: 19.h),
-          _downloadButton(),
-        ],
+      body: SafeArea(
+        child: ListView(
+          physics: const BouncingScrollPhysics(),
+          padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 30.h),
+          children: [
+            _recordHeader(),
+            SizedBox(height: 17.h),
+            _attendanceSection(),
+            SizedBox(height: 17.h),
+            _contentSection(),
+            SizedBox(height: 17.h),
+            _homeworkSection(),
+            SizedBox(height: 17.h),
+            _facultyObservation(),
+            SizedBox(height: 19.h),
+            _downloadButton(),
+          ],
+        ),
       ),
     );
   }

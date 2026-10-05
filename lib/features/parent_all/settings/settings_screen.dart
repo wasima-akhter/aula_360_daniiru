@@ -1,4 +1,5 @@
 ﻿import '../../share/export/screen_export.dart';
+import '../../teacher_all/settings/language_picker.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -10,6 +11,9 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   bool pushNotifications = true;
   bool attendanceAlerts = true;
+
+  //
+  String language = 'English (US)';
 
   @override
   Widget build(BuildContext context) {
@@ -155,12 +159,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
       child: _settingsRow(
         icon: Icons.language,
         title: 'Language',
-        subtitle: 'English (US)',
+        subtitle: 'Choose the language used throughout the portal',
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'English (US)',
+              language,
               style: TxtStyle.titleLarge(
                 color: AppColors.primaryDark,
                 fontSize: 15.5.sp,
@@ -175,7 +179,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ],
         ),
-        onTap: () {},
+        onTap: () async {
+          final selected = await LanguagePicker.show(
+            context: context,
+            selectedLanguage: language,
+          );
+
+          if (!mounted || selected == null) return;
+
+          setState(() {
+            language = selected;
+          });
+        },
       ),
     );
   }

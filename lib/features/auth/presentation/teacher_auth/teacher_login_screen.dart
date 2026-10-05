@@ -55,7 +55,7 @@ class _TeacherLoginScreenState extends ConsumerState<TeacherLoginScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AuthBackButton(title: 'Teacher Login', onTap: () {}),
+              AuthBackButton(title: 'Teacher Login', showBack: false),
 
               const SizedBox(height: 38),
 

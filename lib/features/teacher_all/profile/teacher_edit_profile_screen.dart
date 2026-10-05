@@ -573,7 +573,7 @@ class _EditTeacherProfileScreenState extends State<EditTeacherProfileScreen> {
   Widget _saveButton() {
     return SizedBox(
       width: double.infinity,
-      height: 45.h,
+
       child: ElevatedButton(
         onPressed: _saving ? null : _save,
         style: ElevatedButton.styleFrom(

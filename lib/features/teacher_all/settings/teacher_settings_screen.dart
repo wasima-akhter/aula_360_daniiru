@@ -1,4 +1,5 @@
 ﻿import '../../share/export/screen_export.dart';
+import 'language_picker.dart';
 
 /// ===============================================================
 /// SETTINGS
@@ -158,75 +159,22 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
             ),
           ],
         ),
-        onTap: _showLanguagePicker,
+        onTap: () async {
+          final selected = await LanguagePicker.show(
+            context: context,
+            selectedLanguage: language,
+          );
+
+          if (!mounted || selected == null) return;
+
+          setState(() {
+            language = selected;
+          });
+
+          _showMessage('Language changed to $language');
+        },
       ),
     );
-  }
-
-  Future<void> _showLanguagePicker() async {
-    final selected = await showModalBottomSheet<String>(
-      context: context,
-      backgroundColor: Colors.white,
-      showDragHandle: true,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(18.r)),
-      ),
-      builder: (context) {
-        final languages = ['English (US)', 'English (UK)', 'Spanish'];
-
-        return SafeArea(
-          child: Padding(
-            padding: EdgeInsets.only(bottom: 15.h),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 18.w,
-                    vertical: 5.h,
-                  ),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Select Language',
-                      style: TxtStyle.titleLarge(
-                        color: AppColors.text,
-                        fontSize: 19.sp,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                  ),
-                ),
-                ...languages.map(
-                  (item) => RadioListTile<String>(
-                    value: item,
-                    groupValue: language,
-                    activeColor: AppColors.primary,
-                    title: Text(
-                      item,
-                      style: TxtStyle.titleLarge(fontSize: 16.sp),
-                    ),
-                    onChanged: (value) {
-                      if (value != null) {
-                        Navigator.pop(context, value);
-                      }
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-
-    if (!mounted || selected == null) return;
-
-    setState(() {
-      language = selected;
-    });
-
-    _showMessage('Language changed to $language');
   }
 
   // ===============================================================
@@ -477,7 +425,7 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
 
                 SizedBox(
                   width: double.infinity,
-                  height: 43.h,
+
                   child: OutlinedButton(
                     onPressed: () {
                       Navigator.pop(context);

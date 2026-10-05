@@ -33,354 +33,260 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
         ],
       ),
 
-      body: CustomScrollView(
-        physics: const BouncingScrollPhysics(),
-        slivers: [
-          SliverPadding(
-            padding: EdgeInsets.fromLTRB(16.w, 18.h, 16.w, 30.h),
-            sliver: SliverList(
-              delegate: SliverChildListDelegate([
-                // =================================================
-                // STUDENT
-                // =================================================
-                AulaCard(
-                  child: Row(
-                    children: [
-                      const UserAvatar(initials: 'LR', size: 42),
-
-                      SizedBox(width: 11.w),
-
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  'Lucas Rivera',
-                                  style: TxtStyle.titleLarge(
-                                    color: AppColors.text,
-                                    fontSize: 18.sp,
-                                    fontWeight: FontWeight.w800,
-                                  ),
-                                ),
-                                SizedBox(width: 7.w),
-                                Container(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 6.w,
-                                    vertical: 3.h,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFFE8EDFF),
-                                    borderRadius: BorderRadius.circular(5.r),
-                                  ),
-                                  child: Text(
-                                    'Grade 8',
-                                    style: TxtStyle.titleLarge(
-                                      color: AppColors.primary,
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 4.h),
-                            Text(
-                              'Room 3B • ID #A360-842',
-                              style: TxtStyle.titleLarge(
-                                color: AppColors.secondaryText,
-                                fontSize: 15.sp,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                SizedBox(height: 13.h),
-
-                // =================================================
-                // CLASS NAME
-                // =================================================
-                AulaCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        data.subject,
-                        style: TxtStyle.titleLarge(
-                          color: AppColors.primary,
-                          fontSize: 25.sp,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-
-                      SizedBox(height: 7.h),
-
-                      Text(
-                        _descriptionFor(data.category),
-                        style: TxtStyle.titleLarge(
-                          color: AppColors.secondaryText,
-                          fontSize: 16.sp,
-                          height: 1.4,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                SizedBox(height: 14.h),
-
-                // =================================================
-                // SCHEDULE & TIMING
-                // =================================================
-                AulaCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _smallTitle('SCHEDULE & TIMING'),
-
-                      SizedBox(height: 12.h),
-
-                      _detailRow(
-                        icon: Icons.calendar_today_outlined,
-                        label: 'Date',
-                        value: 'Wednesday, October 24, 2024',
-                      ),
-
-                      SizedBox(height: 10.h),
-
-                      _detailRow(
-                        icon: Icons.access_time_rounded,
-                        label: 'Time Window',
-                        value: '${data.time} – ${data.duration}',
-                        trailing: '90 mins',
-                      ),
-                    ],
-                  ),
-                ),
-
-                SizedBox(height: 14.h),
-
-                // =================================================
-                // LOCATION
-                // =================================================
-                AulaCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          _smallTitle('CAMPUS LOCATION'),
-                          const Spacer(),
-                          Icon(
-                            Icons.business_outlined,
-                            size: 14.sp,
-                            color: AppColors.primary,
-                          ),
-                          SizedBox(width: 4.w),
-                          Text(
-                            'Building A',
-                            style: TxtStyle.titleLarge(
-                              color: AppColors.primary,
-                              fontSize: 15.sp,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      SizedBox(height: 12.h),
-
-                      Text(
-                        '${data.room}, ${data.building}',
-                        style: TxtStyle.titleLarge(
-                          color: AppColors.text,
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-
-                      SizedBox(height: 4.h),
-
-                      Text(
-                        'West Campus Building A • 2nd Floor, South Corridor',
-                        style: TxtStyle.titleLarge(
-                          color: AppColors.secondaryText,
-                          fontSize: 15.sp,
-                        ),
-                      ),
-
-                      SizedBox(height: 12.h),
-
-                      // Map placeholder
-                      Container(
-                        height: 150.h,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFE5E7E9),
-                          borderRadius: BorderRadius.circular(9.r),
-                        ),
-                        child: Stack(
-                          children: [
-                            Center(
-                              child: Icon(
-                                Icons.map_outlined,
-                                size: 50.sp,
-                                color: Colors.grey.shade400,
-                              ),
-                            ),
-
-                            Positioned(
-                              left: 12.w,
-                              bottom: 10.h,
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 9.w,
-                                  vertical: 6.h,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.black.withOpacity(.45),
-                                  borderRadius: BorderRadius.circular(6.r),
-                                ),
-                                child: Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.location_on_rounded,
-                                      color: Colors.white,
-                                      size: 14,
-                                    ),
-                                    SizedBox(width: 4.w),
-                                    Text(
-                                      '${data.room} Schematic',
-                                      style: TxtStyle.titleLarge(
-                                        color: Colors.white,
-                                        fontSize: 15.sp,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-
-                            Positioned(
-                              right: 10.w,
-                              bottom: 10.h,
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 9.w,
-                                  vertical: 6.h,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(6.r),
-                                ),
-                                child: Text(
-                                  'View Map ↗',
-                                  style: TxtStyle.titleLarge(
-                                    color: AppColors.primary,
-                                    fontSize: 15.sp,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                SizedBox(height: 14.h),
-
-                // =================================================
-                // INSTRUCTOR
-                // =================================================
-                GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () {
-                    context.push(RoutePath.teacherInformation);
-                  },
-                  child: AulaCard(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+      body: SafeArea(
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            SliverPadding(
+              padding: EdgeInsets.fromLTRB(16.w, 18.h, 16.w, 30.h),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate([
+                  // =================================================
+                  // STUDENT
+                  // =================================================
+                  AulaCard(
+                    child: Row(
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            _smallTitle('INSTRUCTOR INFORMATION'),
+                        const UserAvatar(initials: 'LR', size: 42),
 
-                            Icon(Icons.chevron_right),
-                          ],
-                        ),
+                        SizedBox(width: 11.w),
 
-                        SizedBox(height: 13.h),
-
-                        Row(
-                          children: [
-                            UserAvatar(
-                              initials: _teacherInitials(data.teacher),
-                              size: 43,
-                            ),
-
-                            SizedBox(width: 10.w),
-
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
                                 children: [
                                   Text(
-                                    data.teacher,
+                                    'Lucas Rivera',
                                     style: TxtStyle.titleLarge(
                                       color: AppColors.text,
                                       fontSize: 18.sp,
                                       fontWeight: FontWeight.w800,
                                     ),
                                   ),
-                                  SizedBox(height: 3.h),
-                                  Text(
-                                    '${data.category} & STEM Faculty Lead',
-                                    style: TxtStyle.bodyMedium(
-                                      color: AppColors.secondaryText,
-                                      fontSize: 15.sp,
+                                  SizedBox(width: 7.w),
+                                  Container(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 6.w,
+                                      vertical: 3.h,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFE8EDFF),
+                                      borderRadius: BorderRadius.circular(5.r),
+                                    ),
+                                    child: Text(
+                                      'Grade 8',
+                                      style: TxtStyle.titleLarge(
+                                        color: AppColors.primary,
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.w700,
+                                      ),
                                     ),
                                   ),
                                 ],
+                              ),
+                              SizedBox(height: 4.h),
+                              Text(
+                                'Room 3B • ID #A360-842',
+                                style: TxtStyle.titleLarge(
+                                  color: AppColors.secondaryText,
+                                  fontSize: 15.sp,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  SizedBox(height: 13.h),
+
+                  // =================================================
+                  // CLASS NAME
+                  // =================================================
+                  AulaCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          data.subject,
+                          style: TxtStyle.titleLarge(
+                            color: AppColors.primary,
+                            fontSize: 25.sp,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+
+                        SizedBox(height: 7.h),
+
+                        Text(
+                          _descriptionFor(data.category),
+                          style: TxtStyle.titleLarge(
+                            color: AppColors.secondaryText,
+                            fontSize: 16.sp,
+                            height: 1.4,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  SizedBox(height: 14.h),
+
+                  // =================================================
+                  // SCHEDULE & TIMING
+                  // =================================================
+                  AulaCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _smallTitle('SCHEDULE & TIMING'),
+
+                        SizedBox(height: 12.h),
+
+                        _detailRow(
+                          icon: Icons.calendar_today_outlined,
+                          label: 'Date',
+                          value: 'Wednesday, October 24, 2024',
+                        ),
+
+                        SizedBox(height: 10.h),
+
+                        _detailRow(
+                          icon: Icons.access_time_rounded,
+                          label: 'Time Window',
+                          value: '${data.time} – ${data.duration}',
+                          trailing: '90 mins',
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  SizedBox(height: 14.h),
+
+                  // =================================================
+                  // LOCATION
+                  // =================================================
+                  AulaCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            _smallTitle('CAMPUS LOCATION'),
+                            const Spacer(),
+                            Icon(
+                              Icons.business_outlined,
+                              size: 14.sp,
+                              color: AppColors.primary,
+                            ),
+                            SizedBox(width: 4.w),
+                            Text(
+                              'Building A',
+                              style: TxtStyle.titleLarge(
+                                color: AppColors.primary,
+                                fontSize: 15.sp,
+                                fontWeight: FontWeight.w700,
                               ),
                             ),
                           ],
                         ),
 
-                        SizedBox(height: 13.h),
+                        SizedBox(height: 12.h),
 
-                        Container(
-                          width: double.infinity,
-                          padding: EdgeInsets.all(11.w),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFF8F6FD),
-                            borderRadius: BorderRadius.circular(8.r),
+                        Text(
+                          '${data.room}, ${data.building}',
+                          style: TxtStyle.titleLarge(
+                            color: AppColors.text,
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.w800,
                           ),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                        ),
+
+                        SizedBox(height: 4.h),
+
+                        Text(
+                          'West Campus Building A • 2nd Floor, South Corridor',
+                          style: TxtStyle.titleLarge(
+                            color: AppColors.secondaryText,
+                            fontSize: 15.sp,
+                          ),
+                        ),
+
+                        SizedBox(height: 12.h),
+
+                        // Map placeholder
+                        Container(
+                          height: 150.h,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFE5E7E9),
+                            borderRadius: BorderRadius.circular(9.r),
+                          ),
+                          child: Stack(
                             children: [
-                              Icon(
-                                Icons.access_time_rounded,
-                                size: 16.sp,
-                                color: AppColors.primary,
+                              Center(
+                                child: Icon(
+                                  Icons.map_outlined,
+                                  size: 50.sp,
+                                  color: Colors.grey.shade400,
+                                ),
                               ),
-                              SizedBox(width: 7.w),
-                              Expanded(
-                                child: Text(
-                                  'Office Hours: 03:30 PM – 04:30 PM\n(Room 3B)',
-                                  style: TxtStyle.titleLarge(
-                                    color: AppColors.secondaryText,
-                                    fontSize: 15.sp,
-                                    height: 1.4,
+
+                              Positioned(
+                                left: 12.w,
+                                bottom: 10.h,
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 9.w,
+                                    vertical: 6.h,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.black.withOpacity(.45),
+                                    borderRadius: BorderRadius.circular(6.r),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.location_on_rounded,
+                                        color: Colors.white,
+                                        size: 14,
+                                      ),
+                                      SizedBox(width: 4.w),
+                                      Text(
+                                        '${data.room} Schematic',
+                                        style: TxtStyle.titleLarge(
+                                          color: Colors.white,
+                                          fontSize: 15.sp,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                              Positioned(
+                                right: 10.w,
+                                bottom: 10.h,
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 9.w,
+                                    vertical: 6.h,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(6.r),
+                                  ),
+                                  child: Text(
+                                    'View Map ↗',
+                                    style: TxtStyle.titleLarge(
+                                      color: AppColors.primary,
+                                      fontSize: 15.sp,
+                                      fontWeight: FontWeight.w700,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -390,11 +296,107 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                       ],
                     ),
                   ),
-                ),
-              ]),
+
+                  SizedBox(height: 14.h),
+
+                  // =================================================
+                  // INSTRUCTOR
+                  // =================================================
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () {
+                      context.push(RoutePath.teacherInformation);
+                    },
+                    child: AulaCard(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              _smallTitle('INSTRUCTOR INFORMATION'),
+
+                              Icon(Icons.chevron_right),
+                            ],
+                          ),
+
+                          SizedBox(height: 13.h),
+
+                          Row(
+                            children: [
+                              UserAvatar(
+                                initials: _teacherInitials(data.teacher),
+                                size: 43,
+                              ),
+
+                              SizedBox(width: 10.w),
+
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      data.teacher,
+                                      style: TxtStyle.titleLarge(
+                                        color: AppColors.text,
+                                        fontSize: 18.sp,
+                                        fontWeight: FontWeight.w800,
+                                      ),
+                                    ),
+                                    SizedBox(height: 3.h),
+                                    Text(
+                                      '${data.category} & STEM Faculty Lead',
+                                      style: TxtStyle.bodyMedium(
+                                        color: AppColors.secondaryText,
+                                        fontSize: 15.sp,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          SizedBox(height: 13.h),
+
+                          Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.all(11.w),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF8F6FD),
+                              borderRadius: BorderRadius.circular(8.r),
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Icon(
+                                  Icons.access_time_rounded,
+                                  size: 16.sp,
+                                  color: AppColors.primary,
+                                ),
+                                SizedBox(width: 7.w),
+                                Expanded(
+                                  child: Text(
+                                    'Office Hours: 03:30 PM – 04:30 PM\n(Room 3B)',
+                                    style: TxtStyle.titleLarge(
+                                      color: AppColors.secondaryText,
+                                      fontSize: 15.sp,
+                                      height: 1.4,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ]),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

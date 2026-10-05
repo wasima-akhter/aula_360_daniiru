@@ -26,14 +26,14 @@ class _ChooseRoleScreenState extends State<ChooseRoleScreen> {
             children: [
               Row(
                 children: [
-                  GestureDetector(
-                    onTap: () => context.pop(),
-                    child: const Icon(
-                      Icons.arrow_back_ios_new_rounded,
-                      size: 17,
-                      color: AppColors.primaryDark,
-                    ),
-                  ),
+                  // GestureDetector(
+                  //   onTap: () => context.pop(),
+                  //   child: const Icon(
+                  //     Icons.arrow_back_ios_new_rounded,
+                  //     size: 17,
+                  //     color: AppColors.primaryDark,
+                  //   ),
+                  // ),
                   const Spacer(),
                   const AulaLogo(width: 90),
                   const Spacer(),

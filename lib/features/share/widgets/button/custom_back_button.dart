@@ -43,20 +43,27 @@ class CustomBackButton extends StatelessWidget {
 class AuthBackButton extends StatelessWidget {
   final String title;
   final VoidCallback? onTap;
-  const AuthBackButton({super.key, this.title = '', this.onTap});
+  final bool showBack;
+  const AuthBackButton({
+    super.key,
+    this.title = '',
+    this.onTap,
+    this.showBack = true,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        GestureDetector(
-          onTap: onTap ?? () => Navigator.of(context).pop(),
-          child: Icon(
-            Icons.arrow_back_ios_new_rounded,
-            size: 20.sp,
-            color: AppColors.primaryDark,
+        if (showBack)
+          GestureDetector(
+            onTap: onTap ?? () => Navigator.of(context).pop(),
+            child: Icon(
+              Icons.arrow_back_ios_new_rounded,
+              size: 20.sp,
+              color: AppColors.primaryDark,
+            ),
           ),
-        ),
         if (title.isNotEmpty) ...[
           SizedBox(width: 10.w),
           Text(

@@ -56,7 +56,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AuthBackButton(title: 'Parent Login', onTap: () {}),
+              AuthBackButton(title: 'Parent Login', showBack: false),
 
               const SizedBox(height: 38),
 

@@ -456,7 +456,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Widget _saveButton() {
     return SizedBox(
       width: double.infinity,
-      height: 44.h,
+
       child: ElevatedButton(
         onPressed: () {
           if (!_formKey.currentState!.validate()) {

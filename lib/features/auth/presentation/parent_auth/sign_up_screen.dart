@@ -148,15 +148,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 children: [
                   Icon(
                     Icons.info_outline_rounded,
-                    size: 13.sp,
+                    size: 19.sp,
                     color: AppColors.secondaryText,
                   ),
                   const SizedBox(width: 4),
-                  Text(
-                    'At least 8 characters with numbers and letters',
-                    style: TxtStyle.titleLarge(
-                      color: AppColors.secondaryText,
-                      fontSize: 16.sp,
+                  Flexible(
+                    child: Text(
+                      'At least 8 characters with numbers and letters',
+                      style: TxtStyle.titleLarge(
+                        color: AppColors.secondaryText,
+                        fontSize: 16.sp,
+                      ),
                     ),
                   ),
                 ],

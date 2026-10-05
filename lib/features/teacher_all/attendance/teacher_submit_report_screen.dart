@@ -34,157 +34,159 @@ class _TeacherPostClassReportScreenState
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: const AulaAppBar(title: 'Post-Class Report', showBack: true),
-      body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        padding: EdgeInsets.fromLTRB(16.w, 19.h, 16.w, 30.h),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _classHeader(),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          padding: EdgeInsets.fromLTRB(16.w, 19.h, 16.w, 30.h),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _classHeader(),
 
-            SizedBox(height: 24.h),
+              SizedBox(height: 24.h),
 
-            _sectionLabel('Content Covered'),
+              _sectionLabel('Content Covered'),
 
-            SizedBox(height: 8.h),
+              SizedBox(height: 8.h),
 
-            _textCard(
-              'Chain Rule & Implicit Differentiation; board\n'
-              'exercises completed in class.',
-            ),
+              _textCard(
+                'Chain Rule & Implicit Differentiation; board\n'
+                'exercises completed in class.',
+              ),
 
-            SizedBox(height: 19.h),
+              SizedBox(height: 19.h),
 
-            Row(
-              children: [
-                _sectionLabel('Homework Assigned'),
-                const Spacer(),
-                Text(
-                  'Optional',
-                  style: TxtStyle.bodyMedium(
-                    color: AppColors.subtitleTextColor,
-                    fontSize: 13.sp,
+              Row(
+                children: [
+                  _sectionLabel('Homework Assigned'),
+                  const Spacer(),
+                  Text(
+                    'Optional',
+                    style: TxtStyle.bodyMedium(
+                      color: AppColors.subtitleTextColor,
+                      fontSize: 13.sp,
+                    ),
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
 
-            SizedBox(height: 8.h),
+              SizedBox(height: 8.h),
 
-            _editableTextCard(
-              controller: homeworkController,
-              hint: 'Problem Set 4: Exercises 12–25 (Due next Tuesday)',
-            ),
+              _editableTextCard(
+                controller: homeworkController,
+                hint: 'Problem Set 4: Exercises 12–25 (Due next Tuesday)',
+              ),
 
-            SizedBox(height: 20.h),
+              SizedBox(height: 20.h),
 
-            _selectionSection(
-              title: 'Student Conduct & Attitude',
-              value: _conductLabel(conduct),
-              children: [
-                _choiceButton(
-                  label: 'Needs Attendance',
-                  selected: conduct == StudentConduct.needsAttention,
-                  onTap: () {
-                    setState(() {
-                      conduct = StudentConduct.needsAttention;
-                    });
-                  },
-                ),
-                _choiceButton(
-                  label: 'Satisfactory',
-                  selected: conduct == StudentConduct.satisfactory,
-                  onTap: () {
-                    setState(() {
-                      conduct = StudentConduct.satisfactory;
-                    });
-                  },
-                ),
-                _choiceButton(
-                  label: 'Excellent',
-                  selected: conduct == StudentConduct.excellent,
-                  onTap: () {
-                    setState(() {
-                      conduct = StudentConduct.excellent;
-                    });
-                  },
-                ),
-              ],
-            ),
-
-            SizedBox(height: 20.h),
-
-            _selectionSection(
-              title: 'Work Effort',
-              value: _effortLabel(effort),
-              children: [
-                _choiceButton(
-                  label: 'Moderate',
-                  selected: effort == WorkEffort.moderate,
-                  onTap: () {
-                    setState(() {
-                      effort = WorkEffort.moderate;
-                    });
-                  },
-                ),
-                _choiceButton(
-                  label: 'On Track',
-                  selected: effort == WorkEffort.onTrack,
-                  onTap: () {
-                    setState(() {
-                      effort = WorkEffort.onTrack;
-                    });
-                  },
-                ),
-                _choiceButton(
-                  label: 'High Effort',
-                  selected: effort == WorkEffort.highEffort,
-                  onTap: () {
-                    setState(() {
-                      effort = WorkEffort.highEffort;
-                    });
-                  },
-                ),
-              ],
-            ),
-
-            SizedBox(height: 20.h),
-
-            Row(
-              children: [
-                _sectionLabel('Quick Notes'),
-                const Spacer(),
-                Text(
-                  'Optional',
-                  style: TxtStyle.bodyMedium(
-                    color: AppColors.subtitleTextColor,
-                    fontSize: 13.sp,
+              _selectionSection(
+                title: 'Student Conduct & Attitude',
+                value: _conductLabel(conduct),
+                children: [
+                  _choiceButton(
+                    label: 'Needs Attendance',
+                    selected: conduct == StudentConduct.needsAttention,
+                    onTap: () {
+                      setState(() {
+                        conduct = StudentConduct.needsAttention;
+                      });
+                    },
                   ),
-                ),
-              ],
-            ),
+                  _choiceButton(
+                    label: 'Satisfactory',
+                    selected: conduct == StudentConduct.satisfactory,
+                    onTap: () {
+                      setState(() {
+                        conduct = StudentConduct.satisfactory;
+                      });
+                    },
+                  ),
+                  _choiceButton(
+                    label: 'Excellent',
+                    selected: conduct == StudentConduct.excellent,
+                    onTap: () {
+                      setState(() {
+                        conduct = StudentConduct.excellent;
+                      });
+                    },
+                  ),
+                ],
+              ),
 
-            SizedBox(height: 8.h),
+              SizedBox(height: 20.h),
 
-            _notesField(),
+              _selectionSection(
+                title: 'Work Effort',
+                value: _effortLabel(effort),
+                children: [
+                  _choiceButton(
+                    label: 'Moderate',
+                    selected: effort == WorkEffort.moderate,
+                    onTap: () {
+                      setState(() {
+                        effort = WorkEffort.moderate;
+                      });
+                    },
+                  ),
+                  _choiceButton(
+                    label: 'On Track',
+                    selected: effort == WorkEffort.onTrack,
+                    onTap: () {
+                      setState(() {
+                        effort = WorkEffort.onTrack;
+                      });
+                    },
+                  ),
+                  _choiceButton(
+                    label: 'High Effort',
+                    selected: effort == WorkEffort.highEffort,
+                    onTap: () {
+                      setState(() {
+                        effort = WorkEffort.highEffort;
+                      });
+                    },
+                  ),
+                ],
+              ),
 
-            SizedBox(height: 32.h),
+              SizedBox(height: 20.h),
 
-            SizedBox(
-              width: double.infinity,
-              child: AulaPrimaryButton(
-                onTap: () {
-                  context.push(RoutePath.teacherReportSubmitted);
-                },
-                text: 'Submit Report',
-                trailing: Icon(
-                  Icons.arrow_forward_rounded,
-                  color: Colors.white,
-                  size: 18.sp,
+              Row(
+                children: [
+                  _sectionLabel('Quick Notes'),
+                  const Spacer(),
+                  Text(
+                    'Optional',
+                    style: TxtStyle.bodyMedium(
+                      color: AppColors.subtitleTextColor,
+                      fontSize: 13.sp,
+                    ),
+                  ),
+                ],
+              ),
+
+              SizedBox(height: 8.h),
+
+              _notesField(),
+
+              SizedBox(height: 32.h),
+
+              SizedBox(
+                width: double.infinity,
+                child: AulaPrimaryButton(
+                  onTap: () {
+                    context.push(RoutePath.teacherReportSubmitted);
+                  },
+                  text: 'Submit Report',
+                  trailing: Icon(
+                    Icons.arrow_forward_rounded,
+                    color: Colors.white,
+                    size: 18.sp,
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

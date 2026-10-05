@@ -189,7 +189,7 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const AuthBackButton(title: 'Verification'),
+              const AuthBackButton(title: 'Verification', showBack: false),
 
               const SizedBox(height: 35),
 
@@ -236,7 +236,7 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
 
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.fromLTRB(14, 16, 14, 15),
+                padding: const EdgeInsets.fromLTRB(14, 16, 14, 25),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(9),
@@ -254,28 +254,11 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
                       ),
                     ),
 
-                    const SizedBox(height: 10),
+                    Gap(30.h),
 
                     Row(children: List.generate(6, (index) => _otpBox(index))),
 
                     const SizedBox(height: 8),
-
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.keyboard_alt_outlined,
-                          size: 10,
-                          color: AppColors.secondaryText,
-                        ),
-                        SizedBox(width: 4),
-                        Text(
-                          'Numeric keypad activated automatically',
-                          style: TxtStyle.titleLarge(
-                            color: AppColors.secondaryText,
-                          ),
-                        ),
-                      ],
-                    ),
                   ],
                 ),
               ),
