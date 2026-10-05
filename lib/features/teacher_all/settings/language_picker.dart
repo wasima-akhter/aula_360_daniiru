@@ -1,15 +1,19 @@
 import '../../share/export/screen_export.dart';
 
-class LanguagePicker extends StatelessWidget {
+/// Bottom-sheet language picker.
+/// Shows only English (US) and Spanish (no English UK).
+/// Selecting a language immediately updates the central [languageProvider].
+class LanguagePicker extends ConsumerWidget {
   const LanguagePicker({super.key, required this.selectedLanguage});
 
   final String selectedLanguage;
 
-  static Future<String?> show({
+  static Future<void> show({
     required BuildContext context,
     required String selectedLanguage,
+    required WidgetRef ref,
   }) {
-    return showModalBottomSheet<String>(
+    return showModalBottomSheet<void>(
       context: context,
       backgroundColor: Colors.white,
       showDragHandle: true,
@@ -23,8 +27,11 @@ class LanguagePicker extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final languages = ['English (US)', 'English (UK)', 'Spanish'];
+  Widget build(BuildContext context, WidgetRef ref) {
+    final langAsync = ref.watch(languageProvider);
+    final tr = ref.watchTr;
+
+    final languages = [AppLanguage.english, AppLanguage.spanish];
 
     return SafeArea(
       child: Padding(
@@ -37,7 +44,7 @@ class LanguagePicker extends StatelessWidget {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  'Select Language',
+                  tr(AppStrings.languagePickerTitle),
                   style: TxtStyle.titleLarge(
                     color: AppColors.text,
                     fontSize: 19.sp,
@@ -48,17 +55,22 @@ class LanguagePicker extends StatelessWidget {
             ),
 
             ...languages.map(
-              (language) => RadioListTile<String>(
-                value: language,
-                groupValue: selectedLanguage,
+              (lang) => RadioListTile<AppLanguage>(
+                value: lang,
+                groupValue: langAsync.valueOrNull?.language,
                 activeColor: AppColors.primary,
                 title: Text(
-                  language,
+                  lang == AppLanguage.english
+                      ? tr(AppStrings.languageEnglishUs)
+                      : tr(AppStrings.languageSpanishLabel),
                   style: TxtStyle.titleLarge(fontSize: 16.sp),
                 ),
-                onChanged: (value) {
+                onChanged: (value) async {
                   if (value != null) {
-                    Navigator.pop(context, value);
+                    await ref
+                        .read(languageProvider.notifier)
+                        .changeLanguage(value);
+                    if (context.mounted) Navigator.pop(context);
                   }
                 },
               ),

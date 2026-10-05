@@ -1,13 +1,13 @@
-﻿import '../../share/export/screen_export.dart';
+import '../../share/export/screen_export.dart';
 
-class TuitionPaymentScreen extends StatefulWidget {
+class TuitionPaymentScreen extends ConsumerStatefulWidget {
   const TuitionPaymentScreen({super.key});
 
   @override
-  State<TuitionPaymentScreen> createState() => _TuitionPaymentScreenState();
+  ConsumerState<TuitionPaymentScreen> createState() => _TuitionPaymentScreenState();
 }
 
-class _TuitionPaymentScreenState extends State<TuitionPaymentScreen> {
+class _TuitionPaymentScreenState extends ConsumerState<TuitionPaymentScreen> {
   bool saveCard = true;
 
   @override
@@ -24,7 +24,7 @@ class _TuitionPaymentScreenState extends State<TuitionPaymentScreen> {
             children: [
               _studentInvoiceCard(),
               SizedBox(height: 20.h),
-              _sectionTitle('Payment Method'),
+              _sectionTitle(ref.watchTr(AppStrings.paymentMethodTitle)),
               SizedBox(height: 10.h),
               _cardDetails(),
               SizedBox(height: 10.h),
@@ -48,7 +48,7 @@ class _TuitionPaymentScreenState extends State<TuitionPaymentScreen> {
         icon: Icon(Icons.arrow_back, color: AppColors.primaryDark, size: 21.sp),
       ),
       title: Text(
-        'Tuition Payment',
+        ref.watchTr(AppStrings.tuitionPaymentTitle),
         style: TxtStyle.titleLarge(
           color: AppColors.primaryDark,
           fontSize: 17.sp,
@@ -117,10 +117,10 @@ class _TuitionPaymentScreenState extends State<TuitionPaymentScreen> {
                     ),
                     SizedBox(height: 2.h),
                     Text(
-                      'Grade 8 • Section A',
+                      '${ref.watchTr(AppStrings.eso2)} • ${ref.watchTr(AppStrings.aula3)}',
                       style: TxtStyle.titleLarge(
                         color: AppColors.subtitleTextColor,
-                        fontSize: 15.sp,
+                        fontSize: 14.sp,
                       ),
                     ),
                   ],
@@ -133,10 +133,10 @@ class _TuitionPaymentScreenState extends State<TuitionPaymentScreen> {
                   borderRadius: BorderRadius.circular(5.r),
                 ),
                 child: Text(
-                  'Invoice #A360-8492',
+                  '${ref.watchTr(AppStrings.invoiceLabel)} #A360-8492',
                   style: TxtStyle.titleLarge(
                     color: AppColors.primaryDark,
-                    fontSize: 14.5.sp,
+                    fontSize: 13.5.sp,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -146,9 +146,9 @@ class _TuitionPaymentScreenState extends State<TuitionPaymentScreen> {
           SizedBox(height: 14.h),
           Divider(height: 1, color: AppColors.backgroundsLinesColor),
           SizedBox(height: 10.h),
-          _invoiceRow('Term 2 Tuition', '€300.00'),
+          _invoiceRow('Cuota 2º Trimestre', '300,00 €'),
           SizedBox(height: 8.h),
-          _invoiceRow('Science Lab & Materials Fee', '€40.00'),
+          _invoiceRow('Material y Laboratorio de Ciencias', '40,00 €'),
           SizedBox(height: 12.h),
           Divider(height: 1, color: AppColors.backgroundsLinesColor),
           SizedBox(height: 10.h),
@@ -160,19 +160,19 @@ class _TuitionPaymentScreenState extends State<TuitionPaymentScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'AMOUNT DUE',
+                      ref.watchTr(AppStrings.totalToPay),
                       style: TxtStyle.titleLarge(
                         color: AppColors.subtitleTextColor,
-                        fontSize: 14.5.sp,
+                        fontSize: 13.5.sp,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
                     SizedBox(height: 3.h),
                     Text(
-                      '€340.00',
+                      '340,00 €',
                       style: TxtStyle.titleLarge(
                         color: AppColors.primaryDark,
-                        fontSize: 27.sp,
+                        fontSize: 25.sp,
                         fontWeight: FontWeight.w800,
                       ),
                     ),
@@ -186,10 +186,10 @@ class _TuitionPaymentScreenState extends State<TuitionPaymentScreen> {
                   borderRadius: BorderRadius.circular(5.r),
                 ),
                 child: Text(
-                  'Due Oct 15, 2024',
+                  'Vence: 15 Oct 2024',
                   style: TxtStyle.titleLarge(
                     color: AppColors.subtitleTextColor,
-                    fontSize: 14.5.sp,
+                    fontSize: 13.5.sp,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -209,7 +209,7 @@ class _TuitionPaymentScreenState extends State<TuitionPaymentScreen> {
             title,
             style: TxtStyle.titleLarge(
               color: AppColors.subtitleTextColor,
-              fontSize: 16.sp,
+              fontSize: 15.sp,
             ),
           ),
         ),
@@ -217,7 +217,7 @@ class _TuitionPaymentScreenState extends State<TuitionPaymentScreen> {
           amount,
           style: TxtStyle.titleLarge(
             color: AppColors.text,
-            fontSize: 16.sp,
+            fontSize: 15.sp,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -243,10 +243,10 @@ class _TuitionPaymentScreenState extends State<TuitionPaymentScreen> {
             Icon(Icons.lock, color: AppColors.subtitleTextColor, size: 11.sp),
             SizedBox(width: 3.w),
             Text(
-              'Powered by stripe',
+              ref.watchTr(AppStrings.processedByStripe),
               style: TxtStyle.titleLarge(
                 color: AppColors.subtitleTextColor,
-                fontSize: 14.5.sp,
+                fontSize: 13.5.sp,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -266,7 +266,7 @@ class _TuitionPaymentScreenState extends State<TuitionPaymentScreen> {
       child: Column(
         children: [
           _field(
-            title: 'Card number',
+            title: ref.watchTr(AppStrings.cardNumber),
             value: '4242 4242 4242 4242',
             trailing: Row(
               children: [
@@ -282,13 +282,13 @@ class _TuitionPaymentScreenState extends State<TuitionPaymentScreen> {
             children: [
               Expanded(
                 child: _field(
-                  title: 'Expiration',
+                  title: ref.watchTr(AppStrings.expiration),
                   value: '08 / 27',
                   borderRight: true,
                 ),
               ),
               Expanded(
-                child: _field(title: 'CVC', value: '123'),
+                child: _field(title: ref.watchTr(AppStrings.cvc), value: '123'),
               ),
             ],
           ),
@@ -296,8 +296,8 @@ class _TuitionPaymentScreenState extends State<TuitionPaymentScreen> {
             children: [
               Expanded(
                 child: _field(
-                  title: 'Country',
-                  value: 'United States',
+                  title: ref.watchTr(AppStrings.country),
+                  value: 'España',
                   borderRight: true,
                   trailing: Icon(
                     Icons.keyboard_arrow_down,
@@ -307,7 +307,7 @@ class _TuitionPaymentScreenState extends State<TuitionPaymentScreen> {
                 ),
               ),
               Expanded(
-                child: _field(title: 'ZIP / Postal', value: '94103'),
+                child: _field(title: ref.watchTr(AppStrings.postalCode), value: '28013'),
               ),
             ],
           ),
@@ -339,7 +339,7 @@ class _TuitionPaymentScreenState extends State<TuitionPaymentScreen> {
             title,
             style: TxtStyle.titleLarge(
               color: AppColors.blueTextColor,
-              fontSize: 14.5.sp,
+              fontSize: 13.5.sp,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -351,7 +351,7 @@ class _TuitionPaymentScreenState extends State<TuitionPaymentScreen> {
                   value,
                   style: TxtStyle.titleLarge(
                     color: AppColors.text,
-                    fontSize: 16.sp,
+                    fontSize: 15.sp,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -398,19 +398,19 @@ class _TuitionPaymentScreenState extends State<TuitionPaymentScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Save card for future academy tuition',
+                  ref.watchTr(AppStrings.saveCardFuture),
                   style: TxtStyle.titleLarge(
                     color: AppColors.text,
-                    fontSize: 16.sp,
+                    fontSize: 14.5.sp,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 SizedBox(height: 2.h),
                 Text(
-                  'Instant checkout for next term',
+                  ref.watchTr(AppStrings.autoBillingSubtitle),
                   style: TxtStyle.titleLarge(
                     color: AppColors.subtitleTextColor,
-                    fontSize: 14.5.sp,
+                    fontSize: 13.5.sp,
                   ),
                 ),
               ],
@@ -434,17 +434,16 @@ class _TuitionPaymentScreenState extends State<TuitionPaymentScreen> {
   Widget _payButton() {
     return SizedBox(
       width: double.infinity,
-
       child: ElevatedButton.icon(
         onPressed: () {
           context.go(RoutePath.paymentReceipt);
         },
         icon: Icon(Icons.lock_outline, color: Colors.white, size: 15.sp),
         label: Text(
-          'Pay €340.00',
+          '${ref.watchTr(AppStrings.payNowBtn)} 340,00 €',
           style: TxtStyle.titleLarge(
             color: Colors.white,
-            fontSize: 15.sp,
+            fontSize: 16.sp,
             fontWeight: FontWeight.w800,
           ),
         ),

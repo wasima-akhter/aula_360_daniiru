@@ -1,5 +1,5 @@
-﻿/// ===============================================================
-/// 3. MY CHILDREN
+/// ===============================================================
+/// 3. MY CHILDREN / MIS HIJOS
 /// ===============================================================
 library;
 
@@ -7,14 +7,14 @@ import '../../share/export/screen_export.dart';
 import '../helper/parent_models.dart';
 import '../helper/parent_widgets.dart';
 
-class MyChildrenScreen extends StatefulWidget {
+class MyChildrenScreen extends ConsumerStatefulWidget {
   const MyChildrenScreen({super.key});
 
   @override
-  State<MyChildrenScreen> createState() => _MyChildrenScreenState();
+  ConsumerState<MyChildrenScreen> createState() => _MyChildrenScreenState();
 }
 
-class _MyChildrenScreenState extends State<MyChildrenScreen> {
+class _MyChildrenScreenState extends ConsumerState<MyChildrenScreen> {
   final List<ChildModel> children = [lucasChild, sophiaChild];
 
   Future<void> _addChild() async {
@@ -31,7 +31,7 @@ class _MyChildrenScreenState extends State<MyChildrenScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
-      appBar: simpleAppBar(context, 'My Children'),
+      appBar: simpleAppBar(context, ref.watchTr(AppStrings.myChildren)),
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
@@ -78,22 +78,23 @@ class _MyChildrenScreenState extends State<MyChildrenScreen> {
                         child.name,
                         style: TxtStyle.titleLarge(
                           color: AppColors.text,
-                          fontSize: 19.sp,
+                          fontSize: 18.sp,
                           fontWeight: FontWeight.w800,
                         ),
                       ),
                       SizedBox(height: 3.h),
                       Row(
                         children: [
-                          Text(
-                            '${child.grade} • ${child.room} • ',
-                            style: TxtStyle.titleLarge(
-                              color: AppColors.subtitleTextColor,
-                              fontSize: 15.sp,
+                          Flexible(
+                            child: Text(
+                              '${child.grade} • ${child.room} • ',
+                              overflow: TextOverflow.ellipsis,
+                              style: TxtStyle.titleLarge(
+                                color: AppColors.subtitleTextColor,
+                                fontSize: 13.5.sp,
+                              ),
                             ),
                           ),
-
-                          //
                           Container(
                             padding: EdgeInsets.symmetric(
                               horizontal: 6.w,
@@ -105,10 +106,10 @@ class _MyChildrenScreenState extends State<MyChildrenScreen> {
                               border: Border.all(color: AppColors.border),
                             ),
                             child: Text(
-                              '#STU-4821',
+                              child.id,
                               style: TxtStyle.titleLarge(
                                 color: AppColors.subtitleTextColor,
-                                fontSize: 13.sp,
+                                fontSize: 12.sp,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
@@ -141,7 +142,7 @@ class _MyChildrenScreenState extends State<MyChildrenScreen> {
                     child.parentTeacher,
                     style: TxtStyle.titleLarge(
                       color: AppColors.subtitleTextColor,
-                      fontSize: 15.sp,
+                      fontSize: 14.sp,
                     ),
                   ),
                 ),
@@ -152,7 +153,7 @@ class _MyChildrenScreenState extends State<MyChildrenScreen> {
               children: [
                 Expanded(
                   child: _activeBadge(
-                    '${child.attendance.toStringAsFixed(0)}% Attendance',
+                    '${child.attendance.toStringAsFixed(0)}% ${ref.watchTr(AppStrings.attendance)}',
                   ),
                 ),
               ],
@@ -206,10 +207,10 @@ class _MyChildrenScreenState extends State<MyChildrenScreen> {
           borderRadius: BorderRadius.circular(10.r),
         ),
         child: Text(
-          '● Active • $text',
+          '● ${ref.watchTr(AppStrings.active)} • $text',
           style: TxtStyle.titleLarge(
             color: AppColors.emeraldGreenColor,
-            fontSize: 14.sp,
+            fontSize: 13.5.sp,
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -246,10 +247,10 @@ class _MyChildrenScreenState extends State<MyChildrenScreen> {
             ),
             SizedBox(width: 8.w),
             Text(
-              'Add Another Child',
+              ref.watchTr(AppStrings.addAnotherChild),
               style: TxtStyle.titleLarge(
                 color: AppColors.primaryDark,
-                fontSize: 17.sp,
+                fontSize: 16.sp,
                 fontWeight: FontWeight.w800,
               ),
             ),

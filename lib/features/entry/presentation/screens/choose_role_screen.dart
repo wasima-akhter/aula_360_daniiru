@@ -1,223 +1,222 @@
-﻿import '../../../share/export/screen_export.dart';
+import '../../../../utils/enum/app_enum.dart';
+import '../../../nav/user_role/user_role_provider.dart';
+import '../../../share/export/screen_export.dart';
 import '../../../share/widgets/button/app_logo.dart';
 
-class ChooseRoleScreen extends StatefulWidget {
+class ChooseRoleScreen extends ConsumerWidget {
   const ChooseRoleScreen({super.key});
 
   @override
-  State<ChooseRoleScreen> createState() => _ChooseRoleScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tr = ref.watchTr;
+    final selectedRole = ref.watch(userRoleProvider);
 
-class _ChooseRoleScreenState extends State<ChooseRoleScreen> {
-  String selectedRole = 'parent';
-
-  void _continue() {
-    context.go(RoutePath.loginScreen);
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 18),
+          padding: const EdgeInsets.symmetric(horizontal: 22),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  // GestureDetector(
-                  //   onTap: () => context.pop(),
-                  //   child: const Icon(
-                  //     Icons.arrow_back_ios_new_rounded,
-                  //     size: 17,
-                  //     color: AppColors.primaryDark,
-                  //   ),
-                  // ),
-                  const Spacer(),
-                  const AulaLogo(width: 90),
-                  const Spacer(),
-                  const SizedBox(width: 17),
-                ],
-              ),
+              const SizedBox(height: 18),
 
-              const SizedBox(height: 43),
+              // Logo
+              const AulaLogo(width: 90),
 
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Select your role',
-                  style: TxtStyle.titleLarge(
-                    color: AppColors.text,
-                    fontSize: 24.5.sp,
-                    fontWeight: FontWeight.w800,
-                  ),
+              const SizedBox(height: 30),
+
+              // Title
+              Text(
+                tr(AppStrings.roleSelectTitle),
+                style: TxtStyle.titleLarge(
+                  color: AppColors.primaryDark,
+                  fontSize: 27.sp,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -0.4,
                 ),
               ),
 
-              const SizedBox(height: 5),
+              const SizedBox(height: 7),
 
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Choose how you’ll be accessing your academy portal.',
-                  style: TxtStyle.bodyMedium(
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.secondaryText,
-                  ),
-                ),
+              Text(
+                tr(AppStrings.roleSelectSubtitle),
+                style: TxtStyle.bodyMedium(color: AppColors.secondaryText),
               ),
 
-              const SizedBox(height: 28),
+              const SizedBox(height: 27),
 
-              _roleCard(
-                role: 'parent',
-                title: 'Parent /',
-                subtitle: 'Guardian',
-                description:
-                    'Track your child’s classes, attendance records, homework, and teacher updates.',
+              // Parent card
+              _RoleCard(
                 icon: Icons.family_restroom_rounded,
+                title: tr(AppStrings.roleParentTitle),
+                subtitle: tr(AppStrings.roleParentSubtitle),
+                description: tr(AppStrings.roleParentDescription),
+                selected: selectedRole == UserRole.parent,
+                onTap: () {
+                  ref
+                      .read(userRoleProvider.notifier)
+                      .setRole(UserRole.parent);
+                },
               ),
 
               const SizedBox(height: 12),
 
-              _roleCard(
-                role: 'teacher',
-                title: 'Teacher / Educator',
-                subtitle: '',
-                description:
-                    'Manage classroom schedules, log daily attendance, post assignments, and communicate with parents.',
-                icon: Icons.co_present_rounded,
+              // Teacher card
+              _RoleCard(
+                icon: Icons.school_outlined,
+                title: tr(AppStrings.roleTeacherTitle),
+                subtitle: null,
+                description: tr(AppStrings.roleTeacherDescription),
+                selected: selectedRole == UserRole.teacher,
+                onTap: () {
+                  ref
+                      .read(userRoleProvider.notifier)
+                      .setRole(UserRole.teacher);
+                },
               ),
 
               const Spacer(),
 
-              AulaPrimaryButton(text: 'Continue', onTap: _continue),
+              // Continue button
+              AulaPrimaryButton(
+                text: selectedRole == UserRole.parent
+                    ? '${tr(AppStrings.roleContinueAsParent)} →'
+                    : '${tr(AppStrings.roleContinueAsTeacher)} →',
+                onTap: () {
+                  if (selectedRole == UserRole.parent) {
+                    context.go(RoutePath.loginScreen);
+                  } else {
+                    context.go(RoutePath.teacherLoginScreen);
+                  }
+                },
+              ),
+
+              const SizedBox(height: 12),
             ],
           ),
         ),
       ),
     );
   }
+}
 
-  Widget _roleCard({
-    required String role,
-    required String title,
-    required String subtitle,
-    required String description,
-    required IconData icon,
-  }) {
-    final selected = selectedRole == role;
+// ─────────────────────────────────────────────
+// Role Card Widget
+// ─────────────────────────────────────────────
 
+class _RoleCard extends StatelessWidget {
+  const _RoleCard({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.description,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String title;
+  final String? subtitle;
+  final String description;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        setState(() {
-          selectedRole = role;
-        });
-      },
+      onTap: onTap,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
+        duration: const Duration(milliseconds: 200),
+        width: double.infinity,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
+          color: selected ? AppColors.blueSoft : Colors.white,
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: selected ? AppColors.primary : AppColors.border,
-            width: selected ? 1.5 : 1,
+            width: selected ? 1.8 : 1,
           ),
-          boxShadow: selected
-              ? [
-                  BoxShadow(
-                    color: AppColors.primary.withValues(alpha: .08),
-                    blurRadius: 12,
-                    offset: const Offset(0, 3),
-                  ),
-                ]
-              : null,
         ),
-        child: Column(
+        child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Container(
-                  width: 38,
-                  height: 38,
-                  decoration: BoxDecoration(
-                    color: selected
-                        ? AppColors.blueSoft
-                        : const Color(0xFFF5F7FA),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Icon(
-                    icon,
-                    color: selected
-                        ? AppColors.primary
-                        : const Color(0xFF718096),
-                    size: 20.sp,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Row(
+            Container(
+              width: 45,
+              height: 45,
+              decoration: BoxDecoration(
+                color: selected
+                    ? AppColors.primary.withValues(alpha: .12)
+                    : const Color(0xFFF0F2F8),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(
+                icon,
+                color: selected ? AppColors.primary : AppColors.secondaryText,
+                size: 22,
+              ),
+            ),
+
+            const SizedBox(width: 13),
+
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
                     children: [
                       Text(
                         title,
                         style: TxtStyle.titleLarge(
-                          color: AppColors.text,
-                          fontSize: 19.sp,
+                          color: selected
+                              ? AppColors.primaryDark
+                              : AppColors.text,
+                          fontSize: 18.sp,
                           fontWeight: FontWeight.w800,
                         ),
                       ),
-                      if (subtitle.isNotEmpty)
+                      if (subtitle != null) ...[
+                        const SizedBox(width: 3),
                         Text(
-                          ' $subtitle',
+                          subtitle!,
                           style: TxtStyle.titleLarge(
-                            color: AppColors.text,
-                            fontSize: 19.sp,
+                            color: selected
+                                ? AppColors.primaryDark
+                                : AppColors.text,
+                            fontSize: 18.sp,
                             fontWeight: FontWeight.w800,
                           ),
                         ),
+                      ],
                     ],
                   ),
-                ),
-                Icon(
-                  selected
-                      ? Icons.radio_button_checked
-                      : Icons.radio_button_off,
-                  color: selected ? AppColors.primary : const Color(0xFFB8BFCA),
-                  size: 21.sp,
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 12),
-
-            const Divider(height: 1, color: AppColors.border),
-
-            const SizedBox(height: 10),
-
-            Text(
-              description,
-              style: TxtStyle.titleLarge(
-                color: AppColors.secondaryText,
-                fontSize: 15.sp,
-                fontWeight: FontWeight.w500,
-                height: 1.5,
+                  const SizedBox(height: 5),
+                  Text(
+                    description,
+                    style: TxtStyle.bodyMedium(
+                      color: AppColors.secondaryText,
+                      height: 1.4,
+                    ),
+                  ),
+                ],
               ),
             ),
 
-            if (selected) ...[
-              const SizedBox(height: 7),
-              Text(
-                'Continue as ${role == 'parent' ? 'Parent' : 'Teacher'} Login →',
-                style: TxtStyle.titleLarge(
-                  color: AppColors.primary,
-                  fontSize: 15.sp,
-                  fontWeight: FontWeight.w700,
+            const SizedBox(width: 8),
+
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              width: 20,
+              height: 20,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: selected ? AppColors.primary : const Color(0xFFBFC5D0),
+                  width: selected ? 5.5 : 1.8,
                 ),
+                color: Colors.white,
               ),
-            ],
+            ),
           ],
         ),
       ),

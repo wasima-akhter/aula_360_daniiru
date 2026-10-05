@@ -1,18 +1,18 @@
-﻿import '../../parent_all/helper/parent_home_helper.dart';
+import '../../parent_all/helper/parent_home_helper.dart';
 import '../../share/export/screen_export.dart';
 
 /// ===============================================================
 /// 1. END CLASS SCREEN
 /// ===============================================================
 
-class TeacherEndClassScreen extends StatelessWidget {
+class TeacherEndClassScreen extends ConsumerWidget {
   const TeacherEndClassScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: const AulaAppBar(title: 'End Class', showBack: true),
+      appBar: AulaAppBar(title: ref.watchTr(AppStrings.endClassTitle), showBack: true),
       body: Column(
         children: [
           Expanded(
@@ -27,7 +27,7 @@ class TeacherEndClassScreen extends StatelessWidget {
 
                   Center(
                     child: Text(
-                      'End Class Session',
+                      ref.watchTr(AppStrings.endClassSessionTitle),
                       style: TxtStyle.titleLarge(
                         color: AppColors.text,
                         fontSize: 23.sp,
@@ -40,8 +40,7 @@ class TeacherEndClassScreen extends StatelessWidget {
 
                   Center(
                     child: Text(
-                      'Finalize physical attendance and proceed to\n'
-                      'generate the post-class report.',
+                      ref.watchTr(AppStrings.endClassSessionDesc),
                       textAlign: TextAlign.center,
                       style: TxtStyle.bodyMedium(
                         color: AppColors.subtitleTextColor,
@@ -53,11 +52,11 @@ class TeacherEndClassScreen extends StatelessWidget {
 
                   SizedBox(height: 18.h),
 
-                  _classSummaryCard(),
+                  _classSummaryCard(ref),
 
                   SizedBox(height: 17.h),
 
-                  _lockedAttendanceCard(),
+                  _lockedAttendanceCard(ref),
 
                   SizedBox(height: 22.h),
 
@@ -67,7 +66,7 @@ class TeacherEndClassScreen extends StatelessWidget {
                       onTap: () {
                         context.push(RoutePath.teacherPostClassReport);
                       },
-                      text: 'End Class & Create Report',
+                      text: ref.watchTr(AppStrings.finishClassAndCreateReport),
                       trailing: Icon(
                         Icons.arrow_forward_rounded,
                         color: Colors.white,
@@ -84,7 +83,7 @@ class TeacherEndClassScreen extends StatelessWidget {
                     },
                     child: Center(
                       child: Text(
-                        'Return to Attendance',
+                        ref.watchTr(AppStrings.backToAttendance),
                         style: TxtStyle.labelLarge(
                           color: AppColors.subtitleTextColor,
                           fontSize: 15.5.sp,
@@ -123,7 +122,7 @@ class TeacherEndClassScreen extends StatelessWidget {
             ),
             SizedBox(width: 6.w),
             Text(
-              'Session In Progress • 88 mins',
+              'Sesión en curso • 88 min',
               style: TxtStyle.labelLarge(
                 color: AppColors.primaryColor,
                 fontSize: 13.sp,
@@ -136,7 +135,7 @@ class TeacherEndClassScreen extends StatelessWidget {
     );
   }
 
-  Widget _classSummaryCard() {
+  Widget _classSummaryCard(WidgetRef ref) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(14.w),
@@ -152,7 +151,7 @@ class TeacherEndClassScreen extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  'SUBJECT & COHORT',
+                  ref.watchTr(AppStrings.subjectAndGroupTitle),
                   style: TxtStyle.labelLarge(
                     color: AppColors.primaryColor,
                     fontSize: 13.sp,
@@ -180,7 +179,7 @@ class TeacherEndClassScreen extends StatelessWidget {
           SizedBox(height: 9.h),
 
           Text(
-            'Advanced Mathematics',
+            '${ref.watchTr(AppStrings.subjectMath)} Avanzadas',
             style: TxtStyle.titleLarge(
               color: AppColors.text,
               fontSize: 18.sp,
@@ -191,7 +190,7 @@ class TeacherEndClassScreen extends StatelessWidget {
           SizedBox(height: 3.h),
 
           Text(
-            'Calculus AB • Group A • Grade 11',
+            'Cálculo y Álgebra • Grupo A • ${ref.watchTr(AppStrings.bachillerato1)}',
             style: TxtStyle.bodyMedium(
               color: AppColors.subtitleTextColor,
               fontSize: 14.5.sp,
@@ -209,16 +208,16 @@ class TeacherEndClassScreen extends StatelessWidget {
               Expanded(
                 child: _smallInfo(
                   icon: Icons.location_on_outlined,
-                  title: 'Location',
-                  value: 'Room 204, Hall A',
+                  title: ref.watchTr(AppStrings.location),
+                  value: '${ref.watchTr(AppStrings.aula2)}, Planta 1',
                 ),
               ),
               SizedBox(width: 8.w),
               Expanded(
                 child: _smallInfo(
                   icon: Icons.access_time_outlined,
-                  title: 'Time Slot',
-                  value: '09:00 – 10:30 AM',
+                  title: ref.watchTr(AppStrings.scheduleTitle),
+                  value: '09:00 – 10:30',
                 ),
               ),
             ],
@@ -226,7 +225,7 @@ class TeacherEndClassScreen extends StatelessWidget {
 
           SizedBox(height: 12.h),
 
-          _attendanceSummary(),
+          _attendanceSummary(ref),
         ],
       ),
     );
@@ -274,7 +273,7 @@ class TeacherEndClassScreen extends StatelessWidget {
     );
   }
 
-  Widget _attendanceSummary() {
+  Widget _attendanceSummary(WidgetRef ref) {
     return Container(
       padding: EdgeInsets.fromLTRB(10.w, 10.h, 10.w, 9.h),
       decoration: BoxDecoration(
@@ -287,7 +286,7 @@ class TeacherEndClassScreen extends StatelessWidget {
           Row(
             children: [
               Text(
-                'ATTENDANCE SUMMARY',
+                ref.watchTr(AppStrings.attendanceSummaryTitle),
                 style: TxtStyle.labelLarge(
                   color: AppColors.primaryColor,
                   fontSize: 12.5.sp,
@@ -297,7 +296,7 @@ class TeacherEndClassScreen extends StatelessWidget {
               ),
               const Spacer(),
               Text(
-                '83.3% Present',
+                '83.3% ${ref.watchTr(AppStrings.present)}',
                 style: TxtStyle.labelLarge(
                   color: AppColors.emeraldGreenColor,
                   fontSize: 12.5.sp,
@@ -310,7 +309,7 @@ class TeacherEndClassScreen extends StatelessWidget {
           Row(
             children: [
               Text(
-                '15 of 18 Students Present',
+                '15 de 18 ${ref.watchTr(AppStrings.present)}',
                 style: TxtStyle.titleLarge(
                   color: AppColors.text,
                   fontSize: 16.sp,
@@ -319,7 +318,7 @@ class TeacherEndClassScreen extends StatelessWidget {
               ),
               const Spacer(),
               Text(
-                '3 Absent',
+                '3 ${ref.watchTr(AppStrings.absent)}',
                 style: TxtStyle.labelLarge(
                   color: Colors.red.shade600,
                   fontSize: 13.sp,
@@ -345,7 +344,7 @@ class TeacherEndClassScreen extends StatelessWidget {
     );
   }
 
-  Widget _lockedAttendanceCard() {
+  Widget _lockedAttendanceCard(WidgetRef ref) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
@@ -365,8 +364,7 @@ class TeacherEndClassScreen extends StatelessWidget {
           SizedBox(width: 9.w),
           Expanded(
             child: Text(
-              'Attendance register finalized and locked for\n'
-              'academic records.',
+              ref.watchTr(AppStrings.attendanceLockedNotice),
               style: TxtStyle.bodyMedium(
                 color: AppColors.subtitleTextColor,
                 fontSize: 14.5.sp,

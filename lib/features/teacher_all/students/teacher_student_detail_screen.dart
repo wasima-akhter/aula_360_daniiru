@@ -1,20 +1,20 @@
-﻿import '../../parent_all/helper/parent_home_helper.dart';
+import '../../parent_all/helper/parent_home_helper.dart';
 import '../../share/export/screen_export.dart';
 
 /// ===============================================================
 /// STUDENT DETAILS SCREEN
 /// ===============================================================
 
-class TeacherStudentDetailsScreen extends StatefulWidget {
+class TeacherStudentDetailsScreen extends ConsumerStatefulWidget {
   const TeacherStudentDetailsScreen({super.key});
 
   @override
-  State<TeacherStudentDetailsScreen> createState() =>
+  ConsumerState<TeacherStudentDetailsScreen> createState() =>
       _TeacherStudentDetailsScreenState();
 }
 
 class _TeacherStudentDetailsScreenState
-    extends State<TeacherStudentDetailsScreen> {
+    extends ConsumerState<TeacherStudentDetailsScreen> {
   final List<String> _facultyNotes = [];
 
   @override
@@ -22,7 +22,7 @@ class _TeacherStudentDetailsScreenState
     return Scaffold(
       backgroundColor: AppColors.softBackground,
       appBar: AulaAppBar(
-        title: 'Student Details',
+        title: ref.watchTr(AppStrings.studentDetailsTitle),
         showBack: true,
         actions: [
           Container(
@@ -59,17 +59,23 @@ class _TeacherStudentDetailsScreenState
             _metrics(),
             SizedBox(height: 18.h),
             _sectionTitle(
-              'LATEST CLASS REPORT',
-              trailing: 'Oct 24 · Session #18',
+              ref.watchTr(AppStrings.latestClassReportTitle),
+              trailing: '24 Oct · Sesión #18',
             ),
             SizedBox(height: 8.h),
             _latestReport(),
             SizedBox(height: 16.h),
-            _sectionTitle('ACTIVE HOMEWORK', trailingWidget: _reviewDueTag()),
+            _sectionTitle(
+              ref.watchTr(AppStrings.activeHomeworkTitle),
+              trailingWidget: _reviewDueTag(),
+            ),
             SizedBox(height: 8.h),
             _homeworkCard(),
             SizedBox(height: 17.h),
-            _sectionTitle('FACULTY NOTE', trailing: 'Dr. S. Jenkins'),
+            _sectionTitle(
+              ref.watchTr(AppStrings.facultyNoteTitle),
+              trailing: 'Dra. S. Jenkins',
+            ),
             SizedBox(height: 8.h),
             _facultyNoteWidget(),
             SizedBox(height: 8.h),
@@ -90,9 +96,9 @@ class _TeacherStudentDetailsScreenState
             Container(
               width: 52.w,
               height: 52.w,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 shape: BoxShape.circle,
-                color: const Color(0xffdce5ef),
+                color: Color(0xffdce5ef),
               ),
               child: Center(
                 child: Text(
@@ -146,7 +152,7 @@ class _TeacherStudentDetailsScreenState
                       borderRadius: BorderRadius.circular(10.r),
                     ),
                     child: Text(
-                      'Active',
+                      ref.watchTr(AppStrings.activeStatus),
                       style: TxtStyle.bodyMedium(
                         color: const Color(0xff15965a),
                         fontSize: 13.5.sp,
@@ -158,7 +164,7 @@ class _TeacherStudentDetailsScreenState
               ),
               SizedBox(height: 4.h),
               Text(
-                'Grade 11 • Group A • Calculus AB',
+                '${ref.watchTr(AppStrings.bachillerato1)} • ${ref.watchTr(AppStrings.groupA)} • ${ref.watchTr(AppStrings.subjectMath)}',
                 style: TxtStyle.bodyMedium(
                   color: AppColors.subtitleTextColor,
                   fontSize: 15.sp,
@@ -166,7 +172,7 @@ class _TeacherStudentDetailsScreenState
               ),
               SizedBox(height: 3.h),
               Text(
-                'Rm 204 • Desk 14    •    94% Attendance',
+                '${ref.watchTr(AppStrings.aula2)} • ${ref.watchTr(AppStrings.deskPrefix)} 14    •    94% ${ref.watchTr(AppStrings.attendance)}',
                 style: TxtStyle.bodyMedium(
                   color: AppColors.subtitleTextColor,
                   fontSize: 15.sp,
@@ -189,11 +195,18 @@ class _TeacherStudentDetailsScreenState
       ),
       child: Row(
         children: [
-          _metric(value: '16/17', label: 'Present'),
+          _metric(
+            value: '16/17',
+            label: ref.watchTr(AppStrings.metricAttendances),
+          ),
           _metricDivider(),
-          _metric(value: '92%', label: 'Mastery', highlighted: true),
+          _metric(
+            value: '92%',
+            label: ref.watchTr(AppStrings.metricPerformance),
+            highlighted: true,
+          ),
           _metricDivider(),
-          _metric(value: '8/9', label: 'Homework'),
+          _metric(value: '8/9', label: ref.watchTr(AppStrings.metricHomework)),
         ],
       ),
     );
@@ -289,7 +302,7 @@ class _TeacherStudentDetailsScreenState
           ),
           children: [
             TextSpan(
-              text: 'Blackboard Demo: ',
+              text: 'Demostración en pizarra: ',
               style: TxtStyle.bodyMedium(
                 color: AppColors.primaryDark,
                 fontSize: 16.sp,
@@ -298,7 +311,7 @@ class _TeacherStudentDetailsScreenState
             ),
             const TextSpan(
               text:
-                  'High effort. Mastered Chain Rule during blackboard demonstration with excellent attitude.',
+                  'Gran esfuerzo. Dominó la regla de la cadena en la pizarra con excelente actitud.',
             ),
           ],
         ),
@@ -314,7 +327,7 @@ class _TeacherStudentDetailsScreenState
         borderRadius: BorderRadius.circular(9.r),
       ),
       child: Text(
-        'Review Due',
+        ref.watchTr(AppStrings.reviewPending),
         style: TxtStyle.bodyMedium(
           color: const Color(0xffdf8a00),
           fontSize: 14.5.sp,
@@ -336,7 +349,7 @@ class _TeacherStudentDetailsScreenState
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Problem Set 4: Implicit Differentiation',
+            'Relación de ejercicios 4: Derivación implícita',
             style: TxtStyle.titleLarge(
               color: AppColors.text,
               fontSize: 16.5.sp,
@@ -345,7 +358,7 @@ class _TeacherStudentDetailsScreenState
           ),
           SizedBox(height: 4.h),
           Text(
-            'Exercises 12–25 • Printed Binder Submission',
+            'Ejercicios 12–25 • Entrega en cuaderno',
             style: TxtStyle.bodyMedium(
               color: AppColors.subtitleTextColor,
               fontSize: 16.sp,
@@ -364,7 +377,7 @@ class _TeacherStudentDetailsScreenState
                   ),
                   SizedBox(width: 4.w),
                   Text(
-                    'Due Oct 29',
+                    'Entrega: 29 Oct',
                     style: TxtStyle.bodyMedium(
                       color: AppColors.subtitleTextColor,
                       fontSize: 15.5.sp,
@@ -375,7 +388,7 @@ class _TeacherStudentDetailsScreenState
               Gap(10.w),
               Flexible(
                 child: Text(
-                  'Physical Copy in Hand',
+                  'Copia en mano',
                   style: TxtStyle.bodyMedium(
                     color: AppColors.primaryDark,
                     fontSize: 15.5.sp,
@@ -392,8 +405,8 @@ class _TeacherStudentDetailsScreenState
 
   Widget _facultyNoteWidget() {
     const defaultNote =
-        'Demonstrates strong conceptual grasp during board exercises. '
-        'Actively assists peers in Group A during problem-solving sessions.';
+        'Demuestra un sólido entendimiento conceptual en los ejercicios de pizarra. '
+        'Ayuda activamente a sus compañeros del Grupo A.';
 
     final notes = [defaultNote, ..._facultyNotes];
 
@@ -431,7 +444,7 @@ class _TeacherStudentDetailsScreenState
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7.r)),
       ),
       child: Text(
-        '+ Add Note',
+        ref.watchTr(AppStrings.addNoteBtn),
         style: TxtStyle.titleLarge(
           color: AppColors.primaryDark,
           fontSize: 17.sp,
@@ -460,17 +473,17 @@ class _TeacherStudentDetailsScreenState
       });
     }
   }
-  //
 }
 
-class _AddNoteBottomSheet extends StatefulWidget {
+class _AddNoteBottomSheet extends ConsumerStatefulWidget {
   const _AddNoteBottomSheet();
 
   @override
-  State<_AddNoteBottomSheet> createState() => _AddNoteBottomSheetState();
+  ConsumerState<_AddNoteBottomSheet> createState() =>
+      _AddNoteBottomSheetState();
 }
 
-class _AddNoteBottomSheetState extends State<_AddNoteBottomSheet> {
+class _AddNoteBottomSheetState extends ConsumerState<_AddNoteBottomSheet> {
   late final TextEditingController _controller;
 
   @override
@@ -513,7 +526,7 @@ class _AddNoteBottomSheetState extends State<_AddNoteBottomSheet> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Add Note',
+                  ref.watchTr(AppStrings.addNoteTitle),
                   style: TxtStyle.titleLarge(
                     color: AppColors.text,
                     fontSize: 20.sp,
@@ -529,7 +542,7 @@ class _AddNoteBottomSheetState extends State<_AddNoteBottomSheet> {
                   autofocus: true,
                   textInputAction: TextInputAction.newline,
                   decoration: InputDecoration(
-                    hintText: 'Write a note about this student...',
+                    hintText: ref.watchTr(AppStrings.writeNoteHint),
                     hintStyle: TxtStyle.bodyMedium(
                       color: AppColors.subtitleTextColor,
                       fontSize: 15.sp,
@@ -559,11 +572,11 @@ class _AddNoteBottomSheetState extends State<_AddNoteBottomSheet> {
 
                 SizedBox(
                   width: double.infinity,
-                  height: 45.h,
+
                   child: ElevatedButton(
                     onPressed: _saveNote,
                     child: Text(
-                      'Save Note',
+                      ref.watchTr(AppStrings.saveNoteBtn),
                       style: TxtStyle.titleLarge(
                         color: Colors.white,
                         fontSize: 16.sp,

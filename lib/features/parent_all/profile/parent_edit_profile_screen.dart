@@ -1,4 +1,4 @@
-﻿import 'dart:io';
+import 'dart:io';
 
 import 'package:image_picker/image_picker.dart';
 
@@ -6,32 +6,29 @@ import '../../share/export/screen_export.dart';
 import '../helper/parent_widgets.dart';
 
 /// ===============================================================
-/// 2. EDIT PROFILE
+/// 2. EDIT PROFILE / EDITAR PERFIL
 /// ===============================================================
 
-class EditProfileScreen extends StatefulWidget {
+class EditProfileScreen extends ConsumerStatefulWidget {
   const EditProfileScreen({super.key});
 
   @override
-  State<EditProfileScreen> createState() => _EditProfileScreenState();
+  ConsumerState<EditProfileScreen> createState() => _EditProfileScreenState();
 }
 
-class _EditProfileScreenState extends State<EditProfileScreen> {
+class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   final _formKey = GlobalKey<FormState>();
 
   final nameController = TextEditingController(text: 'Eleanor Rivera');
-
   final emailController = TextEditingController(
     text: 'eleanor.rivera@email.com',
   );
-
-  final phoneController = TextEditingController(text: '+1 (555) 234-5678');
-
+  final phoneController = TextEditingController(text: '+34 612 345 678');
   final addressController = TextEditingController(
-    text: '742 Evergreen Terrace, Springfield',
+    text: 'Calle Gran Vía 28, Madrid',
   );
 
-  String language = 'English (US)';
+  String language = 'Español';
 
   @override
   void dispose() {
@@ -42,9 +39,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     super.dispose();
   }
 
-  //
   final ImagePicker _imagePicker = ImagePicker();
-
   File? _profileImage;
 
   Future<void> _pickProfileImage() async {
@@ -66,7 +61,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
-      appBar: simpleAppBar(context, 'Edit Profile'),
+      appBar: simpleAppBar(context, ref.watchTr(AppStrings.editProfileTitle)),
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
@@ -78,37 +73,37 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               children: [
                 _profilePhotoCard(),
                 SizedBox(height: 20.h),
-                _sectionLabel('PARENT CONTACT DETAILS'),
+                _sectionLabel(ref.watchTr(AppStrings.parentContactDetails)),
                 SizedBox(height: 9.h),
                 _field(
-                  label: 'Full Name',
+                  label: ref.watchTr(AppStrings.fieldFullName),
                   controller: nameController,
                   icon: Icons.person_outline,
                   requiredField: true,
                 ),
                 _fieldHint(''),
                 _field(
-                  label: 'Email Address',
+                  label: ref.watchTr(AppStrings.fieldEmailAddress),
                   controller: emailController,
                   icon: Icons.mail_outline,
                   keyboardType: TextInputType.emailAddress,
                   requiredField: true,
                 ),
                 _fieldHint(
-                  'Used for academy notices, attendance logs, and academic reports.',
+                  ref.watchTr(AppStrings.emailNotificationNotice),
                 ),
                 _field(
-                  label: 'Mobile Number',
+                  label: ref.watchTr(AppStrings.fieldMobileNumber),
                   controller: phoneController,
                   icon: Icons.phone_outlined,
                   keyboardType: TextInputType.phone,
                   requiredField: true,
                 ),
                 _fieldHint(
-                  'Used for urgent campus alerts and 2-step SMS verification.',
+                  ref.watchTr(AppStrings.phoneUrgentNotice),
                 ),
                 _field(
-                  label: 'Residential Address',
+                  label: ref.watchTr(AppStrings.fieldResidentialAddress),
                   controller: addressController,
                   icon: Icons.home_outlined,
                   requiredField: false,
@@ -122,7 +117,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   child: TextButton(
                     onPressed: () => context.pop(),
                     child: Text(
-                      'Discard Changes',
+                      ref.watchTr(AppStrings.cancel),
                       style: TxtStyle.titleLarge(
                         color: AppColors.subtitleTextColor,
                         fontSize: 16.5.sp,
@@ -189,7 +184,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ),
                 ),
 
-                // Camera button
                 Positioned(
                   right: -2.w,
                   bottom: 0,
@@ -248,10 +242,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ),
                 SizedBox(width: 5.w),
                 Text(
-                  'Verified Parent ID: #PAR-8924',
+                  '${ref.watchTr(AppStrings.verified)}: #PAR-8924',
                   style: TxtStyle.titleLarge(
                     color: AppColors.primaryDark,
-                    fontSize: 16.sp,
+                    fontSize: 14.sp,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -261,10 +255,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
           SizedBox(height: 9.h),
           Text(
-            'Allowed formats: JPG, PNG • Max 5MB',
+            ref.watchTr(AppStrings.uploadPhotoHint),
             style: TxtStyle.titleLarge(
               color: AppColors.subtitleTextColor,
-              fontSize: 16.sp,
+              fontSize: 14.sp,
             ),
           ),
         ],
@@ -277,7 +271,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       text,
       style: TxtStyle.titleLarge(
         color: AppColors.subtitleTextColor,
-        fontSize: 16.sp,
+        fontSize: 14.sp,
         fontWeight: FontWeight.w800,
         letterSpacing: .4,
       ),
@@ -301,7 +295,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               text: label,
               style: TxtStyle.titleLarge(
                 color: AppColors.labelTextColor,
-                fontSize: 16.sp,
+                fontSize: 15.sp,
                 fontWeight: FontWeight.w700,
               ),
               children: [
@@ -310,7 +304,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     text: ' *',
                     style: TxtStyle.titleLarge(
                       color: AppColors.error,
-                      fontSize: 16.sp,
+                      fontSize: 15.sp,
                     ),
                   ),
               ],
@@ -322,7 +316,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             keyboardType: keyboardType,
             validator: (value) {
               if (requiredField && (value == null || value.trim().isEmpty)) {
-                return '$label is required';
+                return '$label ${ref.watchTr(AppStrings.fieldRequired)}';
               }
               return null;
             },
@@ -376,7 +370,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         text,
         style: TxtStyle.bodyMedium(
           color: AppColors.subtitleTextColor,
-          fontSize: 15.sp,
+          fontSize: 13.5.sp,
           height: 1.35,
         ),
       ),
@@ -388,10 +382,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Preferred Language',
+          ref.watchTr(AppStrings.settingsLangDisplayLanguage),
           style: TxtStyle.titleLarge(
             color: AppColors.labelTextColor,
-            fontSize: 16.sp,
+            fontSize: 15.sp,
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -419,35 +413,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               borderSide: const BorderSide(color: AppColors.border),
             ),
           ),
-          items: [
-            DropdownMenuItem(
-              value: 'English (US)',
-              child: Text(
-                'English (US)',
-                style: TxtStyle.titleLarge(fontSize: 16.sp),
-              ),
-            ),
-            DropdownMenuItem(
-              value: 'English (UK)',
-              child: Text(
-                'English (UK)',
-                style: TxtStyle.titleLarge(fontSize: 16.sp),
-              ),
-            ),
-            DropdownMenuItem(
-              value: 'Spanish',
-              child: Text(
-                'Spanish',
-                style: TxtStyle.titleLarge(fontSize: 16.sp),
-              ),
-            ),
+          items: const [
+            DropdownMenuItem(value: 'Español', child: Text('Español (España)')),
+            DropdownMenuItem(value: 'English', child: Text('English (US)')),
           ],
           onChanged: (value) {
             if (value != null) {
               setState(() => language = value);
             }
           },
-          style: TxtStyle.titleLarge(color: AppColors.text, fontSize: 16.sp),
+          style: TxtStyle.titleLarge(color: AppColors.text, fontSize: 15.sp),
         ),
       ],
     );
@@ -456,7 +431,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Widget _saveButton() {
     return SizedBox(
       width: double.infinity,
-
       child: ElevatedButton(
         onPressed: () {
           if (!_formKey.currentState!.validate()) {
@@ -466,7 +440,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
-                'Profile updated successfully.',
+                ref.watchTr(AppStrings.profileUpdatedSuccess),
                 style: TxtStyle.titleLarge(
                   fontSize: 14.sp,
                   color: Colors.white,
@@ -491,10 +465,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             Icon(Icons.check, size: 15.sp, color: Colors.white),
             SizedBox(width: 5.w),
             Text(
-              'Save Changes',
+              ref.watchTr(AppStrings.btnSaveChanges),
               style: TxtStyle.titleLarge(
                 color: Colors.white,
-                fontSize: 17.sp,
+                fontSize: 16.sp,
                 fontWeight: FontWeight.w800,
               ),
             ),

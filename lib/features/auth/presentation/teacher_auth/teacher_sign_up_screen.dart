@@ -1,4 +1,4 @@
-﻿import '../../../../core/helper/snackbar/api_snackbar.dart';
+import '../../../../core/helper/snackbar/api_snackbar.dart';
 import '../../../share/export/screen_export.dart';
 import '../../../share/widgets/button/app_logo.dart';
 import '../../../share/widgets/button/custom_back_button.dart';
@@ -6,14 +6,15 @@ import '../../../share/widgets/text_field/custom_text_field.dart';
 import '../../abc.dart';
 import '../screens/active_otp_screen.dart';
 
-class TeacherSignUpScreen extends StatefulWidget {
+class TeacherSignUpScreen extends ConsumerStatefulWidget {
   const TeacherSignUpScreen({super.key});
 
   @override
-  State<TeacherSignUpScreen> createState() => _TeacherSignUpScreenState();
+  ConsumerState<TeacherSignUpScreen> createState() =>
+      _TeacherSignUpScreenState();
 }
 
-class _TeacherSignUpScreenState extends State<TeacherSignUpScreen> {
+class _TeacherSignUpScreenState extends ConsumerState<TeacherSignUpScreen> {
   final fullNameController = TextEditingController();
   final mobileController = TextEditingController();
   final emailController = TextEditingController();
@@ -52,7 +53,7 @@ class _TeacherSignUpScreenState extends State<TeacherSignUpScreen> {
     }
 
     if (!agreedToTerms) {
-      ApiSnackbar.show('Please agree to the Terms and Conditions.');
+      ApiSnackbar.show('Por favor, acepta los Términos y Condiciones.');
       return;
     }
 
@@ -64,6 +65,7 @@ class _TeacherSignUpScreenState extends State<TeacherSignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final tr = ref.watchTr;
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -72,7 +74,7 @@ class _TeacherSignUpScreenState extends State<TeacherSignUpScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const AuthBackButton(title: 'Teacher Registration'),
+              AuthBackButton(title: tr(AppStrings.teacherRegistrationTitle)),
 
               const SizedBox(height: 32),
 
@@ -82,7 +84,7 @@ class _TeacherSignUpScreenState extends State<TeacherSignUpScreen> {
 
               Center(
                 child: Text(
-                  'Register as Faculty',
+                  tr(AppStrings.registerAsFaculty),
                   style: TxtStyle.titleLarge(
                     color: AppColors.text,
                     fontSize: 29.5.sp,
@@ -95,7 +97,7 @@ class _TeacherSignUpScreenState extends State<TeacherSignUpScreen> {
 
               Center(
                 child: Text(
-                  'Enter your institutional details to initiate verified \nteacher access.',
+                  tr(AppStrings.teacherSignupSubtitle),
                   textAlign: TextAlign.center,
                   style: TxtStyle.titleLarge(
                     color: AppColors.secondaryText,
@@ -108,8 +110,8 @@ class _TeacherSignUpScreenState extends State<TeacherSignUpScreen> {
 
               AppTextField(
                 controller: fullNameController,
-                label: 'Full Name',
-                hint: 'e.g. Eleanor Vance',
+                label: tr(AppStrings.fieldFullName),
+                hint: tr(AppStrings.fieldFullNameHint),
                 icon: Icons.person_outline_rounded,
               ),
 
@@ -117,8 +119,8 @@ class _TeacherSignUpScreenState extends State<TeacherSignUpScreen> {
 
               AppTextField(
                 controller: emailController,
-                label: 'Academy Email/Faculty ID',
-                hint: 'e.g. m.vance@institution.com',
+                label: tr(AppStrings.fieldEmailOrFacultyId),
+                hint: tr(AppStrings.fieldEmailOrFacultyIdHint),
                 icon: Icons.email_outlined,
                 keyboardType: TextInputType.emailAddress,
               ),
@@ -127,8 +129,8 @@ class _TeacherSignUpScreenState extends State<TeacherSignUpScreen> {
 
               AppTextField(
                 controller: mobileController,
-                label: 'Mobile Number',
-                hint: '(555) 234-5678',
+                label: tr(AppStrings.fieldMobileNumber),
+                hint: tr(AppStrings.fieldMobileNumberHint),
                 icon: Icons.phone_outlined,
                 keyboardType: TextInputType.phone,
               ),
@@ -137,8 +139,8 @@ class _TeacherSignUpScreenState extends State<TeacherSignUpScreen> {
 
               AppTextField(
                 controller: passwordController,
-                label: 'Password',
-                hint: 'Create a secure password',
+                label: tr(AppStrings.fieldPassword),
+                hint: tr(AppStrings.fieldPasswordCreateHint),
                 icon: Icons.lock_outline_rounded,
                 obscureText: obscurePassword,
                 onTogglePassword: () {
@@ -150,7 +152,6 @@ class _TeacherSignUpScreenState extends State<TeacherSignUpScreen> {
 
               const SizedBox(height: 7),
 
-              // add a agree term checkbox+text here
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -180,7 +181,7 @@ class _TeacherSignUpScreenState extends State<TeacherSignUpScreen> {
                       },
                       child: Text.rich(
                         TextSpan(
-                          text: 'I agree to the ',
+                          text: 'Acepto los ',
                           style: TxtStyle.titleLarge(
                             color: AppColors.secondaryText,
                             fontSize: 15.5.sp,
@@ -188,20 +189,20 @@ class _TeacherSignUpScreenState extends State<TeacherSignUpScreen> {
                           ),
                           children: [
                             TextSpan(
-                              text: 'Terms and Conditions',
+                              text: 'Términos y Condiciones',
                               style: TxtStyle.titleLarge(
                                 color: AppColors.primary,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
                             TextSpan(
-                              text: ' and ',
+                              text: ' y la ',
                               style: TxtStyle.titleLarge(
                                 color: AppColors.secondaryText,
                               ),
                             ),
                             TextSpan(
-                              text: 'Privacy Policy',
+                              text: 'Política de Privacidad',
                               style: TxtStyle.titleLarge(
                                 color: AppColors.primary,
                                 fontWeight: FontWeight.w700,
@@ -217,7 +218,10 @@ class _TeacherSignUpScreenState extends State<TeacherSignUpScreen> {
               ),
               const SizedBox(height: 21),
 
-              AulaPrimaryButton(text: 'Create Account', onTap: _createAccount),
+              AulaPrimaryButton(
+                text: tr(AppStrings.btnCreateAccount),
+                onTap: _createAccount,
+              ),
 
               const SizedBox(height: 17),
 
@@ -228,14 +232,14 @@ class _TeacherSignUpScreenState extends State<TeacherSignUpScreen> {
                   },
                   child: Text.rich(
                     TextSpan(
-                      text: 'Already have an account? ',
+                      text: '${tr(AppStrings.alreadyHaveAccount)} ',
                       style: TxtStyle.titleLarge(
                         color: AppColors.secondaryText,
                         fontSize: 16.sp,
                       ),
                       children: [
                         TextSpan(
-                          text: 'Log In',
+                          text: tr(AppStrings.btnLogIn),
                           style: TxtStyle.titleLarge(
                             color: AppColors.primary,
                             fontWeight: FontWeight.w700,

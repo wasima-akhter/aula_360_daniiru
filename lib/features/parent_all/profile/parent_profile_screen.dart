@@ -1,28 +1,33 @@
-﻿import '../../share/component/logout_btn.dart';
+import '../../share/component/logout_btn.dart';
 import '../../share/export/screen_export.dart';
 import '../helper/parent_widgets.dart';
 
 /// ===============================================================
-/// 1. PROFILE SCREEN
+/// 1. PROFILE SCREEN / PERFIL DE PADRE
 /// ===============================================================
 
-class ParentProfileScreen extends StatefulWidget {
+class ParentProfileScreen extends ConsumerStatefulWidget {
   const ParentProfileScreen({super.key});
 
   @override
-  State<ParentProfileScreen> createState() => _ParentProfileScreenState();
+  ConsumerState<ParentProfileScreen> createState() =>
+      _ParentProfileScreenState();
 }
 
-class _ParentProfileScreenState extends State<ParentProfileScreen> {
+class _ParentProfileScreenState extends ConsumerState<ParentProfileScreen> {
   String parentName = 'Eleanor Rivera';
   String email = 'eleanor.rivera@email.com';
-  String phone = '+1 (555) 234-5678';
+  String phone = '+34 612 345 678';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
-      appBar: simpleAppBar(context, 'Profile', showBackButton: false),
+      appBar: simpleAppBar(
+        context,
+        ref.watchTr(AppStrings.navProfile),
+        showBackButton: false,
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
@@ -31,27 +36,27 @@ class _ParentProfileScreenState extends State<ParentProfileScreen> {
             children: [
               _profileHeader(),
               SizedBox(height: 20.h),
-              _sectionLabel('ACADEMY & HOUSEHOLD'),
+              _sectionLabel(ref.watchTr(AppStrings.academyAndFamily)),
               SizedBox(height: 8.h),
               _menuCard(),
               SizedBox(height: 18.h),
-              LogoutBtn(),
+              const LogoutBtn(),
               SizedBox(height: 25.h),
               Text(
-                'Aula 360 Parent v2.4.1 • St. Matthew Preparatory School',
+                'Aula 360 Padres v2.4.1 • Academia Aula 360',
                 textAlign: TextAlign.center,
                 style: TxtStyle.titleLarge(
                   color: AppColors.subtitleTextColor,
-                  fontSize: 15.sp,
+                  fontSize: 14.sp,
                   height: 1.4,
                 ),
               ),
               SizedBox(height: 3.h),
               Text(
-                'Academic Year 2024–2025',
+                ref.watchTr(AppStrings.academicYearLabel),
                 style: TxtStyle.titleLarge(
                   color: AppColors.hintTextColor,
-                  fontSize: 15.sp,
+                  fontSize: 13.5.sp,
                 ),
               ),
             ],
@@ -133,7 +138,7 @@ class _ParentProfileScreenState extends State<ParentProfileScreen> {
               parentName,
               style: TxtStyle.titleLarge(
                 color: AppColors.text,
-                fontSize: 21.sp,
+                fontSize: 20.sp,
                 fontWeight: FontWeight.w800,
               ),
             ),
@@ -154,10 +159,10 @@ class _ParentProfileScreenState extends State<ParentProfileScreen> {
                   ),
                   SizedBox(width: 5.w),
                   Text(
-                    'Verified Parent ID: #PAR-8924',
+                    '${ref.watchTr(AppStrings.verified)}: #PAR-8924',
                     style: TxtStyle.titleLarge(
                       color: AppColors.primaryDark,
-                      fontSize: 15.sp,
+                      fontSize: 14.sp,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -190,9 +195,9 @@ class _ParentProfileScreenState extends State<ParentProfileScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Edit Profile',
+                      ref.watchTr(AppStrings.editProfileTitle),
                       style: TxtStyle.titleLarge(
-                        fontSize: 16.sp,
+                        fontSize: 15.5.sp,
                         fontWeight: FontWeight.w800,
                       ),
                     ),
@@ -218,7 +223,7 @@ class _ParentProfileScreenState extends State<ParentProfileScreen> {
           text,
           style: TxtStyle.titleLarge(
             color: AppColors.subtitleTextColor,
-            fontSize: 15.sp,
+            fontSize: 14.sp,
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -233,7 +238,7 @@ class _ParentProfileScreenState extends State<ParentProfileScreen> {
         text,
         style: TxtStyle.titleLarge(
           color: AppColors.subtitleTextColor,
-          fontSize: 15.sp,
+          fontSize: 14.sp,
           fontWeight: FontWeight.w800,
           letterSpacing: .4,
         ),
@@ -252,9 +257,9 @@ class _ParentProfileScreenState extends State<ParentProfileScreen> {
         children: [
           _profileMenu(
             icon: Icons.family_restroom_outlined,
-            title: 'My Children',
-            subtitle: '2 Children Enrolled (Lucas, Sophia)',
-            badge: '2 Active',
+            title: ref.watchTr(AppStrings.myChildren),
+            subtitle: '2 Hijos Matriculados (Lucas, Sophia)',
+            badge: '2 ${ref.watchTr(AppStrings.active)}',
             onTap: () {
               context.push(RoutePath.children);
             },
@@ -262,8 +267,8 @@ class _ParentProfileScreenState extends State<ParentProfileScreen> {
           _divider(),
           _profileMenu(
             icon: Icons.chat_bubble_outline,
-            title: 'Communication',
-            subtitle: 'Messages with faculty & academy',
+            title: ref.watchTr(AppStrings.communicationTitle),
+            subtitle: ref.watchTr(AppStrings.communicationSubtitle),
             onTap: () {
               context.push(RoutePath.chatInbox);
             },
@@ -271,9 +276,9 @@ class _ParentProfileScreenState extends State<ParentProfileScreen> {
           _divider(),
           _profileMenu(
             icon: Icons.account_balance_wallet_outlined,
-            title: 'Fees & Payments',
-            subtitle: 'Tuition invoices & payment history',
-            badge: 'Paid',
+            title: ref.watchTr(AppStrings.paymentsTitle),
+            subtitle: ref.watchTr(AppStrings.paymentsSubtitle),
+            badge: ref.watchTr(AppStrings.upToDate),
             onTap: () {
               context.push(RoutePath.payment);
             },
@@ -281,8 +286,8 @@ class _ParentProfileScreenState extends State<ParentProfileScreen> {
           _divider(),
           _profileMenu(
             icon: Icons.settings_outlined,
-            title: 'Settings',
-            subtitle: 'Notifications, security & preferences',
+            title: ref.watchTr(AppStrings.settingsTitle),
+            subtitle: ref.watchTr(AppStrings.settingsMenuSubtitle),
             onTap: () {
               context.push(RoutePath.settings);
             },
@@ -323,7 +328,7 @@ class _ParentProfileScreenState extends State<ParentProfileScreen> {
                     title,
                     style: TxtStyle.titleLarge(
                       color: AppColors.text,
-                      fontSize: 16.sp,
+                      fontSize: 15.5.sp,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -332,7 +337,7 @@ class _ParentProfileScreenState extends State<ParentProfileScreen> {
                     subtitle,
                     style: TxtStyle.bodyMedium(
                       color: AppColors.subtitleTextColor,
-                      fontSize: 15.sp,
+                      fontSize: 13.5.sp,
                     ),
                   ),
                 ],
@@ -349,7 +354,7 @@ class _ParentProfileScreenState extends State<ParentProfileScreen> {
                   badge,
                   style: TxtStyle.titleLarge(
                     color: AppColors.emeraldGreenColor,
-                    fontSize: 15.sp,
+                    fontSize: 13.sp,
                     fontWeight: FontWeight.w700,
                   ),
                 ),

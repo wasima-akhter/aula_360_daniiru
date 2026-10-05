@@ -1,25 +1,28 @@
-﻿import '../../share/export/screen_export.dart';
+import '../../share/export/screen_export.dart';
 import '../../teacher_all/settings/language_picker.dart';
 
-class SettingsScreen extends StatefulWidget {
+class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
 
   @override
-  State<SettingsScreen> createState() => _SettingsScreenState();
+  ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> {
+class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   bool pushNotifications = true;
   bool attendanceAlerts = true;
 
-  //
-  String language = 'English (US)';
-
   @override
   Widget build(BuildContext context) {
+    final tr = ref.watchTr;
+    final currentLang = ref.watch(languageProvider).valueOrNull?.language;
+    final langLabel = currentLang == AppLanguage.spanish
+        ? tr(AppStrings.languageSpanishLabel)
+        : tr(AppStrings.languageEnglishUs);
+
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
-      appBar: _settingsAppBar(context),
+      appBar: _settingsAppBar(context, tr),
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
@@ -27,22 +30,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _breadcrumb(),
+              _breadcrumb(tr),
               SizedBox(height: 23.h),
 
-              _sectionLabel('ACCOUNT'),
+              _sectionLabel(tr(AppStrings.settingsSectionAccount)),
               SizedBox(height: 8.h),
-              _accountCard(),
+              _accountCard(tr),
 
               SizedBox(height: 22.h),
 
-              _languageCard(),
+              _languageCard(tr, langLabel),
 
               SizedBox(height: 22.h),
 
-              _sectionLabel('NOTIFICATIONS'),
+              _sectionLabel(tr(AppStrings.settingsSectionNotifications)),
               SizedBox(height: 8.h),
-              _notificationCard(),
+              _notificationCard(tr),
             ],
           ),
         ),
@@ -50,7 +53,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  PreferredSizeWidget _settingsAppBar(BuildContext context) {
+  PreferredSizeWidget _settingsAppBar(
+      BuildContext context, String Function(String) tr) {
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
@@ -60,7 +64,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         icon: Icon(Icons.arrow_back, color: AppColors.primaryDark, size: 21.sp),
       ),
       title: Text(
-        'Settings',
+        tr(AppStrings.settingsTitle),
         style: TxtStyle.titleLarge(
           color: AppColors.primaryDark,
           fontSize: 17.sp,
@@ -74,11 +78,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  Widget _breadcrumb() {
+  Widget _breadcrumb(String Function(String) tr) {
     return Row(
       children: [
         Text(
-          'Profile',
+          tr(AppStrings.settingsProfileBreadcrumb),
           style: TxtStyle.titleLarge(
             color: AppColors.subtitleTextColor,
             fontSize: 16.5.sp,
@@ -95,7 +99,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
         ),
         Text(
-          'Settings',
+          tr(AppStrings.settingsTitle),
           style: TxtStyle.titleLarge(
             color: AppColors.primaryDark,
             fontSize: 16.5.sp,
@@ -118,7 +122,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  Widget _accountCard() {
+  Widget _accountCard(String Function(String) tr) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -128,17 +132,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
       child: Column(
         children: [
-          // _settingsRow(
-          //   icon: Icons.person_outline,
-          //   title: 'Personal Information',
-          //   subtitle: 'Name, email, phone number',
-          //   onTap: () {},
-          // ),
-          // _settingsDivider(),
           _settingsRow(
             icon: Icons.lock_outline,
-            title: 'Change Password',
-            subtitle: 'Update your academy account password',
+            title: tr(AppStrings.settingsSecurityChangePassword),
+            subtitle: tr(AppStrings.settingsSecurityChangePasswordSub),
             onTap: () {
               context.push(RoutePath.changePassword);
             },
@@ -148,7 +145,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  Widget _languageCard() {
+  Widget _languageCard(String Function(String) tr, String langLabel) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -158,13 +155,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
       child: _settingsRow(
         icon: Icons.language,
-        title: 'Language',
-        subtitle: 'Choose the language used throughout the portal',
+        title: tr(AppStrings.settingsLangLabel),
+        subtitle: tr(AppStrings.settingsLangSubtitle),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              language,
+              langLabel,
               style: TxtStyle.titleLarge(
                 color: AppColors.primaryDark,
                 fontSize: 15.5.sp,
@@ -180,22 +177,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ],
         ),
         onTap: () async {
-          final selected = await LanguagePicker.show(
+          await LanguagePicker.show(
             context: context,
-            selectedLanguage: language,
+            selectedLanguage: langLabel,
+            ref: ref,
           );
-
-          if (!mounted || selected == null) return;
-
-          setState(() {
-            language = selected;
-          });
         },
       ),
     );
   }
 
-  Widget _notificationCard() {
+  Widget _notificationCard(String Function(String) tr) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -207,8 +199,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
         children: [
           _notificationRow(
             icon: Icons.notifications_none,
-            title: 'Push Notifications',
-            subtitle: 'Receive class updates & reports',
+            title: tr(AppStrings.settingsNotifPush),
+            subtitle: tr(AppStrings.settingsNotifPushSub),
             value: pushNotifications,
             onChanged: (value) {
               setState(() {
@@ -219,8 +211,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _settingsDivider(),
           _notificationRow(
             icon: Icons.fact_check_outlined,
-            title: 'Attendance Alerts',
-            subtitle: 'Instant check-in & absence notices',
+            title: tr(AppStrings.settingsNotifAttendanceAlerts),
+            subtitle: tr(AppStrings.settingsNotifAttendanceAlertsSub),
             value: attendanceAlerts,
             onChanged: (value) {
               setState(() {

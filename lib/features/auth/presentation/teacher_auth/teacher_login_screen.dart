@@ -1,6 +1,5 @@
 import 'package:aula360/features/share/export/screen_export.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../nav/user_role/user_role_provider.dart';
 import '../../../share/widgets/button/app_logo.dart';
@@ -47,6 +46,7 @@ class _TeacherLoginScreenState extends ConsumerState<TeacherLoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final tr = ref.watchTr;
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -55,7 +55,10 @@ class _TeacherLoginScreenState extends ConsumerState<TeacherLoginScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AuthBackButton(title: 'Teacher Login', showBack: false),
+              AuthBackButton(
+                title: tr(AppStrings.teacherLoginTitle),
+                showBack: false,
+              ),
 
               const SizedBox(height: 38),
 
@@ -65,7 +68,7 @@ class _TeacherLoginScreenState extends ConsumerState<TeacherLoginScreen> {
 
               Center(
                 child: Text(
-                  'Welcome back',
+                  tr(AppStrings.welcomeBack),
                   style: context.titleLarge.copyWith(
                     color: AppColors.text,
                     fontSize: 33.5.sp,
@@ -78,11 +81,10 @@ class _TeacherLoginScreenState extends ConsumerState<TeacherLoginScreen> {
 
               Center(
                 child: Text(
-                  'Sign in with your academic credentials to access \nyour classes and schedules.',
+                  tr(AppStrings.teacherLoginSubtitle),
                   textAlign: TextAlign.center,
                   style: context.bodyMedium.copyWith(
                     color: AppColors.secondaryText,
-
                     height: 1.5,
                   ),
                 ),
@@ -92,8 +94,8 @@ class _TeacherLoginScreenState extends ConsumerState<TeacherLoginScreen> {
 
               AppTextField(
                 controller: emailController,
-                label: 'Email or Faculty ID',
-                hint: 'e.g. name@institution.edu',
+                label: tr(AppStrings.fieldEmailOrFacultyId),
+                hint: tr(AppStrings.fieldEmailOrFacultyIdHint),
                 icon: Icons.person_outline_rounded,
                 keyboardType: TextInputType.emailAddress,
               ),
@@ -102,8 +104,8 @@ class _TeacherLoginScreenState extends ConsumerState<TeacherLoginScreen> {
 
               AppTextField(
                 controller: passwordController,
-                label: 'Password',
-                hint: '••••••••••••',
+                label: tr(AppStrings.fieldPassword),
+                hint: tr(AppStrings.fieldPasswordHint),
                 icon: Icons.lock_outline_rounded,
                 obscureText: obscurePassword,
                 onTogglePassword: () {
@@ -116,6 +118,7 @@ class _TeacherLoginScreenState extends ConsumerState<TeacherLoginScreen> {
               const SizedBox(height: 11),
 
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   GestureDetector(
                     onTap: () {
@@ -140,7 +143,7 @@ class _TeacherLoginScreenState extends ConsumerState<TeacherLoginScreen> {
                         ),
                         const SizedBox(width: 15),
                         Text(
-                          'Remember this device',
+                          tr(AppStrings.rememberDevice),
                           style: context.bodySmall.copyWith(
                             color: AppColors.secondaryText,
                           ),
@@ -148,22 +151,26 @@ class _TeacherLoginScreenState extends ConsumerState<TeacherLoginScreen> {
                       ],
                     ),
                   ),
-                  const Spacer(),
-                  GestureDetector(
-                    onTap: () {
-                      // Forgot password screen can be connected here.
-
-                      context.push(
-                        RoutePath.forgetPasswordScreen,
-                        extra: const ForgotPasswordArgs(role: OtpRole.teacher),
-                      );
-                    },
-                    child: Text(
-                      'Forgot password?',
-                      style: context.titleSmall.copyWith(
-                        fontSize: 16.sp,
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.w600,
+                  Gap(12.w),
+                  Flexible(
+                    child: GestureDetector(
+                      onTap: () {
+                        context.push(
+                          RoutePath.forgetPasswordScreen,
+                          extra: const ForgotPasswordArgs(
+                            role: OtpRole.teacher,
+                          ),
+                        );
+                      },
+                      child: Text(
+                        tr(AppStrings.forgotPassword),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: context.titleSmall.copyWith(
+                          fontSize: 16.sp,
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ),
@@ -172,10 +179,9 @@ class _TeacherLoginScreenState extends ConsumerState<TeacherLoginScreen> {
 
               Gap(36.h),
 
-              //
               if (kDebugMode) ...[
                 AulaPrimaryButton(
-                  text: 'Teacher Profile setup',
+                  text: 'Configuración Docente',
                   onTap: () {
                     context.go(RoutePath.teacherProfileSetup);
                   },
@@ -183,7 +189,7 @@ class _TeacherLoginScreenState extends ConsumerState<TeacherLoginScreen> {
 
                 Gap(36.h),
                 AulaPrimaryButton(
-                  text: 'Log In directly',
+                  text: 'Acceso directo (Demo)',
                   onTap: () {
                     ref.read(userRoleProvider.notifier).loginAsTeacher();
                     context.go(RoutePath.navigationPages);
@@ -193,7 +199,10 @@ class _TeacherLoginScreenState extends ConsumerState<TeacherLoginScreen> {
                 Gap(36.h),
               ],
 
-              AulaPrimaryButton(text: 'Log In to Aula 360', onTap: _login),
+              AulaPrimaryButton(
+                text: tr(AppStrings.btnLoginAula360),
+                onTap: _login,
+              ),
 
               SizedBox(height: 29.h),
 
@@ -204,13 +213,13 @@ class _TeacherLoginScreenState extends ConsumerState<TeacherLoginScreen> {
                   },
                   child: Text.rich(
                     TextSpan(
-                      text: 'Don’t have an account? ',
+                      text: '${tr(AppStrings.noAccountYet)} ',
                       style: context.titleSmall.copyWith(
                         color: AppColors.secondaryText,
                       ),
                       children: [
                         TextSpan(
-                          text: 'Create Account',
+                          text: tr(AppStrings.createAccount),
                           style: context.titleSmall.copyWith(
                             color: AppColors.primary,
                             fontWeight: FontWeight.w700,
@@ -222,12 +231,10 @@ class _TeacherLoginScreenState extends ConsumerState<TeacherLoginScreen> {
                 ),
               ),
 
-              //
               Gap(20.h),
               Center(
                 child: TextButton(
                   onPressed: () {
-                    // Navigate to teacher login
                     context.pushNamed(RoutePath.loginScreen);
                   },
                   style: TextButton.styleFrom(
@@ -244,7 +251,7 @@ class _TeacherLoginScreenState extends ConsumerState<TeacherLoginScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        'Login as Parent',
+                        tr(AppStrings.loginAsParent),
                         style: TxtStyle.titleLarge(
                           color: AppColors.primary,
                           fontSize: 18,

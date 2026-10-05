@@ -1,7 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../../../../core/helper/snackbar/api_snackbar.dart';
 import '../../../share/export/screen_export.dart';
 import '../../../share/widgets/button/app_logo.dart';
@@ -90,33 +88,33 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
 
   String? get email => widget.args.email;
 
-  String get purposeTitle {
+  String purposeTitle(WidgetRef ref) {
     switch (purpose) {
       case OtpPurpose.signup:
-        return 'Verify your account';
+        return ref.watchTr(AppStrings.otpVerifyAccount);
 
       case OtpPurpose.forgotPassword:
-        return 'Verify your identity';
+        return ref.watchTr(AppStrings.otpVerifyIdentity);
     }
   }
 
-  String get purposeDescription {
+  String purposeDescription(WidgetRef ref) {
     switch (purpose) {
       case OtpPurpose.signup:
-        return 'We sent a 6-digit verification code to:';
+        return ref.watchTr(AppStrings.otpSignupDesc);
 
       case OtpPurpose.forgotPassword:
-        return 'We sent a 6-digit password reset code to:';
+        return ref.watchTr(AppStrings.otpForgotDesc);
     }
   }
 
-  String get buttonText {
+  String buttonText(WidgetRef ref) {
     switch (purpose) {
       case OtpPurpose.signup:
-        return 'Verify & Continue';
+        return ref.watchTr(AppStrings.otpVerifyContinue);
 
       case OtpPurpose.forgotPassword:
-        return 'Verify & Reset Password';
+        return ref.watchTr(AppStrings.otpVerifyReset);
     }
   }
 
@@ -140,42 +138,20 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
     }
   }
 
-  // Then _verify() becomes:
-
   Future<void> _verify() async {
     if (otp.length != 6) {
-      ApiValidationForOtp.show();
+      ApiSnackbar.show(
+        ref.watchTr(AppStrings.otpRequiredMessage),
+        title: ref.watchTr(AppStrings.otpRequiredTitle),
+        type: SnackbarType.error,
+      );
       return;
     }
-
-    /*
-   * Actual API verification:
-   *
-   * final controller = ref.read(authControllerProvider.notifier);
-   *
-   * final success = await controller.verifyOtp(
-   *   email: email ?? '',
-   *   otp: otp,
-   *   purpose: purpose,
-   *   role: role,
-   * );
-   *
-   * if (!success) return;
-   */
 
     _navigateAfterVerification();
   }
 
   Future<void> _resendCode() async {
-    /*
-     * API call should be handled by Riverpod:
-     *
-     * await ref.read(authControllerProvider.notifier).resendOtp(
-     *   email: widget.email ?? '',
-     *   purpose: widget.purpose,
-     * );
-     */
-
     _startTimer();
   }
 
@@ -189,7 +165,10 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const AuthBackButton(title: 'Verification', showBack: false),
+              AuthBackButton(
+                title: ref.watchTr(AppStrings.otpHeader),
+                showBack: false,
+              ),
 
               const SizedBox(height: 35),
 
@@ -199,7 +178,7 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
 
               Center(
                 child: Text(
-                  purposeTitle,
+                  purposeTitle(ref),
                   style: TxtStyle.titleLarge(
                     color: AppColors.text,
                     fontSize: 31.5.sp,
@@ -212,7 +191,7 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
 
               Center(
                 child: Text(
-                  purposeDescription,
+                  purposeDescription(ref),
                   style: const TextStyle(color: AppColors.secondaryText),
                 ),
               ),
@@ -225,7 +204,6 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
                     widget.args.email!,
                     style: const TextStyle(
                       color: AppColors.primary,
-
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -246,10 +224,9 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'ENTER 6-DIGIT CODE',
+                      ref.watchTr(AppStrings.otpEnterCodeLabel),
                       style: TxtStyle.titleLarge(
                         color: AppColors.secondaryText,
-
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -289,27 +266,30 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
                         const SizedBox(width: 5),
 
                         Text(
-                          'Expires in 00:${seconds.toString().padLeft(2, '0')}',
+                          '${ref.watchTr(AppStrings.otpExpiresPrefix)} 00:${seconds.toString().padLeft(2, '0')}',
                           style: const TextStyle(
                             color: AppColors.primary,
-
                             fontWeight: FontWeight.w700,
                           ),
                         ),
 
                         const SizedBox(width: 15),
 
-                        TextButton(
-                          onPressed: seconds == 0 ? _resendCode : null,
-                          style: TextButton.styleFrom(
-                            padding: EdgeInsets.zero,
-                            minimumSize: Size.zero,
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          ),
-                          child: Text(
-                            'Resend Code',
-                            style: TxtStyle.titleLarge(
-                              color: AppColors.blackMainTextColor,
+                        Flexible(
+                          child: TextButton(
+                            onPressed: seconds == 0 ? _resendCode : null,
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.zero,
+                              minimumSize: Size.zero,
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            ),
+                            child: Text(
+                              ref.watchTr(AppStrings.otpResend),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TxtStyle.labelLarge(
+                                color: AppColors.blackMainTextColor,
+                              ),
                             ),
                           ),
                         ),
@@ -319,7 +299,7 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
                     const SizedBox(height: 4),
 
                     Text(
-                      'Didn’t receive a message? Check spam or resend once the timer expires.',
+                      ref.watchTr(AppStrings.otpSpamNote),
                       textAlign: TextAlign.center,
                       style: TxtStyle.titleLarge(
                         color: AppColors.secondaryText,
@@ -332,7 +312,7 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
 
               const SizedBox(height: 20),
 
-              AulaPrimaryButton(text: buttonText, onTap: _verify),
+              AulaPrimaryButton(text: buttonText(ref), onTap: _verify),
             ],
           ),
         ),
@@ -388,16 +368,6 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class ApiValidationForOtp {
-  static void show() {
-    ApiSnackbar.show(
-      'Please enter all 6 digits of the verification code.',
-      title: 'Verification Code Required',
-      type: SnackbarType.error,
     );
   }
 }

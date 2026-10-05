@@ -1,20 +1,21 @@
-﻿import '../../../../core/helper/snackbar/api_snackbar.dart';
+import '../../../../core/helper/snackbar/api_snackbar.dart';
 import '../../../share/export/screen_export.dart';
 import '../../../share/widgets/button/app_logo.dart';
 import '../../../share/widgets/button/custom_back_button.dart';
 import '../../../share/widgets/text_field/custom_text_field.dart';
 import '../../abc.dart';
 
-class ResetPasswordScreen extends StatefulWidget {
+class ResetPasswordScreen extends ConsumerStatefulWidget {
   final String? email;
 
   const ResetPasswordScreen({super.key, this.email});
 
   @override
-  State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
+  ConsumerState<ResetPasswordScreen> createState() =>
+      _ResetPasswordScreenState();
 }
 
-class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
+class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
 
@@ -35,23 +36,23 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
     if (!AulaValidation.required(
       value: confirmPasswordController.text,
-      fieldName: 'Confirm Password',
+      fieldName: ref.watchTr(AppStrings.fieldConfirmPassword),
     )) {
       return;
     }
 
     if (passwordController.text != confirmPasswordController.text) {
       ApiSnackbar.show(
-        'Both passwords must match.',
-        title: 'Password Mismatch',
+        ref.watchTr(AppStrings.passwordMismatchMessage),
+        title: ref.watchTr(AppStrings.passwordMismatchTitle),
         type: SnackbarType.error,
       );
       return;
     }
 
     ApiSnackbar.show(
-      'Your password has been reset successfully.',
-      title: 'Password Updated',
+      ref.watchTr(AppStrings.passwordResetSuccessMessage),
+      title: ref.watchTr(AppStrings.passwordResetSuccessTitle),
       type: SnackbarType.success,
     );
 
@@ -68,7 +69,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const AuthBackButton(title: 'Reset Password', showBack: false),
+              AuthBackButton(
+                title: ref.watchTr(AppStrings.resetPasswordHeader),
+                showBack: false,
+              ),
 
               const SizedBox(height: 43),
 
@@ -78,7 +82,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
               Center(
                 child: Text(
-                  'Create a new password',
+                  ref.watchTr(AppStrings.resetPasswordTitle),
                   textAlign: TextAlign.center,
                   style: TxtStyle.titleLarge(
                     color: AppColors.text,
@@ -92,7 +96,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
               Center(
                 child: Text(
-                  'Choose a strong password that you haven’t\nused before.',
+                  ref.watchTr(AppStrings.resetPasswordSubtitle),
                   textAlign: TextAlign.center,
                   style: TxtStyle.titleLarge(
                     color: AppColors.secondaryText,
@@ -105,8 +109,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
               AppTextField(
                 controller: passwordController,
-                label: 'New Password',
-                hint: 'Enter new password',
+                label: ref.watchTr(AppStrings.fieldNewPassword),
+                hint: ref.watchTr(AppStrings.fieldNewPasswordHint),
                 icon: Icons.lock_outline_rounded,
                 obscureText: obscurePassword,
                 onTogglePassword: () {
@@ -120,8 +124,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
               AppTextField(
                 controller: confirmPasswordController,
-                label: 'Confirm Password',
-                hint: 'Re-enter new password',
+                label: ref.watchTr(AppStrings.fieldConfirmPassword),
+                hint: ref.watchTr(AppStrings.fieldConfirmPasswordHint),
                 icon: Icons.lock_outline_rounded,
                 obscureText: obscureConfirmPassword,
                 onTogglePassword: () {
@@ -133,7 +137,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
               const SizedBox(height: 23),
 
-              AulaPrimaryButton(text: 'Reset Password', onTap: _resetPassword),
+              AulaPrimaryButton(
+                text: ref.watchTr(AppStrings.btnResetPassword),
+                onTap: _resetPassword,
+              ),
             ],
           ),
         ),

@@ -1,55 +1,60 @@
-﻿import '../../share/export/screen_export.dart';
+import '../../share/export/screen_export.dart';
 
 /// ===============================================================
-/// 1. NOTIFICATIONS SCREEN
+/// 1. NOTIFICATIONS SCREEN / NOTIFICACIONES
 /// ===============================================================
 
-class NotificationsScreen extends StatefulWidget {
+class NotificationsScreen extends ConsumerStatefulWidget {
   const NotificationsScreen({super.key});
 
   @override
-  State<NotificationsScreen> createState() => _NotificationsScreenState();
+  ConsumerState<NotificationsScreen> createState() =>
+      _NotificationsScreenState();
 }
 
-class _NotificationsScreenState extends State<NotificationsScreen> {
+class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
+  // ─────────────────────────────────────────────────────────────────────────────
+  // SAMPLE / MOCK DATA (Spanish Academy Context)
+  // ─────────────────────────────────────────────────────────────────────────────
+
   final List<_NotificationItem> notifications = [
-    _NotificationItem(
+    const _NotificationItem(
       icon: Icons.description_outlined,
-      title: 'Term 1 Post-Class Report Available',
+      title: 'Informe de clase disponible',
       description:
-          "Ms. Sarah Vance published Lucas's post-class report for English Literature Period 1.",
-      time: 'Today • 09:55 AM',
+          'Dña. Sarah Vance ha publicado el informe de clase de Lengua Castellana para Lucas.',
+      time: 'Hoy • 09:55',
       unread: true,
     ),
-    _NotificationItem(
+    const _NotificationItem(
       icon: Icons.assignment_outlined,
-      title: 'New Homework Assigned',
+      title: 'Nueva tarea asignada',
       description:
-          'Mr. Robert Hayes assigned Problem Set 4: Quadratic Polynomial Graphing for Lucas (Due Oct 29).',
-      time: 'Today • 08:30 AM',
+          'D. Roberto Hayes ha asignado la relación de problemas de Matemáticas para Lucas (Entrega: 29 Oct).',
+      time: 'Hoy • 08:30',
       unread: true,
     ),
-    _NotificationItem(
+    const _NotificationItem(
       icon: Icons.fact_check_outlined,
-      title: 'Attendance Verified',
+      title: 'Asistencia confirmada',
       description:
-          'Sophia Rivera was marked Present & Prompt for Grade 5 Room 1 morning roll call.',
-      time: 'Yesterday • 08:35 AM',
-      action: 'View Attendance',
+          'Sophia Rivera ha sido registrada como Presente en 5º Primaria, Aula 1A.',
+      time: 'Ayer • 08:35',
+      action: 'Ver Asistencia',
     ),
-    _NotificationItem(
+    const _NotificationItem(
       icon: Icons.calendar_month_outlined,
-      title: 'Mid-Term Examination Schedule Released',
+      title: 'Horario de exámenes publicado',
       description:
-          'The final exam timetable for Term 1 core courses has been updated in the Schedule tab.',
-      time: 'Oct 21 • 02:15 PM',
+          'El calendario de exámenes del trimestre ha sido actualizado en la pestaña Horario.',
+      time: '21 Oct • 14:15',
     ),
-    _NotificationItem(
+    const _NotificationItem(
       icon: Icons.campaign_outlined,
-      title: 'Parent-Teacher Consultation Week',
+      title: 'Semana de tutorías con familias',
       description:
-          'Appointment bookings for individual faculty reviews open next Monday via your portal.',
-      time: 'Oct 19 • 11:00 AM',
+          'La reserva de citas individuales con los tutores estará disponible a partir del próximo lunes.',
+      time: '19 Oct • 11:00',
     ),
   ];
 
@@ -63,9 +68,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         scrolledUnderElevation: 0,
-
         title: Text(
-          'Notifications',
+          ref.watchTr(AppStrings.navNotifications),
           style: TxtStyle.titleLarge(
             color: AppColors.text,
             fontSize: 17.sp,
@@ -122,19 +126,19 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Recent Academy Updates',
+                  ref.watchTr(AppStrings.academyUpdates),
                   style: TxtStyle.titleLarge(
                     color: AppColors.text,
-                    fontSize: 16.sp,
+                    fontSize: 15.5.sp,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
                 SizedBox(height: 2.h),
                 Text(
-                  "Stay up-to-date with your child's progress",
+                  ref.watchTr(AppStrings.stayUpdatedSubtitle),
                   style: TxtStyle.titleLarge(
                     color: AppColors.subtitleTextColor,
-                    fontSize: 15.5.sp,
+                    fontSize: 13.5.sp,
                   ),
                 ),
               ],
@@ -148,10 +152,10 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                 borderRadius: BorderRadius.circular(12.r),
               ),
               child: Text(
-                '$unreadCount Unread',
+                '$unreadCount ${ref.watchTr(AppStrings.unreadBadge)}',
                 style: TxtStyle.titleLarge(
                   color: AppColors.primaryDark,
-                  fontSize: 14.sp,
+                  fontSize: 13.sp,
                   fontWeight: FontWeight.w800,
                 ),
               ),
@@ -195,7 +199,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                           item.title,
                           style: TxtStyle.titleLarge(
                             color: AppColors.text,
-                            fontSize: 16.5.sp,
+                            fontSize: 15.5.sp,
                             fontWeight: FontWeight.w700,
                             height: 1.25,
                           ),
@@ -206,7 +210,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                           margin: EdgeInsets.only(left: 5.w, top: 3.h),
                           width: 5.w,
                           height: 5.w,
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             color: AppColors.primaryDark,
                             shape: BoxShape.circle,
                           ),
@@ -218,7 +222,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                     item.description,
                     style: TxtStyle.bodyMedium(
                       color: AppColors.subtitleTextColor,
-                      fontSize: 15.sp,
+                      fontSize: 13.5.sp,
                       height: 1.35,
                     ),
                   ),
@@ -235,7 +239,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                         item.time,
                         style: TxtStyle.titleLarge(
                           color: AppColors.subtitleTextColor,
-                          fontSize: 14.sp,
+                          fontSize: 13.sp,
                         ),
                       ),
                       const Spacer(),
@@ -244,7 +248,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                           item.action!,
                           style: TxtStyle.titleLarge(
                             color: AppColors.primaryDark,
-                            fontSize: 13.5.sp,
+                            fontSize: 13.sp,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -284,10 +288,10 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 9.w),
             child: Text(
-              'All caught up',
+              ref.watchTr(AppStrings.allCaughtUp),
               style: TxtStyle.titleLarge(
                 color: AppColors.subtitleTextColor,
-                fontSize: 14.5.sp,
+                fontSize: 13.5.sp,
               ),
             ),
           ),
@@ -305,10 +309,6 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     });
   }
 }
-
-/// ===============================================================
-/// NOTIFICATION MODEL
-/// ===============================================================
 
 class _NotificationItem {
   final IconData icon;

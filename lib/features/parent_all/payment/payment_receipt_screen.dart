@@ -1,13 +1,13 @@
-﻿import '../../share/export/screen_export.dart';
+import '../../share/export/screen_export.dart';
 
-class PaymentReceiptScreen extends StatelessWidget {
+class PaymentReceiptScreen extends ConsumerWidget {
   const PaymentReceiptScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
-      appBar: _appBar(context),
+      appBar: _appBar(context, ref),
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
@@ -17,21 +17,21 @@ class PaymentReceiptScreen extends StatelessWidget {
               _successIcon(),
               SizedBox(height: 18.h),
               Text(
-                'Payment Successful',
+                ref.watchTr(AppStrings.paymentSuccessTitle),
                 textAlign: TextAlign.center,
                 style: TxtStyle.titleLarge(
                   color: AppColors.text,
-                  fontSize: 22.sp,
+                  fontSize: 21.sp,
                   fontWeight: FontWeight.w800,
                 ),
               ),
               SizedBox(height: 4.h),
               Text(
-                'Tuition processed successfully via Stripe',
+                ref.watchTr(AppStrings.paymentSuccessSubtitle),
                 textAlign: TextAlign.center,
                 style: TxtStyle.titleLarge(
                   color: AppColors.subtitleTextColor,
-                  fontSize: 15.5.sp,
+                  fontSize: 14.5.sp,
                 ),
               ),
               SizedBox(height: 14.h),
@@ -40,10 +40,10 @@ class PaymentReceiptScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    '€340.00',
+                    '340,00 €',
                     style: TxtStyle.titleLarge(
                       color: AppColors.primaryDark,
-                      fontSize: 27.sp,
+                      fontSize: 26.sp,
                       fontWeight: FontWeight.w900,
                     ),
                   ),
@@ -69,7 +69,7 @@ class PaymentReceiptScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12.r),
                 ),
                 child: Text(
-                  '● PAID & SETTLED',
+                  ref.watchTr(AppStrings.paidAndSettled),
                   style: TxtStyle.titleLarge(
                     color: AppColors.emeraldGreenColor,
                     fontSize: 13.sp,
@@ -78,16 +78,16 @@ class PaymentReceiptScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 22.h),
-              _receiptCard(),
-              SizedBox(height: 55.h),
-              _doneButton(context),
+              _receiptCard(ref),
+              SizedBox(height: 40.h),
+              _doneButton(context, ref),
               SizedBox(height: 10.h),
               Text(
-                'A copy has been sent to parent email on file.',
+                ref.watchTr(AppStrings.receiptEmailSentNotice),
                 textAlign: TextAlign.center,
                 style: TxtStyle.titleLarge(
                   color: AppColors.subtitleTextColor,
-                  fontSize: 14.sp,
+                  fontSize: 13.5.sp,
                 ),
               ),
             ],
@@ -97,7 +97,7 @@ class PaymentReceiptScreen extends StatelessWidget {
     );
   }
 
-  PreferredSizeWidget _appBar(BuildContext context) {
+  PreferredSizeWidget _appBar(BuildContext context, WidgetRef ref) {
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
@@ -111,7 +111,7 @@ class PaymentReceiptScreen extends StatelessWidget {
         ),
       ),
       title: Text(
-        'Payment Receipt',
+        ref.watchTr(AppStrings.paymentReceiptTitle),
         style: TxtStyle.titleLarge(
           color: AppColors.primaryDark,
           fontSize: 17.sp,
@@ -129,8 +129,8 @@ class PaymentReceiptScreen extends StatelessWidget {
     return Container(
       width: 54.w,
       height: 54.w,
-      decoration: BoxDecoration(
-        color: const Color(0xFFE5FAF2),
+      decoration: const BoxDecoration(
+        color: Color(0xFFE5FAF2),
         shape: BoxShape.circle,
       ),
       child: Center(
@@ -147,7 +147,7 @@ class PaymentReceiptScreen extends StatelessWidget {
     );
   }
 
-  Widget _receiptCard() {
+  Widget _receiptCard(WidgetRef ref) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.fromLTRB(13.w, 13.h, 13.w, 12.h),
@@ -158,23 +158,23 @@ class PaymentReceiptScreen extends StatelessWidget {
       ),
       child: Column(
         children: [
-          _receiptRow('TERM', 'Academic Fall 2024'),
+          _receiptRow(ref.watchTr(AppStrings.periodLabel), ref.watchTr(AppStrings.academicYearLabel)),
           _receiptDivider(),
           _receiptRow(
-            'Student',
+            ref.watchTr(AppStrings.studentLabel),
             'Lucas Rivera',
-            subValue: 'Grade 8 • Section A',
+            subValue: '${ref.watchTr(AppStrings.eso2)} • ${ref.watchTr(AppStrings.aula3)}',
           ),
           _receiptDivider(),
-          _receiptRow('Invoice', '#A360-8492'),
+          _receiptRow(ref.watchTr(AppStrings.invoiceLabel), '#A360-8492'),
           _receiptDivider(),
           _receiptRow(
-            'Payment Method',
+            ref.watchTr(AppStrings.methodLabel),
             '•••• 4242',
             leading: _cardBrand('VISA'),
           ),
           _receiptDivider(),
-          _receiptRow('Date', 'Oct 24, 2024 • 12:14 PM'),
+          _receiptRow(ref.watchTr(AppStrings.date), '24 Oct 2024 • 12:14'),
           SizedBox(height: 12.h),
           GestureDetector(
             onTap: () {},
@@ -184,14 +184,14 @@ class PaymentReceiptScreen extends StatelessWidget {
                 Icon(
                   Icons.download_outlined,
                   color: AppColors.primaryDark,
-                  size: 13.sp,
+                  size: 15.sp,
                 ),
                 SizedBox(width: 4.w),
                 Text(
-                  'Download Receipt (PDF)',
+                  ref.watchTr(AppStrings.downloadReceiptPdf),
                   style: TxtStyle.titleLarge(
                     color: AppColors.primaryDark,
-                    fontSize: 17.sp,
+                    fontSize: 15.sp,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -220,7 +220,7 @@ class PaymentReceiptScreen extends StatelessWidget {
               title,
               style: TxtStyle.titleLarge(
                 color: AppColors.subtitleTextColor,
-                fontSize: 14.5.sp,
+                fontSize: 14.sp,
               ),
             ),
           ),
@@ -234,7 +234,7 @@ class PaymentReceiptScreen extends StatelessWidget {
                 textAlign: TextAlign.right,
                 style: TxtStyle.titleLarge(
                   color: AppColors.text,
-                  fontSize: 15.5.sp,
+                  fontSize: 14.5.sp,
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -244,7 +244,7 @@ class PaymentReceiptScreen extends StatelessWidget {
                   subValue,
                   style: TxtStyle.titleLarge(
                     color: AppColors.subtitleTextColor,
-                    fontSize: 14.5.sp,
+                    fontSize: 13.5.sp,
                   ),
                 ),
               ],
@@ -270,14 +270,14 @@ class PaymentReceiptScreen extends StatelessWidget {
         text,
         style: TxtStyle.titleLarge(
           color: AppColors.blueTextColor,
-          fontSize: 13.sp,
+          fontSize: 11.sp,
           fontWeight: FontWeight.w800,
         ),
       ),
     );
   }
 
-  Widget _doneButton(BuildContext context) {
+  Widget _doneButton(BuildContext context, WidgetRef ref) {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
@@ -293,10 +293,10 @@ class PaymentReceiptScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Done',
+              ref.watchTr(AppStrings.finishBtn),
               style: TxtStyle.titleLarge(
                 color: Colors.white,
-                fontSize: 17.sp,
+                fontSize: 16.sp,
                 fontWeight: FontWeight.w800,
               ),
             ),

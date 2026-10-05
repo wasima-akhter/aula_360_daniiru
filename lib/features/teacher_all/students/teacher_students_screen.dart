@@ -1,4 +1,4 @@
-﻿import '../../parent_all/helper/parent_home_helper.dart';
+import '../../parent_all/helper/parent_home_helper.dart';
 import '../../share/export/screen_export.dart';
 import '../helper/teacher_enums.dart';
 import '../helper/teacher_models.dart';
@@ -7,14 +7,16 @@ import '../helper/teacher_models.dart';
 /// TEACHER STUDENTS SCREEN
 /// ===============================================================
 
-class TeacherStudentsScreen extends StatefulWidget {
+class TeacherStudentsScreen extends ConsumerStatefulWidget {
   const TeacherStudentsScreen({super.key});
 
   @override
-  State<TeacherStudentsScreen> createState() => _TeacherStudentsScreenState();
+  ConsumerState<TeacherStudentsScreen> createState() =>
+      _TeacherStudentsScreenState();
 }
 
-class _TeacherStudentsScreenState extends State<TeacherStudentsScreen> {
+class _TeacherStudentsScreenState
+    extends ConsumerState<TeacherStudentsScreen> {
   StudentGroupFilter selectedFilter = StudentGroupFilter.all;
 
   List<TeacherStudent> get filteredStudents {
@@ -38,7 +40,10 @@ class _TeacherStudentsScreenState extends State<TeacherStudentsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.softBackground,
-      appBar: const AulaAppBar(title: 'My Students', showBack: false),
+      appBar: AulaAppBar(
+        title: ref.watchTr(AppStrings.myStudentsTitle),
+        showBack: false,
+      ),
       body: Column(
         children: [
           _searchSection(),
@@ -64,7 +69,7 @@ class _TeacherStudentsScreenState extends State<TeacherStudentsScreen> {
       padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 10.h),
       child: TextField(
         decoration: InputDecoration(
-          hintText: 'Search student, ID, or desk...',
+          hintText: ref.watchTr(AppStrings.searchStudentHint),
           hintStyle: TxtStyle.bodyMedium(
             color: AppColors.subtitleTextColor,
             fontSize: 16.sp,
@@ -90,18 +95,18 @@ class _TeacherStudentsScreenState extends State<TeacherStudentsScreen> {
         children: [
           _filterChip(
             StudentGroupFilter.all,
-            label: 'All',
+            label: ref.watchTr(AppStrings.allTab),
             count: students.length,
           ),
           SizedBox(width: 8.w),
           _filterChip(
             StudentGroupFilter.groupA,
-            label: StudentGroup.groupA.label,
+            label: ref.watchTr(StudentGroup.groupA.stringKey),
           ),
           SizedBox(width: 8.w),
           _filterChip(
             StudentGroupFilter.groupB,
-            label: StudentGroup.groupB.label,
+            label: ref.watchTr(StudentGroup.groupB.stringKey),
           ),
         ],
       ),
@@ -149,7 +154,7 @@ class _TeacherStudentsScreenState extends State<TeacherStudentsScreen> {
     return Row(
       children: [
         Text(
-          'ASSIGNED ROSTER • TERM 1',
+          ref.watchTr(AppStrings.rosterAssignedTitle),
           style: TxtStyle.titleLarge(
             color: AppColors.subtitleTextColor,
             fontSize: 14.sp,
@@ -168,7 +173,7 @@ class _TeacherStudentsScreenState extends State<TeacherStudentsScreen> {
         ),
         SizedBox(width: 4.w),
         Text(
-          '22 Present',
+          '22 ${ref.watchTr(AppStrings.present)}',
           style: TxtStyle.bodyMedium(
             color: AppColors.subtitleTextColor,
             fontSize: 14.sp,
@@ -252,7 +257,7 @@ class _TeacherStudentsScreenState extends State<TeacherStudentsScreen> {
                   ),
                   SizedBox(height: 3.h),
                   Text(
-                    '${student.group.label} • ${student.room} (${student.desk})',
+                    '${ref.watchTr(student.group.stringKey)} • ${student.room} (${student.desk})',
                     style: TxtStyle.bodyMedium(
                       color: AppColors.subtitleTextColor,
                       fontSize: 15.sp,
@@ -281,9 +286,9 @@ class _TeacherStudentsScreenState extends State<TeacherStudentsScreen> {
         Container(
           width: 36.w,
           height: 36.w,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             shape: BoxShape.circle,
-            color: const Color(0xffe8edf5),
+            color: Color(0xffe8edf5),
           ),
           child: Center(
             child: Text(
@@ -331,7 +336,7 @@ class _TeacherStudentsScreenState extends State<TeacherStudentsScreen> {
         ),
         if (student.status == StudentStatus.needsCheckIn)
           Text(
-            student.status.label,
+            ref.watchTr(student.status.stringKey),
             style: TxtStyle.bodyMedium(
               color: const Color(0xffdf8a00),
               fontSize: 11.sp,

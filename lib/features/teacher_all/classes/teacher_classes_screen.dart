@@ -1,4 +1,4 @@
-﻿import '../../parent_all/helper/parent_home_helper.dart';
+import '../../parent_all/helper/parent_home_helper.dart';
 import '../../share/export/screen_export.dart';
 import '../helper/teacher_enums.dart';
 import '../helper/teacher_models.dart';
@@ -8,14 +8,14 @@ import '../helper/teacher_widgets.dart';
 /// 1. CLASSES SCREEN
 /// ===============================================================
 
-class TeacherClassesScreen extends StatefulWidget {
+class TeacherClassesScreen extends ConsumerStatefulWidget {
   const TeacherClassesScreen({super.key});
 
   @override
-  State<TeacherClassesScreen> createState() => _TeacherClassesScreenState();
+  ConsumerState<TeacherClassesScreen> createState() => _TeacherClassesScreenState();
 }
 
-class _TeacherClassesScreenState extends State<TeacherClassesScreen> {
+class _TeacherClassesScreenState extends ConsumerState<TeacherClassesScreen> {
   ClassTab selectedTab = ClassTab.today;
 
   List<AcademyClass> get visibleClasses {
@@ -31,7 +31,7 @@ class _TeacherClassesScreenState extends State<TeacherClassesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.softBackground,
-      appBar: const AulaAppBar(title: 'Classes', showBack: false),
+      appBar: AulaAppBar(title: ref.watchTr(AppStrings.navClasses), showBack: false),
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
@@ -74,7 +74,7 @@ class _TeacherClassesScreenState extends State<TeacherClassesScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'TODAY • THU, OCT 24',
+            'HOY • JUE, 24 OCT',
             style: TxtStyle.titleLarge(
               color: AppColors.subtitleTextColor,
               fontSize: 15.sp,
@@ -84,7 +84,7 @@ class _TeacherClassesScreenState extends State<TeacherClassesScreen> {
           ),
           SizedBox(height: 2.h),
           Text(
-            'Assigned Classes',
+            ref.watchTr(AppStrings.assignedClassesTitle),
             style: TxtStyle.titleLarge(
               color: AppColors.text,
               fontSize: 26.sp,
@@ -113,6 +113,7 @@ class _TeacherClassesScreenState extends State<TeacherClassesScreen> {
 
   Widget _tab(ClassTab tab, {required int count}) {
     final bool selected = selectedTab == tab;
+    final tabLabel = tab == ClassTab.today ? ref.watchTr(AppStrings.today) : ref.watchTr(AppStrings.upcomingClasses);
 
     return GestureDetector(
       onTap: () {
@@ -134,7 +135,7 @@ class _TeacherClassesScreenState extends State<TeacherClassesScreen> {
         child: Row(
           children: [
             Text(
-              tab.label,
+              tabLabel,
               style: TxtStyle.titleLarge(
                 color: selected
                     ? AppColors.primaryDark
@@ -151,13 +152,13 @@ class _TeacherClassesScreenState extends State<TeacherClassesScreen> {
                 borderRadius: BorderRadius.circular(10.r),
               ),
               child: Text(
-                !selected ? '($count)' : '$count',
+                '$count',
                 style: TxtStyle.titleLarge(
                   color: selected
                       ? AppColors.primaryDark
                       : AppColors.subtitleTextColor,
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w600,
+                  fontSize: 14.5.sp,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
             ),
@@ -167,13 +168,13 @@ class _TeacherClassesScreenState extends State<TeacherClassesScreen> {
     );
   }
 
-  Widget _classCard(AcademyClass item) {
-    return InkWell(
+  Widget _classCard(AcademyClass academyClass) {
+    return GestureDetector(
       onTap: () {
         context.push(RoutePath.teacherClassDetail);
       },
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 15.h),
+        padding: EdgeInsets.symmetric(vertical: 14.h),
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(color: AppColors.backgroundsLinesColor),
@@ -183,108 +184,44 @@ class _TeacherClassesScreenState extends State<TeacherClassesScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                _statusTag(academyClass.status),
+                const Spacer(),
                 Text(
-                  item.time,
-                  style: TxtStyle.titleLarge(
-                    color: item.status == ClassStatus.next
-                        ? AppColors.primaryDark
-                        : AppColors.subtitleTextColor,
+                  academyClass.time,
+                  style: TxtStyle.bodyMedium(
+                    color: AppColors.subtitleTextColor,
                     fontSize: 15.sp,
-                    fontWeight: FontWeight.w600,
                   ),
                 ),
-                const Spacer(),
-                _statusTag(item.status),
               ],
             ),
 
-            SizedBox(height: 8.h),
+            SizedBox(height: 7.h),
 
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Text(
-                    item.title,
-                    style: TxtStyle.titleLarge(
-                      color: AppColors.text,
-                      fontSize: 20.sp,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                SizedBox(width: 7.w),
-                Icon(
-                  Icons.chevron_right_rounded,
-                  color: AppColors.subtitleTextColor,
-                  size: 21.sp,
-                ),
-              ],
+            Text(
+              academyClass.title,
+              style: TxtStyle.titleLarge(
+                color: AppColors.text,
+                fontSize: 21.sp,
+                fontWeight: FontWeight.w700,
+              ),
             ),
 
             SizedBox(height: 4.h),
 
             Text(
-              item.subtitle,
+              '${academyClass.room} • ${academyClass.group} • '
+              '${academyClass.students} ${ref.watchTr(AppStrings.studentsCount)}',
               style: TxtStyle.bodyMedium(
                 color: AppColors.subtitleTextColor,
-                fontSize: 16.sp,
+                fontSize: 15.5.sp,
               ),
             ),
 
-            SizedBox(height: 9.h),
+            SizedBox(height: 12.h),
 
-            Row(
-              children: [
-                Icon(
-                  Icons.meeting_room_outlined,
-                  color: AppColors.subtitleTextColor,
-                  size: 14.sp,
-                ),
-                SizedBox(width: 4.w),
-                Text(
-                  item.room,
-                  style: TxtStyle.bodyMedium(
-                    color: AppColors.subtitleTextColor,
-                    fontSize: 15.sp,
-                  ),
-                ),
-                SizedBox(width: 8.w),
-                Text(
-                  '•',
-                  style: TxtStyle.bodyMedium(
-                    color: AppColors.subtitleTextColor,
-                    fontSize: 15.sp,
-                  ),
-                ),
-                SizedBox(width: 8.w),
-                Text(
-                  item.group,
-                  style: TxtStyle.bodyMedium(
-                    color: AppColors.subtitleTextColor,
-                    fontSize: 15.sp,
-                  ),
-                ),
-                SizedBox(width: 8.w),
-                Text(
-                  '•',
-                  style: TxtStyle.bodyMedium(
-                    color: AppColors.subtitleTextColor,
-                    fontSize: 15.sp,
-                  ),
-                ),
-                SizedBox(width: 8.w),
-                Text(
-                  '${item.students} students',
-                  style: TxtStyle.bodyMedium(
-                    color: AppColors.subtitleTextColor,
-                    fontSize: 15.sp,
-                  ),
-                ),
-              ],
-            ),
+            _cardFooter(academyClass),
           ],
         ),
       ),
@@ -292,45 +229,79 @@ class _TeacherClassesScreenState extends State<TeacherClassesScreen> {
   }
 
   Widget _statusTag(ClassStatus status) {
-    if (status == ClassStatus.next) {
+    final isNext = status == ClassStatus.next;
+
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 7.w, vertical: 3.h),
+      decoration: BoxDecoration(
+        color: isNext ? AppColors.blueSoft : AppColors.softSlateBgColor,
+        borderRadius: BorderRadius.circular(5.r),
+      ),
+      child: Text(
+        isNext ? ref.watchTr(AppStrings.homeNextLabel) : ref.watchTr(AppStrings.upcomingClasses).toUpperCase(),
+        style: TxtStyle.bodyMedium(
+          color: isNext ? AppColors.primaryDark : AppColors.subtitleTextColor,
+          fontSize: 12.5.sp,
+          fontWeight: FontWeight.w700,
+          letterSpacing: .35,
+        ),
+      ),
+    );
+  }
+
+  Widget _cardFooter(AcademyClass academyClass) {
+    if (academyClass.status == ClassStatus.next) {
       return Container(
-        padding: EdgeInsets.symmetric(horizontal: 9.w, vertical: 2.h),
+        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
         decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 230, 246, 230),
-          borderRadius: BorderRadius.circular(12.r),
-          border: Border.all(color: AppColors.greenTextColor.withOpacity(.35)),
+          color: AppColors.blueSoft,
+          borderRadius: BorderRadius.circular(6.r),
         ),
         child: Row(
           children: [
-            Container(
-              width: 6.w,
-              height: 6.w,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColors.emeraldGreenColor,
+            Icon(
+              Icons.people_outline,
+              size: 15.sp,
+              color: AppColors.primaryDark,
+            ),
+            SizedBox(width: 7.w),
+            Expanded(
+              child: Text(
+                '${ref.watchTr(AppStrings.takeAttendance)} • ${academyClass.students} ${ref.watchTr(AppStrings.studentsCount)}',
+                style: TxtStyle.bodyMedium(
+                  color: AppColors.primaryDark,
+                  fontSize: 14.5.sp,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
-            Gap(4.w),
-            Text(
-              status.label,
-              style: TxtStyle.titleLarge(
-                color: AppColors.greenTextColor,
-                fontSize: 13.sp,
-                fontWeight: FontWeight.w500,
-              ),
+            Icon(
+              Icons.arrow_forward_rounded,
+              size: 15.sp,
+              color: AppColors.primaryDark,
             ),
           ],
         ),
       );
     }
 
-    return Text(
-      status.label,
-      style: TxtStyle.titleLarge(
-        color: AppColors.subtitleTextColor,
-        fontSize: 14.sp,
-        fontWeight: FontWeight.w600,
-      ),
+    return Row(
+      children: [
+        Icon(
+          Icons.schedule_outlined,
+          size: 15.sp,
+          color: AppColors.subtitleTextColor,
+        ),
+        SizedBox(width: 5.w),
+        Text(
+          'Comienza en 3h',
+          style: TxtStyle.bodyMedium(
+            color: AppColors.subtitleTextColor,
+            fontSize: 14.5.sp,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
     );
   }
 }

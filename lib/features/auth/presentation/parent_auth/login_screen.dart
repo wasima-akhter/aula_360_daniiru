@@ -1,6 +1,5 @@
 import 'package:aula360/features/share/export/screen_export.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../nav/user_role/user_role_provider.dart';
 import '../../../share/widgets/button/app_logo.dart';
@@ -48,6 +47,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final tr = ref.watchTr;
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -56,7 +56,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AuthBackButton(title: 'Parent Login', showBack: false),
+              AuthBackButton(
+                title: tr(AppStrings.parentLoginTitle),
+                showBack: false,
+              ),
 
               const SizedBox(height: 38),
 
@@ -66,7 +69,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
               Center(
                 child: Text(
-                  'Welcome back',
+                  tr(AppStrings.welcomeBack),
                   style: context.titleLarge.copyWith(
                     color: AppColors.text,
                     fontSize: 33.5.sp,
@@ -79,11 +82,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
               Center(
                 child: Text(
-                  'Enter your registered mobile number or email\naddress to access your parent account.',
+                  tr(AppStrings.parentLoginSubtitle),
                   textAlign: TextAlign.center,
                   style: context.bodyMedium.copyWith(
                     color: AppColors.secondaryText,
-
                     height: 1.5,
                   ),
                 ),
@@ -93,8 +95,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
               AppTextField(
                 controller: emailController,
-                label: 'Mobile Number or Email',
-                hint: 'e.g. parent@example.com or +1 (555) 019-28',
+                label: tr(AppStrings.fieldMobileOrEmail),
+                hint: tr(AppStrings.fieldMobileOrEmailHint),
                 icon: Icons.person_outline_rounded,
                 keyboardType: TextInputType.emailAddress,
               ),
@@ -103,8 +105,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
               AppTextField(
                 controller: passwordController,
-                label: 'Password',
-                hint: '••••••••••••',
+                label: tr(AppStrings.fieldPassword),
+                hint: tr(AppStrings.fieldPasswordHint),
                 icon: Icons.lock_outline_rounded,
                 obscureText: obscurePassword,
                 onTogglePassword: () {
@@ -117,6 +119,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               const SizedBox(height: 11),
 
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   GestureDetector(
                     onTap: () {
@@ -141,7 +144,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         ),
                         const SizedBox(width: 15),
                         Text(
-                          'Remember this device',
+                          tr(AppStrings.rememberDevice),
                           style: context.bodySmall.copyWith(
                             color: AppColors.secondaryText,
                           ),
@@ -149,22 +152,24 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ],
                     ),
                   ),
-                  const Spacer(),
-                  GestureDetector(
-                    onTap: () {
-                      // Forgot password screen can be connected here.
-
-                      context.push(
-                        RoutePath.forgetPasswordScreen,
-                        extra: const ForgotPasswordArgs(role: OtpRole.parent),
-                      );
-                    },
-                    child: Text(
-                      'Forgot password?',
-                      style: context.titleSmall.copyWith(
-                        fontSize: 16.sp,
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.w600,
+                  Gap(12.w),
+                  Flexible(
+                    child: GestureDetector(
+                      onTap: () {
+                        context.push(
+                          RoutePath.forgetPasswordScreen,
+                          extra: const ForgotPasswordArgs(role: OtpRole.parent),
+                        );
+                      },
+                      child: Text(
+                        tr(AppStrings.forgotPassword),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: context.titleSmall.copyWith(
+                          fontSize: 16.sp,
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ),
@@ -175,7 +180,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
               if (kDebugMode) ...[
                 AulaPrimaryButton(
-                  text: 'Profile setup',
+                  text: 'Configurar Perfil',
                   onTap: () {
                     context.go(RoutePath.profileSetup);
                   },
@@ -183,7 +188,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
                 Gap(36.h),
                 AulaPrimaryButton(
-                  text: 'Log In directly',
+                  text: 'Acceso directo (Demo)',
                   onTap: () {
                     ref.read(userRoleProvider.notifier).loginAsParent();
                     context.go(RoutePath.navigationPages);
@@ -192,7 +197,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
                 Gap(36.h),
               ],
-              AulaPrimaryButton(text: 'Log In to Aula 360', onTap: _login),
+              AulaPrimaryButton(
+                text: tr(AppStrings.btnLoginAula360),
+                onTap: _login,
+              ),
 
               SizedBox(height: 29.h),
 
@@ -203,13 +211,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   },
                   child: Text.rich(
                     TextSpan(
-                      text: 'Don’t have an account? ',
+                      text: '${tr(AppStrings.noAccountYet)} ',
                       style: context.titleSmall.copyWith(
                         color: AppColors.secondaryText,
                       ),
                       children: [
                         TextSpan(
-                          text: 'Create Account',
+                          text: tr(AppStrings.createAccount),
                           style: context.titleSmall.copyWith(
                             color: AppColors.primary,
                             fontWeight: FontWeight.w700,
@@ -225,7 +233,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               Center(
                 child: TextButton(
                   onPressed: () {
-                    // Navigate to teacher login
                     context.pushNamed(RoutePath.teacherLoginScreen);
                   },
                   style: TextButton.styleFrom(
@@ -242,7 +249,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        'Login as Teacher',
+                        tr(AppStrings.loginAsTeacher),
                         style: TxtStyle.titleLarge(
                           color: AppColors.primary,
                           fontSize: 18,

@@ -1,18 +1,19 @@
 import 'dart:ui';
+import '../../../utils/app_strings/app_strings.dart';
 
 enum AttendanceStatus { present, late, absent, excused }
 
 extension AttendanceStatusExtension on AttendanceStatus {
-  String get label {
+  String get stringKey {
     switch (this) {
       case AttendanceStatus.present:
-        return 'Present';
+        return AppStrings.present;
       case AttendanceStatus.late:
-        return 'Late';
+        return AppStrings.late;
       case AttendanceStatus.absent:
-        return 'Absent';
+        return AppStrings.absent;
       case AttendanceStatus.excused:
-        return 'Excused';
+        return AppStrings.excused;
     }
   }
 

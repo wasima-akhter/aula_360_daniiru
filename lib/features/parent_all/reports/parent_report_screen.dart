@@ -1,93 +1,101 @@
-﻿import '../../parent_all/helper/parent_home_helper.dart';
+import '../../parent_all/helper/parent_home_helper.dart';
 import '../../share/export/screen_export.dart';
 
-class ReportsScreen extends StatefulWidget {
+class ReportsScreen extends ConsumerStatefulWidget {
   const ReportsScreen({super.key});
 
   @override
-  State<ReportsScreen> createState() => _ReportsScreenState();
+  ConsumerState<ReportsScreen> createState() => _ReportsScreenState();
 }
 
-class _ReportsScreenState extends State<ReportsScreen> {
+class _ReportsScreenState extends ConsumerState<ReportsScreen> {
   int selectedStudent = 0;
   int selectedCategory = 0;
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // SAMPLE / MOCK DATA (Spanish Academy Context)
+  // ─────────────────────────────────────────────────────────────────────────────
 
   final List<StudentModel> students = const [
     StudentModel(
       name: 'Lucas Rivera',
-      grade: 'Grade 8 • Room 3B',
+      grade: '2º ESO • Aula 3B',
       initials: 'LR',
     ),
     StudentModel(
       name: 'Sophia Rivera',
-      grade: 'Grade 5 • Room 1A',
+      grade: '5º Primaria • Aula 1A',
       initials: 'SR',
     ),
   ];
 
-  final List<String> categories = const [
-    'All Reports',
-    'Mathematics',
-    'Sciences',
-    'English',
-  ];
-
   final List<ReportModel> reports = const [
     ReportModel(
-      dateLabel: 'TODAY — WEDNESDAY, OCT 24',
-      subject: 'English Literature',
-      teacher: 'Ms. Sarah Vance',
-      time: '08:30 AM – 09:50 AM',
-      category: 'English',
-      status: 'Present',
+      dateLabel: 'HOY — MIÉRCOLES, 24 OCT',
+      subject: 'Lengua Castellana y Literatura',
+      teacher: 'Dña. Sarah Vance',
+      time: '08:30 – 09:50',
+      category: 'Lengua',
+      status: 'Presente',
       note:
-          'Lucas showed excellent engagement today’s session and provided insightful critique on modern prose.',
+          'Lucas mostró excelente participación en la sesión de hoy y aportó reflexiones muy acertadas.',
       initials: 'SV',
     ),
     ReportModel(
-      dateLabel: 'YESTERDAY — TUESDAY, OCT 23',
-      subject: 'Advanced Mathematics',
-      teacher: 'Mr. Robert Hayes',
-      time: '10:30 AM – 12:00 PM',
-      category: 'Mathematics',
-      status: 'Present',
+      dateLabel: 'AYER — MARTES, 23 OCT',
+      subject: 'Matemáticas Avanzadas',
+      teacher: 'D. Roberto Hayes',
+      time: '10:30 – 12:00',
+      category: 'Matemáticas',
+      status: 'Presente',
       note:
-          'Completed polynomial factoring test with full mastery (98%). Homework assigned for Chapter 4.',
+          'Superó la prueba de factorización de polinomios con nota sobresaliente (98%). Tarea asignada del tema 4.',
       initials: 'RH',
     ),
     ReportModel(
-      dateLabel: 'YESTERDAY — TUESDAY, OCT 23',
-      subject: 'Physics Lab',
-      teacher: 'Dr. Angela Bennett',
-      time: '02:00 PM – 03:20 PM',
-      category: 'Sciences',
-      status: 'Present',
+      dateLabel: 'AYER — MARTES, 23 OCT',
+      subject: 'Física y Química',
+      teacher: 'Dra. Ángela Bennett',
+      time: '14:00 – 15:20',
+      category: 'Ciencias',
+      status: 'Presente',
       note:
-          'Successfully conducted optics refraction experiment. Lab notebook checked and signed. aygdsy aysdgu asgdyas dygasyd yuasdgyasdg asyd gyasg digasi das diuasg dias dias diasdiuasdiuasd uiadi ad',
+          'Realizó con éxito la práctica de óptica y refracción en el laboratorio. Cuaderno revisado y firmado.',
       initials: 'AB',
     ),
     ReportModel(
-      dateLabel: 'MONDAY, OCT 21',
-      subject: 'World History',
-      teacher: 'Mr. Marcus Brody',
-      time: '01:00 PM – 02:15 PM',
-      category: 'History',
-      status: 'Present',
+      dateLabel: 'LUNES, 21 OCT',
+      subject: 'Geografía e Historia',
+      teacher: 'D. Marcos Brody',
+      time: '13:00 – 14:15',
+      category: 'Historia',
+      status: 'Presente',
       note:
-          'Active participation in Industrial Revolution debate. Prepared well with assigned readings.',
+          'Participación activa en el debate. Excelente preparación con las lecturas asignadas.',
       initials: 'MB',
     ),
   ];
+
+  List<String> _getCategories() {
+    return [
+      ref.watchTr(AppStrings.allReports),
+      ref.watchTr(AppStrings.subjectMath),
+      ref.watchTr(AppStrings.subjectPhysicsChemistry),
+      ref.watchTr(AppStrings.subjectSpanishLanguage),
+    ];
+  }
 
   List<ReportModel> get filteredReports {
     if (selectedCategory == 0) {
       return reports;
     }
 
+    final categories = _getCategories();
     final category = categories[selectedCategory];
 
     return reports.where((report) {
-      return report.category.toLowerCase() == category.toLowerCase();
+      return report.category.toLowerCase().contains(category.toLowerCase()) ||
+          category.toLowerCase().contains(report.category.toLowerCase());
     }).toList();
   }
 
@@ -97,7 +105,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
-      appBar: const AulaAppBar(title: 'Reports', showBack: false),
+      appBar: AulaAppBar(title: ref.watchTr(AppStrings.navReports), showBack: false),
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
@@ -106,9 +114,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
             sliver: SliverList(
               delegate: SliverChildListDelegate([
                 _studentSection(),
-
                 SizedBox(height: 22.h),
-
                 _categoryTabs(),
               ]),
             ),
@@ -130,7 +136,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                     entry.key,
                     style: TxtStyle.titleLarge(
                       color: AppColors.secondaryText,
-                      fontSize: 14.sp,
+                      fontSize: 13.5.sp,
                       fontWeight: FontWeight.w800,
                       letterSpacing: .45,
                     ),
@@ -172,20 +178,20 @@ class _ReportsScreenState extends State<ReportsScreen> {
         Row(
           children: [
             Text(
-              'STUDENT',
+              ref.watchTr(AppStrings.studentInfoTitle).toUpperCase(),
               style: TxtStyle.titleLarge(
                 color: AppColors.secondaryText,
-                fontSize: 16.sp,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.w800,
                 letterSpacing: .5,
               ),
             ),
             const Spacer(),
             Text(
-              '${students.length} Enrolled',
+              '${students.length} ${ref.watchTr(AppStrings.active)}',
               style: TxtStyle.titleLarge(
                 color: AppColors.primary,
-                fontSize: 15.sp,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.w800,
               ),
             ),
@@ -263,7 +269,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                     overflow: TextOverflow.ellipsis,
                     style: TxtStyle.titleLarge(
                       color: AppColors.text,
-                      fontSize: 16.sp,
+                      fontSize: 15.sp,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -276,7 +282,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                     overflow: TextOverflow.ellipsis,
                     style: TxtStyle.titleLarge(
                       color: AppColors.secondaryText,
-                      fontSize: 14.sp,
+                      fontSize: 13.sp,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -303,6 +309,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
   // ===============================================================
 
   Widget _categoryTabs() {
+    final categories = _getCategories();
+
     return SizedBox(
       height: 43.h,
       child: SingleChildScrollView(
@@ -315,7 +323,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                 padding: EdgeInsets.only(
                   right: index == categories.length - 1 ? 0 : 8.w,
                 ),
-                child: _categoryTab(index),
+                child: _categoryTab(index, categories[index]),
               ),
           ],
         ),
@@ -323,7 +331,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
     );
   }
 
-  Widget _categoryTab(int index) {
+  Widget _categoryTab(int index, String title) {
     final selected = selectedCategory == index;
 
     return GestureDetector(
@@ -340,10 +348,10 @@ class _ReportsScreenState extends State<ReportsScreen> {
           borderRadius: BorderRadius.circular(10.r),
         ),
         child: Text(
-          categories[index],
+          title,
           style: TxtStyle.titleLarge(
             color: selected ? Colors.white : AppColors.secondaryText,
-            fontSize: 15.sp,
+            fontSize: 14.5.sp,
             fontWeight: FontWeight.w800,
           ),
         ),
@@ -365,9 +373,6 @@ class _ReportsScreenState extends State<ReportsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // -------------------------------------------------------
-            // SUBJECT + STATUS
-            // -------------------------------------------------------
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -381,40 +386,31 @@ class _ReportsScreenState extends State<ReportsScreen> {
                         overflow: TextOverflow.ellipsis,
                         style: TxtStyle.titleLarge(
                           color: AppColors.text,
-                          fontSize: 19.sp,
+                          fontSize: 18.sp,
                           fontWeight: FontWeight.w800,
                         ),
                       ),
-
                       SizedBox(height: 5.h),
-
                       Text(
                         report.teacher,
                         style: TxtStyle.titleLarge(
                           color: AppColors.secondaryText,
-                          fontSize: 16.sp,
+                          fontSize: 15.sp,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
                     ],
                   ),
                 ),
-
                 SizedBox(width: 10.w),
-
-                const StatusPill(text: 'Present'),
+                StatusPill(text: ref.watchTr(AppStrings.present)),
               ],
             ),
 
             SizedBox(height: 13.h),
-
             Divider(height: 1, color: AppColors.backgroundsLinesColor),
-
             SizedBox(height: 12.h),
 
-            // -------------------------------------------------------
-            // TIME
-            // -------------------------------------------------------
             Row(
               children: [
                 Icon(
@@ -427,7 +423,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                   report.time,
                   style: TxtStyle.titleLarge(
                     color: AppColors.secondaryText,
-                    fontSize: 15.sp,
+                    fontSize: 14.5.sp,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -436,9 +432,6 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
             SizedBox(height: 13.h),
 
-            // -------------------------------------------------------
-            // TEACHER NOTE
-            // -------------------------------------------------------
             Container(
               width: double.infinity,
               padding: EdgeInsets.fromLTRB(11.w, 10.h, 11.w, 11.h),
@@ -453,23 +446,21 @@ class _ReportsScreenState extends State<ReportsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Teacher Note',
+                    ref.watchTr(AppStrings.teacherNote),
                     style: TxtStyle.titleLarge(
                       color: AppColors.primary,
-                      fontSize: 15.sp,
+                      fontSize: 14.5.sp,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
-
                   SizedBox(height: 5.h),
-
                   Text(
                     '"${report.note}"',
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
                     style: TxtStyle.titleLarge(
                       color: AppColors.text,
-                      fontSize: 15.5.sp,
+                      fontSize: 14.5.sp,
                       height: 1.45,
                       fontWeight: FontWeight.w500,
                     ),
@@ -480,15 +471,10 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
             SizedBox(height: 13.h),
 
-            // -------------------------------------------------------
-            // FOOTER
-            // -------------------------------------------------------
             Row(
               children: [
                 UserAvatar(initials: report.initials, size: 27),
-
                 SizedBox(width: 7.w),
-
                 Expanded(
                   child: Text(
                     report.teacher,
@@ -496,23 +482,20 @@ class _ReportsScreenState extends State<ReportsScreen> {
                     overflow: TextOverflow.ellipsis,
                     style: TxtStyle.titleLarge(
                       color: AppColors.secondaryText,
-                      fontSize: 15.sp,
+                      fontSize: 14.5.sp,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
-
                 Text(
-                  'View Report',
+                  ref.watchTr(AppStrings.viewReport),
                   style: TxtStyle.titleLarge(
                     color: AppColors.primary,
-                    fontSize: 14.sp,
+                    fontSize: 13.5.sp,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
-
                 SizedBox(width: 2.w),
-
                 Icon(
                   Icons.arrow_forward_rounded,
                   color: AppColors.primary,
@@ -550,26 +533,22 @@ class _ReportsScreenState extends State<ReportsScreen> {
                 size: 28.sp,
               ),
             ),
-
             SizedBox(height: 14.h),
-
             Text(
-              'No Reports Found',
+              ref.watchTr(AppStrings.noReportsFound),
               style: TxtStyle.titleLarge(
                 color: AppColors.text,
-                fontSize: 19.sp,
+                fontSize: 18.sp,
                 fontWeight: FontWeight.w800,
               ),
             ),
-
             SizedBox(height: 6.h),
-
             Text(
-              'There are no reports available for this category.',
+              ref.watchTr(AppStrings.noReportsForCategory),
               textAlign: TextAlign.center,
               style: TxtStyle.titleLarge(
                 color: AppColors.secondaryText,
-                fontSize: 15.sp,
+                fontSize: 14.5.sp,
                 height: 1.4,
               ),
             ),
@@ -579,18 +558,12 @@ class _ReportsScreenState extends State<ReportsScreen> {
     );
   }
 
-  // ===============================================================
-  // GROUPING
-  // ===============================================================
-
   Map<String, List<ReportModel>> _groupReports(List<ReportModel> data) {
     final Map<String, List<ReportModel>> grouped = {};
-
     for (final report in data) {
       grouped.putIfAbsent(report.dateLabel, () => []);
       grouped[report.dateLabel]!.add(report);
     }
-
     return grouped;
   }
 }

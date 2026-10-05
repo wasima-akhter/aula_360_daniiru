@@ -1,30 +1,31 @@
-﻿import '../../share/export/screen_export.dart';
+import '../../share/export/screen_export.dart';
 import '../helper/parent_models.dart';
 import '../helper/parent_widgets.dart';
 
 /// ===============================================================
-/// 5. CHILD PROFILE
+/// 5. CHILD PROFILE / PERFIL DEL ALUMNO
 /// ===============================================================
 
-class ChildProfileScreen extends StatelessWidget {
+class ChildProfileScreen extends ConsumerWidget {
   const ChildProfileScreen({super.key});
   final child = sophiaChild;
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
-      appBar: simpleAppBar(context, 'Child Profile'),
+      appBar: simpleAppBar(context, ref.watchTr(AppStrings.childProfile)),
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           padding: EdgeInsets.fromLTRB(14.w, 14.h, 14.w, 30.h),
           child: Column(
             children: [
-              _studentHeader(context),
+              _studentHeader(context, ref),
               SizedBox(height: 18.h),
-              _sectionLabel('ACADEMIC ACTIVITY'),
+              _sectionLabel(ref.watchTr(AppStrings.academicActivity).toUpperCase()),
               SizedBox(height: 8.h),
-              _activityCard(context),
+              _activityCard(context, ref),
               SizedBox(height: 13.h),
               _messageCard(),
             ],
@@ -34,7 +35,7 @@ class ChildProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _studentHeader(BuildContext context) {
+  Widget _studentHeader(BuildContext context, WidgetRef ref) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(12.w),
@@ -68,7 +69,7 @@ class ChildProfileScreen extends StatelessWidget {
                       child.name,
                       style: TxtStyle.titleLarge(
                         color: AppColors.text,
-                        fontSize: 20.sp,
+                        fontSize: 19.sp,
                         fontWeight: FontWeight.w800,
                       ),
                     ),
@@ -77,7 +78,7 @@ class ChildProfileScreen extends StatelessWidget {
                       '${child.grade} • ${child.room} • ID: ${child.id}',
                       style: TxtStyle.titleLarge(
                         color: AppColors.subtitleTextColor,
-                        fontSize: 15.sp,
+                        fontSize: 14.sp,
                       ),
                     ),
                     SizedBox(height: 3.h),
@@ -85,15 +86,15 @@ class ChildProfileScreen extends StatelessWidget {
                       children: [
                         Icon(
                           Icons.school_outlined,
-                          size: 17.sp,
+                          size: 16.sp,
                           color: AppColors.primaryDark,
                         ),
                         SizedBox(width: 3.w),
                         Text(
-                          'St. Matthew Preparatory',
+                          'Academia Aula 360',
                           style: TxtStyle.titleLarge(
                             color: AppColors.subtitleTextColor,
-                            fontSize: 15.sp,
+                            fontSize: 14.sp,
                           ),
                         ),
                       ],
@@ -110,14 +111,14 @@ class ChildProfileScreen extends StatelessWidget {
             children: [
               Expanded(
                 child: _stat(
-                  'Attendance',
+                  ref.watchTr(AppStrings.attendance),
                   '${child.attendance.toStringAsFixed(1)}%',
                   AppColors.emeraldGreenColor,
                 ),
               ),
-              Expanded(child: _stat('Term GPA', '3.8', AppColors.primaryDark)),
+              Expanded(child: _stat('Nota Media', '8.8', AppColors.primaryDark)),
               Expanded(
-                child: _stat('Homework', '2 Due', AppColors.orangeColor),
+                child: _stat('Tareas', '2 Pend.', AppColors.orangeColor),
               ),
             ],
           ),
@@ -133,7 +134,7 @@ class ChildProfileScreen extends StatelessWidget {
           title,
           style: TxtStyle.titleLarge(
             color: AppColors.subtitleTextColor,
-            fontSize: 15.sp,
+            fontSize: 13.5.sp,
           ),
         ),
         SizedBox(height: 3.h),
@@ -141,7 +142,7 @@ class ChildProfileScreen extends StatelessWidget {
           value,
           style: TxtStyle.titleLarge(
             color: color,
-            fontSize: 18.sp,
+            fontSize: 16.sp,
             fontWeight: FontWeight.w800,
           ),
         ),
@@ -156,14 +157,14 @@ class ChildProfileScreen extends StatelessWidget {
         text,
         style: TxtStyle.titleLarge(
           color: AppColors.text,
-          fontSize: 17.sp,
+          fontSize: 15.sp,
           fontWeight: FontWeight.w800,
         ),
       ),
     );
   }
 
-  Widget _activityCard(BuildContext context) {
+  Widget _activityCard(BuildContext context, WidgetRef ref) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -175,17 +176,17 @@ class ChildProfileScreen extends StatelessWidget {
           _activityRow(
             icon: Icons.calendar_month_outlined,
             color: AppColors.primaryDark,
-            title: 'Schedule',
-            subtitle: "Today's Classes & Timetable",
+            title: ref.watchTr(AppStrings.navSchedule),
+            subtitle: "Clases de hoy y horario",
             onTap: () {},
           ),
           _divider(),
           _activityRow(
             icon: Icons.fact_check_outlined,
             color: AppColors.emeraldGreenColor,
-            title: 'Attendance',
+            title: ref.watchTr(AppStrings.attendance),
             subtitle:
-                '${child.attendance.toStringAsFixed(0)}% attendance record',
+                '${child.attendance.toStringAsFixed(0)}% registro de asistencia',
             onTap: () {
               context.push(RoutePath.attendance, extra: child);
             },
@@ -194,32 +195,32 @@ class ChildProfileScreen extends StatelessWidget {
           _activityRow(
             icon: Icons.description_outlined,
             color: AppColors.primaryDark,
-            title: 'Reports',
-            subtitle: 'Post-class reviews & summaries',
+            title: ref.watchTr(AppStrings.navReports),
+            subtitle: 'Resúmenes e informes de clase',
             onTap: () {},
           ),
           _divider(),
           _activityRow(
             icon: Icons.assignment_outlined,
             color: AppColors.orangeColor,
-            title: 'Homework',
-            subtitle: '2 Assignments pending',
+            title: 'Tareas',
+            subtitle: '2 ejercicios pendientes',
             onTap: () {},
           ),
           _divider(),
           _activityRow(
             icon: Icons.trending_up,
             color: AppColors.purpleAccentColor,
-            title: 'Academic Progress',
-            subtitle: 'Grades, scores & term evaluation',
+            title: 'Progreso Académico',
+            subtitle: 'Notas y evaluación trimestral',
             onTap: () {},
           ),
           _divider(),
           _activityRow(
             icon: Icons.school_outlined,
             color: AppColors.subtitleTextColor,
-            title: 'Teacher Information',
-            subtitle: 'Ms. Sarah Vance & faculty info',
+            title: 'Información del Profesor',
+            subtitle: 'Dña. Sarah Vance y equipo docente',
             onTap: () {},
           ),
         ],
@@ -258,7 +259,7 @@ class ChildProfileScreen extends StatelessWidget {
                     title,
                     style: TxtStyle.titleLarge(
                       color: AppColors.text,
-                      fontSize: 17.sp,
+                      fontSize: 15.5.sp,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -267,7 +268,7 @@ class ChildProfileScreen extends StatelessWidget {
                     subtitle,
                     style: TxtStyle.bodyMedium(
                       color: AppColors.subtitleTextColor,
-                      fontSize: 15.sp,
+                      fontSize: 13.5.sp,
                     ),
                   ),
                 ],
@@ -316,19 +317,19 @@ class ChildProfileScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Message Academy',
+                    'Mensaje a la Academia',
                     style: TxtStyle.titleLarge(
                       color: AppColors.text,
-                      fontSize: 17.sp,
+                      fontSize: 15.5.sp,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                   SizedBox(height: 2.h),
                   Text(
-                    'Contact homeroom or office',
+                    'Contactar con secretaría o tutor',
                     style: TxtStyle.bodyMedium(
                       color: AppColors.subtitleTextColor,
-                      fontSize: 15.sp,
+                      fontSize: 13.5.sp,
                     ),
                   ),
                 ],
@@ -341,10 +342,10 @@ class ChildProfileScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(6.r),
               ),
               child: Text(
-                'Contact',
+                'Contactar',
                 style: TxtStyle.titleLarge(
                   color: AppColors.primaryDark,
-                  fontSize: 15.sp,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w700,
                 ),
               ),

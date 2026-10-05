@@ -1,4 +1,4 @@
-﻿import '../../parent_all/helper/parent_home_helper.dart';
+import '../../parent_all/helper/parent_home_helper.dart';
 import '../../share/export/screen_export.dart';
 import '../helper/teacher_models.dart';
 
@@ -6,16 +6,16 @@ import '../helper/teacher_models.dart';
 /// 2. CLASS DETAILS SCREEN
 /// ===============================================================
 
-class TeacherClassDetailScreen extends StatelessWidget {
+class TeacherClassDetailScreen extends ConsumerWidget {
   TeacherClassDetailScreen({super.key});
 
   final academyClass = todayClasses.first;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: const AulaAppBar(title: 'Class Details', showBack: true),
+      appBar: AulaAppBar(title: ref.watchTr(AppStrings.classDetailsTitle), showBack: true),
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
@@ -25,11 +25,11 @@ class TeacherClassDetailScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _groupLabel(),
+                  _groupLabel(ref),
                   SizedBox(height: 7.h),
 
                   Text(
-                    'Advanced Mathematics\n(Calculus AB)',
+                    '${ref.watchTr(AppStrings.subjectMath)}\n(Cálculo y Álgebra)',
                     style: TxtStyle.titleLarge(
                       color: AppColors.text,
                       fontSize: 27.sp,
@@ -46,20 +46,23 @@ class TeacherClassDetailScreen extends StatelessWidget {
                   SizedBox(height: 17.h),
 
                   _detailsRow(
-                    label: 'Time &\nDate',
-                    value: 'Today, Oct 24 • 09:00 – 10:30 AM (90 mins)',
+                    label: ref.watchTr(AppStrings.dateTime),
+                    value: 'Hoy, 24 Oct • 09:00 – 10:30 (90 min)',
                   ),
 
                   _divider(),
 
                   _detailsRow(
-                    label: 'Physical Classroom',
-                    value: 'Room 204, Hall A (Building B)',
+                    label: ref.watchTr(AppStrings.classroom),
+                    value: '${ref.watchTr(AppStrings.aula2)}, Planta 1',
                   ),
 
                   _divider(),
 
-                  _detailsRow(label: 'Enrolled', value: '18 Students Enrolled'),
+                  _detailsRow(
+                    label: ref.watchTr(AppStrings.enrollment),
+                    value: '18 ${ref.watchTr(AppStrings.studentsCount)}',
+                  ),
 
                   SizedBox(height: 23.h),
 
@@ -68,7 +71,7 @@ class TeacherClassDetailScreen extends StatelessWidget {
                   SizedBox(height: 18.h),
 
                   Text(
-                    'PHYSICAL SESSION INFO',
+                    ref.watchTr(AppStrings.sessionInfoTitle),
                     style: TxtStyle.titleLarge(
                       color: AppColors.subtitleTextColor,
                       fontSize: 14.sp,
@@ -80,24 +83,23 @@ class TeacherClassDetailScreen extends StatelessWidget {
                   SizedBox(height: 10.h),
 
                   _infoCard(
-                    title: "Today's Topic",
-                    value: 'Chain Rule & Implicit Differentiation',
+                    title: ref.watchTr(AppStrings.todaysTopic),
+                    value: 'Regla de la Cadena y Derivación Implícita',
                   ),
 
                   SizedBox(height: 10.h),
 
-                  _roomStatusCard(),
+                  _roomStatusCard(ref),
 
                   SizedBox(height: 34.h),
 
                   SizedBox(
                     width: double.infinity,
-
                     child: AulaPrimaryButton(
                       onTap: () {
                         context.push(RoutePath.teacherAttendance);
                       },
-                      text: 'Start Class & Take Attendance',
+                      text: ref.watchTr(AppStrings.startClassAndAttendance),
                       trailing: Icon(
                         Icons.arrow_forward_rounded,
                         color: Colors.white,
@@ -114,9 +116,9 @@ class TeacherClassDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _groupLabel() {
+  Widget _groupLabel(WidgetRef ref) {
     return Text(
-      'GROUP A • GRADE 11',
+      'GRUPO A • ${ref.watchTr(AppStrings.bachillerato1).toUpperCase()}',
       style: TxtStyle.titleLarge(
         color: AppColors.tealTextColor,
         fontSize: 15.5.sp,
@@ -197,7 +199,7 @@ class TeacherClassDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _roomStatusCard() {
+  Widget _roomStatusCard(WidgetRef ref) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.fromLTRB(12.w, 12.h, 12.w, 13.h),
@@ -210,7 +212,7 @@ class TeacherClassDetailScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Physical Room Status',
+            ref.watchTr(AppStrings.roomStatusTitle),
             style: TxtStyle.titleLarge(
               color: AppColors.subtitleTextColor,
               fontSize: 14.sp,
@@ -230,7 +232,7 @@ class TeacherClassDetailScreen extends StatelessWidget {
               SizedBox(width: 7.w),
               Expanded(
                 child: Text(
-                  'Board & desks prepared • Turnstiles active',
+                  'Pizarra y puestos preparados • Acceso activo',
                   style: TxtStyle.titleLarge(
                     color: AppColors.text,
                     fontSize: 15.5.sp,

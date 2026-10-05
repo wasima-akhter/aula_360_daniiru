@@ -1,17 +1,17 @@
-﻿import '../../share/export/screen_export.dart';
+import '../../share/export/screen_export.dart';
 
 /// ===============================================================
-/// 1. TEACHER CHAT SCREEN
+/// 1. TEACHER CHAT SCREEN / CHAT CON PROFESOR
 /// ===============================================================
 
-class TeacherChatScreen extends StatefulWidget {
+class TeacherChatScreen extends ConsumerStatefulWidget {
   const TeacherChatScreen({super.key});
 
   @override
-  State<TeacherChatScreen> createState() => _TeacherChatScreenState();
+  ConsumerState<TeacherChatScreen> createState() => _TeacherChatScreenState();
 }
 
-class _TeacherChatScreenState extends State<TeacherChatScreen> {
+class _TeacherChatScreenState extends ConsumerState<TeacherChatScreen> {
   final TextEditingController _messageController = TextEditingController();
 
   @override
@@ -39,38 +39,37 @@ class _TeacherChatScreenState extends State<TeacherChatScreen> {
                     _dateDivider(),
                     SizedBox(height: 12.h),
 
-                    _messageLabel('Ms. Vance • Homeroom & Math'),
+                    _messageLabel('Dña. Vance • Tutora y Matemáticas'),
                     SizedBox(height: 6.h),
 
                     _incomingMessage(
-                      'Good afternoon Mr. and Mrs. Rivera.\n\n'
-                          'Lucas completed his mathematics term '
-                          'evaluation today with flying colors (94%). '
-                          'Please ensure he reviews Chapter 6 '
-                          'exercises this weekend.',
-                      '11:42 AM',
+                      'Buenas tardes Sres. Rivera.\n\n'
+                          'Lucas completó su evaluación de matemáticas '
+                          'de forma excelente (94%). '
+                          'Por favor asegúrense de que revise los ejercicios '
+                          'del Tema 6 este fin de semana.',
+                      '11:42',
                     ),
 
                     SizedBox(height: 12.h),
 
                     _outgoingMessage(
-                      'Thank you Ms. Vance! We noticed the '
-                          'updated assignment on his homework tab '
-                          'and we will work through Chapter 6 '
-                          'together tonight.',
-                      '12:05 PM',
+                      '¡Muchas gracias Dña. Vance! Hemos visto la '
+                          'tarea actualizada y repasaremos el Tema 6 '
+                          'juntos esta tarde.',
+                      '12:05',
                     ),
 
                     SizedBox(height: 12.h),
 
-                    _messageLabel('Ms. Vance'),
+                    _messageLabel('Dña. Vance'),
                     SizedBox(height: 6.h),
 
                     _incomingMessage(
-                      'Wonderful! Let me know if he needs any '
-                          'extra guidance during Monday’s office '
-                          'hours.',
-                      '12:18 PM',
+                      '¡Perfecto! Avísenme si necesita cualquier '
+                          'aclaración adicional durante la tutoría '
+                          'del lunes.',
+                      '12:18',
                     ),
                   ],
                 ),
@@ -99,7 +98,7 @@ class _TeacherChatScreenState extends State<TeacherChatScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'Ms. Sarah Vance',
+                'Dña. Sarah Vance',
                 style: TxtStyle.titleLarge(
                   color: AppColors.primaryDark,
                   fontSize: 17.sp,
@@ -119,10 +118,10 @@ class _TeacherChatScreenState extends State<TeacherChatScreen> {
           ),
           SizedBox(height: 2.h),
           Text(
-            'Lucas Rivera • Grade 8',
+            'Lucas Rivera • ${ref.watchTr(AppStrings.eso2)}',
             style: TxtStyle.titleLarge(
               color: AppColors.subtitleTextColor,
-              fontSize: 14.sp,
+              fontSize: 13.5.sp,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -159,7 +158,7 @@ class _TeacherChatScreenState extends State<TeacherChatScreen> {
                 ],
               ),
               child: Text(
-                'Homeroom',
+                ref.watchTr(AppStrings.chatTutoringTab),
                 style: TxtStyle.titleLarge(
                   color: AppColors.primaryDark,
                   fontSize: 14.sp,
@@ -171,7 +170,7 @@ class _TeacherChatScreenState extends State<TeacherChatScreen> {
           Expanded(
             child: Center(
               child: Text(
-                'Office',
+                ref.watchTr(AppStrings.chatAdministrationTab),
                 style: TxtStyle.titleLarge(
                   color: AppColors.subtitleTextColor,
                   fontSize: 14.sp,
@@ -194,10 +193,10 @@ class _TeacherChatScreenState extends State<TeacherChatScreen> {
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 10.w),
           child: Text(
-            'TODAY, OCT 24',
+            'HOY, 24 OCT',
             style: TxtStyle.titleLarge(
               color: AppColors.subtitleTextColor,
-              fontSize: 14.sp,
+              fontSize: 13.5.sp,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -216,7 +215,7 @@ class _TeacherChatScreenState extends State<TeacherChatScreen> {
         text,
         style: TxtStyle.titleLarge(
           color: AppColors.blueTextColor,
-          fontSize: 16.sp,
+          fontSize: 15.sp,
           fontWeight: FontWeight.w700,
         ),
       ),
@@ -244,7 +243,7 @@ class _TeacherChatScreenState extends State<TeacherChatScreen> {
             message,
             style: TxtStyle.titleLarge(
               color: AppColors.text,
-              fontSize: 15.5.sp,
+              fontSize: 14.5.sp,
               height: 1.5,
               fontWeight: FontWeight.w500,
             ),
@@ -255,7 +254,7 @@ class _TeacherChatScreenState extends State<TeacherChatScreen> {
           time,
           style: TxtStyle.titleLarge(
             color: AppColors.subtitleTextColor,
-            fontSize: 14.sp,
+            fontSize: 13.sp,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -283,7 +282,7 @@ class _TeacherChatScreenState extends State<TeacherChatScreen> {
             message,
             style: TxtStyle.titleLarge(
               color: Colors.white,
-              fontSize: 15.5.sp,
+              fontSize: 14.5.sp,
               height: 1.5,
               fontWeight: FontWeight.w500,
             ),
@@ -297,7 +296,7 @@ class _TeacherChatScreenState extends State<TeacherChatScreen> {
               time,
               style: TxtStyle.titleLarge(
                 color: AppColors.subtitleTextColor,
-                fontSize: 14.sp,
+                fontSize: 13.sp,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -335,13 +334,13 @@ class _TeacherChatScreenState extends State<TeacherChatScreen> {
                 controller: _messageController,
                 style: TxtStyle.titleLarge(
                   color: AppColors.text,
-                  fontSize: 13.5.sp,
+                  fontSize: 14.sp,
                 ),
                 decoration: InputDecoration(
-                  hintText: 'Write a message...',
+                  hintText: ref.watchTr(AppStrings.typeMessageHint),
                   hintStyle: TextStyle(
                     color: AppColors.hintTextColor,
-                    fontSize: 14.5.sp,
+                    fontSize: 14.sp,
                   ),
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.only(bottom: 9.h),

@@ -1,10 +1,11 @@
-﻿import '../../share/export/screen_export.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../share/export/screen_export.dart';
 
-class TeacherInformationScreen extends StatelessWidget {
+class TeacherInformationScreen extends ConsumerWidget {
   const TeacherInformationScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
       appBar: AppBar(
@@ -20,10 +21,10 @@ class TeacherInformationScreen extends StatelessWidget {
           ),
         ),
         title: Text(
-          'Teacher Information',
+          ref.watchTr(AppStrings.teacherInfoTitle),
           style: TxtStyle.titleLarge(
             color: const Color(0xFF082E78),
-            fontSize: 21.sp,
+            fontSize: 19.sp,
             fontWeight: FontWeight.w800,
           ),
         ),
@@ -38,18 +39,18 @@ class TeacherInformationScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _studentHeader(),
+            _studentHeader(ref),
             SizedBox(height: 14.h),
-            _teacherProfile(),
+            _teacherProfile(ref),
             SizedBox(height: 16.h),
-            _communicationCard(),
+            _communicationCard(ref),
           ],
         ),
       ),
     );
   }
 
-  Widget _studentHeader() {
+  Widget _studentHeader(WidgetRef ref) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 2.w),
       child: Row(
@@ -64,10 +65,10 @@ class TeacherInformationScreen extends StatelessWidget {
           ),
           _dot(),
           Text(
-            'Grade 8, Room 3B',
+            '${ref.watchTr(AppStrings.eso2)}, ${ref.watchTr(AppStrings.aula3)}',
             style: TxtStyle.titleLarge(
               color: const Color(0xFF667085),
-              fontSize: 14.5.sp,
+              fontSize: 14.sp,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -82,10 +83,10 @@ class TeacherInformationScreen extends StatelessWidget {
           ),
           SizedBox(width: 5.w),
           Text(
-            'Active Term',
+            ref.watchTr(AppStrings.active),
             style: TxtStyle.titleLarge(
               color: const Color(0xFF20A779),
-              fontSize: 14.5.sp,
+              fontSize: 14.sp,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -108,7 +109,7 @@ class TeacherInformationScreen extends StatelessWidget {
     );
   }
 
-  Widget _teacherProfile() {
+  Widget _teacherProfile(WidgetRef ref) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.fromLTRB(17.w, 17.h, 17.w, 17.h),
@@ -137,28 +138,28 @@ class TeacherInformationScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Mr. Robert Hayes',
+                      'D. Roberto Hayes',
                       style: TxtStyle.titleLarge(
                         color: const Color(0xFF20283B),
-                        fontSize: 20.sp,
+                        fontSize: 18.sp,
                         fontWeight: FontWeight.w800,
                       ),
                     ),
                     SizedBox(height: 3.h),
                     Text(
-                      'Head of Mathematics & STEM Faculty',
+                      ref.watchTr(AppStrings.mockTeacherDept),
                       style: TxtStyle.titleLarge(
                         color: const Color(0xFF082E78),
-                        fontSize: 15.5.sp,
+                        fontSize: 14.5.sp,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
                     SizedBox(height: 2.h),
                     Text(
-                      'St. Matthew Preparatory School •\n#FAC-4092',
+                      ref.watchTr(AppStrings.mockTeacherAcademyId),
                       style: TxtStyle.titleLarge(
                         color: const Color(0xFF687083),
-                        fontSize: 14.5.sp,
+                        fontSize: 13.5.sp,
                         height: 1.35,
                         fontWeight: FontWeight.w500,
                       ),
@@ -168,21 +169,15 @@ class TeacherInformationScreen extends StatelessWidget {
               ),
             ],
           ),
-
           SizedBox(height: 14.h),
-
-          Divider(height: 1, color: const Color(0xFFE2E5EB)),
-
+          const Divider(height: 1, color: Color(0xFFE2E5EB)),
           SizedBox(height: 12.h),
-
           Text(
-            'M.Ed. in Secondary Mathematics with 12 years\n'
-            'instructional leadership in calculus, algebra\n'
-            'foundations, and STEM development.',
+            ref.watchTr(AppStrings.mockTeacherBio),
             style: TxtStyle.titleLarge(
               color: const Color(0xFF626B7B),
-              fontSize: 15.5.sp,
-              height: 1.55,
+              fontSize: 14.5.sp,
+              height: 1.5,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -235,7 +230,7 @@ class TeacherInformationScreen extends StatelessWidget {
     );
   }
 
-  Widget _communicationCard() {
+  Widget _communicationCard(WidgetRef ref) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.fromLTRB(17.w, 18.h, 17.w, 18.h),
@@ -256,33 +251,27 @@ class TeacherInformationScreen extends StatelessWidget {
               ),
               SizedBox(width: 7.w),
               Text(
-                'Direct Communication',
+                ref.watchTr(AppStrings.directCommunication),
                 style: TxtStyle.titleLarge(
                   color: const Color(0xFF20283B),
-                  fontSize: 19.sp,
+                  fontSize: 17.sp,
                   fontWeight: FontWeight.w800,
                 ),
               ),
             ],
           ),
-
           SizedBox(height: 14.h),
-
-          _messageBox(),
-
+          _messageBox(ref),
           SizedBox(height: 12.h),
-
-          _officeHours(),
-
+          _officeHours(ref),
           SizedBox(height: 12.h),
-
           _emailBox(),
         ],
       ),
     );
   }
 
-  Widget _messageBox() {
+  Widget _messageBox(WidgetRef ref) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.fromLTRB(12.w, 11.h, 12.w, 12.h),
@@ -294,17 +283,17 @@ class TeacherInformationScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Portal Direct Message',
+            ref.watchTr(AppStrings.portalDirectMessage),
             style: TxtStyle.titleLarge(
               color: const Color(0xFF263149),
-              fontSize: 15.5.sp,
+              fontSize: 14.5.sp,
               fontWeight: FontWeight.w600,
             ),
           ),
           SizedBox(height: 9.h),
           _primaryButton(
             icon: Icons.send_outlined,
-            text: 'Send Message',
+            text: ref.watchTr(AppStrings.sendMessageBtn),
             onTap: () {
               AppRouter.navigatorKey.currentContext!.push(RoutePath.chatInbox);
             },
@@ -314,7 +303,7 @@ class TeacherInformationScreen extends StatelessWidget {
     );
   }
 
-  Widget _officeHours() {
+  Widget _officeHours(WidgetRef ref) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.fromLTRB(12.w, 11.h, 12.w, 12.h),
@@ -326,26 +315,25 @@ class TeacherInformationScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Office Hours & Consultation',
+            ref.watchTr(AppStrings.officeHoursTitle),
             style: TxtStyle.titleLarge(
               color: const Color(0xFF263149),
-              fontSize: 16.sp,
+              fontSize: 15.sp,
               fontWeight: FontWeight.w600,
             ),
           ),
           SizedBox(height: 4.h),
           Text(
-            'Wed & Thu • 3:30 – 4:30 PM (Room 3B / Virtual)',
+            ref.watchTr(AppStrings.mockOfficeHours),
             style: TxtStyle.titleLarge(
               color: const Color(0xFF6B7485),
-              fontSize: 14.8.sp,
+              fontSize: 14.sp,
               fontWeight: FontWeight.w500,
             ),
           ),
           SizedBox(height: 9.h),
           SizedBox(
             width: double.infinity,
-
             child: ElevatedButton.icon(
               onPressed: () {},
               icon: Icon(
@@ -354,10 +342,10 @@ class TeacherInformationScreen extends StatelessWidget {
                 color: const Color(0xFF082E78),
               ),
               label: Text(
-                'Request Meeting',
+                ref.watchTr(AppStrings.requestOfficeHourBtn),
                 style: TxtStyle.titleLarge(
                   color: const Color(0xFF082E78),
-                  fontSize: 15.5.sp,
+                  fontSize: 14.5.sp,
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -390,10 +378,10 @@ class TeacherInformationScreen extends StatelessWidget {
           Icon(Icons.mail_outline, color: const Color(0xFF667085), size: 17.sp),
           SizedBox(width: 9.w),
           Text(
-            'r.hayes@stmatthewprep.edu',
+            'r.hayes@aula360.edu.es',
             style: TxtStyle.titleLarge(
               color: const Color(0xFF123A82),
-              fontSize: 14.8.sp,
+              fontSize: 14.sp,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -417,7 +405,7 @@ class TeacherInformationScreen extends StatelessWidget {
           text,
           style: TxtStyle.titleLarge(
             color: Colors.white,
-            fontSize: 15.5.sp,
+            fontSize: 14.5.sp,
             fontWeight: FontWeight.w700,
           ),
         ),

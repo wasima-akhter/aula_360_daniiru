@@ -8,44 +8,47 @@ import '../../../share/widgets/text_field/custom_text_field.dart';
 import '../../../share/widgets/text_field/description_text_field.dart';
 import '../../abc.dart';
 
-class TeacherProfileSetupScreen extends StatefulWidget {
+class TeacherProfileSetupScreen extends ConsumerStatefulWidget {
   const TeacherProfileSetupScreen({super.key});
 
   @override
-  State<TeacherProfileSetupScreen> createState() =>
+  ConsumerState<TeacherProfileSetupScreen> createState() =>
       _TeacherProfileSetupScreenState();
 }
 
-class _TeacherProfileSetupScreenState extends State<TeacherProfileSetupScreen> {
-  final nameController = TextEditingController(text: 'Eleanor Vance');
-  final phoneController = TextEditingController(text: '+1 (555) 234-5678');
+class _TeacherProfileSetupScreenState
+    extends ConsumerState<TeacherProfileSetupScreen> {
+  final nameController = TextEditingController(text: 'Dr. Marcos Vance');
+  final phoneController = TextEditingController(text: '+34 612 987 654');
   final emailController = TextEditingController(
-    text: 'eleanor.vance@example.com',
+    text: 'marcos.vance@example.com',
   );
   final addressController = TextEditingController();
   final TextEditingController titleController = TextEditingController();
   final TextEditingController roomController = TextEditingController();
   final TextEditingController bioController = TextEditingController();
-  String? selectedCampus = 'Westwood Main Campus — Building B';
+
+  String? selectedCampus = 'Centro Principal — Aula 1';
   File? profileImage;
-  // Stateful subjects.
+
   final List<String> subjects = [
-    'Advanced Mathematics',
-    'Physics',
-    'Chemistry',
-  ]; // Available subjects for the picker.
-  final List<String> availableSubjects = [
-    'Advanced Mathematics',
-    'Physics',
-    'Chemistry',
-    'Biology',
-    'Computer Science',
-    'English Literature',
-    'History',
-    'Geography',
-    'Economics',
-    'Accounting',
+    'Matemáticas',
+    'Física y Química',
   ];
+
+  final List<String> availableSubjects = [
+    'Matemáticas',
+    'Física y Química',
+    'Lengua Castellana',
+    'Biología y Geología',
+    'Inglés',
+    'Historia',
+    'Geografía',
+    'Economía',
+    'Informática',
+    'Filosofía',
+  ];
+
   @override
   void dispose() {
     nameController.dispose();
@@ -58,7 +61,6 @@ class _TeacherProfileSetupScreenState extends State<TeacherProfileSetupScreen> {
     super.dispose();
   }
 
-  // --------------------------------------------------------------------------- // PROFILE IMAGE // ---------------------------------------------------------------------------
   Future<void> _pickProfileImage() async {
     final image = await AppImagePicker.pickFromGallery();
     if (image == null || !mounted) return;
@@ -91,7 +93,7 @@ class _TeacherProfileSetupScreenState extends State<TeacherProfileSetupScreen> {
                 ),
                 const SizedBox(height: 18),
                 Text(
-                  'Choose Profile Photo',
+                  ref.watchTr(AppStrings.chooseProfilePhoto),
                   style: context.titleMedium.copyWith(
                     fontWeight: FontWeight.w700,
                     color: AppColors.text,
@@ -99,7 +101,7 @@ class _TeacherProfileSetupScreenState extends State<TeacherProfileSetupScreen> {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  'Select an option to update your profile photo.',
+                  ref.watchTr(AppStrings.selectOptionProfilePhoto),
                   textAlign: TextAlign.center,
                   style: context.bodySmall.copyWith(
                     color: AppColors.secondaryText,
@@ -108,7 +110,7 @@ class _TeacherProfileSetupScreenState extends State<TeacherProfileSetupScreen> {
                 const SizedBox(height: 16),
                 ImagePickerOption(
                   icon: Icons.photo_library_outlined,
-                  title: 'Choose from Gallery',
+                  title: ref.watchTr(AppStrings.chooseFromGallery),
                   onTap: () {
                     Navigator.pop(context, ImagePickerSource.gallery);
                   },
@@ -116,7 +118,7 @@ class _TeacherProfileSetupScreenState extends State<TeacherProfileSetupScreen> {
                 const SizedBox(height: 10),
                 ImagePickerOption(
                   icon: Icons.camera_alt_outlined,
-                  title: 'Take a Photo',
+                  title: ref.watchTr(AppStrings.takeAPhoto),
                   onTap: () {
                     Navigator.pop(context, ImagePickerSource.camera);
                   },
@@ -136,7 +138,7 @@ class _TeacherProfileSetupScreenState extends State<TeacherProfileSetupScreen> {
     setState(() {
       profileImage = image;
     });
-  } // --------------------------------------------------------------------------- // SUBJECTS // ---------------------------------------------------------------------------
+  }
 
   Future<void> _addSubject() async {
     final remainingSubjects = availableSubjects
@@ -144,8 +146,8 @@ class _TeacherProfileSetupScreenState extends State<TeacherProfileSetupScreen> {
         .toList();
     if (remainingSubjects.isEmpty) {
       ApiSnackbar.show(
-        'All available subjects have already been added.',
-        title: 'No Subjects Available',
+        'Todas las asignaturas disponibles ya han sido añadidas.',
+        title: 'Sin Asignaturas Disponibles',
         type: SnackbarType.info,
       );
       return;
@@ -173,7 +175,7 @@ class _TeacherProfileSetupScreenState extends State<TeacherProfileSetupScreen> {
                 ),
                 const SizedBox(height: 18),
                 Text(
-                  'Add Subject',
+                  ref.watchTr(AppStrings.addSubjectTitle),
                   style: context.titleMedium.copyWith(
                     fontWeight: FontWeight.w700,
                     color: AppColors.text,
@@ -181,7 +183,7 @@ class _TeacherProfileSetupScreenState extends State<TeacherProfileSetupScreen> {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  'Select a subject or discipline.',
+                  ref.watchTr(AppStrings.selectSubjectSubtitle),
                   textAlign: TextAlign.center,
                   style: context.bodySmall.copyWith(
                     color: AppColors.secondaryText,
@@ -260,103 +262,70 @@ class _TeacherProfileSetupScreenState extends State<TeacherProfileSetupScreen> {
     });
   }
 
-  void _removeSubject(String subject) {
-    setState(() {
-      subjects.remove(subject);
-    });
-  }
-
-  // --------------------------------------------------------------------------- // VALIDATION // ---------------------------------------------------------------------------
   bool validateForm() {
     if (profileImage == null) {
       ApiSnackbar.show(
-        'Please add a profile photo to continue.',
-        title: 'Profile Photo Required',
+        'Por favor, añade una foto de perfil para continuar.',
+        title: 'Foto Requerida',
         type: SnackbarType.error,
       );
       return false;
     }
     if (!AulaValidation.required(
       value: nameController.text,
-      fieldName: 'Full Legal Name',
+      fieldName: ref.watchTr(AppStrings.fullLegalName),
     )) {
-      ApiSnackbar.show(
-        'Please enter your full legal name.',
-        title: 'Full Name Required',
-        type: SnackbarType.error,
-      );
       return false;
     }
     if (!AulaValidation.required(
       value: titleController.text,
-      fieldName: 'Title & Department',
+      fieldName: ref.watchTr(AppStrings.titleDepartment),
     )) {
-      ApiSnackbar.show(
-        'Please enter your title and department.',
-        title: 'Title & Department Required',
-        type: SnackbarType.error,
-      );
       return false;
     }
     if (subjects.isEmpty) {
       ApiSnackbar.show(
-        'Please add at least one subject or discipline.',
-        title: 'Subject Required',
+        'Por favor, añade al menos una asignatura.',
+        title: 'Asignatura Requerida',
         type: SnackbarType.error,
       );
       return false;
     }
     if (selectedCampus == null || selectedCampus!.trim().isEmpty) {
       ApiSnackbar.show(
-        'Please select your assigned campus and building.',
-        title: 'Campus Required',
+        'Por favor, selecciona tu centro o aula asignada.',
+        title: 'Centro Requerido',
         type: SnackbarType.error,
       );
       return false;
     }
     if (!AulaValidation.required(
       value: roomController.text,
-      fieldName: 'Room / Hall',
+      fieldName: ref.watchTr(AppStrings.roomHall),
     )) {
-      ApiSnackbar.show(
-        'Please enter your room or hall.',
-        title: 'Room / Hall Required',
-        type: SnackbarType.error,
-      );
       return false;
     }
     if (!AulaValidation.phone(phoneController.text)) {
-      ApiSnackbar.show(
-        'Please enter a valid office contact number.',
-        title: 'Invalid Office Contact',
-        type: SnackbarType.error,
-      );
       return false;
-    } // Bio is intentionally optional.
+    }
     return true;
-  } // --------------------------------------------------------------------------- // COMPLETE PROFILE // ---------------------------------------------------------------------------
+  }
 
   void _completeProfile() {
     if (!validateForm()) return;
 
-    // Profile API will be connected here. // // Example payload later:
-    // // { // "name": nameController.text.trim(), // "title": titleController.text.trim(), // "subjects": subjects, // "campus": selectedCampus,
-
-    // "room": roomController.text.trim(), // "officeContact": phoneController.text.trim(), // "bio": bioController.text.trim(), // "profileImage": profileImage,
-
-    // }
     ApiSnackbar.show(
-      'Your teacher profile has been completed successfully.',
-      title: 'Profile Completed',
+      ref.watchTr(AppStrings.profileCompletedSuccess),
+      title: ref.watchTr(AppStrings.profileCompletedTitle),
       type: SnackbarType.success,
     );
     context.go(RoutePath.navigationPages);
   }
 
-  //
-
   @override
   Widget build(BuildContext context) {
+    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -371,7 +340,7 @@ class _TeacherProfileSetupScreenState extends State<TeacherProfileSetupScreen> {
               child: Column(
                 children: [
                   Text(
-                    "Teacher Profile Setup".toUpperCase(),
+                    ref.watchTr(AppStrings.teacherProfileSetupTitle).toUpperCase(),
                     style: TxtStyle.titleLarge(
                       fontWeight: FontWeight.w600,
                       color: AppColors.primary,
@@ -379,7 +348,7 @@ class _TeacherProfileSetupScreenState extends State<TeacherProfileSetupScreen> {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    'PARENT PORTAL',
+                    'PORTAL DOCENTE',
                     style: TxtStyle.titleLarge(
                       color: AppColors.secondaryText,
                       fontSize: 14.sp,
@@ -390,16 +359,15 @@ class _TeacherProfileSetupScreenState extends State<TeacherProfileSetupScreen> {
                 ],
               ),
             ),
-
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(22, 20, 22, 25),
+                padding: EdgeInsets.fromLTRB(22, 20, 22, 25 + bottomInset),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Center(
                       child: Text(
-                        'Faculty profile',
+                        ref.watchTr(AppStrings.facultyProfileTitle),
                         style: TxtStyle.titleLarge(
                           color: AppColors.text,
                           fontSize: 23.5,
@@ -407,12 +375,10 @@ class _TeacherProfileSetupScreenState extends State<TeacherProfileSetupScreen> {
                         ),
                       ),
                     ),
-
                     const SizedBox(height: 6),
-
                     Center(
                       child: Text(
-                        'Set up your instructor credentials and campus\nworkspace assignments.',
+                        ref.watchTr(AppStrings.facultyProfileDesc),
                         textAlign: TextAlign.center,
                         style: TxtStyle.titleLarge(
                           color: AppColors.secondaryText,
@@ -420,12 +386,7 @@ class _TeacherProfileSetupScreenState extends State<TeacherProfileSetupScreen> {
                         ),
                       ),
                     ),
-
                     const SizedBox(height: 20),
-
-                    // ---------------------------------------------------------
-                    // PROFILE IMAGE
-                    // ---------------------------------------------------------
                     Center(
                       child: Stack(
                         children: [
@@ -478,45 +439,31 @@ class _TeacherProfileSetupScreenState extends State<TeacherProfileSetupScreen> {
                         ],
                       ),
                     ),
-
                     const SizedBox(height: 25),
-
-                    // =========================================================
-                    // ACADEMIC IDENTITY
-                    // =========================================================
-                    _sectionTitle('ACADEMIC IDENTITY'),
-
+                    _sectionTitle(ref.watchTr(AppStrings.academicIdentity)),
                     const SizedBox(height: 12),
-
                     AppTextField(
                       controller: nameController,
-                      label: 'Full Legal Name',
-                      hint: 'Dr. Marcus Vance',
+                      label: ref.watchTr(AppStrings.fullLegalName),
+                      hint: 'Dr. Marcos Vance',
                       icon: Icons.badge_outlined,
                     ),
-
                     const SizedBox(height: 15),
-
                     AppTextField(
                       controller: titleController,
-                      label: 'Title & Department',
-                      hint: 'Senior Faculty • STEM Division',
+                      label: ref.watchTr(AppStrings.titleDepartment),
+                      hint: ref.watchTr(AppStrings.titleDepartmentHint),
                       icon: Icons.school_outlined,
                     ),
-
                     const SizedBox(height: 15),
-
-                    // SUBJECTS
                     Text(
-                      'Subjects & Disciplines',
+                      ref.watchTr(AppStrings.subjectsDisciplines),
                       style: context.titleMedium.copyWith(
                         color: AppColors.text,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-
                     const SizedBox(height: 8),
-
                     Wrap(
                       spacing: 8,
                       runSpacing: 8,
@@ -525,13 +472,13 @@ class _TeacherProfileSetupScreenState extends State<TeacherProfileSetupScreen> {
                         GestureDetector(
                           onTap: _addSubject,
                           child: Padding(
-                            padding: EdgeInsets.only(
+                            padding: const EdgeInsets.only(
                               left: 2,
                               top: 6,
                               bottom: 4,
                             ),
                             child: Text(
-                              '+ Add Subject',
+                              ref.watchTr(AppStrings.addSubject),
                               style: TxtStyle.titleLarge(
                                 color: AppColors.primary,
                                 fontWeight: FontWeight.w600,
@@ -542,65 +489,45 @@ class _TeacherProfileSetupScreenState extends State<TeacherProfileSetupScreen> {
                       ],
                     ),
                     const SizedBox(height: 27),
-
-                    // =========================================================
-                    // CAMPUS & OFFICE DETAILS
-                    // =========================================================
-                    _sectionTitle('CAMPUS & OFFICE DETAILS'),
-
+                    _sectionTitle(ref.watchTr(AppStrings.campusOfficeDetails)),
                     const SizedBox(height: 12),
-
-                    // CAMPUS
-                    _fieldLabel('Assigned Campus & Building'),
-
+                    _fieldLabel(ref.watchTr(AppStrings.assignedCampusBuilding)),
                     const SizedBox(height: 7),
-
                     CustomDropdownField<String>(
-                      hintText: 'Select relationship',
-
+                      hintText: ref.watchTr(AppStrings.assignedCampusBuilding),
                       items: const [
-                        'Westwood Main Campus — Building B',
-                        'Westwood Main Campus — Building A',
+                        'Centro Principal — Aula 1',
+                        'Centro Principal — Aula 2',
+                        'Centro Anexo — Laboratorio 1',
                       ],
                       value: selectedCampus,
-
                       onChanged: (value) {
                         if (value == null) return;
-
                         setState(() {
                           selectedCampus = value;
                         });
                       },
                     ),
-
                     const SizedBox(height: 15),
-
                     AppTextField(
                       controller: roomController,
-                      label: 'Room / Hall',
-                      hint: 'Room 204 / Hall A',
+                      label: ref.watchTr(AppStrings.roomHall),
+                      hint: ref.watchTr(AppStrings.roomHallHint),
                       icon: Icons.meeting_room_outlined,
                     ),
-
                     const SizedBox(height: 15),
-
                     AppTextField(
                       controller: phoneController,
-                      label: 'Office Contact',
-                      hint: '+1 (555) 019-2834',
+                      label: ref.watchTr(AppStrings.officeContact),
+                      hint: '+34 912 345 678',
                       icon: Icons.phone_outlined,
                     ),
-
                     const SizedBox(height: 15),
-
-                    // =========================================================
-                    // BIO
-                    // =========================================================
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          'Faculty Bio & Academic Focus',
+                          ref.watchTr(AppStrings.facultyBioFocus),
                           style: context.titleMedium.copyWith(
                             color: AppColors.text,
                             fontWeight: FontWeight.w600,
@@ -608,7 +535,7 @@ class _TeacherProfileSetupScreenState extends State<TeacherProfileSetupScreen> {
                         ),
                         const Spacer(),
                         Text(
-                          'Optional',
+                          ref.watchTr(AppStrings.optional),
                           style: TxtStyle.titleLarge(
                             color: AppColors.secondaryText,
                             fontSize: 15.sp,
@@ -616,29 +543,21 @@ class _TeacherProfileSetupScreenState extends State<TeacherProfileSetupScreen> {
                         ),
                       ],
                     ),
-
                     const SizedBox(height: 7),
-
                     DescriptionTextField(
                       controller: bioController,
                       maxLines: 4,
-                      hintText:
-                          'Dedicated educator with 8+ years specializing in '
-                          'preparatory calculus and physical science.',
+                      hintText: ref.watchTr(AppStrings.facultyBioHint),
                     ),
-
                     const SizedBox(height: 22),
-
                     AulaPrimaryButton(
-                      text: 'Complete Setup & Go to Dashboard',
+                      text: ref.watchTr(AppStrings.btnCompleteTeacherSetup),
                       onTap: _completeProfile,
                     ),
-
                     const SizedBox(height: 8),
-
                     Center(
                       child: Text(
-                        'Navigates to Faculty Dashboard',
+                        ref.watchTr(AppStrings.navigatesToFacultyDashboard),
                         style: TxtStyle.titleLarge(
                           color: AppColors.secondaryText,
                           fontSize: 15.sp,
@@ -692,7 +611,6 @@ class _TeacherProfileSetupScreenState extends State<TeacherProfileSetupScreen> {
             subject,
             style: const TextStyle(
               color: AppColors.text,
-              // fontSize: 10,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -713,6 +631,4 @@ class _TeacherProfileSetupScreenState extends State<TeacherProfileSetupScreen> {
       ),
     );
   }
-
-  //
 }

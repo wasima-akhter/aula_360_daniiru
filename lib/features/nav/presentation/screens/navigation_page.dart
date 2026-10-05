@@ -6,7 +6,6 @@ import 'package:aula360/features/teacher_all/classes/teacher_classes_screen.dart
 import 'package:aula360/features/teacher_all/home/teacher_home_screen.dart';
 import 'package:aula360/features/teacher_all/reports/teacher_reports_screen.dart';
 import 'package:aula360/features/teacher_all/students/teacher_students_screen.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../utils/enum/app_enum.dart';
 import '../../../parent_all/profile/parent_profile_screen.dart';
@@ -130,15 +129,21 @@ class _NavigationPageState extends ConsumerState<NavigationPage> {
   List<String> _getLabels(UserRole role) {
     switch (role) {
       case UserRole.teacher:
-        return const ['Home', 'Classes', 'Students', 'Reports', 'Profile'];
+        return [
+          ref.watchTr(AppStrings.navHome),
+          ref.watchTr(AppStrings.navClasses),
+          ref.watchTr(AppStrings.navStudents),
+          ref.watchTr(AppStrings.navReports),
+          ref.watchTr(AppStrings.navProfile),
+        ];
 
       case UserRole.parent:
-        return const [
-          'Home',
-          'Schedule',
-          'Reports',
-          'Notifications',
-          'Profile',
+        return [
+          ref.watchTr(AppStrings.navHome),
+          ref.watchTr(AppStrings.navSchedule),
+          ref.watchTr(AppStrings.navReports),
+          ref.watchTr(AppStrings.navNotifications),
+          ref.watchTr(AppStrings.navProfile),
         ];
     }
   }

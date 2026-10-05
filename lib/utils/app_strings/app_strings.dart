@@ -1,1137 +1,627 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// AppStrings — all translation key constants for Aula 360.
+// Usage: AppStrings.welcomeBack  →  'welcome_back'
+// Then pass to tr() helper:  ref.watchTr(AppStrings.welcomeBack)
+// ─────────────────────────────────────────────────────────────────────────────
+
 class AppStrings {
-  // App
-  static const String appName = "app_name";
-
-  // Choose Language
-  static const String chooseYourLanguage = "choose_your_language";
-  static const String pickLanguageSubtitle = "pick_language_subtitle";
-  static const String selectLanguage = "select_language";
-  static const String continueText = "continue_text";
-
-  // choose role
-  static const shopRoleDescription =
-      'Discover products, brands and things you’ll love.';
-
-  static const influencerRoleDescription =
-      'Create content, collaborate with brands and grow your audience.';
-
-  static const merchandiserRoleDescription =
-      'Showcase your products and connect with new customers.';
-
-  static const customerRoleDescription =
-      'Discover products, brands and things you’ll love.';
-
-  // Onboarding
-  static const String onboardingOne = "onboarding_one";
-  static const String onboardingSubtitleOne = "onboarding_subtitle_one";
-  static const String onboardingTwo = "onboarding_two";
-  static const String onboardingSubtitleTwo = "onboarding_subtitle_two";
-  static const String onboardingThree = "onboarding_three";
-  static const String onboardingSubtitleThree = "onboarding_subtitle_three";
-  static const String skip = "skip";
-  static const String next = "next";
-  static const String getStarted = "get_started";
-
-  // Welcome Screen
-  static const String welcomeToSomSpot = "welcome_to_somspot";
-  static const String welcomeSubtitle = "welcome_subtitle";
-  static const String logIn = "log_in";
-  static const String createAnAccount = "create_an_account";
-  static const String byContinuing = "by_continuing";
-  static const String termsOfService = "terms_of_service";
-  static const String and = "and";
-  static const String privacyPolicy = "privacy_policy";
-
-  // Auth Screen
-  static const String welcomeBack = "welcome_back";
-  static const String loginToAccount = "login_to_account";
-  static const String emailOrPhone = "email_or_phone";
-  static const String enterEmailOrPhone = "enter_email_or_phone";
-  static const String password = "password";
-  static const String forgotPassword = "forgot_password";
-  static const String dontHaveAccount = "dont_have_account";
-  static const String signUp = "sign_up";
-  static const String createAccount = "create_account";
-  static const String joinSomSpot = "join_somspot";
-  static const String selectRole = "select_role";
-  static const String customer = "customer";
-  static const String merchant = "merchant";
-  static const String influencer = "influencer";
-
-  //
-
-  static const String monetizeYourAudience = "monetize_your_audience";
-  static const String createAndShare = "create_and_share";
-  static const String trackEarnings = "track_earnings";
-  static const String partnerDescription = "partner_description";
-  static const String campaignsDescription = "campaigns_description";
-  static const String commissionsDescription = "commissions_description";
-  static const String startEarning = "start_earning";
-
-  //
-  static const String fullName = "full_name";
-  static const String ahmedMohamed = "ahmed_mohamed";
-  static const String phoneNumber = "phone_number";
-  static const String examplePhone = "example_phone";
-  static const String email = "email";
-  static const String exampleMail = "example_mail";
-  static const String confirmPassword = "confirm_password";
-  static const String agreeToSomspot = "agree_to_somspot";
-  static const String alreadyHaveAccount = "already_have_account";
-
-  // Additional Auth Strings
-  // AppStrings
-
-  static const verificationCodeResent = 'verification_code_resent';
-
-  static const registrationCompletedSuccessfully =
-      'registration_completed_successfully';
-
-  static const loginFailed = 'login_failed';
-  //
-  static const enterValidName = 'enter_valid_name';
-
-  static const enterValidPhone = 'enter_valid_phone';
-
-  static const enterValidPassword = 'enter_valid_password';
-
-  static const enterValidEmail = 'enter_valid_email';
-  //
-  static const phoneRequired = 'phone_required';
-
-  static const nameRequired = 'name_required';
-
-  static const invalidName = 'invalid_name';
-
-  static const invalidPhone = 'invalid_phone';
-
-  static const invalidEmail = 'invalid_email';
-
-  static const invalidPassword = 'invalid_password';
-
-  static const passwordMismatch = 'password_mismatch';
-
-  static const termsRequired = 'terms_required';
-
-  static const connectSocials = 'connect_socials';
-  static const linkAccountsToVerifyReach = 'link_accounts_to_verify_reach';
-  static const uploadPhoto = 'upload_photo';
-  static const addProfilePhoto = 'add_profile_photo';
-  static const enterYourFullName = 'enter_your_full_name';
-  static const selectLocation = 'select_location';
-  static const finishAndSetup = 'finish_and_setup';
-
-  //
-  static const String verifyYourPhone = "verify_your_phone";
-  static const String verifyYourEmail = "verify_your_email";
-  static const String weSentCode = "we_sent_code";
-  static const String enterVerificationCode = "enter_verification_code";
-  static const String resendCodeIn = "resend_code_in";
-  static const String verifyAndContinue = "verify_and_continue";
-  static const String forgotPasswordTitle = "forgot_password_title";
-  static const String forgotPasswordSubtitle = "forgot_password_subtitle";
-  static const String sendVerificationCode = "send_verification_code";
-  static const String rememberedPassword = "remembered_password";
-  static const String createNewPassword = "create_new_password";
-  static const String createNewPasswordSubtitle =
-      "create_new_password_subtitle";
-  static const String savePassword = "save_password";
-  static const String completeYourProfile = "complete_your_profile";
-  static const String completeProfileSubtitle = "complete_profile_subtitle";
-
-  static const String finishAndExplore = "finish_and_explore";
-
-  static const whatBringsYouToSomSpot = 'what_brings_you_to_som_spot';
-
-  static const chooseTheExperienceThatIsRightForYou =
-      'choose_the_experience_that_is_right_for_you';
-
-  static const discoverConnectSave = 'discover_connect_save';
-
-  // Home Screen
-  static const String searchPlaceholder = "search_placeholder";
-  static const String categories = "categories";
-  static const String seeAll = "see_all";
-  static const String todaysBestDeals = "todays_best_deals";
-  static const String topDeals = "top_deals";
-  static const String claim = "claim";
-  static const String nearbyYou = "nearby_you";
-  static const String restaurants = "restaurants";
-  static const String grocery = "grocery";
-  static const String pharmacy = "pharmacy";
-  static const String openNow = "open_now";
-  static const String closed = "closed";
-  static const String supermarket = "supermarket";
-  static const String cafes = "cafes";
-  static const String electronics = "electronics";
-  static const String home = "home";
-  static const String search = "search";
-  static const String saved = "saved";
-  static const String alerts = "alerts";
-  static const String profile = "profile";
-
-  // New Screens Static Strings
-
-  static const String invalidStartDate = 'invalid_start_date';
-  static const String invalidEndDate = 'invalid_end_date';
-  static const String endDateMustBeAfterStartDate =
-      'end_date_must_be_after_start_date';
-  static const String searchBusinessesDeals = "search_businesses_deals";
-  static const String recentSearches = "recent_searches";
-  static const String clear = "clear";
-  static const String trendingNow = "trending_now";
-  static const String businesses = "businesses";
-  static const String offers = "offers";
-  static const String claimed = "claimed";
-  static const String notifications = "notifications";
-  static const String markAllRead = "mark_all_read";
-  static const String claims = "claims";
-  static const String reviews = "reviews";
-  static const String account = "account";
-  static const String savedItems = "saved_items";
-  static const String myClaims = "my_claims";
-  static const String preferences = "preferences";
-  static const String language = "language";
-  static const String changePassword = "change_password";
-  static const String support = "support";
-  static const String helpSupport = "help_support";
-  static const String aboutSomSpot = "about_som_spot";
-  static const String logOut = "log_out";
-
-  // Additional keys for Edit Profile, Claims, Support, About
-  static const String saveChanges = "save_changes";
-  static const String active = "active";
-  static const String completed = "completed";
-
-  static const String expired = "expired";
-  static const String view = "view";
-  static const String offerClaimed = "offer_claimed";
-  static const String claimCode = "claim_code";
-  static const String done = "done";
-  static const String sendUsMessage = "send_us_message";
-  static const String subject = "subject";
-  static const String messageDesc = "message_desc";
-  static const String submitMessage = "submit_message";
-  static const String faq = "faq";
-  static const String termsConditions = "terms_conditions";
-  static const String rateOurApp = "rate_our_app";
-  static const String madeWithLove = "made_with_love";
-
-  // Change Password (Static UI labels)
-  static const String currentPassword = "current_password";
-  static const String newPasswordLabel = "new_password_label";
-  static const String passwordChangedSuccessfully =
-      "password_changed_successfully";
-
-  // About SomSpot (Static UI labels)
-  static const String navigatingToPrivacy = "navigating_to_privacy";
-  static const String navigatingToTerms = "navigating_to_terms";
-  static const String thankYouRating = "thank_you_rating";
-
-  // Help & Support (Static UI labels)
-  static const String subjectRequired = "subject_required";
-  static const String messageEmpty = "message_empty";
-  static const String messageSubmitted = "message_submitted";
-  static const String enterSubject = "enter_subject";
-  static const String describeIssue = "describe_issue";
-
-  // Merchant & Offer Details Screens
-  static const String offerDetails = "offer_details";
-  static const String about = "about";
-  static const String gallery = "gallery";
-  static const String writeReview = "write_review";
-  static const String writeAReview = "write_a_review";
-  static const String yourName = "your_name";
-  static const String tellUsExperience = "tell_us_experience";
-  static const String submitReview = "submit_review";
-  static const String call = "call";
-  static const String directions = "directions";
-  static const String offerClaimedTitle = "offer_claimed_title";
-  static const String claimOfferNow = "claim_offer_now";
-  static const String termsText = "terms_text";
-  static const String offerClaimedSuccess = "offer_claimed_success";
-  static const String shareLinkCopied = "share_link_copied";
-  static const String savedToBookmarks = "saved_to_bookmarks";
-  static const String openingWhatsApp = "opening_whatsapp";
-  static const String calling = "calling";
-  static const String openingDirections = "opening_directions";
-  static const String noActiveOffers = "no_active_offers";
-  static const String reviewsLabel = "reviews_label";
-  static const String helpful = "helpful";
-  static const String enterReviewContent = "enter_review_content";
-  static const String reviewAdded = "review_added";
-
-  // Dialogs
-  static const String areYouSureLogout = "are_you_sure_logout";
-  static const String logoutWarning = "logout_warning";
-  static const String yes = "yes";
-  static const String cancel = "cancel";
-
-  // Completed Profile (Merchant Setup)
-  static const String whereAreYouLocated = "where_are_you_located";
-  static const String locationSubtitle = "location_subtitle";
-  static const String streetAddress = "street_address";
-  static const String enterStreetAddress = "enter_street_address";
-  static const String city = "city";
-  static const String enterCity = "enter_city";
-  static const String stepOf = "step_of";
-  static const String whenAreYouOpen = "when_are_you_open";
-  static const String hoursSubtitle = "hours_subtitle";
-  static const String addYourBranding = "add_your_branding";
-  static const String brandingSubtitle = "branding_subtitle";
-  static const String coverPhoto = "cover_photo";
-  static const String uploadCoverPhoto = "upload_cover_photo";
-  static const String logo = "logo";
-  static const String uploadLogo = "upload_logo";
-  static const String tapToUpload = "tap_to_upload";
-  static const String changePhoto = "change_photo";
-  static const String howCanCustomersReachYou = "how_can_customers_reach_you";
-  static const String contactSubtitle = "contact_subtitle";
-  static const String businessPhone = "business_phone";
-  static const String enterBusinessPhone = "enter_business_phone";
-  static const String whatsappNumber = "whatsapp_number";
-  static const String enterWhatsappNumber = "enter_whatsapp_number";
-  static const String sameAsPhone = "same_as_phone";
-  static const String finishSetup = "finish_setup";
-  static const String back = "back";
-  static const String monday = "monday";
-  static const String tuesday = "tuesday";
-  static const String wednesday = "wednesday";
-  static const String thursday = "thursday";
-  static const String friday = "friday";
-  static const String saturday = "saturday";
-  static const String sunday = "sunday";
-  static const String pleaseEnterAddressToSearch =
-      "please_enter_address_to_search";
-  static const String locationUpdatedOnMap = "location_updated_on_map";
-  static const String noLocationMatchesFound = "no_location_matches_found";
-  static const String errorSearchingLocation = "error_searching_location";
-  static const String searchingLocation = "searching_location";
-  static const String tellUsAboutBusiness = "tell_us_about_business";
-  static const String businessDiscoverSubtitle = "business_discover_subtitle";
-  static const String businessName = "business_name";
-  static const String enterBusinessName = "enter_business_name";
-  static const String category = "category";
-  static const String shortDescription = "short_description";
-  static const String businessDescriptionHint = "business_description_hint";
-  static const String categoryRestaurant = "category_restaurant";
-  static const String categoryGrocery = "category_grocery";
-  static const String categoryPharmacy = "category_pharmacy";
-  static const String categorySupermarket = "category_supermarket";
-  static const String categoryCafes = "category_cafes";
-  static const String categoryElectronics = "category_electronics";
-  static const String continueLabel = "continue_label";
-  static const String applicationSubmitted = "application_submitted";
-  static const String applicationSubmittedDesc = "application_submitted_desc";
-  static const String viewStatus = "view_status";
-  static const String applicationUnderReview = "application_under_review";
-  static const String applicationUnderReviewDesc =
-      "application_under_review_desc";
-  static const String underReviewBadge = "under_review_badge";
-  static const String estimatedTime = "estimated_time";
-  static const String estimatedTimeDesc = "estimated_time_desc";
-  static const String estimatedTimeBadge = "estimated_time_badge";
-  static const String approvalProgress = "approval_progress";
-  static const String profileSubmitted = "profile_submitted";
-  static const String todayJustNow = "today_just_now";
-  static const String doneBadge = "done_badge";
-  static const String adminReview = "admin_review";
-  static const String inProgress = "in_progress";
-  static const String currentBadge = "current_badge";
-  static const String approvalAccess = "approval_access";
-  static const String awaitingReview = "awaiting_review";
-  static const String whatWeAreVerifying = "what_we_are_verifying";
-  static const String businessProfile = "business_profile";
-  static const String businessProfileDesc = "business_profile_desc";
-  static const String addressLocation = "address_location";
-  static const String addressLocationDesc = "address_location_desc";
-  static const String contactInformation = "contact_information";
-  static const String contactInformationDesc = "contact_information_desc";
-  static const String businessDocuments = "business_documents";
-  static const String businessDocumentsDesc = "business_documents_desc";
-  static const String whyVerificationTitle = "why_verification_title";
-  static const String whyVerificationDesc = "why_verification_desc";
-
-  // ─── Dashboard ───
-  static const String createOffer = "create_offer";
-  static const String overview = "overview";
-  static const String totalViews = "total_views";
-  static const String activeOffers = "active_offers";
-  static const String estRevenue = "est_revenue";
-  static const String activitySummary = "activity_summary";
-  static const String visitors = "visitors";
-  static const String uniqueUsers = "unique_users";
-  static const String engagement = "engagement";
-  static const String bounceRate = "bounce_rate";
-  static const String rankedByClaims = "ranked_by_claims";
-  static const String recentClaims = "recent_claims";
-  static const String justNow = "just_now";
-  static const String dashboard = "dashboard";
-  static const String listings = "listings";
-  static const String stats = "stats";
-
-  static const String campaignEndDateAfterOfferEndDate =
-      'campaign_end_date_after_offer_end_date';
-
-  // ─── Listings ───
-  static const String myListings = "my_listings";
-  static const String manageYourBusinessProfile =
-      "manage_your_business_profile";
-  static const String manageBusiness = "manage_business";
-  static const String editBusinessProfile = "edit_business_profile";
-  static const String manageGallery = "manage_gallery";
-  static const String operatingHours = "operating_hours";
-  static const String updateLocation = "update_location";
-
-  // ─── Offers ───
-  static const String scheduled = "scheduled";
-  static const String paused = "paused";
-  static const String endsIn = "ends_in";
-  static const String starts = "starts";
-  static const String ends = "ends";
-  static const String termsAndConditions = "terms_and_conditions";
-  static const String pause = "pause";
-  static const String editOffer = "edit_offer";
-  static const String expiresIn = "expires_in";
-
-  // ─── Analytics/Stats ───
-
-  static const String last7Days = "last_7_days";
-  static const String last30Days = "last_30_days";
-  static const String last90Days = "last_90_days";
-  static const String clicks = "clicks";
-  static const String topPerformingOffers = "top_performing_offers";
-  static const String claimsCount = "claims_count";
-
-  static const String noTopPerformingOffers = "no_top_performing_offers";
-
-  // ─── Subscription/Profile ───
-  static const String currentPlan = "current_plan";
-  static const String proMonthly = "pro_monthly";
-  static const String upgrade = "upgrade";
-  static const String businessInfo = "business_info";
-  static const String subscriptionBilling = "subscription_billing";
-
-  // ─── Create/Edit Offer ───
-  static const String createNewOffer = "create_new_offer";
-  static const String editOfferTitle =
-      "edit_offer"; // Note: editOffer already exists, reuse or use this
-  static const String tapToAddCoverImage = "tap_to_add_cover_image";
-  static const String recommendedSizeOffer = "recommended_size_offer";
-  static const String offerTitle = "offer_title";
-  static const String discount = "discount";
-  static const String startDate = "start_date";
-  static const String endDate = "end_date";
-  static const String description = "description";
-
-  // ─── Manage Business Bottom Sheets ───
-  static const String updateHowCustomersSee = "update_how_customers_see";
-  static const String addPhotosShowcase = "add_photos_showcase";
-  static const String saveGallery = "save_gallery";
-  static const String add = "add";
-  static const String setWhenBusinessOpen = "set_when_business_open";
-  static const String saveHours = "save_hours";
-  static const String helpCustomersFind = "help_customers_find";
-  static const String saveLocation = "save_location";
-  static const String howCustomersReach = "how_customers_reach";
-  static const String whatsappOptional = "whatsapp_optional";
-  static const String saveContactInfo = "save_contact_info";
-
-  //
-  // Influencer Strings
-  static const String discover = "discover";
-  static const String tasks = "tasks";
-  static const String task = "task ";
-  static const String wallet = "wallet";
-
-  //-----------------------   NEW ONES: ----
-  static const String chooseYourRole = "choose_your_role";
-
-  static const String roleSelectionSubtitle = "role_selection_subtitle";
-
-  static const String accountRoleError = "account_role_error";
-
-  static const String accountRoleErrorDesc = "account_role_error_desc";
-
-  static const String goodMorning = "good_morning";
-
-  static const String goodAfternoon = "good_afternoon";
-
-  static const String goodEvening = "good_evening";
-
-  static const String goodNight = "good_night";
-
-  static const String totalEarnings = "total_earnings";
-
-  static const String pending = "pending";
-
-  static const String withdraw = "withdraw";
-
-  static const String performance = "performance";
-
-  static const String totalClicks = "total_clicks";
-
-  static const String activeTasks = "active_tasks";
-
-  static const String viewAll = "view_all";
-
-  static const String loadingBusiness = "loading_business";
-
-  static const String loadingCampaignName = "loading_campaign_name";
-
-  static const String videoContent = "video_content";
-
-  static const String unknownBusiness = "unknown_business";
-
-  static const String contentTask = "content_task";
-
-  static const String noActiveTasks = "no_active_tasks";
-
-  static const String assignedTasksSubtitle = "assigned_tasks_subtitle";
-
-  static const String user = "user";
-
-  static const String loadingLocation = "loading_location";
-
-  static const String successfullyLoggedOut = "successfully_logged_out";
-
-  static const String followers = "followers";
-
-  static const String campaigns = "campaigns";
-
-  static const String somethingWentWrong = "something_went_wrong";
-  //
-  static const String emailRequired = "email_required";
-
-  static const String validEmailAddress = "valid_email_address";
-
-  static const String passwordRequired = "password_required";
-
-  static const String passwordMin6 = "password_min_6";
-
-  static const String passwordMin8 = "password_min_8";
-
-  static const String passwordUppercaseRequired = "password_uppercase_required";
-
-  static const String uppercaseRequired = "uppercase_required";
-
-  static const String passwordNumberRequired = "password_number_required";
-
-  static const String numberRequired = "number_required";
-
-  static const String confirmPasswordRequired = "confirm_password_required";
-
-  static const String enterPasswordFirst = "enter_password_first";
-
-  static const String passwordsDoNotMatch = "passwords_do_not_match";
-
-  static const String otpRequired = "otp_required";
-
-  static const String otpMustBe6Digits = "otp_must_be_6_digits";
-
-  static const String otpNumbersOnly = "otp_numbers_only";
-
-  static const String websiteUrlRequired = "website_url_required";
-
-  static const String validWebsiteUrl = "valid_website_url";
-
-  static const String urlProtocolRequired = "url_protocol_required";
-
-  static const String validName = "valid_name";
-
-  static const String validFullName = "valid_full_name";
-
-  static const String phoneNumberRequired = "phone_number_required";
-
-  static const String validPhoneNumber = "valid_phone_number";
-
-  static const String usernameRequired = "username_required";
-
-  static const String usernameInvalidLength = "username_invalid_length";
-
-  static const String usernameInvalidCharacters = "username_invalid_characters";
-
-  static const String valueRequired = "value_required";
-
-  static const String fieldRequired = "field_required";
-
-  static const String validNumber = "valid_number";
-
-  static const String addressRequired = "address_required";
-
-  static const String validAddress = "valid_address";
-
-  static const String cityRequired = "city_required";
-
-  static const String validCityName = "valid_city_name";
-
-  static const String zipcodeRequired = "zipcode_required";
-
-  static const String validZipcode = "valid_zipcode";
-
-  static const String countryRequired = "country_required";
-
-  static const String validCountryName = "valid_country_name";
-
-  static const String descriptionMinLength = "description_min_length";
-
-  static const String postalCodeRequired = "postal_code_required";
-
-  static const String validPostalCode = "valid_postal_code";
-
-  static const String dateOfBirthRequired = "date_of_birth_required";
-
-  static const String validDateOfBirth = "valid_date_of_birth";
-
-  static const String invalidDateFormat = "invalid_date_format";
-
-  static const String dateOfBirthFuture = "date_of_birth_future";
-
-  static const String invalidDateOfBirth = "invalid_date_of_birth";
-
-  static const String genderRequired = "gender_required";
-
-  static const String validGender = "valid_gender";
-  static const String loading = "Loading...";
-
-  static const String editProfile = "edit_profile";
-  static const String basicInformation = "basic_information";
-  static const String influencerInformation = "influencer_information";
-
-  static const String topPerformingContent = "top_performing_content";
-
-  static const String jan = "jan";
-  static const String feb = "feb";
-  static const String mar = "mar";
-  static const String apr = "apr";
-  static const String may = "may";
-  static const String jun = "jun";
-
-  static const String earningsTrend = "earnings_trend";
-  static const String monthly = "monthly";
-  static const String noEarningsDataYet = "no_earnings_data_yet";
-  static const String completeCampaignsAndTasks =
-      "complete_campaigns_and_tasks";
-  static const String earningsThisPeriod = "earnings_this_period";
-  static const String analytics = "analytics";
-  static const String all = "all";
-
-  static const String noItemsFound = "no_items_found";
-  static const String listCurrentlyEmpty = "list_currently_empty";
-  static const String content = "content";
-  static const String deadline = "deadline";
-  static const String submitContent = "submit_content";
-  static const String video = "video";
-
-  static const String pendingMerchantReview = "pending_merchant_review";
-  static const String sentToMerchantForReview = "sent_to_merchant_for_review";
-  static const String viewSubmission = "view_submission";
-
-  static const String merchantApproved = "merchant_approved";
-  static const String readyToPublishToSocialMedia =
-      "ready_to_publish_to_social_media";
-  static const String publishToSocialMedia = "publish_to_social_media";
-  static const String published = "published";
-  static const String viewOriginalPost = "view_original_post";
-  static const String myTasks = "my_tasks";
-
-  static const String tiktok = "tiktok";
-  static const String instagram = "instagram";
-  static const String facebook = "facebook";
-  static const String youtube = "youtube";
-
-  //
-  static const String submitPublishedVideoLinkForMerchantApproval =
-      "submit_published_video_link_for_merchant_approval";
-  static const String platform = "platform";
-  static const String selectPlatform = "select_platform";
-  static const String caption = "caption";
-  static const String writeCaptionUsedInYourPost =
-      "write_caption_used_in_your_post";
-  static const String thumbnail = "thumbnail";
-  static const String selectThumbnail = "select_thumbnail";
-  static const String uploadVideoOptional = "upload_video_optional";
-  static const String chooseVideo = "choose_video";
-  static const String videoLink = "video_link";
-  static const String pasteSocialVideoUrl = "paste_social_video_url";
-  static const String submitForReview = "submit_for_review";
-
-  static const String uploadVideoOrProvideVideoUrl =
-      "upload_video_or_provide_video_url";
-  static const String enterCaption = "enter_caption";
-  static const String selectThumbnailRequired = "select_thumbnail_required";
-  static const String selectPlatformRequired = "select_platform_required";
-
-  static const String contentSubmitted = "content_submitted";
-  static const String merchantWillReviewContent =
-      "merchant_will_review_content";
-
-  static const String yourSubmission = "your_submission";
-  static const String unknownStore = "unknown_store";
-  static const String campaignContent = "campaign_content";
-  static const String unknown = "unknown";
-  static const String submittedContent = "submitted_content";
-
-  static const String backToTasks = "back_to_tasks";
-
-  static const String publishAndProof = "publish_and_proof";
-  static const String campaign = "campaign";
-  static const String publishApprovedDraftMessage =
-      "publish_approved_draft_message";
-  static const String socialMediaPostUrl = "social_media_post_url";
-  static const String addLivePostLink = "add_live_post_link";
-  static const String confirmPublishing = "confirm_publishing";
-  static const String publishingConfirmed = "publishing_confirmed";
-  static const String campaignMovedToPublished = "campaign_moved_to_published";
-
-  // edit profile
-
-  static const String editInfluencerProfile = "edit_influencer_profile";
-  static const String influencerDetails = "influencer_details";
-  static const String updateAudienceInformation = "update_audience_information";
-  static const String influencerType = "influencer_type";
-  static const String selectInfluencerType = "select_influencer_type";
-  static const String bio = "bio";
-  static const String bioExample = "bio_example";
-  static const String pleaseEnterYourBio = "please_enter_your_bio";
-  static const String followerCount = "follower_count";
-  static const String enterTotalFollowers = "enter_total_followers";
-  static const String pleaseEnterFollowerCount = "please_enter_follower_count";
-  static const String socialAccounts = "social_accounts";
-
-  static const String usernameHint = "username_hint";
-  static const String pageUsername = "page_username";
-
-  static const String enterYourBio = "enter_your_bio";
-  static const String enterFollowerCount = "enter_follower_count";
-
-  //
-  static const String business = "business";
-  static const String youtubeShort = "youtube_short";
-  static const String instagramReel = "instagram_reel";
-  static const String facebookReel = "facebook_reel";
-  static const String tiktokVideo = "tiktok_video";
-  static const String xPost = "x_post";
-  static const String socialMediaPost = "social_media_post";
-
-  //
-  static const String myCampaigns = "my_campaigns";
-
-  //MERCHANT
-  // Create Offer
-  static const String offerTitleHint = "offer_title_hint";
-  static const String offerTitleRequired = "offer_title_required";
-  static const String offerTitleTooShort = "offer_title_too_short";
-
-  static const String offerDiscountLabel = "offer_discount_label";
-  static const String offerDiscountHint = "offer_discount_hint";
-  static const String offerDiscountRequired = "offer_discount_required";
-  static const String offerDiscountInvalid = "offer_discount_invalid";
-  static const String offerDiscountRangeError =
-      "offer_discount_between_one_and_hundred";
-
-  static const String offerDescriptionHint = "offer_description_hint";
-
-  static const String offerDateHint = "offer_date_hint";
-
-  static const String descriptionRequired = "description_required";
-
-  static const String unableToIdentifyBusiness = "unable_to_identify_business";
-  static const String offerCreatedSuccessfully = "offer_created_successfully";
-  static const String offerUpdatedSuccessfully = "offer_updated_successfully";
-  static const String pleaseSelectOfferDates = "please_select_offer_dates";
-  static const String pleaseSelectAnImage = "please_select_an_image";
-  static const String unableToIdentifyBusinessTryAgain =
-      "unable_to_identify_business_try_again";
-  static const String failedToPickImage = "failed_to_pick_image";
-
-  //
-  static const String recentClaimsClaimedBy = "recent_claims_claimed_by";
-  static const String recentClaimsLoadingTitle = "recent_claims_loading_title";
-  static const String recentClaimsCustomer = "recent_claims_customer";
-  static const String recentClaimsJustNow = "recent_claims_just_now";
-
-  static const String recentClaimsEmptyTitle = "recent_claims_empty_title";
-  static const String recentClaimsEmptyDescription =
-      "recent_claims_empty_description";
-
-  //
-  static const String topDealsLoadingTitle = "top_deals_loading_title";
-  static const String topDealsLoadingBusiness = "top_deals_loading_business";
-  static const String topDealsClaims = "top_deals_claims";
-  static const String topDealsPercentageFallback =
-      "top_deals_percentage_fallback";
-
-  static const String topDealsEmptyTitle = "top_deals_empty_title";
-  static const String topDealsEmptyDescription = "top_deals_empty_description";
-
-  //
-
-  static const String offerDescriptionRequired = "offer_description_required";
-  static const String offerDescriptionTooShort = "offer_description_too_short";
-
-  //
-  static const String offerEnded = "offer_ended";
-  static const String offerClaims = "offer_claims";
-  static const String offerEdit = "offer_edit";
-
-  static const String offerStartsIn = "offer_starts_in";
-  static const String offerDays = "offer_days";
-  static const String offerHours = "offer_hours";
-  static const String offerMinutes = "offer_minutes";
-
-  // campaigns in merchant
-  static const String noCampaignsFound = "no_campaigns_found";
-  static const String influencerCampaigns = "influencer_campaigns";
-  static const String influencerCampaignsDescription =
-      "influencer_campaigns_description";
-
-  static const String activeCampaign = "active_campaign";
-  static const String inReview = "in_review";
-
-  static const String createCampaign = "create_campaign";
-
-  static const String live = "live";
-
-  static const String budgetSpent = "budget_spent";
-  static const String daysLeft = "days_left";
-
-  //
-  static const String budget = "budget";
-  static const String campaignDetails = "campaign_details";
-
-  static const String noCampaignContentYet = "no_campaign_content_yet";
-
-  static const String noCampaignContentDescription =
-      "no_campaign_content_description";
-
-  static const String noPublishedContentDescription =
-      "no_published_content_description";
-
-  static const String influencers = "influencers";
-
-  static const String creators = "creators";
-  static const String package = "package";
-  static const String duration = "duration";
-  static const String campaignTimeline = "campaign_timeline";
-  static const String adminAssignsCreatorsDescription =
-      "admin_assigns_creators_description";
-
-  static const String noInfluencersYet = "no_influencers_yet";
-
-  static const String noInfluencersAssignedDescription =
-      "no_influencers_assigned_description";
-
-  static const String adminAssignsInfluencersDescription =
-      "admin_assigns_influencers_description";
-
-  //
-  static const String campaignSubmitted = "campaign_submitted";
-  static const String adminApproval = "admin_approval";
-  static const String influencersAssigned = "influencers_assigned";
-  static const String contentReview = "content_review";
-
-  //
-  static const String influencersAssignedByAdmin =
-      "influencers_assigned_by_admin";
-  static const String noInfluencersAssignedYet = "no_influencers_assigned_yet";
-
-  static const String assigned = "assigned";
-
-  static const String viewProfile = "view_profile";
-  static const String engage = "engage";
-  static const String pitch = "pitch";
-
-  static const String contentDetails = "content_details";
-
-  // Influencer submit content
-  static const String publishedAndVerified = "published_and_verified";
-  static const String pendingReview = "pending_review";
-  static const String contentIsLiveEarned = "content_is_live_earned";
-  static const String contentSubmittedWaitingApproval =
-      "content_submitted_waiting_approval";
-
-  // Customer Strings
-  static const String saving = "saving";
-  static const String download = "download";
-  static const String presentQrCodeToMerchant = "present_qr_code_to_merchant";
-
-  static const String getDirections = "get_directions";
-  static const String chooseYourNavigationApp = "choose_your_navigation_app";
-  static const String fastestRoute = "fastest_route";
-  static const String googleMaps = "google_maps";
-  static const String appleMaps = "apple_maps";
-
-  static const String closesAt = "closes_at";
-  static const String opensAt = "opens_at";
-
-  static const String noMoreOffers = "no_more_offers";
-
-  static const String noReviewsYet = "no_reviews_yet";
-  static const String beTheFirstToReview = "be_the_first_to_review";
-
-  static const String anonymous = "anonymous";
-  static const String ago = "ago";
-
-  static const String noBusinessesFoundUnderCategory =
-      "no_businesses_found_under_category";
-
-  static const String tryAgain = "try_again";
-  static const String noNearbyMerchantsFound = "no_nearby_merchants_found";
-  static const String noNearbyPlacesYet = "no_nearby_places_yet";
-  static const String noNearbyPlacesMessage = "no_nearby_places_message";
-
-  static const String trendingInfluencer = "trending_influencer";
-  static const String recommendedByContent = "recommended_by_content";
-
-  static const String noContentYet = "no_content_yet";
-  static const String newVideosWillAppearHere = "new_videos_will_appear_here";
-  static const String retry = "retry";
-
-  static const String qrCode = "qr_code";
-  static const String showThisCodeToMerchant = "show_this_code_to_merchant";
-  static const String yourClaimCode = "your_claim_code";
-  static const String copy = "copy";
-
-  static const String reset = "reset";
-  static const String searchBusinessesOrDeals = "search_businesses_or_deals";
-
-  static const String noRecentSearches = "no_recent_searches";
-  static const String yourRecentSearchesWillAppearHere =
-      "your_recent_searches_will_appear_here";
-
-  static const String noSearchResults = "no_search_results";
-  static const String resetSearch = "reset_search";
-
-  static const String applyForCampaign = "apply_for_campaign";
-  static const String whyAreYouAGoodFit = "why_are_you_a_good_fit";
-  static const String tellMerchantWhyAudienceWouldLoveOffer =
-      "tell_merchant_why_audience_would_love_offer";
-  static const String selectAccountsToUse = "select_accounts_to_use";
-  static const String submitApplication = "submit_application";
-
-  static const String pleaseEnterSocialMediaPostUrl =
-      "please_enter_social_media_post_url";
-
-  static const String pleaseEnterValidPostUrl = "please_enter_valid_post_url";
-
-  static const String publish = "publish";
-  static const String proof = "proof";
-
-  static const String invalidTaskInformation = "invalid_task_information";
-
-  static const String deliverable = "deliverable";
-
-  static const String campaignApplicantsStatus = "campaign_applicants_status";
-
-  static const String businessNameIsRequired = "business_name_is_required";
-  static const String descriptionIsRequired = "description_is_required";
-  static const String pleaseSelectGalleryImages =
-      "please_select_gallery_images";
-  static const String pleaseSelectAtLeastOneOpenDay =
-      "please_select_at_least_one_open_day";
-  static const String addressIsRequired = "address_is_required";
-  static const String phoneNumberIsRequired = "phone_number_is_required";
-  static const String enterAValidPhoneNumber = "enter_a_valid_phone_number";
-  static const String updatedSuccessfully = "updated_successfully";
-
-  static const String pleaseSelectACategory = "please_select_a_category";
-
-  static const String restaurantNameExample = "restaurant_name_example";
-  static const String reviewHint = "review_hint";
-
-  static const String rejectContent = "reject_content";
-  static const String pleaseProvideReasonForRejecting =
-      "please_provide_reason_for_rejecting";
-  static const String rejectionReason = "rejection_reason";
-  static const String rejectionReasonExample = "rejection_reason_example";
-  static const String rejectionReasonRequiredInfo =
-      "rejection_reason_required_info";
-  static const String reject = "reject";
-
-  static const String approve = "approve";
-
-  static const String contentCaption = "content_caption";
-
-  static const String noPublishedContentYet = "no_published_content_yet";
-
-  static const String campaignNameIsRequired = "campaign_name_is_required";
-
-  static const String pleaseSelectAnObjective = "please_select_an_objective";
-
-  static const String pleaseSelectContentType = "please_select_content_type";
-
-  static const String pleaseSelectAnOffer = "please_select_an_offer";
-
-  static const String pleaseSelectInfluencerCategory =
-      "please_select_influencer_category";
-
-  static const String enterValidCreatorNumber = "enter_valid_creator_number";
-
-  static const String startDateIsRequired = "start_date_is_required";
-
-  static const String endDateIsRequired = "end_date_is_required";
-
-  static const String contentRequirementsAreRequired =
-      "content_requirements_are_required";
-
-  static const String pleaseSelectPricingPackage =
-      "please_select_pricing_package";
-
-  static const String unableToIdentifyAssociatedBusiness =
-      "unable_to_identify_associated_business";
-
-  static const String campaignCreatedSuccessfully =
-      "campaign_created_successfully";
-
-  static const String secondsVideo = "seconds_video";
-
-  static const String shortVideo = "short_video";
-
-  static const String standardVideo = "standard_video";
-
-  static const String extendedVideo = "extended_video";
-
-  static const String longVideo = "long_video";
-
-  static const String littleMoreRoomToShowOffer =
-      "little_more_room_to_show_offer";
-
-  static const String mostPopularFormatForLocalCampaigns =
-      "most_popular_format_for_local_campaigns";
-
-  static const String greatForStorytelling = "great_for_storytelling";
-
-  static const String fullNarrativeMaximumDetail =
-      "full_narrative_maximum_detail";
-
-  static const String newCampaign = "new_campaign";
-  static const String campaignName = "campaign_name";
-  static const String campaignNameHint = "campaign_name_hint";
-  static const String objective = "objective";
-  static const String contentType = "content_type";
-  static const String selectOffer = "select_offer";
-  static const String influencerCategory = "influencer_category";
-  static const String selectCategory = "select_category";
-  static const String targetNumberOfInfluencers =
-      "target_number_of_influencers";
-  static const String enterNumberOfInfluencers = "enter_number_of_influencers";
-  static const String contentRequirements = "content_requirements";
-  static const String contentRequirementsHint = "content_requirements_hint";
-  static const String preparingCampaignForm = "preparing_campaign_form";
-
-  static const String previewCampaign = "preview_campaign";
-  static const String campaignOverview = "campaign_overview";
-  static const String name = "name";
-
-  static const String offer = "offer";
-  static const String videoLength = "video_length";
-
-  static const String influencerInfo = "influencer_info";
-  static const String targetInfluencers = "target_influencers";
-  static const String selectedPackage = "selected_package";
-  static const String packagePrice = "package_price";
-  static const String totalCampaignCost = "total_campaign_cost";
-
-  static const String backToEdit = "back_to_edit";
-  static const String submit = "submit";
-
-  static const String seconds = "seconds";
-
-  static const String pricingPackages = "pricing_packages";
-  static const String preview = "preview";
-  static const String days = "days";
-
-  static const String poor = "poor";
-  static const String fair = "fair";
-  static const String okay = "okay";
-  static const String good = "good";
-  static const String excellent = "excellent";
-  static const String thankYouForRatingSomSpot =
-      "thank_you_for_rating_som_spot";
-
-  static const String rateTheApp = "rate_the_app";
-
-  static const String emailUsOnline = "email_us_online";
-  static const String emailUs = "email_us";
-  static const String online = "online";
-
-  static const String dialerNotSupported = "dialer_not_supported";
-  static const String couldNotLaunchDialer = "could_not_launch_dialer";
-  static const String checkOutMerchantOnSomSpot =
-      "check_out_merchant_on_somspot";
-  static const String somspotMerchant = "somspot_merchant";
-  static const String couldNotShareMerchantDetails =
-      "could_not_share_merchant_details";
-  static const String whatsappCannotBeOpened = "whatsapp_cannot_be_opened";
-  static const String couldNotLaunchWhatsapp = "could_not_launch_whatsapp";
-
-  static const String claimCodeCopied = "claim_code_copied";
-  static const String galleryPermissionRequired = "gallery_permission_required";
-  static const String qrCodeSavedToGallery = "qr_code_saved_to_gallery";
-  static const String failedToSaveQrCode = "failed_to_save_qr_code";
-
-  static const String rateSomSpot = "rate_som_spot";
-  static const String enjoyingTheAppLetUsKnow = "enjoying_the_app_let_us_know";
-  static const String tapToRate = "tap_to_rate";
-  static const String submitRating = "submit_rating";
-
-  // --other
-
-  static const String seeLess = "see_less";
-  static const String seeMore = "see_more";
-  static const String unknownErrorMessage = "unknown_error_message";
-  static const String somethingWentWrongRetry = "something_went_wrong_retry";
-  static const String offlineMessage = "offline_message";
-
-  static const String unableToPlayVideo = "unable_to_play_video";
-  static const String videoUnavailableOrConnectionFailed =
-      "video_may_be_unavailable_or_connection_failed";
-
-  // --Location
-
-  static const String locationPermissionRequired =
-      "location_permission_required";
-
-  static const String locationPermissionMessage = "location_permission_message";
-
-  static const String enableLocationPermission = "enable_location_permission";
-
-  static const String locationPermissionDisabledMessage =
-      "location_permission_disabled_message";
-
-  static const String openSettings = "open_settings";
-
-  static const String locationIsDisabled = "location_is_disabled";
-
-  static const String locationDisabledMessage = "location_disabled_message";
-
-  static const String enableLocation = "enable_location";
-
-  static const useCurrentLocation = 'use_current_location';
-  static const gettingLocation = 'getting_location';
-  static const currentLocationSelected = 'current_location_selected';
-  static const unableToGetCurrentLocation = 'unable_to_get_current_location';
-
-  // other
-  static const String noTopDealsYet = "no_top_deals_yet";
-  static const String noTopDealsMessage = "no_top_deals_message";
-
-  static const String noFaqYet = "no_faq_yet";
-  static const String noFaqMessage = "no_faq_message";
-
-  //
-  static const String kmAway = "km_away";
-  static const String locationTooFarAway = "location_too_far_away";
-  static const String mapLocationCouldNotBeFound =
-      "map_location_could_not_be_found";
-  static const String locationNotAvailable = "location_not_available";
-  static const String toAddress = "to_address";
-  static const String fromAddress = "from_address";
+  // ===========================================================================
+  // 1. FIXED APP UI STRINGS
+  // ===========================================================================
+
+  // ── App & Splash ──────────────────────────────────────────────────────────
+  static const String appName = 'app_name';
+  static const String appTagline = 'app_tagline';
+  static const String appInitializing = 'app_initializing';
+
+  // ── Language Selection ────────────────────────────────────────────────────
+  static const String languageSelectTitle = 'language_select_title';
+  static const String languageSelectSubtitle = 'language_select_subtitle';
+  static const String languageEnglish = 'language_english';
+  static const String languageSpanish = 'language_spanish';
+  static const String languageContinue = 'language_continue';
+  static const String selectLanguage = 'select_language';
+  static const String languagePickerTitle = 'language_picker_title';
+  static const String languageEnglishUs = 'language_english_us';
+  static const String languageSpanishLabel = 'language_spanish_label';
+
+  // ── Onboarding ────────────────────────────────────────────────────────────
+  static const String onboardingSkip = 'onboarding_skip';
+  static const String onboardingNext = 'onboarding_next';
+  static const String onboardingContinue = 'onboarding_continue';
+  static const String onboardingTitle1 = 'onboarding_title_1';
+  static const String onboardingDesc1 = 'onboarding_desc_1';
+  static const String onboardingTagUnifiedHub = 'onboarding_tag_unified_hub';
+  static const String onboardingTagSmartTimetables = 'onboarding_tag_smart_timetables';
+  static const String onboardingTagRealtimeSync = 'onboarding_tag_realtime_sync';
+  static const String onboardingTitle2 = 'onboarding_title_2';
+  static const String onboardingDesc2 = 'onboarding_desc_2';
+  static const String onboardingTagLiveAttendance = 'onboarding_tag_live_attendance';
+  static const String onboardingTagHomeworkTracker = 'onboarding_tag_homework_tracker';
+  static const String onboardingTagProgressReports = 'onboarding_tag_progress_reports';
+  static const String onboardingTagClassSchedules = 'onboarding_tag_class_schedules';
+  static const String onboardingTitle3 = 'onboarding_title_3';
+  static const String onboardingDesc3 = 'onboarding_desc_3';
+
+  // ── Choose Role ───────────────────────────────────────────────────────────
+  static const String roleSelectTitle = 'role_select_title';
+  static const String roleSelectSubtitle = 'role_select_subtitle';
+  static const String roleParentTitle = 'role_parent_title';
+  static const String roleParentSubtitle = 'role_parent_subtitle';
+  static const String roleParentDescription = 'role_parent_description';
+  static const String roleTeacherTitle = 'role_teacher_title';
+  static const String roleTeacherDescription = 'role_teacher_description';
+  static const String roleContinueAsParent = 'role_continue_as_parent';
+  static const String roleContinueAsTeacher = 'role_continue_as_teacher';
+  static const String roleContinue = 'role_continue';
+
+  // ── Navigation Tabs ───────────────────────────────────────────────────────
+  static const String navHome = 'nav_home';
+  static const String navClasses = 'nav_classes';
+  static const String navStudents = 'nav_students';
+  static const String navSchedule = 'nav_schedule';
+  static const String navReports = 'nav_reports';
+  static const String navNotifications = 'nav_notifications';
+  static const String navProfile = 'nav_profile';
+
+  // ── Authentication (Login / Signup) ───────────────────────────────────────
+  static const String parentLoginTitle = 'parent_login_title';
+  static const String teacherLoginTitle = 'teacher_login_title';
+  static const String welcomeBack = 'welcome_back';
+  static const String parentLoginSubtitle = 'parent_login_subtitle';
+  static const String teacherLoginSubtitle = 'teacher_login_subtitle';
+  static const String fieldMobileOrEmail = 'field_mobile_or_email';
+  static const String fieldMobileOrEmailHint = 'field_mobile_or_email_hint';
+  static const String fieldEmailOrFacultyId = 'field_email_or_faculty_id';
+  static const String fieldEmailOrFacultyIdHint = 'field_email_or_faculty_id_hint';
+  static const String fieldPassword = 'field_password';
+  static const String fieldPasswordHint = 'field_password_hint';
+  static const String rememberDevice = 'remember_device';
+  static const String forgotPassword = 'forgot_password';
+  static const String btnLoginAula360 = 'btn_login_aula360';
+  static const String noAccountYet = 'no_account_yet';
+  static const String createAccount = 'create_account';
+  static const String loginAsTeacher = 'login_as_teacher';
+  static const String loginAsParent = 'login_as_parent';
+  static const String createAccountTitle = 'create_account_title';
+  static const String createYourAccount = 'create_your_account';
+  static const String parentSignupSubtitle = 'parent_signup_subtitle';
+  static const String teacherRegistrationTitle = 'teacher_registration_title';
+  static const String registerAsFaculty = 'register_as_faculty';
+  static const String teacherSignupSubtitle = 'teacher_signup_subtitle';
+  static const String fieldFullName = 'field_full_name';
+  static const String fieldFullNameHint = 'field_full_name_hint';
+  static const String fieldMobileNumber = 'field_mobile_number';
+  static const String fieldMobileHint = 'field_mobile_hint';
+  static const String fieldMobileNumberHint = 'field_mobile_hint';
+  static const String fieldEmailAddress = 'field_email_address';
+  static const String fieldEmailHint = 'field_email_hint';
+  static const String fieldEmailAddressHint = 'field_email_hint';
+  static const String fieldAcademyEmail = 'field_academy_email';
+  static const String fieldAcademyEmailHint = 'field_academy_email_hint';
+  static const String fieldPasswordCreateHint = 'field_password_create_hint';
+  static const String passwordHintText = 'password_hint_text';
+  static const String passwordReqNotice = 'password_hint_text';
+  static const String btnCreateAccount = 'btn_create_account';
+  static const String alreadyHaveAccount = 'already_have_account';
+  static const String logIn = 'log_in';
+  static const String btnLogIn = 'log_in';
+  static const String agreeTermsPrefix = 'agree_terms_prefix';
+  static const String termsAndConditions = 'terms_and_conditions';
+  static const String termsAnd = 'terms_and';
+  static const String privacyPolicy = 'privacy_policy';
+  static const String teacherTermsRequired = 'teacher_terms_required';
+
+  // ── Forgot & Reset Password ───────────────────────────────────────────────
+  static const String forgotPasswordHeader = 'forgot_password_header';
+  static const String forgotPasswordTitle = 'forgot_password_title';
+  static const String forgotPasswordSubtitle = 'forgot_password_subtitle';
+  static const String fieldEmailRegistered = 'field_email_registered';
+  static const String fieldEmailRegisteredHint = 'field_email_registered_hint';
+  static const String btnSendVerification = 'btn_send_verification';
+  static const String resetParentPassword = 'reset_parent_password';
+  static const String resetTeacherPassword = 'reset_teacher_password';
+  static const String resetPasswordHeader = 'reset_password_header';
+  static const String resetPasswordTitle = 'reset_password_title';
+  static const String resetPasswordSubtitle = 'reset_password_subtitle';
+  static const String fieldNewPassword = 'field_new_password';
+  static const String fieldNewPasswordHint = 'field_new_password_hint';
+  static const String fieldConfirmPassword = 'field_confirm_password';
+  static const String fieldConfirmPasswordHint = 'field_confirm_password_hint';
+  static const String btnResetPassword = 'btn_reset_password';
+  static const String passwordMismatchTitle = 'password_mismatch_title';
+  static const String passwordMismatchMessage = 'password_mismatch_message';
+  static const String passwordResetSuccessTitle = 'password_reset_success_title';
+  static const String passwordResetSuccessMessage = 'password_reset_success_message';
+  static const String changePasswordTitle = 'change_password_title';
+  static const String currentPassword = 'current_password';
+  static const String currentPasswordHint = 'current_password_hint';
+  static const String changePasswordHeaderSubtitle = 'change_password_header_subtitle';
+  static const String invalidPassword = 'invalid_password';
+  static const String passwordDifferentMsg = 'password_different_msg';
+  static const String passwordUpdatedMsg = 'password_updated_msg';
+
+  // ── OTP ───────────────────────────────────────────────────────────────────
+  static const String otpHeader = 'otp_header';
+  static const String otpVerifyAccount = 'otp_verify_account';
+  static const String otpVerifyIdentity = 'otp_verify_identity';
+  static const String otpSignupDesc = 'otp_signup_desc';
+  static const String otpForgotDesc = 'otp_forgot_desc';
+  static const String otpEnterCodeLabel = 'otp_enter_code_label';
+  static const String otpExpiresPrefix = 'otp_expires_prefix';
+  static const String otpResend = 'otp_resend';
+  static const String otpSpamNote = 'otp_spam_note';
+  static const String otpVerifyContinue = 'otp_verify_continue';
+  static const String otpVerifyReset = 'otp_verify_reset';
+  static const String otpRequiredTitle = 'otp_required_title';
+  static const String otpRequiredMessage = 'otp_required_message';
+
+  // ── Settings (Teacher & Parent) ───────────────────────────────────────────
+  static const String settingsTitle = 'settings_title';
+  static const String settingsProfileBreadcrumb = 'settings_profile_breadcrumb';
+  static const String settingsSectionLanguage = 'settings_section_language';
+  static const String settingsSectionNotifications = 'settings_section_notifications';
+  static const String settingsSectionAccountSecurity = 'settings_section_account_security';
+  static const String settingsSectionAccount = 'settings_section_account';
+  static const String settingsLangDisplayLanguage = 'settings_lang_display_language';
+  static const String settingsLangSubtitle = 'settings_lang_subtitle';
+  static const String settingsLangLabel = 'settings_lang_label';
+  static const String settingsNotifClassReminders = 'settings_notif_class_reminders';
+  static const String settingsNotifClassRemindersSub = 'settings_notif_class_reminders_sub';
+  static const String settingsNotifParentMessages = 'settings_notif_parent_messages';
+  static const String settingsNotifParentMessagesSub = 'settings_notif_parent_messages_sub';
+  static const String settingsNotifPostClass = 'settings_notif_post_class';
+  static const String settingsNotifPostClassSub = 'settings_notif_post_class_sub';
+  static const String settingsNotifPush = 'settings_notif_push';
+  static const String settingsNotifPushSub = 'settings_notif_push_sub';
+  static const String settingsNotifAttendanceAlerts = 'settings_notif_attendance_alerts';
+  static const String settingsNotifAttendanceAlertsSub = 'settings_notif_attendance_alerts_sub';
+  static const String settingsSecurityBiometric = 'settings_security_biometric';
+  static const String settingsSecurityBiometricSub = 'settings_security_biometric_sub';
+  static const String settingsSecurityChangePassword = 'settings_security_change_password';
+  static const String settingsSecurityChangePasswordSub = 'settings_security_change_password_sub';
+  static const String settingsSecurityActiveSessions = 'settings_security_active_sessions';
+  static const String settingsSecurityActiveSessionsSub = 'settings_security_active_sessions_sub';
+  static const String settingsSessionsTitle = 'settings_sessions_title';
+  static const String settingsSessionsSubtitle = 'settings_sessions_subtitle';
+  static const String settingsSessionsSignoutOthers = 'settings_sessions_signout_others';
+  static const String settingsSessionsCurrent = 'settings_sessions_current';
+  static const String settingsSessionsBadge = 'settings_sessions_badge';
+  static const String settingsBiometricEnabled = 'settings_biometric_enabled';
+  static const String settingsBiometricDisabled = 'settings_biometric_disabled';
+  static const String settingsClassRemindersEnabled = 'settings_class_reminders_enabled';
+  static const String settingsClassRemindersDisabled = 'settings_class_reminders_disabled';
+  static const String settingsParentMessagesEnabled = 'settings_parent_messages_enabled';
+  static const String settingsParentMessagesDisabled = 'settings_parent_messages_disabled';
+  static const String settingsPostClassEnabled = 'settings_post_class_enabled';
+  static const String settingsPostClassDisabled = 'settings_post_class_disabled';
+  static const String settingsLangChanged = 'settings_lang_changed';
+  static const String settingsSessionsSignedout = 'settings_sessions_signedout';
+
+  // ── Add Child / Student Enrollment ────────────────────────────────────────
+  static const String addChildTitle = 'add_child_title';
+  static const String studentInfoTitle = 'student_info_title';
+  static const String studentInfoDesc = 'student_info_desc';
+  static const String newStudentEnrollment = 'new_student_enrollment';
+  static const String parentAccount = 'parent_account';
+  static const String verified = 'verified';
+  static const String uploadPhotoOptional = 'upload_photo_optional';
+  static const String uploadPhotoHint = 'upload_photo_hint';
+  static const String dateOfBirth = 'date_of_birth';
+  static const String gradeLevel = 'grade_level';
+  static const String gender = 'gender';
+  static const String genderFemale = 'gender_female';
+  static const String genderMale = 'gender_male';
+  static const String genderPreferNot = 'gender_prefer_not';
+  static const String studentId = 'student_id';
+  static const String providedByAcademy = 'provided_by_academy';
+  static const String studentConnectionNotice = 'student_connection_notice';
+  static const String assignedAfterEnrollment = 'assigned_after_enrollment';
+  static const String saveChild = 'save_child';
+  static const String cancel = 'cancel';
+  static const String myChildren = 'my_children';
+  static const String addAnotherChild = 'add_another_child';
+  static const String active = 'active';
+  static const String attendance = 'attendance';
+  static const String childProfile = 'child_profile';
+  static const String academicActivity = 'academic_activity';
+
+  // ── Profile Setup & Management ────────────────────────────────────────────
+  static const String profileSetupTitle = 'profile_setup_title';
+  static const String editProfileTitle = 'edit_profile_title';
+  static const String editProfileDesc = 'edit_profile_desc';
+  static const String parentContactDetails = 'parent_contact_details';
+  static const String parentPortal = 'parent_portal';
+  static const String completeYourProfile = 'complete_your_profile';
+  static const String completeYourProfileDesc = 'complete_your_profile_desc';
+  static const String chooseProfilePhoto = 'choose_profile_photo';
+  static const String selectOptionProfilePhoto = 'select_option_profile_photo';
+  static const String chooseFromGallery = 'choose_from_gallery';
+  static const String takeAPhoto = 'take_a_photo';
+  static const String removePhoto = 'remove_photo';
+  static const String parentFullName = 'parent_full_name';
+  static const String enterYourFullName = 'enter_your_full_name';
+  static const String primaryMobileNumber = 'primary_mobile_number';
+  static const String enterMobileNumber = 'enter_mobile_number';
+  static const String relationshipToStudent = 'relationship_to_student';
+  static const String selectRelationship = 'select_relationship';
+  static const String residentialAddress = 'residential_address';
+  static const String fieldResidentialAddress = 'residential_address';
+  static const String residentialAddressHint = 'residential_address_hint';
+  static const String btnCompleteProfile = 'btn_complete_profile';
+  static const String btnSaveChanges = 'btn_save_changes';
+  static const String navigatesToParentDashboard = 'navigates_to_parent_dashboard';
+  static const String relationshipMother = 'relationship_mother';
+  static const String relationshipFather = 'relationship_father';
+  static const String relationshipGuardian = 'relationship_guardian';
+  static const String profileCompletedSuccess = 'profile_completed_success';
+  static const String profileCompletedTitle = 'profile_completed_title';
+  static const String teacherProfileSetupTitle = 'teacher_profile_setup_title';
+  static const String facultyProfileTitle = 'faculty_profile_title';
+  static const String facultyProfileDesc = 'faculty_profile_desc';
+  static const String academicIdentity = 'academic_identity';
+  static const String fullLegalName = 'full_legal_name';
+  static const String titleDepartment = 'title_department';
+  static const String titleDepartmentHint = 'title_department_hint';
+  static const String subjectsDisciplines = 'subjects_disciplines';
+  static const String addSubject = 'add_subject';
+  static const String addSubjectTitle = 'add_subject_title';
+  static const String selectSubjectSubtitle = 'select_subject_subtitle';
+  static const String campusOfficeDetails = 'campus_office_details';
+  static const String assignedCampusBuilding = 'assigned_campus_building';
+  static const String roomHall = 'room_hall';
+  static const String roomHallHint = 'room_hall_hint';
+  static const String officeContact = 'office_contact';
+  static const String facultyBioFocus = 'faculty_bio_focus';
+  static const String facultyBioHint = 'faculty_bio_hint';
+  static const String optional = 'optional';
+  static const String btnCompleteTeacherSetup = 'btn_complete_teacher_setup';
+  static const String navigatesToFacultyDashboard = 'navigates_to_faculty_dashboard';
+  static const String logout = 'logout';
+  static const String logoutConfirmTitle = 'logout_confirm_title';
+  static const String logoutConfirmMessage = 'logout_confirm_message';
+  static const String today = 'today';
+  static const String upcomingClasses = 'upcoming_classes';
+  static const String academyAndFamily = 'academy_and_family';
+  static const String academicYearLabel = 'academic_year_label';
+  static const String communicationTitle = 'communication_title';
+  static const String communicationSubtitle = 'communication_subtitle';
+  static const String paymentsTitle = 'payments_title';
+  static const String paymentsSubtitle = 'payments_subtitle';
+  static const String upToDate = 'up_to_date';
+  static const String settingsMenuSubtitle = 'settings_menu_subtitle';
+  static const String emailNotificationNotice = 'email_notification_notice';
+  static const String phoneUrgentNotice = 'phone_urgent_notice';
+  static const String profileUpdatedSuccess = 'profile_updated_success';
+
+  // ── Class Details & Teacher Info (Fixed UI) ──────────────────────────────
+  static const String classDetailsTitle = 'class_details_title';
+  static const String scheduleAndTiming = 'schedule_and_timing';
+  static const String date = 'date';
+  static const String timeSlot = 'time_slot';
+  static const String academyLocation = 'academy_location';
+  static const String teacherInfoTitle = 'teacher_info_title';
+  static const String viewFloorPlan = 'view_floor_plan';
+  static const String directCommunication = 'direct_communication';
+  static const String portalDirectMessage = 'portal_direct_message';
+  static const String officeHoursTitle = 'office_hours_title';
+  static const String emailAddressTitle = 'email_address_title';
+  static const String sendMessageBtn = 'send_message_btn';
+  static const String requestOfficeHourBtn = 'request_office_hour_btn';
+  static const String sendEmailBtn = 'send_email_btn';
+  static const String viewFullSchedule = 'view_full_schedule';
+  static const String weekPrefix = 'week_prefix';
+  static const String teacherOfPrefix = 'teacher_of_prefix';
+  static const String remainingToday = 'remaining_today';
+  static const String completedEarlier = 'completed_earlier';
+  static const String tomorrow = 'tomorrow';
+  static const String classReportAction = 'class_report_action';
+  static const String completedPresent = 'completed_present';
+
+  // ── Reports & Homework (Fixed UI) ────────────────────────────────────────
+  static const String reportDetailTitle = 'report_detail_title';
+  static const String allReports = 'all_reports';
+  static const String present = 'present';
+  static const String late = 'late';
+  static const String absent = 'absent';
+  static const String excused = 'excused';
+  static const String teacherNote = 'teacher_note';
+  static const String viewReport = 'view_report';
+  static const String noReportsFound = 'no_reports_found';
+  static const String noReportsForCategory = 'no_reports_for_category';
+  static const String homeworkAndTasks = 'homework_and_tasks';
+  static const String viewHomework = 'view_homework';
+  static const String teacherObservation = 'teacher_observation';
+  static const String showLess = 'show_less';
+  static const String readFullNote = 'read_full_note';
+  static const String status = 'status';
+  static const String duration = 'duration';
+  static const String participation = 'participation';
+  static const String downloadReport = 'download_report';
+  static const String homeworkTitle = 'homework_title';
+  static const String allTab = 'all_tab';
+  static const String pendingTab = 'pending_tab';
+  static const String completedTab = 'completed_tab';
+  static const String viewDetails = 'view_details';
+  static const String homeworkDetailsTitle = 'homework_details_title';
+  static const String instructionsTitle = 'instructions_title';
+  static const String attachmentsTitle = 'attachments_title';
+  static const String submissionStatusTitle = 'submission_status_title';
+  static const String submissionPending = 'submission_pending';
+
+  // ── Attendance (Fixed UI) ────────────────────────────────────────────────
+  static const String currentQuarter = 'current_quarter';
+  static const String sessionsCount = 'sessions_count';
+
+  // ── Notifications (Fixed UI) ─────────────────────────────────────────────
+  static const String academyUpdates = 'academy_updates';
+  static const String stayUpdatedSubtitle = 'stay_updated_subtitle';
+  static const String unreadBadge = 'unread_badge';
+  static const String allCaughtUp = 'all_caught_up';
+
+  // ── Payment & Invoicing (Fixed UI) ────────────────────────────────────────
+  static const String tuitionPaymentTitle = 'tuition_payment_title';
+  static const String paymentMethodTitle = 'payment_method_title';
+  static const String processedByStripe = 'processed_by_stripe';
+  static const String totalToPay = 'total_to_pay';
+  static const String cardNumber = 'card_number';
+  static const String expiration = 'expiration';
+  static const String cvc = 'cvc';
+  static const String country = 'country';
+  static const String postalCode = 'postal_code';
+  static const String saveCardFuture = 'save_card_future';
+  static const String autoBillingSubtitle = 'auto_billing_subtitle';
+  static const String payNowBtn = 'pay_now_btn';
+  static const String paymentSuccessTitle = 'payment_success_title';
+  static const String paymentSuccessSubtitle = 'payment_success_subtitle';
+  static const String paidAndSettled = 'paid_and_settled';
+  static const String paymentReceiptTitle = 'payment_receipt_title';
+  static const String downloadReceiptPdf = 'download_receipt_pdf';
+  static const String receiptEmailSentNotice = 'receipt_email_sent_notice';
+  static const String finishBtn = 'finish_btn';
+  static const String periodLabel = 'period_label';
+  static const String studentLabel = 'student_label';
+  static const String invoiceLabel = 'invoice_label';
+  static const String methodLabel = 'method_label';
+
+  // ── Chat & Communication (Fixed UI) ──────────────────────────────────────
+  static const String chatTutoringTab = 'chat_tutoring_tab';
+  static const String chatAdministrationTab = 'chat_administration_tab';
+  static const String typeMessageHint = 'type_message_hint';
+
+  // ── Teacher Features (Fixed UI) ──────────────────────────────────────────
+  static const String assignedClassesTitle = 'assigned_classes_title';
+  static const String studentsCount = 'students_count';
+  static const String dateTime = 'date_time';
+  static const String classroom = 'classroom';
+  static const String enrollment = 'enrollment';
+  static const String sessionInfoTitle = 'session_info_title';
+  static const String todaysTopic = 'todays_topic';
+  static const String roomStatusTitle = 'room_status_title';
+  static const String startClassAndAttendance = 'start_class_and_attendance';
+  static const String takeAttendance = 'take_attendance';
+  static const String finishAttendance = 'finish_attendance';
+  static const String presentCountLabel = 'present_count_label';
+  static const String markAllPresent = 'mark_all_present';
+  static const String allStudentsMarkedPresent = 'all_students_marked_present';
+  static const String attendanceCompletedTitle = 'attendance_completed_title';
+  static const String endClassTitle = 'end_class_title';
+  static const String endClassSessionTitle = 'end_class_session_title';
+  static const String endClassSessionDesc = 'end_class_session_desc';
+  static const String subjectAndGroupTitle = 'subject_and_group_title';
+  static const String location = 'location';
+  static const String scheduleTitle = 'schedule_title';
+  static const String attendanceSummaryTitle = 'attendance_summary_title';
+  static const String finishClassAndCreateReport = 'finish_class_and_create_report';
+  static const String backToAttendance = 'back_to_attendance';
+  static const String attendanceLockedNotice = 'attendance_locked_notice';
+  static const String postClassReportTitle = 'post_class_report_title';
+  static const String contentDeliveredTitle = 'content_delivered_title';
+  static const String assignedTasksTitle = 'assigned_tasks_title';
+  static const String conductAndAttitudeTitle = 'conduct_and_attitude_title';
+  static const String effortAndDedicationTitle = 'effort_and_dedication_title';
+  static const String quickNotesTitle = 'quick_notes_title';
+  static const String sendReportBtn = 'send_report_btn';
+  static const String conductNeedsAttention = 'conduct_needs_attention';
+  static const String conductSatisfactory = 'conduct_satisfactory';
+  static const String conductExcellent = 'conduct_excellent';
+  static const String effortModerate = 'effort_moderate';
+  static const String effortAdequate = 'effort_adequate';
+  static const String effortHighPerformance = 'effort_high_performance';
+  static const String reportSubmittedTitle = 'report_submitted_title';
+  static const String reportSubmittedSubtitle = 'report_submitted_subtitle';
+  static const String recordedSessionsTitle = 'recorded_sessions_title';
+  static const String recordedSessionsSubtitle = 'recorded_sessions_subtitle';
+  static const String inTotal = 'in_total';
+  static const String myStudentsTitle = 'my_students_title';
+  static const String searchStudentHint = 'search_student_hint';
+  static const String rosterAssignedTitle = 'roster_assigned_title';
+  static const String studentDetailsTitle = 'student_details_title';
+  static const String latestClassReportTitle = 'latest_class_report_title';
+  static const String activeHomeworkTitle = 'active_homework_title';
+  static const String facultyNoteTitle = 'faculty_note_title';
+  static const String metricAttendances = 'metric_attendances';
+  static const String metricPerformance = 'metric_performance';
+  static const String metricHomework = 'metric_homework';
+  static const String reviewPending = 'review_pending';
+  static const String addNoteBtn = 'add_note_btn';
+  static const String addNoteTitle = 'add_note_title';
+  static const String addNoteHint = 'add_note_hint';
+  static const String saveNoteBtn = 'save_note_btn';
+  static const String academyNavigationTitle = 'academy_navigation_title';
+  static const String teacherPortalBadge = 'teacher_portal_badge';
+  static const String teacherIdBadge = 'teacher_id_badge';
+  static const String academyMessagesTitle = 'academy_messages_title';
+  static const String academyMessagesSubtitle = 'academy_messages_subtitle';
+  static const String announcementsTitle = 'announcements_title';
+  static const String announcementsSubtitle = 'announcements_subtitle';
+  static const String familyCommunicationTitle = 'family_communication_title';
+  static const String familyCommunicationSubtitle = 'family_communication_subtitle';
+  static const String nextClass = 'next_class';
+  static const String scheduled = 'scheduled';
+  static const String groupA = 'group_a';
+  static const String groupB = 'group_b';
+  static const String oneOnOne = 'one_on_one';
+  static const String filed = 'filed';
+  static const String submitted = 'submitted';
+  static const String needsCheckIn = 'needs_check_in';
+  static const String attendanceRecordTitle = 'attendance_record_title';
+  static const String attendanceAndParticipationTitle = 'attendance_and_participation_title';
+  static const String facultyObservationTitle = 'faculty_observation_title';
+  static const String downloadOfficialRecordPdf = 'download_official_record_pdf';
+  static const String facultyPrefix = 'faculty_prefix';
+  static const String activeStatus = 'active_status';
+  static const String deskPrefix = 'desk_prefix';
+  static const String jpgPngMax5mb = 'jpg_png_max_5mb';
+  static const String imageSizeLimitError = 'image_size_limit_error';
+  static const String imageSelectError = 'image_select_error';
+  static const String personalContactInfoSubtitle = 'personal_contact_info_subtitle';
+  static const String academyAnnouncementsSubtitle = 'academy_announcements_subtitle';
+  static const String settingsNavSubtitle = 'settings_nav_subtitle';
+  static const String facultyInfoTitle = 'faculty_info_title';
+  static const String deptSubjectLabel = 'dept_subject_label';
+  static const String officeRoomLabel = 'office_room_label';
+  static const String briefBioNotes = 'brief_bio_notes';
+  static const String preferredLanguage = 'preferred_language';
+  static const String writeNoteHint = 'write_note_hint';
+  static const String fieldIsRequiredSuffix = 'field_is_required_suffix';
+
+  // ── Form Validation ───────────────────────────────────────────────────────
+  static const String emailRequired = 'email_required';
+  static const String validEmailAddress = 'valid_email_address';
+  static const String passwordRequired = 'password_required';
+  static const String passwordMin8 = 'password_min_8';
+  static const String uppercaseRequired = 'uppercase_required';
+  static const String numberRequired = 'number_required';
+  static const String confirmPasswordRequired = 'confirm_password_required';
+  static const String enterPasswordFirst = 'enter_password_first';
+  static const String passwordsDoNotMatch = 'passwords_do_not_match';
+  static const String otpRequired = 'otp_required';
+  static const String otpMustBe6Digits = 'otp_must_be_6_digits';
+  static const String otpNumbersOnly = 'otp_numbers_only';
+  static const String fieldRequired = 'field_required';
+  static const String websiteUrlRequired = 'website_url_required';
+  static const String validWebsiteUrl = 'valid_website_url';
+  static const String nameRequired = 'name_required';
+  static const String validName = 'valid_name';
+  static const String phoneNumberRequired = 'phone_number_required';
+  static const String validPhoneNumber = 'valid_phone_number';
+  static const String usernameRequired = 'username_required';
+  static const String usernameInvalidLength = 'username_invalid_length';
+  static const String valueRequired = 'value_required';
+  static const String validNumber = 'valid_number';
+  static const String addressRequired = 'address_required';
+  static const String validAddress = 'valid_address';
+  static const String cityRequired = 'city_required';
+  static const String validCityName = 'valid_city_name';
+  static const String zipcodeRequired = 'zipcode_required';
+  static const String validZipcode = 'valid_zipcode';
+  static const String countryRequired = 'country_required';
+  static const String validCountryName = 'valid_country_name';
+  static const String descriptionRequired = 'description_required';
+  static const String postalCodeRequired = 'postal_code_required';
+  static const String validPostalCode = 'valid_postal_code';
+  static const String dateOfBirthRequired = 'date_of_birth_required';
+  static const String validDateOfBirth = 'valid_date_of_birth';
+  static const String invalidDateFormat = 'invalid_date_format';
+  static const String dateOfBirthFuture = 'date_of_birth_future';
+  static const String invalidDateOfBirth = 'invalid_date_of_birth';
+  static const String genderRequired = 'gender_required';
+  static const String validGender = 'valid_gender';
+
+  // ── Network / Launchers / Common UI ───────────────────────────────────────
+  static const String dialerNotSupported = 'dialer_not_supported';
+  static const String couldNotLaunchDialer = 'could_not_launch_dialer';
+  static const String whatsappCannotBeOpened = 'whatsapp_cannot_be_opened';
+  static const String couldNotLaunchWhatsapp = 'could_not_launch_whatsapp';
   static const String noInternetConnection = 'no_internet_connection';
+  static const String back = 'back';
+  static const String seeLess = 'see_less';
+  static const String seeMore = 'see_more';
+  static const String somethingWentWrong = 'something_went_wrong';
+  static const String unknownErrorMessage = 'unknown_error_message';
+  static const String tryAgain = 'try_again';
+  static const String retry = 'retry';
+  static const String somethingWentWrongRetry = 'something_went_wrong_retry';
+  static const String noItemsFound = 'no_items_found';
+  static const String listCurrentlyEmpty = 'list_currently_empty';
+  static const String offlineMessage = 'offline_message';
+  static const String unableToPlayVideo = 'unable_to_play_video';
+  static const String videoUnavailableOrConnectionFailed = 'video_unavailable_or_connection_failed';
 
-  //
-  static const String locationUnavailable = 'location_unavailable';
-  static const String enableLocationNearbyMessage =
-      'enable_location_nearby_message';
+  // ── Greetings ─────────────────────────────────────────────────────────────
+  static const String goodMorning = 'good_morning';
+  static const String goodAfternoon = 'good_afternoon';
+  static const String goodEvening = 'good_evening';
+  static const String goodNight = 'good_night';
+
+  // ===========================================================================
+  // 2. SAMPLE / STATIC MOCK DATA STRINGS (Removable / replaceable later)
+  // ===========================================================================
+
+  // ── Spanish Academic Terms & Rooms ────────────────────────────────────────
+  static const String aula1 = 'aula_1';
+  static const String aula2 = 'aula_2';
+  static const String aula3 = 'aula_3';
+  static const String aula4 = 'aula_4';
+  static const String aulaMagna = 'aula_magna';
+  static const String lab1 = 'lab_1';
+  static const String lab2 = 'lab_2';
+
+  // ── Spanish Academic Levels ───────────────────────────────────────────────
+  static const String primaria1 = 'primaria_1';
+  static const String primaria2 = 'primaria_2';
+  static const String primaria3 = 'primaria_3';
+  static const String primaria4 = 'primaria_4';
+  static const String primaria5 = 'primaria_5';
+  static const String primaria6 = 'primaria_6';
+  static const String eso1 = 'eso_1';
+  static const String eso2 = 'eso_2';
+  static const String eso3 = 'eso_3';
+  static const String eso4 = 'eso_4';
+  static const String bachillerato1 = 'bachillerato_1';
+  static const String bachillerato2 = 'bachillerato_2';
+
+  // ── Spanish Academic Subjects ─────────────────────────────────────────────
+  static const String subjectMath = 'subject_math';
+  static const String subjectPhysicsChemistry = 'subject_physics_chemistry';
+  static const String subjectSpanishLanguage = 'subject_spanish_language';
+  static const String subjectEnglish = 'subject_english';
+  static const String subjectBiology = 'subject_biology';
+  static const String subjectHistory = 'subject_history';
+  static const String subjectStatistics = 'subject_statistics';
+  static const String subjectAlgebra = 'subject_algebra';
+
+  // ── Home & Schedule Mock Labels ───────────────────────────────────────────
+  static const String homeGreeting = 'home_greeting';
+  static const String homeSchedule = 'home_schedule';
+  static const String homeInPerson = 'home_in_person';
+  static const String homeToday = 'home_today';
+  static const String homeClassesScheduled = 'home_classes_scheduled';
+  static const String homeNextLabel = 'home_next_label';
+  static const String homeAttendanceLabel = 'home_attendance_label';
+  static const String homePresentToday = 'home_present_today';
+  static const String homeAttendanceHistory = 'home_attendance_history';
+  static const String homeTodaysSchedule = 'home_todays_schedule';
+  static const String homeViewAll = 'home_view_all';
+  static const String homeSwitch = 'home_switch';
+  static const String homeDetails = 'home_details';
+  static const String homeCampusOpen = 'home_campus_open';
+  static const String homeNextUp = 'home_next_up';
+  static const String homeStarts = 'home_starts';
+
+  // ── Class Details & Teacher Info Mock Data ────────────────────────────────
+  static const String mockMainBuilding = 'mock_main_building';
+  static const String mockBuildingFloor = 'mock_building_floor';
+  static const String mockFloorPlanOf = 'mock_floor_plan_of';
+  static const String mockTeacherOf = 'mock_teacher_of';
+  static const String mockOfficeHours = 'mock_office_hours';
+  static const String mockPhysicsDesc = 'mock_physics_desc';
+  static const String mockLanguageDesc = 'mock_language_desc';
+  static const String mockMathDesc = 'mock_math_desc';
+  static const String mockTeacherBio = 'mock_teacher_bio';
+  static const String mockTeacherDept = 'mock_teacher_dept';
+  static const String mockTeacherAcademyId = 'mock_teacher_academy_id';
+  static const String mockMessagePrompt = 'mock_message_prompt';
+  static const String mockOfficeHoursNotice = 'mock_office_hours_notice';
 }

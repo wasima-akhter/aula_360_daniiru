@@ -1,20 +1,20 @@
-﻿import '../../share/export/screen_export.dart';
+import '../../share/export/screen_export.dart';
 import 'language_picker.dart';
 
 /// ===============================================================
-/// SETTINGS
+/// TEACHER SETTINGS SCREEN
 /// ===============================================================
 
-class TeacherSettingsScreen extends StatefulWidget {
+class TeacherSettingsScreen extends ConsumerStatefulWidget {
   const TeacherSettingsScreen({super.key});
 
   @override
-  State<TeacherSettingsScreen> createState() => _TeacherSettingsScreenState();
+  ConsumerState<TeacherSettingsScreen> createState() =>
+      _TeacherSettingsScreenState();
 }
 
-class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
-  String language = 'English (US)';
-
+class _TeacherSettingsScreenState
+    extends ConsumerState<TeacherSettingsScreen> {
   bool classReminders = true;
   bool parentMessages = true;
   bool postClassReports = true;
@@ -22,9 +22,15 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final tr = ref.watchTr;
+    final currentLang = ref.watch(languageProvider).valueOrNull?.language;
+    final langLabel = currentLang == AppLanguage.spanish
+        ? tr(AppStrings.languageSpanishLabel)
+        : tr(AppStrings.languageEnglishUs);
+
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
-      appBar: _appBar(),
+      appBar: _appBar(tr),
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
@@ -32,28 +38,28 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _breadcrumb(),
+              _breadcrumb(tr),
 
               SizedBox(height: 22.h),
 
-              _sectionLabel('LANGUAGE'),
+              _sectionLabel(tr(AppStrings.settingsSectionLanguage)),
               SizedBox(height: 8.h),
 
-              _languageCard(),
+              _languageCard(tr, langLabel),
 
               SizedBox(height: 22.h),
 
-              _sectionLabel('NOTIFICATIONS'),
+              _sectionLabel(tr(AppStrings.settingsSectionNotifications)),
               SizedBox(height: 8.h),
 
-              _notificationCard(),
+              _notificationCard(tr),
 
               SizedBox(height: 22.h),
 
-              _sectionLabel('ACCOUNT & SECURITY'),
+              _sectionLabel(tr(AppStrings.settingsSectionAccountSecurity)),
               SizedBox(height: 8.h),
 
-              _securityCard(),
+              _securityCard(tr),
             ],
           ),
         ),
@@ -65,7 +71,7 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
   // APP BAR
   // ===============================================================
 
-  PreferredSizeWidget _appBar() {
+  PreferredSizeWidget _appBar(String Function(String) tr) {
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
@@ -75,7 +81,7 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
         icon: Icon(Icons.arrow_back, color: AppColors.primaryDark, size: 21.sp),
       ),
       title: Text(
-        'Settings',
+        tr(AppStrings.settingsTitle),
         style: TxtStyle.titleLarge(
           color: AppColors.primaryDark,
           fontSize: 17.sp,
@@ -93,13 +99,13 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
   // BREADCRUMB
   // ===============================================================
 
-  Widget _breadcrumb() {
+  Widget _breadcrumb(String Function(String) tr) {
     return Row(
       children: [
         GestureDetector(
           onTap: () => context.pop(),
           child: Text(
-            'Profile',
+            tr(AppStrings.settingsProfileBreadcrumb),
             style: TxtStyle.titleLarge(
               color: AppColors.subtitleTextColor,
               fontSize: 16.sp,
@@ -119,7 +125,7 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
         ),
 
         Text(
-          'Settings',
+          tr(AppStrings.settingsTitle),
           style: TxtStyle.titleLarge(
             color: AppColors.primaryDark,
             fontSize: 16.sp,
@@ -134,17 +140,17 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
   // LANGUAGE
   // ===============================================================
 
-  Widget _languageCard() {
+  Widget _languageCard(String Function(String) tr, String langLabel) {
     return _card(
       child: _settingsRow(
         icon: Icons.language_outlined,
-        title: 'Display Language',
-        subtitle: 'Choose the language used throughout the portal',
+        title: tr(AppStrings.settingsLangDisplayLanguage),
+        subtitle: tr(AppStrings.settingsLangSubtitle),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              language,
+              langLabel,
               style: TxtStyle.titleLarge(
                 color: AppColors.primaryDark,
                 fontSize: 14.5.sp,
@@ -160,18 +166,11 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
           ],
         ),
         onTap: () async {
-          final selected = await LanguagePicker.show(
+          await LanguagePicker.show(
             context: context,
-            selectedLanguage: language,
+            selectedLanguage: langLabel,
+            ref: ref,
           );
-
-          if (!mounted || selected == null) return;
-
-          setState(() {
-            language = selected;
-          });
-
-          _showMessage('Language changed to $language');
         },
       ),
     );
@@ -181,14 +180,14 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
   // NOTIFICATIONS
   // ===============================================================
 
-  Widget _notificationCard() {
+  Widget _notificationCard(String Function(String) tr) {
     return _card(
       child: Column(
         children: [
           _switchRow(
             icon: Icons.notifications_none,
-            title: 'Class Reminders',
-            subtitle: 'Receive reminders before scheduled classes',
+            title: tr(AppStrings.settingsNotifClassReminders),
+            subtitle: tr(AppStrings.settingsNotifClassRemindersSub),
             value: classReminders,
             onChanged: (value) {
               setState(() {
@@ -196,7 +195,9 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
               });
 
               _showMessage(
-                value ? 'Class reminders enabled' : 'Class reminders disabled',
+                value
+                    ? tr(AppStrings.settingsClassRemindersEnabled)
+                    : tr(AppStrings.settingsClassRemindersDisabled),
               );
             },
           ),
@@ -205,8 +206,8 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
 
           _switchRow(
             icon: Icons.chat_bubble_outline,
-            title: 'Parent Messages',
-            subtitle: 'Receive messages from parents',
+            title: tr(AppStrings.settingsNotifParentMessages),
+            subtitle: tr(AppStrings.settingsNotifParentMessagesSub),
             value: parentMessages,
             onChanged: (value) {
               setState(() {
@@ -214,7 +215,9 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
               });
 
               _showMessage(
-                value ? 'Parent messages enabled' : 'Parent messages disabled',
+                value
+                    ? tr(AppStrings.settingsParentMessagesEnabled)
+                    : tr(AppStrings.settingsParentMessagesDisabled),
               );
             },
           ),
@@ -223,8 +226,8 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
 
           _switchRow(
             icon: Icons.description_outlined,
-            title: 'Post-Class Reports',
-            subtitle: 'Receive reminders to complete class reports',
+            title: tr(AppStrings.settingsNotifPostClass),
+            subtitle: tr(AppStrings.settingsNotifPostClassSub),
             value: postClassReports,
             onChanged: (value) {
               setState(() {
@@ -233,8 +236,8 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
 
               _showMessage(
                 value
-                    ? 'Post-class reports enabled'
-                    : 'Post-class reports disabled',
+                    ? tr(AppStrings.settingsPostClassEnabled)
+                    : tr(AppStrings.settingsPostClassDisabled),
               );
             },
           ),
@@ -247,26 +250,25 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
   // SECURITY
   // ===============================================================
 
-  Widget _securityCard() {
+  Widget _securityCard(String Function(String) tr) {
     return _card(
       child: Column(
         children: [
           _switchRow(
             icon: Icons.fingerprint,
-            title: 'Biometric Access',
-            subtitle: 'Use Face ID or fingerprint to unlock the portal',
+            title: tr(AppStrings.settingsSecurityBiometric),
+            subtitle: tr(AppStrings.settingsSecurityBiometricSub),
             value: biometricAccess,
-            onChanged: _toggleBiometric,
+            onChanged: (val) => _toggleBiometric(val, tr),
           ),
 
           _divider(),
 
           _settingsRow(
             icon: Icons.lock_outline,
-            title: 'Change Password',
-            subtitle: 'Update your academy account password',
+            title: tr(AppStrings.settingsSecurityChangePassword),
+            subtitle: tr(AppStrings.settingsSecurityChangePasswordSub),
             onTap: () {
-              debugPrint("change password screen");
               context.push(RoutePath.changePassword);
             },
           ),
@@ -275,8 +277,8 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
 
           _settingsRow(
             icon: Icons.devices_outlined,
-            title: 'Active Sessions',
-            subtitle: 'Manage devices currently signed in',
+            title: tr(AppStrings.settingsSecurityActiveSessions),
+            subtitle: tr(AppStrings.settingsSecurityActiveSessionsSub),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -304,7 +306,7 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
                 ),
               ],
             ),
-            onTap: _showActiveSessions,
+            onTap: () => _showActiveSessions(tr),
           ),
         ],
       ),
@@ -315,47 +317,15 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
   // BIOMETRIC
   // ===============================================================
 
-  void _toggleBiometric(bool value) {
+  void _toggleBiometric(bool value, String Function(String) tr) {
     setState(() {
       biometricAccess = value;
     });
 
     _showMessage(
-      value ? 'Biometric access enabled' : 'Biometric access disabled',
-    );
-
-    // For real biometric authentication, connect this to
-    // the `local_auth` package.
-  }
-
-  Widget _passwordField({
-    required TextEditingController controller,
-    required String label,
-    required bool obscure,
-    required VoidCallback onToggle,
-    String? Function(String?)? validator,
-  }) {
-    return TextFormField(
-      controller: controller,
-      obscureText: obscure,
-      validator:
-          validator ??
-          (value) {
-            if (value == null || value.isEmpty) {
-              return '$label is required';
-            }
-
-            return null;
-          },
-      decoration: InputDecoration(
-        labelText: label,
-        suffixIcon: IconButton(
-          onPressed: onToggle,
-          icon: Icon(
-            obscure ? Icons.visibility_off_outlined : Icons.visibility_outlined,
-          ),
-        ),
-      ),
+      value
+          ? tr(AppStrings.settingsBiometricEnabled)
+          : tr(AppStrings.settingsBiometricDisabled),
     );
   }
 
@@ -363,7 +333,7 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
   // ACTIVE SESSIONS
   // ===============================================================
 
-  void _showActiveSessions() {
+  void _showActiveSessions(String Function(String) tr) {
     showModalBottomSheet<void>(
       context: context,
       backgroundColor: Colors.white,
@@ -381,7 +351,7 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'Active Sessions',
+                    tr(AppStrings.settingsSessionsTitle),
                     style: TxtStyle.titleLarge(
                       color: AppColors.text,
                       fontSize: 20.sp,
@@ -395,7 +365,7 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'These devices currently have access to your account.',
+                    tr(AppStrings.settingsSessionsSubtitle),
                     style: TxtStyle.titleLarge(
                       color: AppColors.subtitleTextColor,
                       fontSize: 14.5.sp,
@@ -408,8 +378,9 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
                 _sessionTile(
                   icon: Icons.phone_iphone,
                   device: 'iPhone 15 Pro',
-                  location: 'Current device',
+                  location: tr(AppStrings.settingsSessionsCurrent),
                   current: true,
+                  currentBadge: tr(AppStrings.settingsSessionsBadge),
                 ),
 
                 SizedBox(height: 8.h),
@@ -417,8 +388,9 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
                 _sessionTile(
                   icon: Icons.laptop_mac_outlined,
                   device: 'MacBook Pro',
-                  location: 'Last active 2 hours ago',
+                  location: 'Activo hace 2 horas',
                   current: false,
+                  currentBadge: tr(AppStrings.settingsSessionsBadge),
                 ),
 
                 SizedBox(height: 14.h),
@@ -430,13 +402,14 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
                     onPressed: () {
                       Navigator.pop(context);
 
-                      _showMessage('Other sessions have been signed out');
+                      _showMessage(tr(AppStrings.settingsSessionsSignedout));
                     },
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppColors.error,
-                      side: BorderSide(color: AppColors.error.withOpacity(.3)),
+                      side:
+                          BorderSide(color: AppColors.error.withOpacity(.3)),
                     ),
-                    child: const Text('Sign Out Other Sessions'),
+                    child: Text(tr(AppStrings.settingsSessionsSignoutOthers)),
                   ),
                 ),
               ],
@@ -452,6 +425,7 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
     required String device,
     required String location,
     required bool current,
+    required String currentBadge,
   }) {
     return Container(
       padding: EdgeInsets.all(11.w),
@@ -506,7 +480,7 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
                 borderRadius: BorderRadius.circular(10.r),
               ),
               child: Text(
-                'Active',
+                currentBadge,
                 style: TxtStyle.titleLarge(
                   color: AppColors.emeraldGreenColor,
                   fontSize: 13.sp,
@@ -543,10 +517,7 @@ class _TeacherSettingsScreenState extends State<TeacherSettingsScreen> {
     Widget? trailing,
   }) {
     return InkWell(
-      onTap: () {
-        debugPrint('TAPPED: $title');
-        onTap();
-      },
+      onTap: onTap,
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 11.w, vertical: 12.h),
         child: Row(

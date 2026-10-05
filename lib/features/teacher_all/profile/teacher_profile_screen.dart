@@ -1,4 +1,4 @@
-﻿import '../../parent_all/helper/parent_widgets.dart';
+import '../../parent_all/helper/parent_widgets.dart';
 import '../../share/component/logout_btn.dart';
 import '../../share/export/screen_export.dart';
 
@@ -10,30 +10,35 @@ import '../../share/export/screen_export.dart';
 /// FACULTY PROFILE
 /// ===============================================================
 
-class TeacherProfileScreen extends StatefulWidget {
+class TeacherProfileScreen extends ConsumerStatefulWidget {
   const TeacherProfileScreen({super.key});
 
   @override
-  State<TeacherProfileScreen> createState() => _TeacherProfileScreenState();
+  ConsumerState<TeacherProfileScreen> createState() =>
+      _TeacherProfileScreenState();
 }
 
-class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
-  String name = 'Dr. Sarah Jenkins';
+class _TeacherProfileScreenState extends ConsumerState<TeacherProfileScreen> {
+  String name = 'Dra. Sarah Jenkins';
   String email = 's.jenkins@aula360.academy';
-  String phone = '+1 (555) 234-8901';
-  String department = 'Mathematics & Calculus';
-  String office = 'Hall A, Room 204';
+  String phone = '+34 912 345 678';
+  String department = 'Matemáticas y Física';
+  String office = 'Aula 2 / Despacho 4';
   String bio =
-      'Senior mathematics instructor specializing in advanced calculus, '
-      'analytical geometry, and physical academy curriculum coordination.';
+      'Docente titular de matemáticas especializado en bachillerato, '
+      'álgebra y preparación académica.';
 
-  String language = 'English (US)';
+  String language = 'Español';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
-      appBar: simpleAppBar(context, 'Profile', showBackButton: false),
+      appBar: simpleAppBar(
+        context,
+        ref.watchTr(AppStrings.childProfile),
+        showBackButton: false,
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
@@ -43,7 +48,7 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
               _profileCard(),
               SizedBox(height: 20.h),
 
-              _sectionLabel('ACADEMY NAVIGATION'),
+              _sectionLabel(ref.watchTr(AppStrings.academyNavigationTitle)),
               SizedBox(height: 8.h),
 
               _navigationCard(),
@@ -55,7 +60,7 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
               SizedBox(height: 22.h),
 
               Text(
-                'Aula 360 • Faculty Portal',
+                ref.watchTr(AppStrings.teacherPortalBadge),
                 textAlign: TextAlign.center,
                 style: TxtStyle.titleLarge(
                   color: AppColors.subtitleTextColor,
@@ -66,7 +71,7 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
               SizedBox(height: 4.h),
 
               Text(
-                'Faculty ID: #FAC-1042',
+                ref.watchTr(AppStrings.teacherIdBadge),
                 style: TxtStyle.titleLarge(
                   color: AppColors.hintTextColor,
                   fontSize: 14.5.sp,
@@ -155,7 +160,7 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
           SizedBox(height: 4.h),
 
           Text(
-            'Faculty Lead • $department',
+            department,
             textAlign: TextAlign.center,
             style: TxtStyle.titleLarge(
               color: AppColors.subtitleTextColor,
@@ -181,7 +186,7 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
                 ),
                 SizedBox(width: 5.w),
                 Text(
-                  'Faculty ID: #FAC-1042',
+                  ref.watchTr(AppStrings.teacherIdBadge),
                   style: TxtStyle.titleLarge(
                     color: AppColors.primaryDark,
                     fontSize: 14.5.sp,
@@ -251,8 +256,8 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
         children: [
           _navigationItem(
             icon: Icons.person_outline,
-            title: 'Edit Profile',
-            subtitle: 'Personal & contact information',
+            title: ref.watchTr(AppStrings.editProfileTitle),
+            subtitle: ref.watchTr(AppStrings.personalContactInfoSubtitle),
             onTap: _editProfile,
           ),
 
@@ -260,8 +265,8 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
 
           _navigationItem(
             icon: Icons.chat_bubble_outline,
-            title: 'Communication',
-            subtitle: 'Academy notices & messages',
+            title: ref.watchTr(AppStrings.communicationTitle),
+            subtitle: ref.watchTr(AppStrings.academyAnnouncementsSubtitle),
             onTap: _openCommunication,
           ),
 
@@ -269,8 +274,8 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
 
           _navigationItem(
             icon: Icons.settings_outlined,
-            title: 'Settings',
-            subtitle: 'Notifications, security & preferences',
+            title: ref.watchTr(AppStrings.settingsTitle),
+            subtitle: ref.watchTr(AppStrings.settingsNavSubtitle),
             onTap: () {
               context.push(RoutePath.teacherSettings);
             },
@@ -397,29 +402,28 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
               children: [
                 _bottomAction(
                   Icons.mail_outline,
-                  'Academy Messages',
-                  'View messages from administration',
+                  ref.watchTr(AppStrings.academyMessagesTitle),
+                  ref.watchTr(AppStrings.academyMessagesSubtitle),
                   () {
                     Navigator.pop(context);
-                    _showMessage('Academy Messages opened');
+                    _showMessage(ref.watchTr(AppStrings.academyMessagesTitle));
                   },
                 ),
                 _bottomAction(
                   Icons.campaign_outlined,
-                  'Announcements',
-                  'View academy announcements',
+                  ref.watchTr(AppStrings.announcementsTitle),
+                  ref.watchTr(AppStrings.announcementsSubtitle),
                   () {
                     Navigator.pop(context);
-                    _showMessage('Announcements opened');
+                    _showMessage(ref.watchTr(AppStrings.announcementsTitle));
                   },
                 ),
                 _bottomAction(
                   Icons.people_outline,
-                  'Parent Communication',
-                  'Manage parent communication',
+                  ref.watchTr(AppStrings.familyCommunicationTitle),
+                  ref.watchTr(AppStrings.familyCommunicationSubtitle),
                   () {
                     Navigator.pop(context);
-                    // _showMessage('Parent communication opened');
                     context.push(RoutePath.chatInbox);
                   },
                 ),

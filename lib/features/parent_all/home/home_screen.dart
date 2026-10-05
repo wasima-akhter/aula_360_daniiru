@@ -1,36 +1,40 @@
-﻿import '../../share/export/screen_export.dart';
+import '../../share/export/screen_export.dart';
 import '../../share/widgets/button/app_logo.dart';
 import '../helper/parent_home_helper.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen> {
   int selectedBottomIndex = 0;
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // SAMPLE / MOCK DATA (Spanish Academy Context)
+  // ─────────────────────────────────────────────────────────────────────────────
 
   final List<ClassModel> todayClasses = const [
     ClassModel(
-      subject: 'Advanced Mathematics',
-      teacher: 'Mr. Robert Hayes',
-      time: '10:30 AM',
-      duration: '12:00 PM',
-      room: 'Room 3B',
-      building: 'Main Wing',
-      category: 'Mathematics',
+      subject: 'Matemáticas Avanzadas',
+      teacher: 'D. Roberto Hayes',
+      time: '10:30',
+      duration: '12:00',
+      room: 'Aula 3B',
+      building: 'Edificio Principal',
+      category: 'Matemáticas',
       color: Color(0xFF14388D),
     ),
     ClassModel(
-      subject: 'Physics Lab',
-      teacher: 'Dr. Angela Bennett',
-      time: '02:00 PM',
-      duration: '03:20 PM',
-      room: 'Lab 2',
-      building: 'Science Bldg',
-      category: 'Physics',
+      subject: 'Física y Química',
+      teacher: 'Dra. Ángela Bennett',
+      time: '14:00',
+      duration: '15:20',
+      room: 'Laboratorio 2',
+      building: 'Edificio Ciencias',
+      category: 'Física',
       color: Color(0xFF7656D8),
     ),
   ];
@@ -40,13 +44,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _openDetails(ClassModel classData) {
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (_) => ClassDetailsScreen(classData: classData),
-    //   ),
-    // );
-
     context.push(RoutePath.classDetail, extra: classData);
   }
 
@@ -54,7 +51,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
-
       appBar: AulaAppBar(
         title: '',
         leading: const Padding(
@@ -63,9 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         actions: [
           IconButton(
-            onPressed: () {
-              // Open notifications
-            },
+            onPressed: () {},
             splashRadius: 22,
             icon: Icon(
               Icons.notifications_none_rounded,
@@ -79,7 +73,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
@@ -94,15 +87,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'WEDNESDAY, OCT 24',
+                      'MIÉRCOLES, 24 OCT',
                       style: TxtStyle.titleLarge(
                         color: AppColors.secondaryText,
-                        fontSize: 14.sp,
+                        fontSize: 13.5.sp,
                         fontWeight: FontWeight.w600,
                         letterSpacing: .5,
                       ),
                     ),
-                    const StatusPill(text: 'Campus Open'),
+                    StatusPill(text: ref.watchTr(AppStrings.homeCampusOpen)),
                   ],
                 ),
 
@@ -112,10 +105,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     Expanded(
                       child: Text(
-                        'Good morning, Eleanor',
+                        '${ref.watchTr(AppStrings.goodMorning)}, Eleanor',
                         style: TxtStyle.titleLarge(
                           color: AppColors.text,
-                          fontSize: 27.sp,
+                          fontSize: 25.sp,
                           fontWeight: FontWeight.w800,
                         ),
                       ),
@@ -150,10 +143,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             SizedBox(height: 3.h),
                             Text(
-                              'Grade 8 • Section A',
+                              '${ref.watchTr(AppStrings.eso2)} • ${ref.watchTr(AppStrings.aula3)}',
                               style: TxtStyle.bodyMedium(
                                 color: AppColors.secondaryText,
-                                fontSize: 15.sp,
+                                fontSize: 14.sp,
                               ),
                             ),
                           ],
@@ -178,7 +171,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             SizedBox(width: 4.w),
                             Text(
-                              'Switch',
+                              ref.watchTr(AppStrings.homeSwitch),
                               style: TxtStyle.titleLarge(
                                 color: AppColors.primary,
                                 fontSize: 14.sp,
@@ -210,16 +203,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         Row(
                           children: [
-                            const StatusPill(
-                              text: 'NEXT UP • 45M',
-                              color: Color(0xFF38D99B),
+                            StatusPill(
+                              text: '${ref.watchTr(AppStrings.nextClass).toUpperCase()} • 45 MIN',
+                              color: const Color(0xFF38D99B),
                             ),
                             const Spacer(),
                             Text(
-                              'Starts 10:30 AM',
+                              '${ref.watchTr(AppStrings.homeStarts)} 10:30',
                               style: TxtStyle.titleLarge(
                                 color: Colors.white,
-                                fontSize: 14.sp,
+                                fontSize: 13.5.sp,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -229,10 +222,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         SizedBox(height: 17.h),
 
                         Text(
-                          'Advanced Mathematics',
+                          'Matemáticas Avanzadas',
                           style: TxtStyle.titleLarge(
                             color: Colors.white,
-                            fontSize: 21.sp,
+                            fontSize: 20.sp,
                             fontWeight: FontWeight.w800,
                           ),
                         ),
@@ -240,10 +233,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         SizedBox(height: 5.h),
 
                         Text(
-                          'Linear Quadratic Systems & Practice',
+                          'Sistemas lineales y resolución de problemas',
                           style: TxtStyle.titleLarge(
                             color: Colors.white.withOpacity(.75),
-                            fontSize: 15.sp,
+                            fontSize: 14.5.sp,
                           ),
                         ),
 
@@ -269,16 +262,16 @@ class _HomeScreenState extends State<HomeScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Mr. Robert Hayes',
+                                    'D. Roberto Hayes',
                                     style: TxtStyle.titleLarge(
                                       color: Colors.white,
-                                      fontSize: 15.sp,
+                                      fontSize: 14.5.sp,
                                       fontWeight: FontWeight.w700,
                                     ),
                                   ),
                                   SizedBox(height: 2.h),
                                   Text(
-                                    'Classroom 3B',
+                                    ref.watchTr(AppStrings.aula3),
                                     style: TxtStyle.titleLarge(
                                       color: Colors.white.withOpacity(.65),
                                       fontSize: 13.sp,
@@ -288,7 +281,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
                             Text(
-                              'Details',
+                              ref.watchTr(AppStrings.homeDetails),
                               style: TxtStyle.titleLarge(
                                 color: Colors.white,
                                 fontSize: 14.sp,
@@ -314,8 +307,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 // TODAY'S SCHEDULE
                 // ------------------------------------------------
                 SectionHeader(
-                  title: "Today's Schedule",
-                  actionText: 'View All',
+                  title: ref.watchTr(AppStrings.homeTodaysSchedule),
+                  actionText: ref.watchTr(AppStrings.homeViewAll),
                   onAction: _openSchedule,
                 ),
 
@@ -354,16 +347,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       Row(
                         children: [
                           Text(
-                            'ATTENDANCE',
+                            ref.watchTr(AppStrings.attendance).toUpperCase(),
                             style: TxtStyle.titleLarge(
                               color: AppColors.secondaryText,
-                              fontSize: 14.sp,
+                              fontSize: 13.5.sp,
                               fontWeight: FontWeight.w700,
                               letterSpacing: .4,
                             ),
                           ),
                           const Spacer(),
-                          const StatusPill(text: 'Present Today'),
+                          StatusPill(text: ref.watchTr(AppStrings.homePresentToday)),
                         ],
                       ),
 
@@ -381,10 +374,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       SizedBox(height: 3.h),
 
                       Text(
-                        '27 of 28 sessions attended this term',
+                        '27 de 28 sesiones asistidas este trimestre',
                         style: TxtStyle.titleLarge(
                           color: AppColors.secondaryText,
-                          fontSize: 15.sp,
+                          fontSize: 14.5.sp,
                         ),
                       ),
 
@@ -395,7 +388,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: InkWell(
                           focusColor: Colors.blue,
                           onTap: () {
-                            // Navigate to Attendance History
                             context.push(RoutePath.attendance);
                           },
                           borderRadius: BorderRadius.circular(8.r),
@@ -405,7 +397,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               vertical: 4.h,
                             ),
                             child: Text(
-                              'Attendance History →',
+                              '${ref.watchTr(AppStrings.attendance)} →',
                               style: TxtStyle.titleLarge(
                                 color: AppColors.primary,
                                 fontSize: 14.sp,
@@ -463,7 +455,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     classData.subject,
                     style: TxtStyle.titleLarge(
                       color: AppColors.text,
-                      fontSize: 17.sp,
+                      fontSize: 16.5.sp,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -472,7 +464,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     '${classData.room} • ${classData.building}',
                     style: TxtStyle.bodyMedium(
                       color: AppColors.secondaryText,
-                      fontSize: 14.sp,
+                      fontSize: 13.5.sp,
                     ),
                   ),
                 ],

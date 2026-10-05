@@ -1,25 +1,25 @@
-﻿import '../../share/export/screen_export.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../share/export/screen_export.dart';
 import '../helper/parent_home_helper.dart';
 
-class ClassDetailsScreen extends StatefulWidget {
+class ClassDetailsScreen extends ConsumerStatefulWidget {
   final ClassModel classData;
 
   const ClassDetailsScreen({super.key, required this.classData});
 
   @override
-  State<ClassDetailsScreen> createState() => _ClassDetailsScreenState();
+  ConsumerState<ClassDetailsScreen> createState() => _ClassDetailsScreenState();
 }
 
-class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
+class _ClassDetailsScreenState extends ConsumerState<ClassDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     final data = widget.classData;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
-
       appBar: AulaAppBar(
-        title: 'Class Details',
+        title: ref.watchTr(AppStrings.classDetailsTitle),
         showBack: true,
         actions: [
           IconButton(
@@ -32,7 +32,6 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
           ),
         ],
       ),
-
       body: SafeArea(
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
@@ -48,9 +47,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                     child: Row(
                       children: [
                         const UserAvatar(initials: 'LR', size: 42),
-
                         SizedBox(width: 11.w),
-
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,10 +73,10 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                                       borderRadius: BorderRadius.circular(5.r),
                                     ),
                                     child: Text(
-                                      'Grade 8',
+                                      ref.watchTr(AppStrings.eso2),
                                       style: TxtStyle.titleLarge(
                                         color: AppColors.primary,
-                                        fontSize: 14.sp,
+                                        fontSize: 13.5.sp,
                                         fontWeight: FontWeight.w700,
                                       ),
                                     ),
@@ -88,10 +85,10 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                               ),
                               SizedBox(height: 4.h),
                               Text(
-                                'Room 3B • ID #A360-842',
+                                '${ref.watchTr(AppStrings.aula3)} • ID #A360-842',
                                 style: TxtStyle.titleLarge(
                                   color: AppColors.secondaryText,
-                                  fontSize: 15.sp,
+                                  fontSize: 14.5.sp,
                                 ),
                               ),
                             ],
@@ -114,18 +111,16 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                           data.subject,
                           style: TxtStyle.titleLarge(
                             color: AppColors.primary,
-                            fontSize: 25.sp,
+                            fontSize: 23.sp,
                             fontWeight: FontWeight.w800,
                           ),
                         ),
-
                         SizedBox(height: 7.h),
-
                         Text(
                           _descriptionFor(data.category),
                           style: TxtStyle.titleLarge(
                             color: AppColors.secondaryText,
-                            fontSize: 16.sp,
+                            fontSize: 15.sp,
                             height: 1.4,
                           ),
                         ),
@@ -142,23 +137,19 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _smallTitle('SCHEDULE & TIMING'),
-
+                        _smallTitle(ref.watchTr(AppStrings.scheduleAndTiming)),
                         SizedBox(height: 12.h),
-
                         _detailRow(
                           icon: Icons.calendar_today_outlined,
-                          label: 'Date',
-                          value: 'Wednesday, October 24, 2024',
+                          label: ref.watchTr(AppStrings.date),
+                          value: 'Miércoles, 24 de Octubre de 2024',
                         ),
-
                         SizedBox(height: 10.h),
-
                         _detailRow(
                           icon: Icons.access_time_rounded,
-                          label: 'Time Window',
+                          label: ref.watchTr(AppStrings.timeSlot),
                           value: '${data.time} – ${data.duration}',
-                          trailing: '90 mins',
+                          trailing: '90 min',
                         ),
                       ],
                     ),
@@ -175,7 +166,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                       children: [
                         Row(
                           children: [
-                            _smallTitle('CAMPUS LOCATION'),
+                            _smallTitle(ref.watchTr(AppStrings.academyLocation)),
                             const Spacer(),
                             Icon(
                               Icons.business_outlined,
@@ -183,41 +174,38 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                               color: AppColors.primary,
                             ),
                             SizedBox(width: 4.w),
-                            Text(
-                              'Building A',
-                              style: TxtStyle.titleLarge(
-                                color: AppColors.primary,
-                                fontSize: 15.sp,
-                                fontWeight: FontWeight.w700,
+                            Flexible(
+                              child: Text(
+                                ref.watchTr(AppStrings.mockMainBuilding),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TxtStyle.titleLarge(
+                                  color: AppColors.primary,
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w700,
+                                ),
                               ),
                             ),
                           ],
                         ),
-
                         SizedBox(height: 12.h),
-
                         Text(
                           '${data.room}, ${data.building}',
                           style: TxtStyle.titleLarge(
                             color: AppColors.text,
-                            fontSize: 18.sp,
+                            fontSize: 17.sp,
                             fontWeight: FontWeight.w800,
                           ),
                         ),
-
                         SizedBox(height: 4.h),
-
                         Text(
-                          'West Campus Building A • 2nd Floor, South Corridor',
+                          ref.watchTr(AppStrings.mockBuildingFloor),
                           style: TxtStyle.titleLarge(
                             color: AppColors.secondaryText,
-                            fontSize: 15.sp,
+                            fontSize: 14.sp,
                           ),
                         ),
-
                         SizedBox(height: 12.h),
-
-                        // Map placeholder
                         Container(
                           height: 150.h,
                           width: double.infinity,
@@ -234,7 +222,6 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                                   color: Colors.grey.shade400,
                                 ),
                               ),
-
                               Positioned(
                                 left: 12.w,
                                 bottom: 10.h,
@@ -244,7 +231,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                                     vertical: 6.h,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: Colors.black.withOpacity(.45),
+                                    color: Colors.black.withValues(alpha: .45),
                                     borderRadius: BorderRadius.circular(6.r),
                                   ),
                                   child: Row(
@@ -256,10 +243,10 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                                       ),
                                       SizedBox(width: 4.w),
                                       Text(
-                                        '${data.room} Schematic',
+                                        '${ref.watchTr(AppStrings.mockFloorPlanOf)} ${data.room}',
                                         style: TxtStyle.titleLarge(
                                           color: Colors.white,
-                                          fontSize: 15.sp,
+                                          fontSize: 14.sp,
                                           fontWeight: FontWeight.w600,
                                         ),
                                       ),
@@ -267,7 +254,6 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                                   ),
                                 ),
                               ),
-
                               Positioned(
                                 right: 10.w,
                                 bottom: 10.h,
@@ -281,10 +267,10 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                                     borderRadius: BorderRadius.circular(6.r),
                                   ),
                                   child: Text(
-                                    'View Map ↗',
+                                    ref.watchTr(AppStrings.viewFloorPlan),
                                     style: TxtStyle.titleLarge(
                                       color: AppColors.primary,
-                                      fontSize: 15.sp,
+                                      fontSize: 14.sp,
                                       fontWeight: FontWeight.w700,
                                     ),
                                   ),
@@ -314,23 +300,18 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              _smallTitle('INSTRUCTOR INFORMATION'),
-
-                              Icon(Icons.chevron_right),
+                              _smallTitle(ref.watchTr(AppStrings.teacherInfoTitle)),
+                              const Icon(Icons.chevron_right),
                             ],
                           ),
-
                           SizedBox(height: 13.h),
-
                           Row(
                             children: [
                               UserAvatar(
                                 initials: _teacherInitials(data.teacher),
                                 size: 43,
                               ),
-
                               SizedBox(width: 10.w),
-
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -339,16 +320,16 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                                       data.teacher,
                                       style: TxtStyle.titleLarge(
                                         color: AppColors.text,
-                                        fontSize: 18.sp,
+                                        fontSize: 17.sp,
                                         fontWeight: FontWeight.w800,
                                       ),
                                     ),
                                     SizedBox(height: 3.h),
                                     Text(
-                                      '${data.category} & STEM Faculty Lead',
+                                      '${ref.watchTr(AppStrings.teacherOfPrefix)} ${data.category}',
                                       style: TxtStyle.bodyMedium(
                                         color: AppColors.secondaryText,
-                                        fontSize: 15.sp,
+                                        fontSize: 14.sp,
                                       ),
                                     ),
                                   ],
@@ -356,9 +337,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                               ),
                             ],
                           ),
-
                           SizedBox(height: 13.h),
-
                           Container(
                             width: double.infinity,
                             padding: EdgeInsets.all(11.w),
@@ -377,10 +356,10 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                                 SizedBox(width: 7.w),
                                 Expanded(
                                   child: Text(
-                                    'Office Hours: 03:30 PM – 04:30 PM\n(Room 3B)',
+                                    ref.watchTr(AppStrings.mockOfficeHours),
                                     style: TxtStyle.titleLarge(
                                       color: AppColors.secondaryText,
-                                      fontSize: 15.sp,
+                                      fontSize: 14.sp,
                                       height: 1.4,
                                     ),
                                   ),
@@ -406,7 +385,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
       text,
       style: TxtStyle.titleLarge(
         color: AppColors.secondaryText,
-        fontSize: 15.sp,
+        fontSize: 14.sp,
         fontWeight: FontWeight.w700,
         letterSpacing: .45,
       ),
@@ -437,9 +416,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
             ),
             child: Icon(icon, color: AppColors.primary, size: 17.sp),
           ),
-
           SizedBox(width: 9.w),
-
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -448,7 +425,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                   label,
                   style: TxtStyle.titleLarge(
                     color: AppColors.secondaryText,
-                    fontSize: 14.sp,
+                    fontSize: 13.5.sp,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -457,14 +434,13 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                   value,
                   style: TxtStyle.titleLarge(
                     color: AppColors.text,
-                    fontSize: 15.sp,
+                    fontSize: 14.5.sp,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
               ],
             ),
           ),
-
           if (trailing != null)
             Container(
               padding: EdgeInsets.symmetric(horizontal: 7.w, vertical: 4.h),
@@ -476,7 +452,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                 trailing,
                 style: TxtStyle.titleLarge(
                   color: AppColors.primary,
-                  fontSize: 14.sp,
+                  fontSize: 13.5.sp,
                   fontWeight: FontWeight.w800,
                 ),
               ),
@@ -488,22 +464,23 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
 
   String _teacherInitials(String name) {
     final parts = name.split(' ');
-
     if (parts.length >= 2) {
       return '${parts[0][0]}${parts[1][0]}';
     }
-
     return name.substring(0, 2).toUpperCase();
   }
 
   String _descriptionFor(String category) {
     switch (category) {
+      case 'Física':
       case 'Physics':
-        return 'Laboratory experiments, mechanics, motion and physical science fundamentals.';
+        return ref.watchTr(AppStrings.mockPhysicsDesc);
+      case 'Lengua':
       case 'English':
-        return 'Literature analysis, reading comprehension and written communication.';
+      case 'Spanish':
+        return ref.watchTr(AppStrings.mockLanguageDesc);
       default:
-        return 'Calculus Fundamentals & Coordinate Systems';
+        return ref.watchTr(AppStrings.mockMathDesc);
     }
   }
 }

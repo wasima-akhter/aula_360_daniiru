@@ -1,15 +1,15 @@
-﻿import 'package:aula360/features/share/export/screen_export.dart';
+import 'package:aula360/features/share/export/screen_export.dart';
 
-class SplashScreen extends StatefulWidget {
+class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key, this.onInitializationComplete});
 
   final VoidCallback? onInitializationComplete;
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen>
+class _SplashScreenState extends ConsumerState<SplashScreen>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
 
@@ -26,22 +26,23 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   Future<void> _initializeApp() async {
-    // TODO:
-    // Add your actual initialization here:
-    // - Check authentication/session
-    // - Load saved user data
-    // - Initialize Firebase
-    // - Load app configuration
-    // - Check onboarding status
-    // etc.
-
     await Future.delayed(const Duration(seconds: 2));
 
     if (!mounted) return;
 
-    // widget.onInitializationComplete?.call();
+    // Check if the user has already chosen a language.
+    final hasChosen = await ref
+        .read(languageProvider.notifier)
+        .hasLanguageBeenChosen();
 
-    context.pushReplacement(RoutePath.onboardingScreen);
+    if (!mounted) return;
+
+    if (hasChosen) {
+      // context.pushReplacement(RoutePath.onboardingScreen);
+      context.pushReplacement(RoutePath.chooseLanguageScreen);
+    } else {
+      context.pushReplacement(RoutePath.chooseLanguageScreen);
+    }
   }
 
   @override

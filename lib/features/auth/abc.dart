@@ -4,8 +4,8 @@ class AulaValidation {
   static bool required({required String value, required String fieldName}) {
     if (value.trim().isEmpty) {
       ApiSnackbar.show(
-        '$fieldName is required.',
-        title: 'Missing $fieldName',
+        '$fieldName es obligatorio.',
+        title: 'Campo Requerido',
         type: SnackbarType.error,
       );
       return false;
@@ -17,8 +17,8 @@ class AulaValidation {
   static bool email(String value) {
     if (value.trim().isEmpty) {
       ApiSnackbar.show(
-        'Please enter your email address.',
-        title: 'Email Required',
+        'Por favor, introduce tu correo electrónico.',
+        title: 'Correo Requerido',
         type: SnackbarType.error,
       );
       return false;
@@ -28,8 +28,8 @@ class AulaValidation {
 
     if (!emailRegex.hasMatch(value.trim())) {
       ApiSnackbar.show(
-        'Please enter a valid email address.',
-        title: 'Invalid Email',
+        'Por favor, introduce un correo electrónico válido.',
+        title: 'Correo Inválido',
         type: SnackbarType.error,
       );
       return false;
@@ -41,8 +41,8 @@ class AulaValidation {
   static bool phone(String value) {
     if (value.trim().isEmpty) {
       ApiSnackbar.show(
-        'Please enter your mobile number.',
-        title: 'Mobile Number Required',
+        'Por favor, introduce tu número de teléfono.',
+        title: 'Teléfono Requerido',
         type: SnackbarType.error,
       );
       return false;
@@ -52,8 +52,8 @@ class AulaValidation {
 
     if (digits.length < 8) {
       ApiSnackbar.show(
-        'Please enter a valid mobile number.',
-        title: 'Invalid Mobile Number',
+        'Por favor, introduce un número de teléfono válido.',
+        title: 'Teléfono Inválido',
         type: SnackbarType.error,
       );
       return false;
@@ -65,8 +65,8 @@ class AulaValidation {
   static bool password(String value) {
     if (value.isEmpty) {
       ApiSnackbar.show(
-        'Please enter your password.',
-        title: 'Password Required',
+        'Por favor, introduce tu contraseña.',
+        title: 'Contraseña Requerida',
         type: SnackbarType.error,
       );
       return false;
@@ -74,8 +74,8 @@ class AulaValidation {
 
     if (value.length < 8) {
       ApiSnackbar.show(
-        'Password must contain at least 8 characters.',
-        title: 'Weak Password',
+        'La contraseña debe tener al menos 8 caracteres.',
+        title: 'Contraseña Débil',
         type: SnackbarType.error,
       );
       return false;

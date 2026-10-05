@@ -1,32 +1,33 @@
-﻿import '../../share/export/screen_export.dart';
+import '../../share/export/screen_export.dart';
 import '../helper/parent_enums.dart';
 import '../helper/parent_models.dart';
 import '../helper/parent_widgets.dart';
 
 /// ===============================================================
-/// 6. ATTENDANCE
+/// 6. ATTENDANCE / ASISTENCIA
 /// ===============================================================
 
-class AttendanceScreen extends StatelessWidget {
+class AttendanceScreen extends ConsumerWidget {
   const AttendanceScreen({super.key});
 
   final child = sophiaChild;
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
-      appBar: simpleAppBar(context, 'Attendance'),
+      appBar: simpleAppBar(context, ref.watchTr(AppStrings.attendance)),
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           padding: EdgeInsets.fromLTRB(14.w, 14.h, 14.w, 30.h),
           child: Column(
             children: [
-              _summaryCard(),
+              _summaryCard(ref),
               SizedBox(height: 17.h),
-              _monthHeader(),
+              _monthHeader(ref),
               SizedBox(height: 8.h),
-              _attendanceCard(),
+              _attendanceCard(ref),
             ],
           ),
         ),
@@ -34,7 +35,7 @@ class AttendanceScreen extends StatelessWidget {
     );
   }
 
-  Widget _summaryCard() {
+  Widget _summaryCard(WidgetRef ref) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(12.w),
@@ -67,7 +68,7 @@ class AttendanceScreen extends StatelessWidget {
                       child.name,
                       style: TxtStyle.titleLarge(
                         color: AppColors.text,
-                        fontSize: 19.sp,
+                        fontSize: 18.sp,
                         fontWeight: FontWeight.w800,
                       ),
                     ),
@@ -76,7 +77,7 @@ class AttendanceScreen extends StatelessWidget {
                       '${child.grade} • ${child.room}',
                       style: TxtStyle.titleLarge(
                         color: AppColors.subtitleTextColor,
-                        fontSize: 15.5.sp,
+                        fontSize: 14.sp,
                       ),
                     ),
                   ],
@@ -89,15 +90,15 @@ class AttendanceScreen extends StatelessWidget {
                     '${child.attendance.toStringAsFixed(0)}%',
                     style: TxtStyle.titleLarge(
                       color: AppColors.primaryDark,
-                      fontSize: 20.sp,
+                      fontSize: 19.sp,
                       fontWeight: FontWeight.w900,
                     ),
                   ),
                   Text(
-                    'Term Record',
+                    ref.watchTr(AppStrings.currentQuarter),
                     style: TxtStyle.titleLarge(
                       color: AppColors.subtitleTextColor,
-                      fontSize: 14.sp,
+                      fontSize: 13.sp,
                     ),
                   ),
                 ],
@@ -112,21 +113,21 @@ class AttendanceScreen extends StatelessWidget {
               Expanded(
                 child: _summaryStat(
                   '${child.present}',
-                  'Present',
+                  ref.watchTr(AppStrings.present),
                   AppColors.emeraldGreenColor,
                 ),
               ),
               Expanded(
                 child: _summaryStat(
                   '${child.absent}',
-                  'Absent',
+                  ref.watchTr(AppStrings.absent),
                   AppColors.error,
                 ),
               ),
               Expanded(
                 child: _summaryStat(
                   '${child.late}',
-                  'Late',
+                  ref.watchTr(AppStrings.late),
                   AppColors.orangeColor,
                 ),
               ),
@@ -144,7 +145,7 @@ class AttendanceScreen extends StatelessWidget {
           value,
           style: TxtStyle.titleLarge(
             color: color,
-            fontSize: 19.sp,
+            fontSize: 18.sp,
             fontWeight: FontWeight.w800,
           ),
         ),
@@ -153,31 +154,31 @@ class AttendanceScreen extends StatelessWidget {
           label,
           style: TxtStyle.titleLarge(
             color: AppColors.subtitleTextColor,
-            fontSize: 15.sp,
+            fontSize: 14.sp,
           ),
         ),
       ],
     );
   }
 
-  Widget _monthHeader() {
+  Widget _monthHeader(WidgetRef ref) {
     return Row(
       children: [
         Text(
-          'OCTOBER 2024',
+          'OCTUBRE 2024',
           style: TxtStyle.titleLarge(
             color: AppColors.subtitleTextColor,
-            fontSize: 16.sp,
+            fontSize: 14.sp,
             fontWeight: FontWeight.w800,
             letterSpacing: .3,
           ),
         ),
         const Spacer(),
         Text(
-          '6 Sessions',
+          '6 ${ref.watchTr(AppStrings.sessionsCount)}',
           style: TxtStyle.titleLarge(
             color: AppColors.subtitleTextColor,
-            fontSize: 15.sp,
+            fontSize: 14.sp,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -185,7 +186,7 @@ class AttendanceScreen extends StatelessWidget {
     );
   }
 
-  Widget _attendanceCard() {
+  Widget _attendanceCard(WidgetRef ref) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -196,39 +197,45 @@ class AttendanceScreen extends StatelessWidget {
       child: Column(
         children: [
           _attendanceRow(
-            subject: 'Advanced Mathematics',
-            date: 'Today, Oct 24 • Period 1 (09:00 AM)',
+            ref: ref,
+            subject: 'Matemáticas Avanzadas',
+            date: 'Hoy, 24 Oct • 1ª Hora (09:00)',
             status: AttendanceStatus.present,
           ),
           _divider(),
           _attendanceRow(
-            subject: 'English Literature',
-            date: 'Today, Oct 24 • Period 2 (10:30 AM)',
+            ref: ref,
+            subject: 'Lengua Castellana y Literatura',
+            date: 'Hoy, 24 Oct • 2ª Hora (10:30)',
             status: AttendanceStatus.late,
-            detail: '10m',
+            detail: '10 min',
           ),
           _divider(),
           _attendanceRow(
-            subject: 'Biology & Science Lab',
-            date: 'Yesterday, Oct 23 • Period 4 (01:15 PM)',
+            ref: ref,
+            subject: 'Biología y Geología',
+            date: 'Ayer, 23 Oct • 4ª Hora (13:15)',
             status: AttendanceStatus.present,
           ),
           _divider(),
           _attendanceRow(
-            subject: 'World History',
-            date: 'Yesterday, Oct 23 • Period 5 (02:45 PM)',
+            ref: ref,
+            subject: 'Historia y Geografía',
+            date: 'Ayer, 23 Oct • 5ª Hora (14:45)',
             status: AttendanceStatus.present,
           ),
           _divider(),
           _attendanceRow(
-            subject: 'Physical Education',
-            date: 'Tue, Oct 22 • Field 2 (08:30 AM)',
+            ref: ref,
+            subject: 'Educación Física',
+            date: 'Mar, 22 Oct • Pista 2 (08:30)',
             status: AttendanceStatus.excused,
           ),
           _divider(),
           _attendanceRow(
-            subject: 'Art & Design',
-            date: 'Mon, Oct 21 • Studio 4 (01:15 PM)',
+            ref: ref,
+            subject: 'Educación Plástica y Visual',
+            date: 'Lun, 21 Oct • Taller 4 (13:15)',
             status: AttendanceStatus.present,
           ),
         ],
@@ -237,6 +244,7 @@ class AttendanceScreen extends StatelessWidget {
   }
 
   Widget _attendanceRow({
+    required WidgetRef ref,
     required String subject,
     required String date,
     required AttendanceStatus status,
@@ -256,7 +264,7 @@ class AttendanceScreen extends StatelessWidget {
                   style: TxtStyle.titleLarge(
                     letterSpacing: 0.1,
                     color: AppColors.text,
-                    fontSize: 17.5.sp,
+                    fontSize: 16.5.sp,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -265,20 +273,20 @@ class AttendanceScreen extends StatelessWidget {
                   date,
                   style: TxtStyle.titleLarge(
                     color: AppColors.subtitleTextColor,
-                    fontSize: 15.sp,
+                    fontSize: 14.sp,
                   ),
                 ),
               ],
             ),
           ),
           SizedBox(width: 7.w),
-          _attendanceTag(status, detail: detail),
+          _attendanceTag(ref, status, detail: detail),
         ],
       ),
     );
   }
 
-  Widget _attendanceTag(AttendanceStatus status, {String? detail}) {
+  Widget _attendanceTag(WidgetRef ref, AttendanceStatus status, {String? detail}) {
     final suffix = detail == null ? '' : ' ($detail)';
 
     final IconData icon = switch (status) {
@@ -299,10 +307,10 @@ class AttendanceScreen extends StatelessWidget {
           Icon(icon, color: status.textColor, size: 12.sp),
           SizedBox(width: 3.w),
           Text(
-            '${status.label}$suffix',
+            '${ref.watchTr(status.stringKey)}$suffix',
             style: TxtStyle.titleLarge(
               color: status.textColor,
-              fontSize: 14.sp,
+              fontSize: 13.5.sp,
               fontWeight: FontWeight.w700,
             ),
           ),

@@ -1,4 +1,4 @@
-﻿import '../../parent_all/helper/parent_home_helper.dart';
+import '../../parent_all/helper/parent_home_helper.dart';
 import '../../share/export/screen_export.dart';
 import '../helper/teacher_enums.dart';
 import '../helper/teacher_models.dart';
@@ -8,122 +8,122 @@ import '../helper/teacher_widgets.dart';
 /// 3. ATTENDANCE SCREEN
 /// ===============================================================
 
-class TeacherAttendanceScreen extends StatefulWidget {
+class TeacherAttendanceScreen extends ConsumerStatefulWidget {
   const TeacherAttendanceScreen({super.key});
 
   @override
-  State<TeacherAttendanceScreen> createState() =>
+  ConsumerState<TeacherAttendanceScreen> createState() =>
       _TeacherAttendanceScreenState();
 }
 
-class _TeacherAttendanceScreenState extends State<TeacherAttendanceScreen> {
+class _TeacherAttendanceScreenState extends ConsumerState<TeacherAttendanceScreen> {
   final List<AttendanceStudent> students = [
     AttendanceStudent(
       name: 'Lucas Rivera',
       initials: 'LR',
-      desk: 'Desk 04',
+      desk: 'Pupitre 04',
       status: TeacherAttendanceStatus.present,
     ),
     AttendanceStudent(
       name: 'Sophia Chen',
       initials: 'SC',
-      desk: 'Desk 09',
+      desk: 'Pupitre 09',
       status: TeacherAttendanceStatus.present,
     ),
     AttendanceStudent(
       name: 'Mateo Garcia',
       initials: 'MG',
-      desk: 'Desk 12 • Unexcused',
+      desk: 'Pupitre 12 • Sin justificar',
       status: TeacherAttendanceStatus.absent,
     ),
     AttendanceStudent(
       name: 'Emma Watson',
       initials: 'EW',
-      desk: 'Desk 17',
+      desk: 'Pupitre 17',
       status: TeacherAttendanceStatus.present,
     ),
     AttendanceStudent(
       name: 'Liam Johnson',
       initials: 'LJ',
-      desk: 'Desk 02',
+      desk: 'Pupitre 02',
       status: TeacherAttendanceStatus.present,
     ),
     AttendanceStudent(
       name: 'Olivia Davis',
       initials: 'OD',
-      desk: 'Desk 07',
+      desk: 'Pupitre 07',
       status: TeacherAttendanceStatus.present,
     ),
     AttendanceStudent(
       name: 'Noah Miller',
       initials: 'NM',
-      desk: 'Desk 15 • Medical',
+      desk: 'Pupitre 15 • Justificante médico',
       status: TeacherAttendanceStatus.absent,
     ),
     AttendanceStudent(
       name: 'Ava Martinez',
       initials: 'AM',
-      desk: 'Desk 21',
+      desk: 'Pupitre 21',
       status: TeacherAttendanceStatus.present,
     ),
     AttendanceStudent(
       name: 'Ethan Wilson',
       initials: 'EW',
-      desk: 'Desk 03',
+      desk: 'Pupitre 03',
       status: TeacherAttendanceStatus.present,
     ),
     AttendanceStudent(
       name: 'Mia Anderson',
       initials: 'MA',
-      desk: 'Desk 11',
+      desk: 'Pupitre 11',
       status: TeacherAttendanceStatus.present,
     ),
     AttendanceStudent(
       name: 'James Thomas',
       initials: 'JT',
-      desk: 'Desk 08',
+      desk: 'Pupitre 08',
       status: TeacherAttendanceStatus.present,
     ),
     AttendanceStudent(
       name: 'Charlotte Moore',
       initials: 'CM',
-      desk: 'Desk 13',
+      desk: 'Pupitre 13',
       status: TeacherAttendanceStatus.present,
     ),
     AttendanceStudent(
       name: 'Benjamin Taylor',
       initials: 'BT',
-      desk: 'Desk 18',
+      desk: 'Pupitre 18',
       status: TeacherAttendanceStatus.present,
     ),
     AttendanceStudent(
       name: 'Amelia Brown',
       initials: 'AB',
-      desk: 'Desk 06',
+      desk: 'Pupitre 06',
       status: TeacherAttendanceStatus.present,
     ),
     AttendanceStudent(
       name: 'Henry White',
       initials: 'HW',
-      desk: 'Desk 20',
+      desk: 'Pupitre 20',
       status: TeacherAttendanceStatus.present,
     ),
     AttendanceStudent(
       name: 'Harper Harris',
       initials: 'HH',
-      desk: 'Desk 10',
+      desk: 'Pupitre 10',
       status: TeacherAttendanceStatus.present,
     ),
     AttendanceStudent(
       name: 'Daniel Martin',
       initials: 'DM',
-      desk: 'Desk 16',
+      desk: 'Pupitre 16',
       status: TeacherAttendanceStatus.present,
     ),
     AttendanceStudent(
       name: 'Evelyn Thompson',
       initials: 'ET',
-      desk: 'Desk 14',
+      desk: 'Pupitre 14',
       status: TeacherAttendanceStatus.present,
     ),
   ];
@@ -140,7 +140,7 @@ class _TeacherAttendanceScreenState extends State<TeacherAttendanceScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.softBackground,
-      appBar: const AulaAppBar(title: 'Attendance', showBack: true),
+      appBar: AulaAppBar(title: ref.watchTr(AppStrings.takeAttendance), showBack: true),
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
@@ -169,7 +169,6 @@ class _TeacherAttendanceScreenState extends State<TeacherAttendanceScreen> {
         minimum: EdgeInsets.fromLTRB(16.w, 7.h, 16.w, 10.h),
 
         child: Container(
-          // height: 47.h,
           padding: EdgeInsets.only(bottom: 20.h),
           child: ElevatedButton(
             onPressed: _completeAttendance,
@@ -184,7 +183,7 @@ class _TeacherAttendanceScreenState extends State<TeacherAttendanceScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Complete Attendance',
+                  ref.watchTr(AppStrings.finishAttendance),
                   style: TxtStyle.titleLarge(
                     color: Colors.white,
                     fontSize: 17.sp,
@@ -214,7 +213,7 @@ class _TeacherAttendanceScreenState extends State<TeacherAttendanceScreen> {
           Column(
             children: [
               Text(
-                'Advanced Mathematics',
+                '${ref.watchTr(AppStrings.subjectMath)} Avanzadas',
                 style: TxtStyle.titleLarge(
                   color: AppColors.text,
                   fontSize: 25.sp,
@@ -222,7 +221,7 @@ class _TeacherAttendanceScreenState extends State<TeacherAttendanceScreen> {
                 ),
               ),
               Text(
-                'Period 1 • Rm 204',
+                'Sesión 1 • ${ref.watchTr(AppStrings.aula2)}',
                 style: TxtStyle.titleLarge(
                   color: AppColors.subtitleTextColor,
                   fontSize: 14.5.sp,
@@ -234,7 +233,7 @@ class _TeacherAttendanceScreenState extends State<TeacherAttendanceScreen> {
           Row(
             children: [
               Text(
-                '$presentCount of ${students.length}',
+                '$presentCount de ${students.length}',
                 style: TxtStyle.titleLarge(
                   color: AppColors.text,
                   fontSize: 16.sp,
@@ -243,7 +242,7 @@ class _TeacherAttendanceScreenState extends State<TeacherAttendanceScreen> {
               ),
               SizedBox(width: 6.w),
               Text(
-                'Present',
+                ref.watchTr(AppStrings.presentCountLabel),
                 style: TxtStyle.titleLarge(
                   color: AppColors.subtitleTextColor,
                   fontSize: 15.sp,
@@ -253,7 +252,7 @@ class _TeacherAttendanceScreenState extends State<TeacherAttendanceScreen> {
               InkWell(
                 onTap: _markAllPresent,
                 child: Text(
-                  'Mark all present',
+                  ref.watchTr(AppStrings.markAllPresent),
                   style: TxtStyle.titleLarge(
                     color: AppColors.primaryDark,
                     fontSize: 15.sp,
@@ -309,7 +308,6 @@ class _TeacherAttendanceScreenState extends State<TeacherAttendanceScreen> {
                   maxLines: 3,
                   style: TxtStyle.titleLarge(
                     color: AppColors.text,
-
                     fontSize: 17.sp,
                     fontWeight: FontWeight.w700,
                   ),
@@ -317,7 +315,6 @@ class _TeacherAttendanceScreenState extends State<TeacherAttendanceScreen> {
                 SizedBox(height: 3.h),
                 Text(
                   student.desk,
-
                   style: TxtStyle.titleLarge(
                     color: AppColors.subtitleTextColor,
                     fontSize: 15.sp,
@@ -328,7 +325,7 @@ class _TeacherAttendanceScreenState extends State<TeacherAttendanceScreen> {
           ),
 
           _attendanceButton(
-            label: TeacherAttendanceStatus.present.label,
+            label: ref.watchTr(AppStrings.present),
             selected: isPresent,
             color: AppColors.emeraldGreenColor,
             onTap: () {
@@ -339,7 +336,7 @@ class _TeacherAttendanceScreenState extends State<TeacherAttendanceScreen> {
           SizedBox(width: 2.w),
 
           _attendanceButton(
-            label: TeacherAttendanceStatus.absent.label,
+            label: ref.watchTr(AppStrings.absent),
             selected: !isPresent,
             color: const Color(0xFFE91E55),
             onTap: () {
@@ -398,7 +395,7 @@ class _TeacherAttendanceScreenState extends State<TeacherAttendanceScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          'All ${students.length} students marked present.',
+          '${ref.watchTr(AppStrings.allStudentsMarkedPresent)} (${students.length})',
           style: TxtStyle.titleLarge(fontSize: 15.sp, color: Colors.white),
         ),
         behavior: SnackBarBehavior.floating,
@@ -412,15 +409,15 @@ class _TeacherAttendanceScreenState extends State<TeacherAttendanceScreen> {
       builder: (dialogContext) {
         return AlertDialog(
           title: Text(
-            'Attendance Complete',
+            ref.watchTr(AppStrings.attendanceCompletedTitle),
             style: TxtStyle.titleLarge(
               fontSize: 21.sp,
               fontWeight: FontWeight.w800,
             ),
           ),
           content: Text(
-            '$presentCount students present and '
-            '$absentCount students absent.',
+            '$presentCount ${ref.watchTr(AppStrings.studentsCount)} ${ref.watchTr(AppStrings.present).toLowerCase()} y '
+            '$absentCount ${ref.watchTr(AppStrings.studentsCount)} ${ref.watchTr(AppStrings.absent).toLowerCase()}.',
             style: TxtStyle.titleLarge(
               fontSize: 17.sp,
               height: 1.4,
@@ -431,11 +428,10 @@ class _TeacherAttendanceScreenState extends State<TeacherAttendanceScreen> {
             TextButton(
               onPressed: () {
                 Navigator.of(dialogContext).pop();
-                // Navigator.of(context).pop();
                 context.push(RoutePath.teacherEndClass);
               },
               child: Text(
-                'Done',
+                ref.watchTr(AppStrings.roleContinue),
                 style: TxtStyle.titleLarge(
                   color: AppColors.primaryDark,
                   fontWeight: FontWeight.w800,

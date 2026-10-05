@@ -1,89 +1,99 @@
-﻿import '../../../share/export/screen_export.dart';
+import '../../../share/export/screen_export.dart';
 import '../../helper/parent_home_helper.dart';
 import '../parent_report_screen.dart';
 
-class HomeworkScreen extends StatefulWidget {
+class HomeworkScreen extends ConsumerStatefulWidget {
   const HomeworkScreen({super.key});
 
   @override
-  State<HomeworkScreen> createState() => _HomeworkScreenState();
+  ConsumerState<HomeworkScreen> createState() => _HomeworkScreenState();
 }
 
-class _HomeworkScreenState extends State<HomeworkScreen> {
+class _HomeworkScreenState extends ConsumerState<HomeworkScreen> {
   int selectedStudent = 0;
   int selectedTab = 0;
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // SAMPLE / MOCK DATA (Spanish Academy Context)
+  // ─────────────────────────────────────────────────────────────────────────────
 
   final students = const [
     StudentModel(
       name: 'Lucas Rivera',
-      grade: 'Grade 8 • Room 3B',
+      grade: '2º ESO • Aula 3B',
       initials: 'LR',
     ),
     StudentModel(
       name: 'Sophia Rivera',
-      grade: 'Grade 5 • Room 1A',
+      grade: '5º Primaria • Aula 1A',
       initials: 'SR',
     ),
   ];
 
-  final tabs = const ['All 5', 'Pending 3', 'Completed 2'];
-
   final homework = const [
     HomeworkModel(
-      subject: 'English Literature',
-      teacher: 'Ms. Sarah Vance',
-      period: 'Period 3',
-      title: 'Essay Draft: Analysis of Character Motivations in Chapter 3',
+      subject: 'Lengua Castellana y Literatura',
+      teacher: 'Dña. Sarah Vance',
+      period: '3ª Hora',
+      title: 'Borrador: Análisis literario del capítulo 3',
       description:
-          'Write a 500-word analytical draft evaluating character conflict and syntactic rhetoric.',
+          'Escribe un borrador de 500 palabras evaluando el conflicto y los recursos expresivos.',
       status: HomeworkStatus.pending,
-      deadline: 'Due Oct 26',
-      time: '05:00 PM',
+      deadline: 'Entrega: 26 Oct',
+      time: '17:00',
     ),
     HomeworkModel(
-      subject: 'Advanced Mathematics',
-      teacher: 'Mr. Robert Hayes',
-      period: 'Period 3',
-      title: 'Problem Set 4: Quadratic Polynomial Graphing',
+      subject: 'Matemáticas Avanzadas',
+      teacher: 'D. Roberto Hayes',
+      period: '3ª Hora',
+      title: 'Relación de Problemas: Polinomios y Funciones',
       description:
-          'Complete textbook exercises 4.2 through 4.5. Graph transformations and label intercepts.',
+          'Ejercicios 4.2 al 4.5 del libro de texto. Representación gráfica de funciones.',
       status: HomeworkStatus.pending,
-      deadline: 'Monday, Oct 29',
-      time: '08:30 AM',
+      deadline: 'Lunes, 29 Oct',
+      time: '08:30',
     ),
     HomeworkModel(
-      subject: 'Physics Lab',
-      teacher: 'Dr. Angela Bennett',
-      period: 'Period 5',
-      title: 'Refraction Index & Optics Lab Sheet',
+      subject: 'Física y Química',
+      teacher: 'Dra. Ángela Bennett',
+      period: '5ª Hora',
+      title: 'Ficha de Laboratorio: Óptica y Refracción',
       description:
-          'Summarize data points from Wednesday’s bench experiment and calculate the index of refraction.',
+          'Resumir los datos experimentales obtenidos el miércoles y calcular el índice de refracción.',
       status: HomeworkStatus.pending,
-      deadline: 'Wednesday, Oct 31',
-      time: '11:59 PM',
+      deadline: 'Miércoles, 31 Oct',
+      time: '23:59',
     ),
     HomeworkModel(
-      subject: 'World History',
-      teacher: 'Mr. Marcus Brody',
-      period: 'Period 2',
-      title: 'Primary Source Review: Industrial Revolution',
+      subject: 'Geografía e Historia',
+      teacher: 'D. Marcos Brody',
+      period: '2ª Hora',
+      title: 'Comentario de Texto: Revolución Industrial',
       description:
-          'Annotated reading of nineteenth-century textile mill testimonies.',
+          'Lectura y comentario sobre testimonios históricos del siglo XIX.',
       status: HomeworkStatus.completed,
-      deadline: 'Completed Oct 22',
+      deadline: 'Completada: 22 Oct',
       time: '',
     ),
     HomeworkModel(
-      subject: 'English Literature',
-      teacher: 'Ms. Sarah Vance',
-      period: 'Period 3',
-      title: 'Poetry Analysis: Structure and Meter',
-      description: 'Metrical analysis and poetic devices breakdown.',
+      subject: 'Lengua Castellana y Literatura',
+      teacher: 'Dña. Sarah Vance',
+      period: '3ª Hora',
+      title: 'Análisis Poético: Métrica y Figuras',
+      description: 'Métrica y figuras retóricas en el Siglo de Oro.',
       status: HomeworkStatus.completed,
-      deadline: 'Completed Oct 19',
+      deadline: 'Completada: 19 Oct',
       time: '',
     ),
   ];
+
+  List<String> _getTabs() {
+    return [
+      '${ref.watchTr(AppStrings.allTab)} (5)',
+      '${ref.watchTr(AppStrings.pendingTab)} (3)',
+      '${ref.watchTr(AppStrings.completedTab)} (2)',
+    ];
+  }
 
   List<HomeworkModel> get filteredHomework {
     if (selectedTab == 0) {
@@ -105,7 +115,7 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
-      appBar: const AulaAppBar(title: 'Homework', showBack: true),
+      appBar: AulaAppBar(title: ref.watchTr(AppStrings.homeworkTitle), showBack: true),
       body: SafeArea(
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
@@ -115,9 +125,7 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
                   _studentSelector(),
-
                   SizedBox(height: 22.h),
-
                   _tabs(),
                 ]),
               ),
@@ -201,7 +209,7 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
                     overflow: TextOverflow.ellipsis,
                     style: TxtStyle.titleLarge(
                       color: AppColors.secondaryText,
-                      fontSize: 14.sp,
+                      fontSize: 13.sp,
                     ),
                   ),
                 ],
@@ -214,6 +222,8 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
   }
 
   Widget _tabs() {
+    final tabs = _getTabs();
+
     return SizedBox(
       height: 40.h,
       child: SingleChildScrollView(
@@ -223,7 +233,7 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
             for (int i = 0; i < tabs.length; i++)
               Padding(
                 padding: EdgeInsets.only(right: 8.w),
-                child: _tab(i),
+                child: _tab(i, tabs[i]),
               ),
           ],
         ),
@@ -231,7 +241,7 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
     );
   }
 
-  Widget _tab(int index) {
+  Widget _tab(int index, String title) {
     final selected = selectedTab == index;
 
     return GestureDetector(
@@ -248,10 +258,10 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
           borderRadius: BorderRadius.circular(9.r),
         ),
         child: Text(
-          tabs[index],
+          title,
           style: TxtStyle.titleLarge(
             color: selected ? Colors.white : AppColors.secondaryText,
-            fontSize: 15.sp,
+            fontSize: 14.sp,
             fontWeight: FontWeight.w800,
           ),
         ),
@@ -275,7 +285,7 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
               item.subject.toUpperCase(),
               style: TxtStyle.titleLarge(
                 color: AppColors.primary,
-                fontSize: 14.sp,
+                fontSize: 13.sp,
                 fontWeight: FontWeight.w800,
                 letterSpacing: .4,
               ),
@@ -287,7 +297,7 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
               item.title,
               style: TxtStyle.titleLarge(
                 color: AppColors.text,
-                fontSize: 18.sp,
+                fontSize: 17.sp,
                 height: 1.3,
                 fontWeight: FontWeight.w800,
               ),
@@ -301,7 +311,7 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
               overflow: TextOverflow.ellipsis,
               style: TxtStyle.bodyMedium(
                 color: AppColors.secondaryText,
-                fontSize: 14.sp,
+                fontSize: 13.5.sp,
                 height: 1.4,
               ),
             ),
@@ -326,7 +336,7 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
                     color: completed
                         ? const Color(0xFF2B9D70)
                         : const Color(0xFFE68A27),
-                    fontSize: 14.5.sp,
+                    fontSize: 13.5.sp,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -334,7 +344,7 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
                 const Spacer(),
 
                 Text(
-                  'View Details',
+                  ref.watchTr(AppStrings.viewDetails),
                   style: TxtStyle.titleLarge(
                     color: AppColors.primary,
                     fontSize: 13.sp,

@@ -1,65 +1,65 @@
 import '../../../share/export/screen_export.dart';
 import '../../../share/widgets/button/app_logo.dart';
 
-class OnboardingScreen extends StatefulWidget {
+class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
 
   @override
-  State<OnboardingScreen> createState() => _OnboardingScreenState();
+  ConsumerState<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
-class _OnboardingScreenState extends State<OnboardingScreen> {
+class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   final PageController _pageController = PageController();
 
   int _currentPage = 0;
 
-  final List<_OnboardingData> pages = [
+  List<_OnboardingData> _buildPages(String Function(String) tr) => [
     _OnboardingData(
       image: 'assets/images/onboarding_1.jpg',
-      title: 'Centralized Academy\nIntelligence',
-      description:
-          'Experience all-in-one academy management. Connect curriculum, classes, educators, and institutional operations in a unified cloud platform.',
+      title: tr(AppStrings.onboardingTitle1),
+      description: tr(AppStrings.onboardingDesc1),
       tags: [
-        _OnboardingTagData(name: 'Unified Hub', icon: Icons.hub_outlined),
         _OnboardingTagData(
-          name: 'Smart Timetables',
+          name: tr(AppStrings.onboardingTagUnifiedHub),
+          icon: Icons.hub_outlined,
+        ),
+        _OnboardingTagData(
+          name: tr(AppStrings.onboardingTagSmartTimetables),
           icon: Icons.calendar_month_outlined,
         ),
-        _OnboardingTagData(name: 'Real-Time Sync', icon: Icons.sync),
+        _OnboardingTagData(
+          name: tr(AppStrings.onboardingTagRealtimeSync),
+          icon: Icons.sync,
+        ),
       ],
     ),
     _OnboardingData(
       image: 'assets/images/onboarding_2.png',
-      title: 'Empowering Parents with\nClarity',
-      description:
-          'Effortlessly monitor real-time attendance, track homework submissions, review weekly exam reports, and stay aligned with your student’s learning journey.',
+      title: tr(AppStrings.onboardingTitle2),
+      description: tr(AppStrings.onboardingDesc2),
       tags: [
         _OnboardingTagData(
-          name: 'Live Attendance',
+          name: tr(AppStrings.onboardingTagLiveAttendance),
           icon: Icons.fact_check_outlined,
         ),
-
         _OnboardingTagData(
-          name: 'Homework Tracker',
+          name: tr(AppStrings.onboardingTagHomeworkTracker),
           icon: Icons.assignment_outlined,
         ),
-
         _OnboardingTagData(
-          name: 'Progress Reports',
+          name: tr(AppStrings.onboardingTagProgressReports),
           icon: Icons.bar_chart_outlined,
         ),
-
         _OnboardingTagData(
-          name: 'Class Schedules',
+          name: tr(AppStrings.onboardingTagClassSchedules),
           icon: Icons.calendar_month_outlined,
         ),
       ],
     ),
     _OnboardingData(
       image: 'assets/images/onboarding_3.jpg',
-      title: 'Direct Communication &\nGrowth',
-      description:
-          'Instant two-way messaging with educators, urgent academy broadcasts, milestone badges, and comprehensive performance analytics at your fingertips.',
+      title: tr(AppStrings.onboardingTitle3),
+      description: tr(AppStrings.onboardingDesc3),
       tags: [],
     ),
   ];
@@ -71,6 +71,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   void _next() {
+    final pages = _buildPages(
+      ref.read(languageProvider).valueOrNull?.tr ?? (k) => k,
+    );
     if (_currentPage < pages.length - 1) {
       _pageController.nextPage(
         duration: const Duration(milliseconds: 300),
@@ -87,24 +90,35 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final tr = ref.watchTr;
+    final pages = _buildPages(tr);
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 4.h),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const AulaLogo(width: 90),
                   GestureDetector(
+                    behavior: HitTestBehavior.opaque,
                     onTap: _skip,
-                    child: Text(
-                      'Skip',
-                      style: TxtStyle.labelLarge(
-                        color: AppColors.text,
-                        fontWeight: FontWeight.w500,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 8.w,
+                        vertical: 6.h,
+                      ),
+                      child: Text(
+                        tr(AppStrings.onboardingSkip),
+                        style: TxtStyle.labelLarge(
+                          color: AppColors.text,
+                          fontSize: 14.5.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ),
@@ -121,22 +135,25 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   });
                 },
                 children: pages.map((page) {
-                  return _buildPage(page);
+                  return _buildPage(page, context);
                 }).toList(),
               ),
             ),
 
             Padding(
-              padding: const EdgeInsets.fromLTRB(22, 10, 22, 24),
+              padding: EdgeInsets.fromLTRB(22.w, 4.h, 22.w, 12.h),
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [_dot(0), _dot(1), _dot(2)],
                   ),
-                  const SizedBox(height: 14),
+                  SizedBox(height: 8.h),
                   AulaPrimaryButton(
-                    text: _currentPage == 2 ? 'Continue' : 'Next',
+                    text: _currentPage == 2
+                        ? tr(AppStrings.onboardingContinue)
+                        : tr(AppStrings.onboardingNext),
                     onTap: _next,
                   ),
                 ],
@@ -148,104 +165,132 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
   }
 
-  Widget _buildPage(_OnboardingData data) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 22),
-      child: Column(
-        children: [
-          const SizedBox(height: 8),
+  Widget _buildPage(_OnboardingData data, BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final availableHeight = constraints.maxHeight;
 
-          Container(
-            width: double.infinity,
+        // Keep image reasonably large on small phones,
+        // but give more room on larger phones.
+        final imageHeight = (availableHeight * 0.42).clamp(170.0, 300.0);
 
-            decoration: BoxDecoration(
-              color: const Color(0xFFF7FAFD),
-              borderRadius: BorderRadius.circular(10.r),
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10.r),
-              child: Image.asset(
-                data.image,
-                fit: BoxFit.contain,
-                errorBuilder: (_, _, _) {
-                  return const Icon(
-                    Icons.school_outlined,
-                    size: 80,
-                    color: AppColors.primary,
-                  );
-                },
-              ),
-            ),
-          ),
-
-          const SizedBox(height: 17),
-
-          Text(
-            data.title,
-            textAlign: TextAlign.center,
-            style: TxtStyle.titleLarge(
-              color: AppColors.primaryDark,
-              fontSize: 25.5.sp,
-              height: 1.25,
-              letterSpacing: -0.3,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-
-          const SizedBox(height: 9),
-
-          Text(
-            data.description,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: AppColors.secondaryText,
-              fontSize: 16,
-              height: 1.55,
-            ),
-          ),
-
-          if (data.tags.isNotEmpty) ...[
-            const SizedBox(height: 14),
-            Wrap(
-              alignment: WrapAlignment.center,
-              spacing: 6,
-              runSpacing: 7,
-              children: data.tags.map((tag) {
-                return Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 9,
-                    vertical: 5,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade50,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: AppColors.border),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        tag.icon,
-                        color: AppColors.deepBlueColor,
-                        size: 14.sp,
-                      ),
-                      Gap(5),
-                      Text(
-                        tag.name,
-                        style: TxtStyle.titleLarge(
-                          color: AppColors.text,
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w500,
+        return SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          padding: EdgeInsets.fromLTRB(20.w, 4.h, 20.w, 12.h),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Image
+              Container(
+                width: double.infinity,
+                height: imageHeight,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF7FAFD),
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12.r),
+                  child: Image.asset(
+                    data.image,
+                    width: double.infinity,
+                    height: imageHeight,
+                    fit: BoxFit.contain,
+                    errorBuilder: (_, _, _) {
+                      return const Center(
+                        child: Icon(
+                          Icons.school_outlined,
+                          size: 64,
+                          color: AppColors.primary,
                         ),
-                      ),
-                    ],
+                      );
+                    },
                   ),
-                );
-              }).toList(),
-            ),
-          ],
-        ],
-      ),
+                ),
+              ),
+
+              SizedBox(height: 14.h),
+
+              // Title
+              Text(
+                data.title,
+                textAlign: TextAlign.center,
+                style: TxtStyle.titleLarge(
+                  color: AppColors.primaryDark,
+                  fontSize: 22.sp,
+                  height: 1.25,
+                  letterSpacing: -0.3,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+
+              SizedBox(height: 8.h),
+
+              // Description
+              Text(
+                data.description,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: AppColors.secondaryText,
+                  fontSize: 14.sp,
+                  height: 1.45,
+                ),
+              ),
+
+              // Tags
+              if (data.tags.isNotEmpty) ...[
+                SizedBox(height: 8.h),
+
+                Wrap(
+                  alignment: WrapAlignment.center,
+                  spacing: 6.w,
+                  runSpacing: 6.h,
+                  children: data.tags.map((tag) {
+                    return Container(
+                      constraints: BoxConstraints(
+                        maxWidth: MediaQuery.sizeOf(context).width - 50.w,
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 9.w,
+                        vertical: 5.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF8FAFC),
+                        borderRadius: BorderRadius.circular(20.r),
+                        border: Border.all(color: AppColors.border),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            tag.icon,
+                            color: AppColors.deepBlueColor,
+                            size: 13.sp,
+                          ),
+                          Gap(5.w),
+                          Flexible(
+                            child: Text(
+                              tag.name,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: TxtStyle.titleLarge(
+                                color: AppColors.text,
+                                fontSize: 12.5.sp,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ],
+
+              SizedBox(height: 8.h),
+            ],
+          ),
+        );
+      },
     );
   }
 

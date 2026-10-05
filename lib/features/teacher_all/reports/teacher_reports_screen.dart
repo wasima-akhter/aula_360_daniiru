@@ -1,4 +1,4 @@
-﻿import '../../parent_all/helper/parent_home_helper.dart';
+import '../../parent_all/helper/parent_home_helper.dart';
 import '../../share/export/screen_export.dart';
 import '../helper/teacher_enums.dart';
 import '../helper/teacher_models.dart';
@@ -7,14 +7,15 @@ import '../helper/teacher_models.dart';
 /// REPORTS SCREEN
 /// ===============================================================
 
-class TeacherReportsScreen extends StatefulWidget {
+class TeacherReportsScreen extends ConsumerStatefulWidget {
   const TeacherReportsScreen({super.key});
 
   @override
-  State<TeacherReportsScreen> createState() => _TeacherReportsScreenState();
+  ConsumerState<TeacherReportsScreen> createState() =>
+      _TeacherReportsScreenState();
 }
 
-class _TeacherReportsScreenState extends State<TeacherReportsScreen> {
+class _TeacherReportsScreenState extends ConsumerState<TeacherReportsScreen> {
   ReportFilter selectedFilter = ReportFilter.all;
 
   List<TeacherReport> get filteredReports {
@@ -41,7 +42,7 @@ class _TeacherReportsScreenState extends State<TeacherReportsScreen> {
     return Scaffold(
       backgroundColor: AppColors.softBackground,
       appBar: AulaAppBar(
-        title: 'Reports',
+        title: ref.watchTr(AppStrings.allReports),
         showBack: false,
         actions: [
           Icon(Icons.search_rounded, color: AppColors.text, size: 21.sp),
@@ -75,7 +76,6 @@ class _TeacherReportsScreenState extends State<TeacherReportsScreen> {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
-
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -102,7 +102,7 @@ class _TeacherReportsScreenState extends State<TeacherReportsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Filed Sessions',
+                  ref.watchTr(AppStrings.recordedSessionsTitle),
                   style: TxtStyle.titleLarge(
                     color: AppColors.text,
                     fontSize: 22.sp,
@@ -111,7 +111,7 @@ class _TeacherReportsScreenState extends State<TeacherReportsScreen> {
                 ),
                 SizedBox(height: 3.h),
                 Text(
-                  'Attendance, curriculum logs, and verification records.',
+                  ref.watchTr(AppStrings.recordedSessionsSubtitle),
                   style: TxtStyle.bodyMedium(
                     color: AppColors.subtitleTextColor,
                     fontSize: 15.sp,
@@ -121,7 +121,7 @@ class _TeacherReportsScreenState extends State<TeacherReportsScreen> {
             ),
           ),
           Text(
-            '18 Total',
+            '18 ${ref.watchTr(AppStrings.inTotal)}',
             style: TxtStyle.bodyMedium(
               color: AppColors.subtitleTextColor,
               fontSize: 15.sp,
@@ -154,7 +154,7 @@ class _TeacherReportsScreenState extends State<TeacherReportsScreen> {
           ),
         ),
         child: Text(
-          filter.label,
+          ref.watchTr(filter.stringKey),
           style: TxtStyle.bodyMedium(
             color: selected ? Colors.white : AppColors.subtitleTextColor,
             fontSize: 15.sp,
@@ -194,7 +194,7 @@ class _TeacherReportsScreenState extends State<TeacherReportsScreen> {
                   ),
                 ),
                 Text(
-                  report.status.label,
+                  ref.watchTr(report.status.stringKey),
                   style: TxtStyle.bodyMedium(
                     color: report.status == ReportStatus.submitted
                         ? AppColors.primaryDark
@@ -250,9 +250,9 @@ class _TeacherReportsScreenState extends State<TeacherReportsScreen> {
 
   String _reportLocation(TeacherReport report) {
     if (report.category == ReportCategory.studentReport) {
-      return '${report.studentName} (${report.studentId}) • Study Pod C';
+      return '${report.studentName} (${report.studentId}) • ${ref.watchTr(AppStrings.aula1)}';
     }
 
-    return '${report.group.label} • ${report.grade} • ${report.room}';
+    return '${ref.watchTr(report.group.stringKey)} • ${report.grade} • ${report.room}';
   }
 }

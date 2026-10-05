@@ -1,62 +1,70 @@
-﻿import '../../share/export/screen_export.dart';
+import '../../share/export/screen_export.dart';
 import '../helper/parent_home_helper.dart';
 
-class ScheduleScreen extends StatefulWidget {
+class ScheduleScreen extends ConsumerStatefulWidget {
   const ScheduleScreen({super.key});
 
   @override
-  State<ScheduleScreen> createState() => _ScheduleScreenState();
+  ConsumerState<ScheduleScreen> createState() => _ScheduleScreenState();
 }
 
-class _ScheduleScreenState extends State<ScheduleScreen> {
+class _ScheduleScreenState extends ConsumerState<ScheduleScreen> {
   int selectedStudent = 0;
   int selectedDay = 2;
 
+  // ─────────────────────────────────────────────────────────────────────────────
+  // SAMPLE / MOCK DATA (Spanish Academy Context)
+  // ─────────────────────────────────────────────────────────────────────────────
+
   final students = const [
-    {'name': 'Lucas Rivera', 'grade': 'Grade 8 • Room', 'initials': 'LR'},
-    {'name': 'Sophia Rivera', 'grade': 'Grade 5 • Room 1', 'initials': 'SR'},
+    {'name': 'Lucas Rivera', 'grade': '2º ESO • Aula 3B', 'initials': 'LR'},
+    {
+      'name': 'Sophia Rivera',
+      'grade': '5º Primaria • Aula 1A',
+      'initials': 'SR',
+    },
   ];
 
   final days = const [
-    {'day': 'Mon', 'date': '22'},
-    {'day': 'Tue', 'date': '23'},
-    {'day': 'Wed', 'date': '24'},
-    {'day': 'Thu', 'date': '25'},
-    {'day': 'Fri', 'date': '26'},
+    {'day': 'Lun', 'date': '22'},
+    {'day': 'Mar', 'date': '23'},
+    {'day': 'Mié', 'date': '24'},
+    {'day': 'Jue', 'date': '25'},
+    {'day': 'Vie', 'date': '26'},
   ];
 
   final List<ClassModel> upcomingClasses = const [
     ClassModel(
-      subject: 'Advanced Mathematics',
-      teacher: 'Mr. Robert Hayes',
-      time: '10:30 AM',
-      duration: '12:00 PM',
-      room: 'Room 3B',
-      building: 'Main Wing',
-      category: 'Mathematics',
+      subject: 'Matemáticas Avanzadas',
+      teacher: 'D. Roberto Hayes',
+      time: '10:30',
+      duration: '12:00',
+      room: 'Aula 3B',
+      building: 'Edificio Principal',
+      category: 'Matemáticas',
       color: Color(0xFF14388D),
     ),
     ClassModel(
-      subject: 'Physics Lab',
-      teacher: 'Dr. Angela Bennett',
-      time: '02:00 PM',
-      duration: '03:20 PM',
-      room: 'Lab 2',
-      building: 'Science Bldg',
-      category: 'Physics',
+      subject: 'Física y Química',
+      teacher: 'Dra. Ángela Bennett',
+      time: '14:00',
+      duration: '15:20',
+      room: 'Laboratorio 2',
+      building: 'Edificio Ciencias',
+      category: 'Física',
       color: Color(0xFF7656D8),
     ),
   ];
 
   final List<ClassModel> completedClasses = const [
     ClassModel(
-      subject: 'English Literature',
-      teacher: 'Ms. Sarah Vance',
-      time: '08:30 AM',
-      duration: '09:50 AM',
-      room: 'Room 4A',
-      building: 'Humanities',
-      category: 'English',
+      subject: 'Lengua Castellana y Literatura',
+      teacher: 'Dña. Sarah Vance',
+      time: '08:30',
+      duration: '09:50',
+      room: 'Aula 4A',
+      building: 'Humanidades',
+      category: 'Lengua',
       color: Color(0xFF2B9D70),
     ),
   ];
@@ -65,9 +73,10 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
-
-      appBar: const AulaAppBar(title: 'Schedule', showBack: false),
-
+      appBar: AulaAppBar(
+        title: ref.watchTr(AppStrings.navSchedule),
+        showBack: false,
+      ),
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
@@ -81,20 +90,20 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                 Row(
                   children: [
                     Text(
-                      'STUDENT',
+                      ref.watchTr(AppStrings.studentInfoTitle).toUpperCase(),
                       style: TxtStyle.titleLarge(
                         color: AppColors.secondaryText,
-                        fontSize: 16.sp,
+                        fontSize: 14.sp,
                         fontWeight: FontWeight.w700,
                         letterSpacing: .4,
                       ),
                     ),
                     const Spacer(),
                     Text(
-                      '2 Enrolled',
+                      '2 ${ref.watchTr(AppStrings.active)}',
                       style: TxtStyle.titleLarge(
                         color: AppColors.primary,
-                        fontSize: 15.sp,
+                        fontSize: 14.sp,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -126,10 +135,10 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                       Row(
                         children: [
                           Text(
-                            'Wednesday, Oct 24',
+                            'Miércoles, 24 Oct',
                             style: TxtStyle.titleLarge(
                               color: AppColors.text,
-                              fontSize: 18.sp,
+                              fontSize: 17.sp,
                               fontWeight: FontWeight.w800,
                             ),
                           ),
@@ -144,20 +153,20 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                               borderRadius: BorderRadius.circular(5.r),
                             ),
                             child: Text(
-                              'Today',
+                              ref.watchTr(AppStrings.today),
                               style: TxtStyle.titleLarge(
                                 color: AppColors.primary,
-                                fontSize: 14.sp,
+                                fontSize: 13.sp,
                                 fontWeight: FontWeight.w800,
                               ),
                             ),
                           ),
                           const Spacer(),
                           Text(
-                            'Week 9',
+                            '${ref.watchTr(AppStrings.weekPrefix)} 9',
                             style: TxtStyle.titleLarge(
                               color: AppColors.secondaryText,
-                              fontSize: 15.sp,
+                              fontSize: 14.sp,
                             ),
                           ),
                         ],
@@ -181,8 +190,8 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                 // UPCOMING
                 // =================================================
                 SectionHeader(
-                  title: 'Upcoming Classes',
-                  actionText: 'Remaining today',
+                  title: ref.watchTr(AppStrings.upcomingClasses),
+                  actionText: ref.watchTr(AppStrings.remainingToday),
                 ),
 
                 SizedBox(height: 12.h),
@@ -198,8 +207,8 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                 // COMPLETED
                 // =================================================
                 SectionHeader(
-                  title: 'Completed Earlier',
-                  actionText: 'Morning',
+                  title: ref.watchTr(AppStrings.completedEarlier),
+                  actionText: ref.watchTr(AppStrings.tomorrow),
                 ),
 
                 SizedBox(height: 12.h),
@@ -252,7 +261,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                     overflow: TextOverflow.ellipsis,
                     style: TxtStyle.titleLarge(
                       color: AppColors.text,
-                      fontSize: 16.sp,
+                      fontSize: 15.sp,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -263,7 +272,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                     overflow: TextOverflow.ellipsis,
                     style: TxtStyle.titleLarge(
                       color: AppColors.secondaryText,
-                      fontSize: 14.sp,
+                      fontSize: 13.sp,
                     ),
                   ),
                 ],
@@ -298,7 +307,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
               days[index]['day']!,
               style: TxtStyle.titleLarge(
                 color: selected
-                    ? Colors.white.withOpacity(.8)
+                    ? Colors.white.withValues(alpha: .8)
                     : AppColors.secondaryText,
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
@@ -331,13 +340,6 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   Widget _scheduleClassCard(ClassModel classData) {
     return GestureDetector(
       onTap: () {
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (_) => ClassDetailsScreen(classData: classData),
-        //   ),
-        // );
-
         context.push(RoutePath.classDetail, extra: classData);
       },
       child: AulaCard(
@@ -350,7 +352,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                   '${classData.time} – ${classData.duration}',
                   style: TxtStyle.titleLarge(
                     color: AppColors.secondaryText,
-                    fontSize: 15.sp,
+                    fontSize: 14.5.sp,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -369,7 +371,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
               classData.subject,
               style: TxtStyle.titleLarge(
                 color: AppColors.text,
-                fontSize: 19.sp,
+                fontSize: 18.sp,
                 fontWeight: FontWeight.w800,
               ),
             ),
@@ -392,7 +394,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                     classData.teacher,
                     style: TxtStyle.titleLarge(
                       color: AppColors.text,
-                      fontSize: 15.sp,
+                      fontSize: 14.5.sp,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -407,7 +409,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                   '${classData.room} • ${classData.building}',
                   style: TxtStyle.titleLarge(
                     color: AppColors.secondaryText,
-                    fontSize: 14.sp,
+                    fontSize: 13.5.sp,
                   ),
                 ),
               ],
@@ -425,7 +427,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
         children: [
           Row(
             children: [
-              const StatusPill(text: 'Completed • Present'),
+              StatusPill(text: ref.watchTr(AppStrings.completedPresent)),
               const Spacer(),
               Text(
                 '${classData.time} – ${classData.duration}',
@@ -444,7 +446,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
             classData.subject,
             style: TxtStyle.titleLarge(
               color: AppColors.text,
-              fontSize: 19.sp,
+              fontSize: 18.sp,
               fontWeight: FontWeight.w800,
             ),
           ),
@@ -463,7 +465,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                 classData.teacher,
                 style: TxtStyle.titleLarge(
                   color: AppColors.secondaryText,
-                  fontSize: 15.sp,
+                  fontSize: 14.5.sp,
                 ),
               ),
               const Spacer(),
@@ -477,7 +479,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                 classData.room,
                 style: TxtStyle.titleLarge(
                   color: AppColors.secondaryText,
-                  fontSize: 14.sp,
+                  fontSize: 13.5.sp,
                 ),
               ),
             ],
@@ -488,10 +490,10 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
           Align(
             alignment: Alignment.centerRight,
             child: Text(
-              'Class Report →',
+              '${ref.watchTr(AppStrings.classReportAction)} →',
               style: TxtStyle.titleLarge(
                 color: AppColors.primary,
-                fontSize: 15.sp,
+                fontSize: 14.5.sp,
                 fontWeight: FontWeight.w700,
               ),
             ),

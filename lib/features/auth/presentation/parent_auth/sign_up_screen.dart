@@ -1,4 +1,4 @@
-﻿import 'package:aula360/features/auth/presentation/screens/active_otp_screen.dart';
+import 'package:aula360/features/auth/presentation/screens/active_otp_screen.dart';
 
 import '../../../share/export/screen_export.dart';
 import '../../../share/widgets/button/app_logo.dart';
@@ -6,14 +6,14 @@ import '../../../share/widgets/button/custom_back_button.dart';
 import '../../../share/widgets/text_field/custom_text_field.dart';
 import '../../abc.dart';
 
-class SignUpScreen extends StatefulWidget {
+class SignUpScreen extends ConsumerStatefulWidget {
   const SignUpScreen({super.key});
 
   @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  ConsumerState<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   final fullNameController = TextEditingController();
   final mobileController = TextEditingController();
   final emailController = TextEditingController();
@@ -58,6 +58,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final tr = ref.watchTr;
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -66,7 +67,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const AuthBackButton(title: 'Create Account'),
+              AuthBackButton(title: tr(AppStrings.createAccountTitle)),
 
               const SizedBox(height: 32),
 
@@ -76,7 +77,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
               Center(
                 child: Text(
-                  'Create your account',
+                  tr(AppStrings.createYourAccount),
                   style: TxtStyle.titleLarge(
                     color: AppColors.text,
                     fontSize: 29.5.sp,
@@ -89,7 +90,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
               Center(
                 child: Text(
-                  'Enter your basic details to register and connect\nwith your child’s academy.',
+                  tr(AppStrings.parentSignupSubtitle),
                   textAlign: TextAlign.center,
                   style: TxtStyle.titleLarge(
                     color: AppColors.secondaryText,
@@ -102,8 +103,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
               AppTextField(
                 controller: fullNameController,
-                label: 'Full Name',
-                hint: 'e.g. Eleanor Vance',
+                label: tr(AppStrings.fieldFullName),
+                hint: tr(AppStrings.fieldFullNameHint),
                 icon: Icons.person_outline_rounded,
               ),
 
@@ -111,8 +112,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
               AppTextField(
                 controller: mobileController,
-                label: 'Mobile Number',
-                hint: '(555) 234-5678',
+                label: tr(AppStrings.fieldMobileNumber),
+                hint: tr(AppStrings.fieldMobileNumberHint),
                 icon: Icons.phone_outlined,
                 keyboardType: TextInputType.phone,
               ),
@@ -121,8 +122,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
               AppTextField(
                 controller: emailController,
-                label: 'Email Address',
-                hint: 'e.g. eleanor.vance@example.com',
+                label: tr(AppStrings.fieldEmailAddress),
+                hint: tr(AppStrings.fieldEmailAddressHint),
                 icon: Icons.email_outlined,
                 keyboardType: TextInputType.emailAddress,
               ),
@@ -131,8 +132,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
               AppTextField(
                 controller: passwordController,
-                label: 'Password',
-                hint: 'Create a secure password',
+                label: tr(AppStrings.fieldPassword),
+                hint: tr(AppStrings.fieldPasswordCreateHint),
                 icon: Icons.lock_outline_rounded,
                 obscureText: obscurePassword,
                 onTogglePassword: () {
@@ -154,7 +155,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   const SizedBox(width: 4),
                   Flexible(
                     child: Text(
-                      'At least 8 characters with numbers and letters',
+                      tr(AppStrings.passwordReqNotice),
                       style: TxtStyle.titleLarge(
                         color: AppColors.secondaryText,
                         fontSize: 16.sp,
@@ -166,7 +167,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
               const SizedBox(height: 21),
 
-              AulaPrimaryButton(text: 'Create Account', onTap: _createAccount),
+              AulaPrimaryButton(
+                text: tr(AppStrings.btnCreateAccount),
+                onTap: _createAccount,
+              ),
 
               const SizedBox(height: 17),
 
@@ -177,14 +181,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   },
                   child: Text.rich(
                     TextSpan(
-                      text: 'Already have an account? ',
+                      text: '${tr(AppStrings.alreadyHaveAccount)} ',
                       style: TxtStyle.titleLarge(
                         color: AppColors.secondaryText,
                         fontSize: 16.sp,
                       ),
                       children: [
                         TextSpan(
-                          text: 'Log In',
+                          text: tr(AppStrings.btnLogIn),
                           style: TxtStyle.titleLarge(
                             color: AppColors.primary,
                             fontWeight: FontWeight.w700,

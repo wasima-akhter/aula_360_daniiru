@@ -1,4 +1,4 @@
-﻿import 'dart:io';
+import 'dart:io';
 
 import 'package:image_picker/image_picker.dart';
 
@@ -8,17 +8,18 @@ import '../../share/export/screen_export.dart';
 /// EDIT FACULTY PROFILE
 /// ===============================================================
 
-class EditTeacherProfileScreen extends StatefulWidget {
+class EditTeacherProfileScreen extends ConsumerStatefulWidget {
   const EditTeacherProfileScreen({super.key, this.initialData});
 
   final Map<String, dynamic>? initialData;
 
   @override
-  State<EditTeacherProfileScreen> createState() =>
+  ConsumerState<EditTeacherProfileScreen> createState() =>
       _EditTeacherProfileScreenState();
 }
 
-class _EditTeacherProfileScreenState extends State<EditTeacherProfileScreen> {
+class _EditTeacherProfileScreenState
+    extends ConsumerState<EditTeacherProfileScreen> {
   final _formKey = GlobalKey<FormState>();
 
   late final TextEditingController nameController;
@@ -32,7 +33,7 @@ class _EditTeacherProfileScreenState extends State<EditTeacherProfileScreen> {
 
   File? _profileImage;
 
-  String language = 'English (US)';
+  String language = 'Español';
   bool _saving = false;
 
   @override
@@ -42,7 +43,7 @@ class _EditTeacherProfileScreenState extends State<EditTeacherProfileScreen> {
     final data = widget.initialData ?? {};
 
     nameController = TextEditingController(
-      text: data['name'] ?? 'Dr. Sarah Jenkins',
+      text: data['name'] ?? 'Dra. Sarah Jenkins',
     );
 
     emailController = TextEditingController(
@@ -50,26 +51,25 @@ class _EditTeacherProfileScreenState extends State<EditTeacherProfileScreen> {
     );
 
     phoneController = TextEditingController(
-      text: data['phone'] ?? '+1 (555) 234-8901',
+      text: data['phone'] ?? '+34 912 345 678',
     );
 
     departmentController = TextEditingController(
-      text: data['department'] ?? 'Mathematics & Calculus',
+      text: data['department'] ?? 'Matemáticas y Física',
     );
 
     officeController = TextEditingController(
-      text: data['office'] ?? 'Hall A, Room 204',
+      text: data['office'] ?? 'Aula 2 / Despacho 4',
     );
 
     bioController = TextEditingController(
       text:
           data['bio'] ??
-          'Senior mathematics instructor specializing in advanced '
-              'calculus, analytical geometry, and physical academy '
-              'curriculum coordination.',
+          'Docente titular de matemáticas especializado en bachillerato, '
+              'álgebra y preparación académica.',
     );
 
-    language = data['language'] ?? 'English (US)';
+    language = data['language'] ?? 'Español';
   }
 
   @override
@@ -101,7 +101,7 @@ class _EditTeacherProfileScreenState extends State<EditTeacherProfileScreen> {
           ),
         ),
         title: Text(
-          'Edit Profile',
+          ref.watchTr(AppStrings.editProfileTitle),
           style: TxtStyle.titleLarge(
             color: AppColors.primaryDark,
             fontSize: 17.sp,
@@ -112,7 +112,7 @@ class _EditTeacherProfileScreenState extends State<EditTeacherProfileScreen> {
           TextButton(
             onPressed: () => context.pop(),
             child: Text(
-              'Cancel',
+              ref.watchTr(AppStrings.cancel),
               style: TxtStyle.titleLarge(
                 color: AppColors.subtitleTextColor,
                 fontSize: 15.sp,
@@ -138,19 +138,19 @@ class _EditTeacherProfileScreenState extends State<EditTeacherProfileScreen> {
 
                 SizedBox(height: 20.h),
 
-                _sectionLabel('FACULTY INFORMATION'),
+                _sectionLabel(ref.watchTr(AppStrings.facultyInfoTitle)),
 
                 SizedBox(height: 9.h),
 
                 _field(
-                  label: 'Full Name',
+                  label: ref.watchTr(AppStrings.parentFullName),
                   controller: nameController,
                   icon: Icons.person_outline,
                   requiredField: true,
                 ),
 
                 _field(
-                  label: 'Email Address',
+                  label: ref.watchTr(AppStrings.emailAddressTitle),
                   controller: emailController,
                   icon: Icons.mail_outline,
                   keyboardType: TextInputType.emailAddress,
@@ -159,7 +159,7 @@ class _EditTeacherProfileScreenState extends State<EditTeacherProfileScreen> {
                 ),
 
                 _field(
-                  label: 'Phone Number',
+                  label: ref.watchTr(AppStrings.primaryMobileNumber),
                   controller: phoneController,
                   icon: Icons.phone_outlined,
                   keyboardType: TextInputType.phone,
@@ -167,14 +167,14 @@ class _EditTeacherProfileScreenState extends State<EditTeacherProfileScreen> {
                 ),
 
                 _field(
-                  label: 'Department / Subject',
+                  label: ref.watchTr(AppStrings.deptSubjectLabel),
                   controller: departmentController,
                   icon: Icons.school_outlined,
                   requiredField: true,
                 ),
 
                 _field(
-                  label: 'Office / Room',
+                  label: ref.watchTr(AppStrings.officeRoomLabel),
                   controller: officeController,
                   icon: Icons.meeting_room_outlined,
                   requiredField: true,
@@ -288,7 +288,7 @@ class _EditTeacherProfileScreenState extends State<EditTeacherProfileScreen> {
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Text(
-              'Faculty ID: #FAC-1042',
+              ref.watchTr(AppStrings.teacherIdBadge),
               style: TxtStyle.titleLarge(
                 color: AppColors.primaryDark,
                 fontSize: 15.sp,
@@ -300,7 +300,7 @@ class _EditTeacherProfileScreenState extends State<EditTeacherProfileScreen> {
           SizedBox(height: 9.h),
 
           Text(
-            'JPG or PNG • Maximum 5MB',
+            ref.watchTr(AppStrings.jpgPngMax5mb),
             style: TxtStyle.titleLarge(
               color: AppColors.subtitleTextColor,
               fontSize: 14.5.sp,
@@ -328,7 +328,7 @@ class _EditTeacherProfileScreenState extends State<EditTeacherProfileScreen> {
               children: [
                 ListTile(
                   leading: const Icon(Icons.camera_alt_outlined),
-                  title: const Text('Take Photo'),
+                  title: Text(ref.watchTr(AppStrings.takeAPhoto)),
                   onTap: () {
                     Navigator.pop(sheetContext);
                     _pickImage(ImageSource.camera);
@@ -336,7 +336,7 @@ class _EditTeacherProfileScreenState extends State<EditTeacherProfileScreen> {
                 ),
                 ListTile(
                   leading: const Icon(Icons.photo_library_outlined),
-                  title: const Text('Choose from Gallery'),
+                  title: Text(ref.watchTr(AppStrings.chooseFromGallery)),
                   onTap: () {
                     Navigator.pop(sheetContext);
                     _pickImage(ImageSource.gallery);
@@ -346,7 +346,7 @@ class _EditTeacherProfileScreenState extends State<EditTeacherProfileScreen> {
                   ListTile(
                     leading: Icon(Icons.delete_outline, color: AppColors.error),
                     title: Text(
-                      'Remove Photo',
+                      ref.watchTr(AppStrings.removePhoto),
                       style: TxtStyle.titleLarge(color: AppColors.error),
                     ),
                     onTap: () {
@@ -384,7 +384,7 @@ class _EditTeacherProfileScreenState extends State<EditTeacherProfileScreen> {
         if (!mounted) return;
 
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Image must be smaller than 5MB.')),
+          SnackBar(content: Text(ref.watchTr(AppStrings.imageSizeLimitError))),
         );
 
         return;
@@ -398,7 +398,7 @@ class _EditTeacherProfileScreenState extends State<EditTeacherProfileScreen> {
 
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text('Unable to select image.')));
+      ).showSnackBar(SnackBar(content: Text(ref.watchTr(AppStrings.imageSelectError))));
     }
   }
 
@@ -431,7 +431,7 @@ class _EditTeacherProfileScreenState extends State<EditTeacherProfileScreen> {
                 (value) {
                   if (requiredField &&
                       (value == null || value.trim().isEmpty)) {
-                    return '$label is required';
+                    return '$label ${ref.watchTr(AppStrings.fieldIsRequiredSuffix)}';
                   }
 
                   return null;
@@ -443,7 +443,7 @@ class _EditTeacherProfileScreenState extends State<EditTeacherProfileScreen> {
             ),
             decoration: _inputDecoration(icon: icon),
             onChanged: (_) {
-              if (label == 'Full Name') {
+              if (label == ref.watchTr(AppStrings.parentFullName)) {
                 setState(() {});
               }
             },
@@ -457,7 +457,7 @@ class _EditTeacherProfileScreenState extends State<EditTeacherProfileScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _fieldLabel('Short Bio / Notes'),
+        _fieldLabel(ref.watchTr(AppStrings.briefBioNotes)),
 
         SizedBox(height: 5.h),
 
@@ -536,7 +536,7 @@ class _EditTeacherProfileScreenState extends State<EditTeacherProfileScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _fieldLabel('Preferred Language'),
+        _fieldLabel(ref.watchTr(AppStrings.preferredLanguage)),
 
         SizedBox(height: 5.h),
 
@@ -544,15 +544,11 @@ class _EditTeacherProfileScreenState extends State<EditTeacherProfileScreen> {
           initialValue: language,
           decoration: _inputDecoration(icon: Icons.translate),
           items: const [
+            DropdownMenuItem(value: 'Español', child: Text('Español')),
             DropdownMenuItem(
               value: 'English (US)',
               child: Text('English (US)'),
             ),
-            DropdownMenuItem(
-              value: 'English (UK)',
-              child: Text('English (UK)'),
-            ),
-            DropdownMenuItem(value: 'Spanish', child: Text('Spanish')),
           ],
           onChanged: (value) {
             if (value == null) return;
@@ -599,7 +595,7 @@ class _EditTeacherProfileScreenState extends State<EditTeacherProfileScreen> {
                   Icon(Icons.check, size: 15.sp, color: Colors.white),
                   SizedBox(width: 5.w),
                   Text(
-                    'Save Changes',
+                    ref.watchTr(AppStrings.btnSaveChanges),
                     style: TxtStyle.titleLarge(
                       color: Colors.white,
                       fontSize: 16.5.sp,
@@ -631,8 +627,8 @@ class _EditTeacherProfileScreenState extends State<EditTeacherProfileScreen> {
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Profile updated successfully.'),
+      SnackBar(
+        content: Text(ref.watchTr(AppStrings.profileUpdatedSuccess)),
         behavior: SnackBarBehavior.floating,
       ),
     );
@@ -654,13 +650,13 @@ class _EditTeacherProfileScreenState extends State<EditTeacherProfileScreen> {
 
   String? _validateEmail(String? value) {
     if (value == null || value.trim().isEmpty) {
-      return 'Email Address is required';
+      return ref.watchTr(AppStrings.emailRequired);
     }
 
     final emailRegex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
 
     if (!emailRegex.hasMatch(value.trim())) {
-      return 'Enter a valid email address';
+      return ref.watchTr(AppStrings.validEmailAddress);
     }
 
     return null;

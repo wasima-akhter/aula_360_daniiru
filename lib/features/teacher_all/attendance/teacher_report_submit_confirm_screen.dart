@@ -1,14 +1,14 @@
-﻿import '../../share/export/screen_export.dart';
+import '../../share/export/screen_export.dart';
 
 /// ===============================================================
 /// 3. REPORT SUBMITTED SCREEN
 /// ===============================================================
 
-class TeacherReportSubmittedScreen extends StatelessWidget {
+class TeacherReportSubmittedScreen extends ConsumerWidget {
   const TeacherReportSubmittedScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -16,7 +16,7 @@ class TeacherReportSubmittedScreen extends StatelessWidget {
         elevation: 0,
         automaticallyImplyLeading: false,
         title: Text(
-          'Report Submitted',
+          ref.watchTr(AppStrings.reportSubmittedTitle),
           style: TxtStyle.titleLarge(
             color: AppColors.primaryColor,
             fontSize: 19.sp,
@@ -62,7 +62,7 @@ class TeacherReportSubmittedScreen extends StatelessWidget {
                     SizedBox(height: 17.h),
 
                     Text(
-                      'Report Submitted',
+                      ref.watchTr(AppStrings.reportSubmittedTitle),
                       style: TxtStyle.titleLarge(
                         color: AppColors.text,
                         fontSize: 22.sp,
@@ -73,7 +73,7 @@ class TeacherReportSubmittedScreen extends StatelessWidget {
                     SizedBox(height: 8.h),
 
                     Text(
-                      'Attendance and session logs have been saved\nto academy records.',
+                      ref.watchTr(AppStrings.reportSubmittedSubtitle),
                       textAlign: TextAlign.center,
                       style: TxtStyle.bodyMedium(
                         color: AppColors.subtitleTextColor,
@@ -84,7 +84,7 @@ class TeacherReportSubmittedScreen extends StatelessWidget {
 
                     SizedBox(height: 30.h),
 
-                    _reportSummary(),
+                    _reportSummary(ref),
 
                     const Spacer(),
 
@@ -94,7 +94,7 @@ class TeacherReportSubmittedScreen extends StatelessWidget {
                         onTap: () {
                           context.go(RoutePath.navigationPages);
                         },
-                        text: 'Done',
+                        text: ref.watchTr(AppStrings.finishBtn),
                         trailing: Icon(
                           Icons.arrow_forward_rounded,
                           color: Colors.white,
@@ -112,7 +112,7 @@ class TeacherReportSubmittedScreen extends StatelessWidget {
     );
   }
 
-  Widget _reportSummary() {
+  Widget _reportSummary(WidgetRef ref) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 13.h),
@@ -123,11 +123,11 @@ class TeacherReportSubmittedScreen extends StatelessWidget {
       ),
       child: Column(
         children: [
-          _summaryRow(label: 'Class', value: 'Calculus AB'),
+          _summaryRow(label: ref.watchTr(AppStrings.classroom), value: '${ref.watchTr(AppStrings.subjectMath)} Avanzadas'),
           SizedBox(height: 12.h),
-          _summaryRow(label: 'Group', value: 'Group A • Grade 11'),
+          _summaryRow(label: 'Grupo', value: 'Grupo A • ${ref.watchTr(AppStrings.bachillerato1)}'),
           SizedBox(height: 12.h),
-          _summaryRow(label: 'Date & Time', value: 'Oct 24, 2024 • 10:28 AM'),
+          _summaryRow(label: ref.watchTr(AppStrings.dateTime), value: '24 Oct 2024 • 10:28'),
         ],
       ),
     );
@@ -148,7 +148,7 @@ class TeacherReportSubmittedScreen extends StatelessWidget {
           value,
           textAlign: TextAlign.right,
           maxLines: 3,
-          style: TxtStyle.labelLarge(
+          style: TxtStyle.bodyMedium(
             color: AppColors.text,
             fontSize: 17.sp,
             fontWeight: FontWeight.w600,

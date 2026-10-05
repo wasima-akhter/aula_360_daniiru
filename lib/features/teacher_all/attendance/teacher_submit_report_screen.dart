@@ -1,4 +1,4 @@
-﻿import '../../parent_all/helper/parent_home_helper.dart';
+import '../../parent_all/helper/parent_home_helper.dart';
 import '../../share/export/screen_export.dart';
 import '../helper/teacher_enums.dart';
 
@@ -6,16 +6,16 @@ import '../helper/teacher_enums.dart';
 /// 2. POST CLASS REPORT SCREEN
 /// ===============================================================
 
-class TeacherPostClassReportScreen extends StatefulWidget {
+class TeacherPostClassReportScreen extends ConsumerStatefulWidget {
   const TeacherPostClassReportScreen({super.key});
 
   @override
-  State<TeacherPostClassReportScreen> createState() =>
+  ConsumerState<TeacherPostClassReportScreen> createState() =>
       _TeacherPostClassReportScreenState();
 }
 
 class _TeacherPostClassReportScreenState
-    extends State<TeacherPostClassReportScreen> {
+    extends ConsumerState<TeacherPostClassReportScreen> {
   StudentConduct conduct = StudentConduct.excellent;
   WorkEffort effort = WorkEffort.highEffort;
 
@@ -33,7 +33,7 @@ class _TeacherPostClassReportScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: const AulaAppBar(title: 'Post-Class Report', showBack: true),
+      appBar: AulaAppBar(title: ref.watchTr(AppStrings.postClassReportTitle), showBack: true),
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
@@ -45,23 +45,23 @@ class _TeacherPostClassReportScreenState
 
               SizedBox(height: 24.h),
 
-              _sectionLabel('Content Covered'),
+              _sectionLabel(ref.watchTr(AppStrings.contentDeliveredTitle)),
 
               SizedBox(height: 8.h),
 
               _textCard(
-                'Chain Rule & Implicit Differentiation; board\n'
-                'exercises completed in class.',
+                'Regla de la cadena y derivación implícita; ejercicios\n'
+                'prácticos resueltos en pizarra.',
               ),
 
               SizedBox(height: 19.h),
 
               Row(
                 children: [
-                  _sectionLabel('Homework Assigned'),
+                  _sectionLabel(ref.watchTr(AppStrings.assignedTasksTitle)),
                   const Spacer(),
                   Text(
-                    'Optional',
+                    ref.watchTr(AppStrings.optional),
                     style: TxtStyle.bodyMedium(
                       color: AppColors.subtitleTextColor,
                       fontSize: 13.sp,
@@ -74,17 +74,17 @@ class _TeacherPostClassReportScreenState
 
               _editableTextCard(
                 controller: homeworkController,
-                hint: 'Problem Set 4: Exercises 12–25 (Due next Tuesday)',
+                hint: 'Relación 4: Ejercicios 12–25 (Entrega próximo martes)',
               ),
 
               SizedBox(height: 20.h),
 
               _selectionSection(
-                title: 'Student Conduct & Attitude',
+                title: ref.watchTr(AppStrings.conductAndAttitudeTitle),
                 value: _conductLabel(conduct),
                 children: [
                   _choiceButton(
-                    label: 'Needs Attendance',
+                    label: ref.watchTr(AppStrings.conductNeedsAttention),
                     selected: conduct == StudentConduct.needsAttention,
                     onTap: () {
                       setState(() {
@@ -93,7 +93,7 @@ class _TeacherPostClassReportScreenState
                     },
                   ),
                   _choiceButton(
-                    label: 'Satisfactory',
+                    label: ref.watchTr(AppStrings.conductSatisfactory),
                     selected: conduct == StudentConduct.satisfactory,
                     onTap: () {
                       setState(() {
@@ -102,7 +102,7 @@ class _TeacherPostClassReportScreenState
                     },
                   ),
                   _choiceButton(
-                    label: 'Excellent',
+                    label: ref.watchTr(AppStrings.conductExcellent),
                     selected: conduct == StudentConduct.excellent,
                     onTap: () {
                       setState(() {
@@ -116,11 +116,11 @@ class _TeacherPostClassReportScreenState
               SizedBox(height: 20.h),
 
               _selectionSection(
-                title: 'Work Effort',
+                title: ref.watchTr(AppStrings.effortAndDedicationTitle),
                 value: _effortLabel(effort),
                 children: [
                   _choiceButton(
-                    label: 'Moderate',
+                    label: ref.watchTr(AppStrings.effortModerate),
                     selected: effort == WorkEffort.moderate,
                     onTap: () {
                       setState(() {
@@ -129,7 +129,7 @@ class _TeacherPostClassReportScreenState
                     },
                   ),
                   _choiceButton(
-                    label: 'On Track',
+                    label: ref.watchTr(AppStrings.effortAdequate),
                     selected: effort == WorkEffort.onTrack,
                     onTap: () {
                       setState(() {
@@ -138,7 +138,7 @@ class _TeacherPostClassReportScreenState
                     },
                   ),
                   _choiceButton(
-                    label: 'High Effort',
+                    label: ref.watchTr(AppStrings.effortHighPerformance),
                     selected: effort == WorkEffort.highEffort,
                     onTap: () {
                       setState(() {
@@ -153,10 +153,10 @@ class _TeacherPostClassReportScreenState
 
               Row(
                 children: [
-                  _sectionLabel('Quick Notes'),
+                  _sectionLabel(ref.watchTr(AppStrings.quickNotesTitle)),
                   const Spacer(),
                   Text(
-                    'Optional',
+                    ref.watchTr(AppStrings.optional),
                     style: TxtStyle.bodyMedium(
                       color: AppColors.subtitleTextColor,
                       fontSize: 13.sp,
@@ -177,7 +177,7 @@ class _TeacherPostClassReportScreenState
                   onTap: () {
                     context.push(RoutePath.teacherReportSubmitted);
                   },
-                  text: 'Submit Report',
+                  text: ref.watchTr(AppStrings.sendReportBtn),
                   trailing: Icon(
                     Icons.arrow_forward_rounded,
                     color: Colors.white,
@@ -197,7 +197,7 @@ class _TeacherPostClassReportScreenState
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'GROUP A • GRADE 11 • ROOM 204',
+          'GRUPO A • ${ref.watchTr(AppStrings.bachillerato1).toUpperCase()} • ${ref.watchTr(AppStrings.aula2).toUpperCase()}',
           style: TxtStyle.labelLarge(
             color: AppColors.subtitleTextColor,
             fontSize: 14.sp,
@@ -207,7 +207,7 @@ class _TeacherPostClassReportScreenState
         ),
         SizedBox(height: 7.h),
         Text(
-          'Advanced Mathematics (Calculus AB)',
+          '${ref.watchTr(AppStrings.subjectMath)} Avanzadas (Cálculo y Álgebra)',
           style: TxtStyle.titleLarge(
             color: AppColors.text,
             fontSize: 23.sp,
@@ -216,7 +216,7 @@ class _TeacherPostClassReportScreenState
         ),
         SizedBox(height: 5.h),
         Text(
-          'Thu, Oct 24 • Dr. Sarah Jenkins',
+          'Jue, 24 Oct • Dra. Sarah Jenkins',
           style: TxtStyle.bodyMedium(
             color: AppColors.subtitleTextColor,
             fontSize: 16.sp,
@@ -373,7 +373,7 @@ class _TeacherPostClassReportScreenState
         maxLines: 3,
         style: TxtStyle.bodyMedium(color: AppColors.text, fontSize: 14.5.sp),
         decoration: InputDecoration(
-          hintText: 'Any additional notes or follow-ups...',
+          hintText: 'Observaciones adicionales o seguimiento...',
           hintStyle: TxtStyle.bodyMedium(
             color: AppColors.subtitleTextColor,
             fontSize: 14.5.sp,
@@ -391,22 +391,22 @@ class _TeacherPostClassReportScreenState
   String _conductLabel(StudentConduct value) {
     switch (value) {
       case StudentConduct.needsAttention:
-        return 'Needs Attention';
+        return ref.watchTr(AppStrings.conductNeedsAttention);
       case StudentConduct.satisfactory:
-        return 'Satisfactory';
+        return ref.watchTr(AppStrings.conductSatisfactory);
       case StudentConduct.excellent:
-        return 'Excellent';
+        return ref.watchTr(AppStrings.conductExcellent);
     }
   }
 
   String _effortLabel(WorkEffort value) {
     switch (value) {
       case WorkEffort.moderate:
-        return 'Moderate';
+        return ref.watchTr(AppStrings.effortModerate);
       case WorkEffort.onTrack:
-        return 'On Track';
+        return ref.watchTr(AppStrings.effortAdequate);
       case WorkEffort.highEffort:
-        return 'High Effort';
+        return ref.watchTr(AppStrings.effortHighPerformance);
     }
   }
 }

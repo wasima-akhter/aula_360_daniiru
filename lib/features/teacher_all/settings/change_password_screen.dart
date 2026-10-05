@@ -5,14 +5,15 @@ import '../../share/widgets/button/app_logo.dart';
 import '../../share/widgets/button/custom_back_button.dart';
 import '../../share/widgets/text_field/custom_text_field.dart';
 
-class ChangePasswordScreen extends StatefulWidget {
+class ChangePasswordScreen extends ConsumerStatefulWidget {
   const ChangePasswordScreen({super.key});
 
   @override
-  State<ChangePasswordScreen> createState() => _ChangePasswordScreenState();
+  ConsumerState<ChangePasswordScreen> createState() =>
+      _ChangePasswordScreenState();
 }
 
-class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
+class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
   final currentPasswordController = TextEditingController();
   final newPasswordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
@@ -32,7 +33,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   void _changePassword() {
     if (!AulaValidation.required(
       value: currentPasswordController.text,
-      fieldName: 'Current Password',
+      fieldName: ref.watchTr(AppStrings.currentPassword),
     )) {
       return;
     }
@@ -43,15 +44,15 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
     if (!AulaValidation.required(
       value: confirmPasswordController.text,
-      fieldName: 'Confirm Password',
+      fieldName: ref.watchTr(AppStrings.fieldConfirmPassword),
     )) {
       return;
     }
 
     if (newPasswordController.text != confirmPasswordController.text) {
       ApiSnackbar.show(
-        'Both passwords must match.',
-        title: 'Password Mismatch',
+        ref.watchTr(AppStrings.passwordMismatchMessage),
+        title: ref.watchTr(AppStrings.passwordMismatchTitle),
         type: SnackbarType.error,
       );
       return;
@@ -59,18 +60,16 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
     if (currentPasswordController.text == newPasswordController.text) {
       ApiSnackbar.show(
-        'Your new password must be different from your current password.',
-        title: 'Invalid Password',
+        ref.watchTr(AppStrings.passwordDifferentMsg),
+        title: ref.watchTr(AppStrings.invalidPassword),
         type: SnackbarType.error,
       );
       return;
     }
 
-    // TODO: Call change-password API here.
-
     ApiSnackbar.show(
-      'Your password has been changed successfully.',
-      title: 'Password Updated',
+      ref.watchTr(AppStrings.passwordUpdatedMsg),
+      title: ref.watchTr(AppStrings.passwordResetSuccessTitle),
       type: SnackbarType.success,
     );
 
@@ -87,21 +86,21 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const AuthBackButton(title: 'Change Password'),
+              AuthBackButton(title: ref.watchTr(AppStrings.changePasswordTitle)),
 
-              const SizedBox(height: 43),
+              const SizedBox(height: 35),
 
               const Center(child: AulaLogo(width: 130)),
 
-              const SizedBox(height: 28),
+              const SizedBox(height: 24),
 
               Center(
                 child: Text(
-                  'Change your password',
+                  ref.watchTr(AppStrings.changePasswordTitle),
                   textAlign: TextAlign.center,
                   style: TxtStyle.titleLarge(
                     color: AppColors.text,
-                    fontSize: 27.5.sp,
+                    fontSize: 26.sp,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
@@ -111,21 +110,22 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
               Center(
                 child: Text(
-                  'Enter your current password and choose a\nnew password for your account.',
+                  ref.watchTr(AppStrings.changePasswordHeaderSubtitle),
                   textAlign: TextAlign.center,
                   style: TxtStyle.titleLarge(
                     color: AppColors.secondaryText,
+                    fontSize: 14.sp,
                     height: 1.5,
                   ),
                 ),
               ),
 
-              const SizedBox(height: 30),
+              const SizedBox(height: 28),
 
               AppTextField(
                 controller: currentPasswordController,
-                label: 'Current Password',
-                hint: 'Enter current password',
+                label: ref.watchTr(AppStrings.currentPassword),
+                hint: ref.watchTr(AppStrings.currentPasswordHint),
                 icon: Icons.lock_outline_rounded,
                 obscureText: obscureCurrentPassword,
                 onTogglePassword: () {
@@ -139,8 +139,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
               AppTextField(
                 controller: newPasswordController,
-                label: 'New Password',
-                hint: 'Enter new password',
+                label: ref.watchTr(AppStrings.fieldNewPassword),
+                hint: ref.watchTr(AppStrings.fieldNewPasswordHint),
                 icon: Icons.lock_outline_rounded,
                 obscureText: obscureNewPassword,
                 onTogglePassword: () {
@@ -154,8 +154,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
               AppTextField(
                 controller: confirmPasswordController,
-                label: 'Confirm Password',
-                hint: 'Re-enter new password',
+                label: ref.watchTr(AppStrings.fieldConfirmPassword),
+                hint: ref.watchTr(AppStrings.fieldConfirmPasswordHint),
                 icon: Icons.lock_outline_rounded,
                 obscureText: obscureConfirmPassword,
                 onTogglePassword: () {
@@ -165,10 +165,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 },
               ),
 
-              const SizedBox(height: 23),
+              const SizedBox(height: 24),
 
               AulaPrimaryButton(
-                text: 'Change Password',
+                text: ref.watchTr(AppStrings.changePasswordTitle),
                 onTap: _changePassword,
               ),
             ],

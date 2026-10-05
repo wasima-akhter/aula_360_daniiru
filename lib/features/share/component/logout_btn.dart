@@ -1,12 +1,12 @@
-﻿import '../export/screen_export.dart';
+import '../export/screen_export.dart';
 
-class LogoutBtn extends StatelessWidget {
+class LogoutBtn extends ConsumerWidget {
   const LogoutBtn({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return InkWell(
-      onTap: () => _showLogoutDialog(context),
+      onTap: () => _showLogoutDialog(context, ref),
       borderRadius: BorderRadius.circular(9.r),
       child: Container(
         width: double.infinity,
@@ -30,7 +30,7 @@ class LogoutBtn extends StatelessWidget {
             SizedBox(width: 10.w),
             Expanded(
               child: Text(
-                'Log Out',
+                ref.watchTr(AppStrings.logout),
                 style: TxtStyle.titleLarge(
                   color: AppColors.error,
                   fontSize: 16.sp,
@@ -45,7 +45,7 @@ class LogoutBtn extends StatelessWidget {
     );
   }
 
-  void _showLogoutDialog(BuildContext context) {
+  void _showLogoutDialog(BuildContext context, WidgetRef ref) {
     showDialog<void>(
       context: context,
       builder: (dialogContext) {
@@ -63,8 +63,8 @@ class LogoutBtn extends StatelessWidget {
                 Container(
                   width: 58.w,
                   height: 58.w,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFFEEEE),
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFFFEEEE),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
@@ -75,7 +75,7 @@ class LogoutBtn extends StatelessWidget {
                 ),
                 SizedBox(height: 17.h),
                 Text(
-                  'Log out of your account?',
+                  ref.watchTr(AppStrings.logoutConfirmTitle),
                   textAlign: TextAlign.center,
                   style: TxtStyle.titleLarge(
                     color: AppColors.text,
@@ -85,7 +85,7 @@ class LogoutBtn extends StatelessWidget {
                 ),
                 SizedBox(height: 9.h),
                 Text(
-                  'You will need to sign in again to access your parent dashboard and academy information.',
+                  ref.watchTr(AppStrings.logoutConfirmMessage),
                   textAlign: TextAlign.center,
                   style: TxtStyle.titleLarge(
                     color: AppColors.subtitleTextColor,
@@ -100,8 +100,6 @@ class LogoutBtn extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: () {
                       Navigator.of(dialogContext).pop();
-
-                      // Replace with your auth logout implementation.
                       context.go(RoutePath.loginScreen);
                     },
                     style: ElevatedButton.styleFrom(
@@ -112,7 +110,7 @@ class LogoutBtn extends StatelessWidget {
                       ),
                     ),
                     child: Text(
-                      'Log Out',
+                      ref.watchTr(AppStrings.logout),
                       style: TxtStyle.titleLarge(
                         color: Colors.white,
                         fontSize: 15.sp,
@@ -135,7 +133,7 @@ class LogoutBtn extends StatelessWidget {
                       ),
                     ),
                     child: Text(
-                      'Cancel',
+                      ref.watchTr(AppStrings.cancel),
                       style: TxtStyle.titleLarge(
                         fontSize: 15.sp,
                         fontWeight: FontWeight.w700,

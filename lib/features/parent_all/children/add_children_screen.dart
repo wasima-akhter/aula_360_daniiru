@@ -1,27 +1,27 @@
-﻿import '../../share/export/screen_export.dart';
+import '../../share/export/screen_export.dart';
 import '../helper/parent_models.dart';
 import '../helper/parent_widgets.dart';
 
 /// ===============================================================
-/// 4. ADD CHILD
+/// 4. ADD CHILD / MATRÍCULA DE ESTUDIANTE
 /// ===============================================================
 
-class AddChildScreen extends StatefulWidget {
+class AddChildScreen extends ConsumerStatefulWidget {
   const AddChildScreen({super.key});
 
   @override
-  State<AddChildScreen> createState() => _AddChildScreenState();
+  ConsumerState<AddChildScreen> createState() => _AddChildScreenState();
 }
 
-class _AddChildScreenState extends State<AddChildScreen> {
+class _AddChildScreenState extends ConsumerState<AddChildScreen> {
   final _formKey = GlobalKey<FormState>();
 
   final fullNameController = TextEditingController();
   final dobController = TextEditingController();
   final studentIdController = TextEditingController();
 
-  String grade = 'Grade 2 (Primary)';
-  String gender = 'Male';
+  String grade = '2º Primaria';
+  String genderKey = 'male';
 
   @override
   void dispose() {
@@ -33,13 +33,17 @@ class _AddChildScreenState extends State<AddChildScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
-      appBar: simpleAppBar(context, 'Add Child'),
+      resizeToAvoidBottomInset: true,
+      appBar: simpleAppBar(context, ref.watchTr(AppStrings.addChildTitle)),
       body: SafeArea(
         child: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           physics: const BouncingScrollPhysics(),
-          padding: EdgeInsets.fromLTRB(14.w, 14.h, 14.w, 30.h),
+          padding: EdgeInsets.fromLTRB(14.w, 14.h, 14.w, 30.h + bottomInset),
           child: Form(
             key: _formKey,
             child: Column(
@@ -48,7 +52,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
                 _newEnrollmentBadge(),
                 SizedBox(height: 10.h),
                 Text(
-                  'Student Information',
+                  ref.watchTr(AppStrings.studentInfoTitle),
                   style: TxtStyle.titleLarge(
                     color: AppColors.text,
                     fontSize: 19.sp,
@@ -57,7 +61,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
                 ),
                 SizedBox(height: 4.h),
                 Text(
-                  'Enter basic details to connect your child to your academy parent account.',
+                  ref.watchTr(AppStrings.studentInfoDesc),
                   style: TxtStyle.titleLarge(
                     color: AppColors.subtitleTextColor,
                     fontSize: 15.5.sp,
@@ -70,7 +74,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
                 _photoUploader(),
                 SizedBox(height: 15.h),
                 _requiredField(
-                  'Full Name',
+                  ref.watchTr(AppStrings.fieldFullName),
                   fullNameController,
                   Icons.person_outline,
                 ),
@@ -86,7 +90,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
                   child: TextButton(
                     onPressed: () => context.pop(),
                     child: Text(
-                      'Cancel',
+                      ref.watchTr(AppStrings.cancel),
                       style: TxtStyle.titleLarge(
                         color: AppColors.subtitleTextColor,
                         fontSize: 15.5.sp,
@@ -110,10 +114,10 @@ class _AddChildScreenState extends State<AddChildScreen> {
         borderRadius: BorderRadius.circular(8.r),
       ),
       child: Text(
-        '• NEW STUDENT ENROLLMENT',
+        '• ${ref.watchTr(AppStrings.newStudentEnrollment).toUpperCase()}',
         style: TxtStyle.titleLarge(
           color: AppColors.primaryDark,
-          fontSize: 15.sp,
+          fontSize: 14.sp,
           fontWeight: FontWeight.w800,
         ),
       ),
@@ -153,10 +157,10 @@ class _AddChildScreenState extends State<AddChildScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'PARENT ACCOUNT',
+                  ref.watchTr(AppStrings.parentAccount).toUpperCase(),
                   style: TxtStyle.titleLarge(
                     color: AppColors.subtitleTextColor,
-                    fontSize: 14.sp,
+                    fontSize: 13.sp,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -179,10 +183,10 @@ class _AddChildScreenState extends State<AddChildScreen> {
               borderRadius: BorderRadius.circular(9.r),
             ),
             child: Text(
-              'Verified',
+              ref.watchTr(AppStrings.verified),
               style: TxtStyle.titleLarge(
                 color: AppColors.primaryDark,
-                fontSize: 15.sp,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -198,7 +202,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'Photo picker opened.',
+              ref.watchTr(AppStrings.uploadPhotoOptional),
               style: TxtStyle.titleLarge(fontSize: 14.sp, color: Colors.white),
             ),
             behavior: SnackBarBehavior.floating,
@@ -232,7 +236,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
             ),
             SizedBox(height: 6.h),
             Text(
-              'Upload Photo (Optional)',
+              ref.watchTr(AppStrings.uploadPhotoOptional),
               style: TxtStyle.titleLarge(
                 color: AppColors.primaryDark,
                 fontSize: 15.sp,
@@ -241,10 +245,10 @@ class _AddChildScreenState extends State<AddChildScreen> {
             ),
             SizedBox(height: 2.h),
             Text(
-              'JPG or PNG up to 5MB',
+              ref.watchTr(AppStrings.uploadPhotoHint),
               style: TxtStyle.titleLarge(
                 color: AppColors.subtitleTextColor,
-                fontSize: 15.sp,
+                fontSize: 14.sp,
               ),
             ),
           ],
@@ -269,7 +273,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
             controller: controller,
             validator: (value) {
               if (value == null || value.trim().isEmpty) {
-                return '$label is required';
+                return '$label ${ref.watchTr(AppStrings.fieldRequired)}';
               }
               return null;
             },
@@ -287,7 +291,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _label('Date of Birth', requiredField: true),
+          _label(ref.watchTr(AppStrings.dateOfBirth), requiredField: true),
           SizedBox(height: 5.h),
           TextFormField(
             controller: dobController,
@@ -295,7 +299,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
             onTap: _selectDate,
             validator: (value) {
               if (value == null || value.trim().isEmpty) {
-                return 'Date of Birth is required';
+                return '${ref.watchTr(AppStrings.dateOfBirth)} ${ref.watchTr(AppStrings.fieldRequired)}';
               }
               return null;
             },
@@ -318,45 +322,53 @@ class _AddChildScreenState extends State<AddChildScreen> {
     if (picked != null) {
       setState(() {
         dobController.text =
-            '${picked.month.toString().padLeft(2, '0')}/'
             '${picked.day.toString().padLeft(2, '0')}/'
+            '${picked.month.toString().padLeft(2, '0')}/'
             '${picked.year}';
       });
     }
   }
 
   Widget _gradeDropdown() {
+    const gradesList = [
+      '1º Primaria',
+      '2º Primaria',
+      '3º Primaria',
+      '4º Primaria',
+      '5º Primaria',
+      '6º Primaria',
+      '1º ESO',
+      '2º ESO',
+      '3º ESO',
+      '4º ESO',
+      '1º Bachillerato',
+      '2º Bachillerato',
+    ];
+
     return Padding(
       padding: EdgeInsets.only(bottom: 10.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _label('Grade / Level', requiredField: true),
+          _label(ref.watchTr(AppStrings.gradeLevel), requiredField: true),
           SizedBox(height: 5.h),
           DropdownButtonFormField<String>(
             initialValue: grade,
             decoration: _inputDecoration(Icons.school_outlined),
-            items: const [
-              DropdownMenuItem(
-                value: 'Grade 1 (Primary)',
-                child: Text('Grade 1 (Primary)'),
-              ),
-              DropdownMenuItem(
-                value: 'Grade 2 (Primary)',
-                child: Text('Grade 2 (Primary)'),
-              ),
-              DropdownMenuItem(
-                value: 'Grade 3 (Primary)',
-                child: Text('Grade 3 (Primary)'),
-              ),
-              DropdownMenuItem(value: 'Grade 8', child: Text('Grade 8')),
-            ],
+            items: gradesList
+                .map(
+                  (g) => DropdownMenuItem(
+                    value: g,
+                    child: Text(g),
+                  ),
+                )
+                .toList(),
             onChanged: (value) {
               if (value != null) {
                 setState(() => grade = value);
               }
             },
-            style: TxtStyle.titleLarge(color: AppColors.text, fontSize: 16.sp),
+            style: TxtStyle.titleLarge(color: AppColors.text, fontSize: 15.sp),
           ),
         ],
       ),
@@ -369,7 +381,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _label('Gender', requiredField: true),
+          _label(ref.watchTr(AppStrings.gender), requiredField: true),
           SizedBox(height: 5.h),
           Container(
             height: 42.h,
@@ -380,9 +392,9 @@ class _AddChildScreenState extends State<AddChildScreen> {
             ),
             child: Row(
               children: [
-                _genderOption('Female'),
-                _genderOption('Male'),
-                _genderOption('Prefer not to say'),
+                _genderOption('female', ref.watchTr(AppStrings.genderFemale)),
+                _genderOption('male', ref.watchTr(AppStrings.genderMale)),
+                _genderOption('other', ref.watchTr(AppStrings.genderPreferNot)),
               ],
             ),
           ),
@@ -391,12 +403,12 @@ class _AddChildScreenState extends State<AddChildScreen> {
     );
   }
 
-  Widget _genderOption(String value) {
-    final selected = gender == value;
+  Widget _genderOption(String key, String label) {
+    final selected = genderKey == key;
 
     return Expanded(
       child: GestureDetector(
-        onTap: () => setState(() => gender = value),
+        onTap: () => setState(() => genderKey = key),
         child: Container(
           alignment: Alignment.center,
           decoration: BoxDecoration(
@@ -412,13 +424,13 @@ class _AddChildScreenState extends State<AddChildScreen> {
                 : null,
           ),
           child: Text(
-            value,
+            label,
             textAlign: TextAlign.center,
             style: TxtStyle.titleLarge(
               color: selected
                   ? AppColors.primaryDark
                   : AppColors.subtitleTextColor,
-              fontSize: 15.sp,
+              fontSize: 13.5.sp,
               fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
             ),
           ),
@@ -431,15 +443,15 @@ class _AddChildScreenState extends State<AddChildScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _label('Student ID', requiredField: false),
+        _label(ref.watchTr(AppStrings.studentId), requiredField: false),
         SizedBox(height: 2.h),
         Align(
           alignment: Alignment.centerRight,
           child: Text(
-            'Provided by academy',
+            ref.watchTr(AppStrings.providedByAcademy),
             style: TxtStyle.titleLarge(
               color: AppColors.subtitleTextColor,
-              fontSize: 15.sp,
+              fontSize: 14.sp,
             ),
           ),
         ),
@@ -471,10 +483,10 @@ class _AddChildScreenState extends State<AddChildScreen> {
           SizedBox(width: 8.w),
           Expanded(
             child: Text(
-              'Student record connects directly to your parent dashboard upon confirmation.',
+              ref.watchTr(AppStrings.studentConnectionNotice),
               style: TxtStyle.titleLarge(
                 color: AppColors.subtitleTextColor,
-                fontSize: 15.sp,
+                fontSize: 14.sp,
                 height: 1.35,
               ),
             ),
@@ -487,7 +499,6 @@ class _AddChildScreenState extends State<AddChildScreen> {
   Widget _saveChildButton() {
     return SizedBox(
       width: double.infinity,
-
       child: ElevatedButton(
         onPressed: _saveChild,
         style: ElevatedButton.styleFrom(
@@ -503,7 +514,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
             Icon(Icons.check, color: Colors.white, size: 20.sp),
             SizedBox(width: 5.w),
             Text(
-              'Save Child',
+              ref.watchTr(AppStrings.saveChild),
               style: TxtStyle.titleLarge(
                 color: Colors.white,
                 fontSize: 17.sp,
@@ -527,10 +538,10 @@ class _AddChildScreenState extends State<AddChildScreen> {
           : studentIdController.text.trim(),
       name: fullNameController.text.trim(),
       grade: grade,
-      room: 'Room 2A',
+      room: 'Aula 2A',
       imageUrl:
           'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400',
-      parentTeacher: 'Assigned after enrollment',
+      parentTeacher: ref.watchTr(AppStrings.assignedAfterEnrollment),
       attendance: 100,
       present: 0,
       absent: 0,
@@ -546,7 +557,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
         text: text,
         style: TxtStyle.titleLarge(
           color: AppColors.labelTextColor,
-          fontSize: 16.sp,
+          fontSize: 15.sp,
           fontWeight: FontWeight.w700,
         ),
         children: [
@@ -555,7 +566,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
               text: ' *',
               style: TxtStyle.titleLarge(
                 color: AppColors.error,
-                fontSize: 16.sp,
+                fontSize: 15.sp,
               ),
             ),
         ],

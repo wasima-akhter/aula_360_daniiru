@@ -27,6 +27,7 @@ import '../../features/auth/presentation/screens/active_otp_screen.dart';
 import '../../features/auth/presentation/screens/forget_password_screen.dart';
 import '../../features/auth/presentation/screens/reset_password_screen.dart';
 import '../../features/auth/presentation/teacher_auth/teacher_profile_setup_screen.dart';
+import '../../features/entry/presentation/screens/choose_language_screen.dart';
 import '../../features/entry/presentation/screens/choose_role_screen.dart';
 import '../../features/entry/presentation/screens/onboarding_screen.dart';
 import '../../features/entry/presentation/screens/splash_screen.dart';
@@ -62,6 +63,16 @@ class AppRouter {
           return _buildPageWithAnimation(
             state: state,
             child: const SplashScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        name: RoutePath.chooseLanguageScreen,
+        path: RoutePath.chooseLanguageScreen.addBasePath,
+        pageBuilder: (context, state) {
+          return _buildPageWithAnimation(
+            state: state,
+            child: const ChooseLanguageScreen(),
           );
         },
       ),

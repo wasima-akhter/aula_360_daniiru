@@ -1,19 +1,19 @@
-﻿import '../../parent_all/helper/parent_home_helper.dart';
+import '../../parent_all/helper/parent_home_helper.dart';
 import '../../share/export/screen_export.dart';
 
 /// ===============================================================
 /// REPORT DETAILS SCREEN
 /// ===============================================================
 
-class TeacherReportDetailsScreen extends StatelessWidget {
+class TeacherReportDetailsScreen extends ConsumerWidget {
   const TeacherReportDetailsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: AppColors.softBackground,
       appBar: AulaAppBar(
-        title: 'Report Details',
+        title: ref.watchTr(AppStrings.reportDetailTitle),
         showBack: true,
         actions: [
           Icon(
@@ -29,29 +29,29 @@ class TeacherReportDetailsScreen extends StatelessWidget {
           physics: const BouncingScrollPhysics(),
           padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 30.h),
           children: [
-            _recordHeader(),
+            _recordHeader(ref),
             SizedBox(height: 17.h),
-            _attendanceSection(),
+            _attendanceSection(ref),
             SizedBox(height: 17.h),
-            _contentSection(),
+            _contentSection(ref),
             SizedBox(height: 17.h),
-            _homeworkSection(),
+            _homeworkSection(ref),
             SizedBox(height: 17.h),
-            _facultyObservation(),
+            _facultyObservation(ref),
             SizedBox(height: 19.h),
-            _downloadButton(),
+            _downloadButton(ref),
           ],
         ),
       ),
     );
   }
 
-  Widget _recordHeader() {
+  Widget _recordHeader(WidgetRef ref) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'PHYSICAL RECORD • #AR-8041',
+          '${ref.watchTr(AppStrings.attendanceRecordTitle)} • #AR-8041',
           style: TxtStyle.titleLarge(
             color: AppColors.subtitleTextColor,
             fontSize: 15.sp,
@@ -61,7 +61,7 @@ class TeacherReportDetailsScreen extends StatelessWidget {
         ),
         SizedBox(height: 7.h),
         Text(
-          'Advanced Mathematics (Calculus AB)',
+          'Matemáticas Avanzadas (Cálculo y Álgebra)',
           style: TxtStyle.titleLarge(
             color: AppColors.text,
             fontSize: 22.sp,
@@ -70,7 +70,7 @@ class TeacherReportDetailsScreen extends StatelessWidget {
         ),
         SizedBox(height: 5.h),
         Text(
-          'Group A  •  Room 204  •  Oct 24, 2024',
+          '${ref.watchTr(AppStrings.groupA)}  •  ${ref.watchTr(AppStrings.aula2)}  •  24 Oct 2024',
           style: TxtStyle.bodyMedium(
             color: AppColors.subtitleTextColor,
             fontSize: 15.sp,
@@ -84,9 +84,9 @@ class TeacherReportDetailsScreen extends StatelessWidget {
               fontSize: 15.sp,
             ),
             children: [
-              const TextSpan(text: 'Teacher: '),
+              TextSpan(text: ref.watchTr(AppStrings.facultyPrefix)),
               TextSpan(
-                text: 'Dr. Sarah Jenkins',
+                text: 'Dra. Sarah Jenkins',
                 style: TxtStyle.bodyMedium(
                   color: AppColors.text,
                   fontSize: 15.sp,
@@ -100,14 +100,14 @@ class TeacherReportDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _attendanceSection() {
+  Widget _attendanceSection(WidgetRef ref) {
     return _detailSection(
-      title: 'ATTENDANCE & PARTICIPATION',
+      title: ref.watchTr(AppStrings.attendanceAndParticipationTitle),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '18 of 18 Present (100%)',
+            '18 de 18 Presentes (100%)',
             style: TxtStyle.titleLarge(
               color: AppColors.text,
               fontSize: 16.sp,
@@ -116,7 +116,7 @@ class TeacherReportDetailsScreen extends StatelessWidget {
           ),
           SizedBox(height: 5.h),
           Text(
-            'Attitude rating: 5.0 / 5.0 • Work rigor: 4.8 / 5.0',
+            'Valoración de actitud: 5.0 / 5.0 • Rigor académico: 4.8 / 5.0',
             style: TxtStyle.bodyMedium(
               color: AppColors.subtitleTextColor,
               fontSize: 16.sp,
@@ -127,14 +127,14 @@ class TeacherReportDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _contentSection() {
+  Widget _contentSection(WidgetRef ref) {
     return _detailSection(
-      title: 'CONTENT COVERED',
+      title: ref.watchTr(AppStrings.contentDeliveredTitle).toUpperCase(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Unit 4: Chain Rule & Implicit Differentiation',
+            'Tema 4: Regla de la cadena y derivación implícita',
             style: TxtStyle.titleLarge(
               color: AppColors.text,
               fontSize: 16.sp,
@@ -143,9 +143,9 @@ class TeacherReportDetailsScreen extends StatelessWidget {
           ),
           SizedBox(height: 6.h),
           Text(
-            'Conducted chalkboard derivations for composite trigonometric functions. '
-            'All 18 students completed 4 whiteboard drill problems in pairs, '
-            'followed by textbook exercises 14–28 from Section 4.2.',
+            'Se realizaron demostraciones en pizarra para funciones compuestas y trigonométricas. '
+            'Los 18 alumnos completaron 4 ejercicios prácticos en parejas, '
+            'seguidos de las actividades 14–28 del Tema 4.2.',
             style: TxtStyle.bodyMedium(
               color: AppColors.subtitleTextColor,
               fontSize: 16.sp,
@@ -157,15 +157,15 @@ class TeacherReportDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _homeworkSection() {
+  Widget _homeworkSection(WidgetRef ref) {
     return _detailSection(
-      title: 'ASSIGNED HOMEWORK',
-      trailing: 'Due Oct 29',
+      title: ref.watchTr(AppStrings.assignedTasksTitle).toUpperCase(),
+      trailing: 'Entrega: 29 Oct',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Problem Set 4: Implicit Differentiation & Composite Functions',
+            'Relación 4: Derivación implícita y funciones compuestas',
             style: TxtStyle.titleLarge(
               color: AppColors.text,
               fontSize: 16.sp,
@@ -174,7 +174,7 @@ class TeacherReportDetailsScreen extends StatelessWidget {
           ),
           SizedBox(height: 6.h),
           Text(
-            'Exercises 12–25 on workbook pages 88–91 with complete written proofs.',
+            'Ejercicios 12–25 del cuaderno de actividades (págs. 88–91) con justificación completa.',
             style: TxtStyle.bodyMedium(
               color: AppColors.subtitleTextColor,
               fontSize: 16.sp,
@@ -186,10 +186,10 @@ class TeacherReportDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _facultyObservation() {
+  Widget _facultyObservation(WidgetRef ref) {
     return _detailSection(
-      title: 'FACULTY OBSERVATIONS',
-      trailing: 'Oct 24, 10:28 AM',
+      title: ref.watchTr(AppStrings.facultyObservationTitle),
+      trailing: '24 Oct, 10:28',
       child: Container(
         padding: EdgeInsets.only(left: 10.w),
         decoration: const BoxDecoration(
@@ -198,10 +198,10 @@ class TeacherReportDetailsScreen extends StatelessWidget {
           ),
         ),
         child: Text(
-          '"The cohort demonstrated rapid comprehension of inner function substitution. '
-          'Lucas Rivera and Sofia Chen led the front chalkboard review effectively. '
-          'For the next session, prepare extra practice worksheets focusing on inverse '
-          'trigonometric substitutions before moving on to Related Rates."',
+          '"El grupo demostró una rápida asimilación de la regla de la cadena. '
+          'Lucas Rivera y Sofía Chen guiaron con solvencia la resolución en pizarra. '
+          'Para la próxima sesión, reforzar con ejercicios de trigonometría inversa antes '
+          'de pasar a aplicaciones de la derivada."',
           style: TxtStyle.bodyMedium(
             color: AppColors.subtitleTextColor,
             fontSize: 16.sp,
@@ -261,14 +261,14 @@ class TeacherReportDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _downloadButton() {
+  Widget _downloadButton(WidgetRef ref) {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton.icon(
         onPressed: () {},
         icon: Icon(Icons.download_outlined, size: 17.sp, color: Colors.white),
         label: Text(
-          'Download Ledger Slip (PDF)',
+          ref.watchTr(AppStrings.downloadOfficialRecordPdf),
           style: TxtStyle.titleLarge(
             color: Colors.white,
             fontSize: 18.sp,

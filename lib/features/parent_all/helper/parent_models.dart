@@ -1,5 +1,5 @@
 /// ===============================================================
-/// MODELS
+/// MODELS (PARENT FEATURE)
 /// ===============================================================
 library;
 
@@ -29,14 +29,18 @@ class ChildModel {
   });
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// SAMPLE / MOCK DATA (Spanish Academy Context)
+// ─────────────────────────────────────────────────────────────────────────────
+
 const ChildModel lucasChild = ChildModel(
   id: '#STU-4821',
   name: 'Lucas Rivera',
-  grade: 'Grade 8',
-  room: 'Room 3B',
+  grade: '2º ESO',
+  room: 'Aula 3B',
   imageUrl:
       'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400',
-  parentTeacher: 'Ms. Sarah Vance (Homeroom)',
+  parentTeacher: 'Dña. Sarah Vance (Tutora)',
   attendance: 96,
   present: 48,
   absent: 2,
@@ -46,11 +50,11 @@ const ChildModel lucasChild = ChildModel(
 const ChildModel sophiaChild = ChildModel(
   id: '#STU-5298',
   name: 'Sophia Rivera',
-  grade: 'Grade 5',
-  room: 'Room 1A',
+  grade: '5º Primaria',
+  room: 'Aula 1A',
   imageUrl:
       'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400',
-  parentTeacher: 'Mr. David Miller (Homeroom)',
+  parentTeacher: 'D. David Miller (Tutor)',
   attendance: 98,
   present: 49,
   absent: 1,

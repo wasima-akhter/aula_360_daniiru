@@ -1,24 +1,24 @@
-﻿import '../../../share/export/screen_export.dart';
+import '../../../share/export/screen_export.dart';
 import '../../helper/parent_home_helper.dart';
 import 'parent_homework_screen.dart';
 
-class HomeworkDetailsScreen extends StatefulWidget {
+class HomeworkDetailsScreen extends ConsumerStatefulWidget {
   final HomeworkModel homework;
 
   const HomeworkDetailsScreen({super.key, required this.homework});
 
   @override
-  State<HomeworkDetailsScreen> createState() => _HomeworkDetailsScreenState();
+  ConsumerState<HomeworkDetailsScreen> createState() => _HomeworkDetailsScreenState();
 }
 
-class _HomeworkDetailsScreenState extends State<HomeworkDetailsScreen> {
+class _HomeworkDetailsScreenState extends ConsumerState<HomeworkDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     final homework = widget.homework;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
-      appBar: const AulaAppBar(title: 'Homework Details', showBack: true),
+      appBar: AulaAppBar(title: ref.watchTr(AppStrings.homeworkDetailsTitle), showBack: true),
       body: SafeArea(
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
@@ -28,21 +28,13 @@ class _HomeworkDetailsScreenState extends State<HomeworkDetailsScreen> {
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
                   _assignmentHeader(homework),
-
                   SizedBox(height: 15.h),
-
                   _teacherCard(homework),
-
                   SizedBox(height: 15.h),
-
                   _instructions(homework),
-
                   SizedBox(height: 15.h),
-
                   _attachmentSection(),
-
                   SizedBox(height: 15.h),
-
                   _submissionInfo(homework),
                 ]),
               ),
@@ -68,26 +60,22 @@ class _HomeworkDetailsScreenState extends State<HomeworkDetailsScreen> {
               letterSpacing: .5,
             ),
           ),
-
           SizedBox(height: 7.h),
-
           Text(
             homework.title,
             style: TxtStyle.titleLarge(
               color: AppColors.text,
-              fontSize: 22.sp,
+              fontSize: 21.sp,
               height: 1.25,
               fontWeight: FontWeight.w800,
             ),
           ),
-
           SizedBox(height: 14.h),
-
           Row(
             children: [
-              _infoChip(Icons.calendar_today_outlined, 'Oct 26, 2021'),
+              _infoChip(Icons.calendar_today_outlined, '26 Oct 2024'),
               SizedBox(width: 8.w),
-              _infoChip(Icons.schedule_rounded, '11:59 PM'),
+              _infoChip(Icons.schedule_rounded, '23:59'),
             ],
           ),
         ],
@@ -101,9 +89,7 @@ class _HomeworkDetailsScreenState extends State<HomeworkDetailsScreen> {
       child: Row(
         children: [
           const UserAvatar(initials: 'RH', size: 40),
-
           SizedBox(width: 10.w),
-
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -118,16 +104,15 @@ class _HomeworkDetailsScreenState extends State<HomeworkDetailsScreen> {
                 ),
                 SizedBox(height: 3.h),
                 Text(
-                  'Faculty of English Literature',
+                  '${ref.watchTr(AppStrings.mockTeacherDept)} • ${homework.subject}',
                   style: TxtStyle.titleLarge(
                     color: AppColors.secondaryText,
-                    fontSize: 15.sp,
+                    fontSize: 14.sp,
                   ),
                 ),
               ],
             ),
           ),
-
           Icon(
             Icons.chat_bubble_outline_rounded,
             color: AppColors.secondaryText,
@@ -145,7 +130,7 @@ class _HomeworkDetailsScreenState extends State<HomeworkDetailsScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'INSTRUCTIONS',
+            ref.watchTr(AppStrings.instructionsTitle),
             style: TxtStyle.titleLarge(
               color: AppColors.secondaryText,
               fontSize: 14.sp,
@@ -153,15 +138,13 @@ class _HomeworkDetailsScreenState extends State<HomeworkDetailsScreen> {
               letterSpacing: .5,
             ),
           ),
-
           SizedBox(height: 10.h),
-
           Text(
-            'Write a 500-word analysis examining the motivations of a core motif of innocence and moral vulnerability. Cite at least two specific passages from Chapters 10 and 28.',
+            'Escribe un análisis de 500 palabras examinando los temas principales del texto. Cita al menos dos fragmentos específicos de los capítulos trabajados.',
             style: TxtStyle.bodyMedium(
               color: AppColors.text,
-              fontSize: 16.sp,
-              height: 1.55,
+              fontSize: 15.sp,
+              height: 1.5,
             ),
           ),
         ],
@@ -176,7 +159,7 @@ class _HomeworkDetailsScreenState extends State<HomeworkDetailsScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'ATTACHMENTS',
+            ref.watchTr(AppStrings.attachmentsTitle),
             style: TxtStyle.titleLarge(
               color: AppColors.secondaryText,
               fontSize: 14.sp,
@@ -184,21 +167,19 @@ class _HomeworkDetailsScreenState extends State<HomeworkDetailsScreen> {
               letterSpacing: .5,
             ),
           ),
-
           SizedBox(height: 11.h),
-
           Row(
             children: [
               _fileCard(
                 icon: Icons.picture_as_pdf_outlined,
-                title: 'PDF or DOCX',
-                subtitle: 'Max 10 MB',
+                title: 'PDF o DOCX',
+                subtitle: 'Máx 10 MB',
               ),
               SizedBox(width: 10.w),
               _fileCard(
                 icon: Icons.description_outlined,
-                title: 'Reference',
-                subtitle: 'Chapter 10–28',
+                title: 'Guía de Apoyo',
+                subtitle: 'Tema 10–28',
               ),
             ],
           ),
@@ -234,7 +215,7 @@ class _HomeworkDetailsScreenState extends State<HomeworkDetailsScreen> {
                     overflow: TextOverflow.ellipsis,
                     style: TxtStyle.titleLarge(
                       color: AppColors.text,
-                      fontSize: 15.sp,
+                      fontSize: 14.5.sp,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -243,7 +224,7 @@ class _HomeworkDetailsScreenState extends State<HomeworkDetailsScreen> {
                     subtitle,
                     style: TxtStyle.titleLarge(
                       color: AppColors.secondaryText,
-                      fontSize: 13.5.sp,
+                      fontSize: 13.sp,
                     ),
                   ),
                 ],
@@ -266,26 +247,24 @@ class _HomeworkDetailsScreenState extends State<HomeworkDetailsScreen> {
           Row(
             children: [
               Text(
-                'Submission',
+                ref.watchTr(AppStrings.submissionStatusTitle),
                 style: TxtStyle.titleLarge(
                   color: AppColors.text,
-                  fontSize: 18.sp,
+                  fontSize: 17.sp,
                   fontWeight: FontWeight.w800,
                 ),
               ),
               const Spacer(),
-              StatusPill(text: completed ? 'Completed' : 'Pending'),
+              StatusPill(text: completed ? ref.watchTr(AppStrings.completedTab) : ref.watchTr(AppStrings.pendingTab)),
             ],
           ),
-
           SizedBox(height: 14.h),
-
           if (completed)
             Text(
-              'Submitted successfully on Oct 22.',
+              'Entregada correctamente el 22 de Octubre.',
               style: TxtStyle.titleLarge(
                 color: const Color(0xFF2B9D70),
-                fontSize: 15.sp,
+                fontSize: 14.5.sp,
                 fontWeight: FontWeight.w600,
               ),
             )
@@ -299,10 +278,10 @@ class _HomeworkDetailsScreenState extends State<HomeworkDetailsScreen> {
               ),
               child: Center(
                 child: Text(
-                  'Awaiting Submission',
+                  ref.watchTr(AppStrings.submissionPending),
                   style: TxtStyle.titleLarge(
                     color: Colors.white,
-                    fontSize: 16.sp,
+                    fontSize: 15.5.sp,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
@@ -328,7 +307,7 @@ class _HomeworkDetailsScreenState extends State<HomeworkDetailsScreen> {
             text,
             style: TxtStyle.titleLarge(
               color: AppColors.secondaryText,
-              fontSize: 14.sp,
+              fontSize: 13.5.sp,
               fontWeight: FontWeight.w700,
             ),
           ),

@@ -1,4 +1,4 @@
-﻿import 'dart:io';
+import 'dart:io';
 
 import '../../../../core/helper/snackbar/api_snackbar.dart';
 import '../../../share/export/screen_export.dart';
@@ -7,31 +7,26 @@ import '../../../share/widgets/dropdown/custom_dropdown_field.dart';
 import '../../../share/widgets/text_field/custom_text_field.dart';
 import '../../abc.dart';
 
-class ProfileSetupScreen extends StatefulWidget {
+class ProfileSetupScreen extends ConsumerStatefulWidget {
   const ProfileSetupScreen({super.key});
 
   @override
-  State<ProfileSetupScreen> createState() => _ProfileSetupScreenState();
+  ConsumerState<ProfileSetupScreen> createState() => _ProfileSetupScreenState();
 }
 
-class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
-  final nameController = TextEditingController(text: 'Eleanor Vance');
-
-  final phoneController = TextEditingController(text: '+1 (555) 234-5678');
-
+class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
+  final nameController = TextEditingController(text: 'Elena Vance');
+  final phoneController = TextEditingController(text: '+34 612 345 678');
   final emailController = TextEditingController(
-    text: 'eleanor.vance@example.com',
+    text: 'elena.vance@example.com',
   );
-
   final addressController = TextEditingController();
 
-  String relationship = 'Mother';
-
+  String relationship = 'Madre';
   File? profileImage;
 
   Future<void> _pickProfileImage() async {
     final image = await AppImagePicker.pickFromGallery();
-
     if (image == null || !mounted) return;
 
     setState(() {
@@ -63,7 +58,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                 ),
                 const SizedBox(height: 18),
                 Text(
-                  'Choose Profile Photo',
+                  ref.watchTr(AppStrings.chooseProfilePhoto),
                   style: context.titleMedium.copyWith(
                     fontWeight: FontWeight.w700,
                     color: AppColors.text,
@@ -71,7 +66,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  'Select an option to update your profile photo.',
+                  ref.watchTr(AppStrings.selectOptionProfilePhoto),
                   textAlign: TextAlign.center,
                   style: context.bodySmall.copyWith(
                     color: AppColors.secondaryText,
@@ -80,7 +75,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                 const SizedBox(height: 16),
                 ImagePickerOption(
                   icon: Icons.photo_library_outlined,
-                  title: 'Choose from Gallery',
+                  title: ref.watchTr(AppStrings.chooseFromGallery),
                   onTap: () {
                     Navigator.pop(context, ImagePickerSource.gallery);
                   },
@@ -88,7 +83,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                 const SizedBox(height: 10),
                 ImagePickerOption(
                   icon: Icons.camera_alt_outlined,
-                  title: 'Take a Photo',
+                  title: ref.watchTr(AppStrings.takeAPhoto),
                   onTap: () {
                     Navigator.pop(context, ImagePickerSource.camera);
                   },
@@ -126,54 +121,34 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
   bool validateForm() {
     if (!AulaValidation.required(
       value: nameController.text,
-      fieldName: 'Parent Full Name',
+      fieldName: ref.watchTr(AppStrings.parentFullName),
     )) {
-      ApiSnackbar.show(
-        'Please enter your full name.',
-        title: 'Full Name Required',
-        type: SnackbarType.error,
-      );
       return false;
     }
     if (!AulaValidation.phone(phoneController.text)) {
-      ApiSnackbar.show(
-        'Please enter a valid mobile number.',
-        title: 'Invalid Mobile Number',
-        type: SnackbarType.error,
-      );
       return false;
     }
     if (!AulaValidation.email(emailController.text)) {
-      ApiSnackbar.show(
-        'Please enter a valid email address.',
-        title: 'Invalid Email Address',
-        type: SnackbarType.error,
-      );
       return false;
     }
     if (relationship.isEmpty) {
       ApiSnackbar.show(
-        'Please select your relationship to the student.',
-        title: 'Relationship Required',
+        'Por favor, selecciona el parentesco con el alumno.',
+        title: 'Parentesco Requerido',
         type: SnackbarType.error,
       );
       return false;
     }
     if (!AulaValidation.required(
       value: addressController.text,
-      fieldName: 'Residential Address',
+      fieldName: ref.watchTr(AppStrings.residentialAddress),
     )) {
-      ApiSnackbar.show(
-        'Please enter your residential address.',
-        title: 'Address Required',
-        type: SnackbarType.error,
-      );
       return false;
     }
     if (profileImage == null) {
       ApiSnackbar.show(
-        'Please add a profile photo to continue.',
-        title: 'Profile Photo Required',
+        'Por favor, añade una foto de perfil para continuar.',
+        title: 'Foto de Perfil Requerida',
         type: SnackbarType.error,
       );
       return false;
@@ -184,21 +159,19 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
   void _completeProfile() {
     if (!validateForm()) return;
 
-    // Profile API will be connected here.
-
     ApiSnackbar.show(
-      'Your profile has been completed successfully.',
-      title: 'Profile Completed',
+      ref.watchTr(AppStrings.profileCompletedSuccess),
+      title: ref.watchTr(AppStrings.profileCompletedTitle),
       type: SnackbarType.success,
     );
-
-    // Navigate to dashboard/navigation after backend integration.
 
     context.go(RoutePath.navigationPages);
   }
 
   @override
   Widget build(BuildContext context) {
+    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -213,7 +186,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
               child: Column(
                 children: [
                   Text(
-                    "Profile Setup".toUpperCase(),
+                    ref.watchTr(AppStrings.profileSetupTitle).toUpperCase(),
                     style: TxtStyle.titleLarge(
                       fontWeight: FontWeight.w600,
                       color: AppColors.primary,
@@ -221,7 +194,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    'PARENT PORTAL',
+                    ref.watchTr(AppStrings.parentPortal),
                     style: TxtStyle.titleLarge(
                       color: AppColors.secondaryText,
                       fontSize: 14.sp,
@@ -231,16 +204,15 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                 ],
               ),
             ),
-
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(22, 14, 22, 25),
+                padding: EdgeInsets.fromLTRB(22, 14, 22, 25 + bottomInset),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Center(
                       child: Text(
-                        'Complete your profile',
+                        ref.watchTr(AppStrings.completeYourProfile),
                         style: TxtStyle.titleLarge(
                           color: AppColors.text,
                           fontSize: 25.5.sp,
@@ -248,12 +220,10 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                         ),
                       ),
                     ),
-
                     const SizedBox(height: 6),
-
                     Center(
                       child: Text(
-                        'Add your parent details to finish setup and\naccess your student’s academy dashboard.',
+                        ref.watchTr(AppStrings.completeYourProfileDesc),
                         textAlign: TextAlign.center,
                         style: TxtStyle.titleLarge(
                           color: AppColors.secondaryText,
@@ -262,9 +232,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                         ),
                       ),
                     ),
-
                     SizedBox(height: 16.h),
-
                     Center(
                       child: Stack(
                         children: [
@@ -317,91 +285,67 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                         ],
                       ),
                     ),
-
-                    // const SizedBox(height: 5),
-
-                    // const Center(
-                    //   child: Text(
-                    //     'Photo Optional',
-                    //     style:  TxtStyle.titleLarge(
-                    //       color: AppColors.secondaryText,
-                    //       fontSize: 7,
-                    //     ),
-                    //   ),
-                    // ),
                     SizedBox(height: 16.h),
-
                     AppTextField(
                       controller: nameController,
-                      label: 'Parent Full Name',
-                      hint: 'Enter your full name',
+                      label: ref.watchTr(AppStrings.parentFullName),
+                      hint: ref.watchTr(AppStrings.enterYourFullName),
                       icon: Icons.person_outline_rounded,
                     ),
-
                     const SizedBox(height: 15),
-
                     AppTextField(
                       controller: phoneController,
-                      label: 'Primary Mobile Number',
-                      hint: 'Enter mobile number',
+                      label: ref.watchTr(AppStrings.primaryMobileNumber),
+                      hint: ref.watchTr(AppStrings.enterMobileNumber),
                       icon: Icons.phone_outlined,
                     ),
-
                     const SizedBox(height: 15),
-
                     AppTextField(
                       controller: emailController,
-                      label: 'Email Address',
-                      hint: 'Enter email address',
+                      label: ref.watchTr(AppStrings.fieldEmailAddress),
+                      hint: ref.watchTr(AppStrings.fieldEmailHint),
                       icon: Icons.email_outlined,
                     ),
-
                     const SizedBox(height: 15),
-
                     Text(
-                      'Relationship to Student',
+                      ref.watchTr(AppStrings.relationshipToStudent),
                       style: context.titleMedium.copyWith(
                         color: AppColors.text,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-
                     const SizedBox(height: 7),
-
                     CustomDropdownField<String>(
-                      hintText: 'Select relationship',
-                      items: const ['Mother', 'Father', 'Guardian'],
+                      hintText: ref.watchTr(AppStrings.selectRelationship),
+                      items: [
+                        ref.watchTr(AppStrings.relationshipMother),
+                        ref.watchTr(AppStrings.relationshipFather),
+                        ref.watchTr(AppStrings.relationshipGuardian),
+                      ],
                       value: relationship,
-
                       onChanged: (value) {
                         if (value == null) return;
-
                         setState(() {
                           relationship = value;
                         });
                       },
                     ),
                     const SizedBox(height: 15),
-
                     AppTextField(
                       controller: addressController,
-                      label: 'Residential Address',
-                      hint: 'e.g. 742 Evergreen Terrace, Springfield',
+                      label: ref.watchTr(AppStrings.residentialAddress),
+                      hint: ref.watchTr(AppStrings.residentialAddressHint),
                       icon: Icons.location_on_outlined,
                     ),
-
                     const SizedBox(height: 22),
-
                     AulaPrimaryButton(
-                      text: 'Complete Profile',
+                      text: ref.watchTr(AppStrings.btnCompleteProfile),
                       onTap: _completeProfile,
                     ),
-
                     const SizedBox(height: 8),
-
                     Center(
                       child: Text(
-                        'Navigates to Parent Dashboard',
+                        ref.watchTr(AppStrings.navigatesToParentDashboard),
                         style: TxtStyle.titleLarge(
                           color: AppColors.secondaryText,
                         ),

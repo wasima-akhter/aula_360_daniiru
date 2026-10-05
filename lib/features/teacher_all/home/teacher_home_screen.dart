@@ -1,4 +1,4 @@
-﻿import 'package:aula360/features/parent_all/helper/parent_home_helper.dart';
+import 'package:aula360/features/parent_all/helper/parent_home_helper.dart';
 
 import '../../share/export/screen_export.dart';
 import '../../share/widgets/button/app_logo.dart';
@@ -8,14 +8,14 @@ import '../helper/teacher_models.dart';
 /// HOME SCREEN
 /// ===============================================================
 
-class TeacherHomeScreen extends StatefulWidget {
+class TeacherHomeScreen extends ConsumerStatefulWidget {
   const TeacherHomeScreen({super.key});
 
   @override
-  State<TeacherHomeScreen> createState() => _TeacherHomeScreenState();
+  ConsumerState<TeacherHomeScreen> createState() => _TeacherHomeScreenState();
 }
 
-class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
+class _TeacherHomeScreenState extends ConsumerState<TeacherHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,11 +46,6 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
         ],
       ),
 
-      // -----------------------------------------------------------
-      // IMPORTANT:
-      // No bottomNavigationBar here.
-      // Your application's main shell can provide navigation.
-      // -----------------------------------------------------------
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
@@ -89,7 +84,7 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Good morning, Dr. Vance',
+            '${ref.watchTr(AppStrings.goodMorning)}, Dr. Vance',
             style: TxtStyle.titleLarge(
               color: AppColors.primaryDark,
               fontSize: 20.sp,
@@ -101,7 +96,7 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
           SizedBox(height: 17.h),
 
           Text(
-            'TODAY • THU, OCT 24',
+            'HOY • JUE, 24 OCT',
             style: TxtStyle.titleMedium(
               color: AppColors.subtitleTextColor,
               fontSize: 14.5.sp,
@@ -113,7 +108,7 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
           SizedBox(height: 3.h),
 
           Text(
-            '4 Classes Scheduled',
+            '4 ${ref.watchTr(AppStrings.homeClassesScheduled).toLowerCase()}',
             style: TxtStyle.titleLarge(
               color: AppColors.text,
               fontSize: 24.sp,
@@ -157,7 +152,7 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
             Row(
               children: [
                 Text(
-                  'NEXT • 09:00 – 10:30 AM',
+                  '${ref.watchTr(AppStrings.homeNextLabel)} • 09:00 – 10:30',
                   style: TxtStyle.titleLarge(
                     color: AppColors.primaryDark,
                     fontSize: 15.sp,
@@ -177,7 +172,7 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
             SizedBox(height: 8.h),
 
             Text(
-              'Advanced Mathematics (Calculus AB)',
+              '${ref.watchTr(AppStrings.subjectMath)} (1º Bachillerato)',
               style: TxtStyle.titleLarge(
                 color: AppColors.text,
                 fontSize: 22.sp,
@@ -189,7 +184,7 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
             SizedBox(height: 5.h),
 
             Text(
-              'Room 204 • Group A • 18 Students',
+              '${ref.watchTr(AppStrings.aula2)} • Grupo A • 18 ${ref.watchTr(AppStrings.studentsCount)}',
               style: TxtStyle.titleLarge(
                 color: AppColors.subtitleTextColor,
                 fontSize: 16.sp,
@@ -213,7 +208,7 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
       child: Row(
         children: [
           Text(
-            'Schedule',
+            ref.watchTr(AppStrings.homeSchedule),
             style: TxtStyle.titleLarge(
               color: AppColors.text,
               fontSize: 21.sp,
@@ -222,7 +217,7 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
           ),
           const Spacer(),
           Text(
-            'In-Person',
+            ref.watchTr(AppStrings.homeInPerson),
             style: TxtStyle.titleLarge(
               color: AppColors.subtitleTextColor,
               fontSize: 15.sp,
@@ -241,7 +236,6 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
   Widget _scheduleItem(HomeScheduleItem item) {
     final index = homeSchedule.indexOf(item);
     return InkWell(
-      // onTap: () => _openClass(item),
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 14.h),
         decoration: BoxDecoration(
@@ -302,7 +296,7 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
 
                   Text(
                     '${item.room} • ${item.group} • '
-                    '${item.students} students',
+                    '${item.students} ${ref.watchTr(AppStrings.studentsCount)}',
                     style: TxtStyle.labelLarge(
                       color: AppColors.subtitleTextColor,
                       fontSize: 15.5.sp,
@@ -334,11 +328,6 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
   /// =============================================================
 
   void _openClass(HomeScheduleItem item) {
-    // If you already have RoutePath.classes / classDetails,
-    // replace this with your existing routing.
-    //
-    // Example:
-    //
     context.push(RoutePath.teacherClassDetail, extra: item);
   }
 }

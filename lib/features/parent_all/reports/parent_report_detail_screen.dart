@@ -1,17 +1,17 @@
-﻿import '../../parent_all/helper/parent_home_helper.dart';
+import '../../parent_all/helper/parent_home_helper.dart';
 import '../../share/export/screen_export.dart';
 import 'parent_report_screen.dart';
 
-class ReportDetailsScreen extends StatefulWidget {
+class ReportDetailsScreen extends ConsumerStatefulWidget {
   final ReportModel report;
 
   const ReportDetailsScreen({super.key, required this.report});
 
   @override
-  State<ReportDetailsScreen> createState() => _ReportDetailsScreenState();
+  ConsumerState<ReportDetailsScreen> createState() => _ReportDetailsScreenState();
 }
 
-class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
+class _ReportDetailsScreenState extends ConsumerState<ReportDetailsScreen> {
   bool showFullNote = false;
 
   @override
@@ -20,7 +20,7 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
-      appBar: const AulaAppBar(title: 'Report Details', showBack: true),
+      appBar: AulaAppBar(title: ref.watchTr(AppStrings.reportDetailTitle), showBack: true),
       body: SafeArea(
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
@@ -30,23 +30,14 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
                   _header(report),
-
                   SizedBox(height: 18.h),
-
                   _homeworkSection(report),
-
                   SizedBox(height: 16.h),
-
                   _teacherObservation(report),
-
                   SizedBox(height: 16.h),
-
                   _attendanceSection(),
-
                   SizedBox(height: 16.h),
-
                   _reportAction(),
-
                   SizedBox(height: 10.h),
                 ]),
               ),
@@ -74,7 +65,7 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
                       report.subject,
                       style: TxtStyle.titleLarge(
                         color: AppColors.text,
-                        fontSize: 22.sp,
+                        fontSize: 21.sp,
                         fontWeight: FontWeight.w800,
                       ),
                     ),
@@ -89,14 +80,12 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
                   ],
                 ),
               ),
-              const StatusPill(text: 'Present'),
+              StatusPill(text: ref.watchTr(AppStrings.present)),
             ],
           ),
 
           SizedBox(height: 15.h),
-
           Divider(height: 1, color: AppColors.backgroundsLinesColor),
-
           SizedBox(height: 13.h),
 
           Row(
@@ -113,10 +102,10 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
                     SizedBox(width: 7.w),
                     Flexible(
                       child: Text(
-                        report.dateLabel.replaceAll('TODAY — ', ''),
+                        report.dateLabel.replaceAll('HOY — ', '').replaceAll('AYER — ', ''),
                         style: TxtStyle.titleLarge(
                           color: AppColors.secondaryText,
-                          fontSize: 14.sp,
+                          fontSize: 13.5.sp,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -124,7 +113,6 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
                   ],
                 ),
               ),
-              // const Spacer(),
               Expanded(
                 child: Row(
                   children: [
@@ -139,7 +127,7 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
                         report.time,
                         style: TxtStyle.titleLarge(
                           color: AppColors.secondaryText,
-                          fontSize: 14.sp,
+                          fontSize: 13.5.sp,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -156,43 +144,37 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
 
   Widget _homeworkSection(ReportModel report) {
     return _sectionCard(
-      title: 'Homework',
+      title: ref.watchTr(AppStrings.homeworkAndTasks),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Essay Draft: Character Motivations',
+            'Redacción: Análisis del tema literario',
             style: TxtStyle.titleLarge(
               color: AppColors.text,
-              fontSize: 18.sp,
+              fontSize: 17.sp,
               fontWeight: FontWeight.w800,
             ),
           ),
-
           SizedBox(height: 5.h),
-
           Text(
-            'Due Oct 26',
+            'Entrega: 26 Oct',
             style: TxtStyle.titleLarge(
               color: const Color(0xFFE68A27),
               fontSize: 14.sp,
               fontWeight: FontWeight.w700,
             ),
           ),
-
           SizedBox(height: 10.h),
-
           Text(
-            'Write a 500-word analysis explaining how character motivation develops throughout the selected chapter.',
+            'Escribe un análisis de 500 palabras explicando la evolución de los personajes en el capítulo seleccionado.',
             style: TxtStyle.bodyMedium(
               color: AppColors.secondaryText,
               fontSize: 14.5.sp,
               height: 1.45,
             ),
           ),
-
           SizedBox(height: 13.h),
-
           Align(
             alignment: Alignment.centerRight,
             child: GestureDetector(
@@ -200,7 +182,7 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
                 context.push(RoutePath.homework);
               },
               child: Text(
-                'View Homework →',
+                ref.watchTr(AppStrings.viewHomework),
                 style: TxtStyle.titleLarge(
                   color: AppColors.primary,
                   fontSize: 14.sp,
@@ -218,7 +200,7 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
     final note = report.note;
 
     return _sectionCard(
-      title: 'Teacher Observation',
+      title: ref.watchTr(AppStrings.teacherObservation),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -251,9 +233,7 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
               ),
             ],
           ),
-
           SizedBox(height: 13.h),
-
           Container(
             width: double.infinity,
             padding: EdgeInsets.all(12.w),
@@ -269,14 +249,12 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
                   : TextOverflow.ellipsis,
               style: TxtStyle.bodyMedium(
                 color: AppColors.text,
-                fontSize: 15.sp,
+                fontSize: 14.5.sp,
                 height: 1.5,
               ),
             ),
           ),
-
           SizedBox(height: 8.h),
-
           GestureDetector(
             onTap: () {
               setState(() {
@@ -284,7 +262,7 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
               });
             },
             child: Text(
-              showFullNote ? 'Show Less' : 'Read Full Note',
+              showFullNote ? ref.watchTr(AppStrings.showLess) : ref.watchTr(AppStrings.readFullNote),
               style: TxtStyle.titleLarge(
                 color: AppColors.primary,
                 fontSize: 14.sp,
@@ -299,17 +277,17 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
 
   Widget _attendanceSection() {
     return _sectionCard(
-      title: 'Attendance',
+      title: ref.watchTr(AppStrings.attendance),
       child: Row(
         children: [
           Expanded(
-            child: _statItem('Status', 'Present', const Color(0xFF2B9D70)),
+            child: _statItem(ref.watchTr(AppStrings.status), ref.watchTr(AppStrings.present), const Color(0xFF2B9D70)),
           ),
-          Expanded(child: _statItem('Duration', '1h 20m', AppColors.primary)),
+          Expanded(child: _statItem(ref.watchTr(AppStrings.duration), '1h 20min', AppColors.primary)),
           Expanded(
             child: _statItem(
-              'Participation',
-              'Excellent',
+              ref.watchTr(AppStrings.participation),
+              ref.watchTr(AppStrings.conductExcellent),
               const Color(0xFF7656D8),
             ),
           ),
@@ -345,9 +323,7 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
 
   Widget _reportAction() {
     return GestureDetector(
-      onTap: () {
-        // Optional: download/share report
-      },
+      onTap: () {},
       child: Container(
         width: double.infinity,
         padding: EdgeInsets.symmetric(vertical: 13.h),
@@ -357,7 +333,7 @@ class _ReportDetailsScreenState extends State<ReportDetailsScreen> {
         ),
         child: Center(
           child: Text(
-            'Download Report',
+            ref.watchTr(AppStrings.downloadReport),
             style: TxtStyle.titleLarge(
               color: Colors.white,
               fontSize: 16.sp,

@@ -1,4 +1,4 @@
-﻿import '../../../share/export/screen_export.dart';
+import '../../../share/export/screen_export.dart';
 import '../../../share/widgets/button/app_logo.dart';
 import '../../../share/widgets/button/custom_back_button.dart';
 import '../../../share/widgets/text_field/custom_text_field.dart';
@@ -11,16 +11,17 @@ class ForgotPasswordArgs {
   const ForgotPasswordArgs({required this.role});
 }
 
-class ForgetPasswordScreen extends StatefulWidget {
+class ForgetPasswordScreen extends ConsumerStatefulWidget {
   final ForgotPasswordArgs args;
 
   const ForgetPasswordScreen({super.key, required this.args});
 
   @override
-  State<ForgetPasswordScreen> createState() => _ForgetPasswordScreenState();
+  ConsumerState<ForgetPasswordScreen> createState() =>
+      _ForgetPasswordScreenState();
 }
 
-class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
+class _ForgetPasswordScreenState extends ConsumerState<ForgetPasswordScreen> {
   final emailController = TextEditingController();
 
   @override
@@ -44,14 +45,13 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
     );
   }
 
-  //
-  String get title {
+  String title(WidgetRef ref) {
     switch (widget.args.role) {
       case OtpRole.parent:
-        return 'Reset Parent Password';
+        return ref.watchTr(AppStrings.resetParentPassword);
 
       case OtpRole.teacher:
-        return 'Reset Teacher Password';
+        return ref.watchTr(AppStrings.resetTeacherPassword);
     }
   }
 
@@ -65,7 +65,9 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const AuthBackButton(title: 'Forgot Password'),
+              AuthBackButton(
+                title: ref.watchTr(AppStrings.forgotPasswordHeader),
+              ),
 
               const SizedBox(height: 45),
 
@@ -75,7 +77,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
 
               Center(
                 child: Text(
-                  'Forgot your password?',
+                  ref.watchTr(AppStrings.forgotPasswordTitle),
                   textAlign: TextAlign.center,
                   style: TxtStyle.titleLarge(
                     color: AppColors.text,
@@ -89,7 +91,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
 
               Center(
                 child: Text(
-                  'Enter the email address associated with your\naccount and we’ll send you a verification code.',
+                  ref.watchTr(AppStrings.forgotPasswordSubtitle),
                   textAlign: TextAlign.center,
                   style: TxtStyle.titleLarge(
                     color: AppColors.secondaryText,
@@ -102,8 +104,8 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
 
               AppTextField(
                 controller: emailController,
-                label: 'Email Address',
-                hint: 'Enter your registered email',
+                label: ref.watchTr(AppStrings.fieldEmailAddress),
+                hint: ref.watchTr(AppStrings.fieldEmailRegisteredHint),
                 icon: Icons.email_outlined,
                 keyboardType: TextInputType.emailAddress,
               ),
@@ -111,7 +113,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
               const SizedBox(height: 22),
 
               AulaPrimaryButton(
-                text: 'Send Verification Code',
+                text: ref.watchTr(AppStrings.btnSendVerification),
                 onTap: _continue,
               ),
             ],
