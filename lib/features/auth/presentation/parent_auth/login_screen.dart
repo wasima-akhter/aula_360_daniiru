@@ -1,11 +1,13 @@
 import 'package:aula360/features/share/export/screen_export.dart';
 import 'package:flutter/foundation.dart';
 
+import '../../../../utils/enum/app_enum.dart';
 import '../../../nav/user_role/user_role_provider.dart';
 import '../../../share/widgets/button/app_logo.dart';
 import '../../../share/widgets/button/custom_back_button.dart';
 import '../../../share/widgets/text_field/custom_text_field.dart';
 import '../../abc.dart';
+import '../controllers/auth_controller.dart';
 import '../screens/active_otp_screen.dart';
 import '../screens/forget_password_screen.dart';
 
@@ -17,11 +19,17 @@ class LoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
+  late final TextEditingController emailController;
+  late final TextEditingController passwordController;
+  bool _rememberMe = false;
+  bool _obscurePassword = true;
 
-  bool rememberMe = false;
-  bool obscurePassword = true;
+  @override
+  void initState() {
+    super.initState();
+    emailController = TextEditingController();
+    passwordController = TextEditingController();
+  }
 
   @override
   void dispose() {
@@ -30,7 +38,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     super.dispose();
   }
 
-  void _login() {
+  Future<void> _login() async {
     if (!AulaValidation.email(emailController.text)) {
       return;
     }
@@ -39,15 +47,24 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       return;
     }
 
-    // API login will be added here.
+    final success = await ref.read(authControllerProvider.notifier).login(
+      emailOrPhone: emailController.text.trim(),
+      password: passwordController.text.trim(),
+      role: UserRole.parent,
+    );
 
-    ref.read(userRoleProvider.notifier).loginAsParent();
-    context.go(RoutePath.navigationPages);
+    if (!mounted) return;
+
+    if (success) {
+      context.go(RoutePath.navigationPages);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final tr = ref.watchTr;
+    final authState = ref.watch(authControllerProvider);
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -78,13 +95,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ),
               ),
 
-              const SizedBox(height: 6),
+              const SizedBox(height: 7),
 
               Center(
                 child: Text(
                   tr(AppStrings.parentLoginSubtitle),
                   textAlign: TextAlign.center,
-                  style: context.bodyMedium.copyWith(
+                  style: context.titleMedium.copyWith(
                     color: AppColors.secondaryText,
                     height: 1.5,
                   ),
@@ -101,92 +118,94 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 keyboardType: TextInputType.emailAddress,
               ),
 
-              const SizedBox(height: 18),
+              const SizedBox(height: 16),
 
               AppTextField(
                 controller: passwordController,
                 label: tr(AppStrings.fieldPassword),
                 hint: tr(AppStrings.fieldPasswordHint),
                 icon: Icons.lock_outline_rounded,
-                obscureText: obscurePassword,
+                obscureText: _obscurePassword,
                 onTogglePassword: () {
-                  setState(() {
-                    obscurePassword = !obscurePassword;
-                  });
+                  setState(() => _obscurePassword = !_obscurePassword);
                 },
               ),
 
-              const SizedBox(height: 11),
+              const SizedBox(height: 14),
 
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: Checkbox(
+                          value: _rememberMe,
+                          onChanged: (value) {
+                            setState(() => _rememberMe = value ?? false);
+                          },
+                          activeColor: AppColors.primary,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        tr(AppStrings.rememberDevice),
+                        style: context.bodySmall.copyWith(
+                          color: AppColors.secondaryText,
+                          fontSize: 14.sp,
+                        ),
+                      ),
+                    ],
+                  ),
                   GestureDetector(
                     onTap: () {
-                      setState(() {
-                        rememberMe = !rememberMe;
-                      });
+                      context.push(
+                        RoutePath.forgetPasswordScreen,
+                        extra: const ForgotPasswordArgs(
+                          role: OtpRole.parent,
+                        ),
+                      );
                     },
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 17,
-                          height: 17,
-                          child: Checkbox(
-                            value: rememberMe,
-                            onChanged: (value) {
-                              setState(() {
-                                rememberMe = value ?? false;
-                              });
-                            },
-                            activeColor: AppColors.primary,
-                          ),
-                        ),
-                        const SizedBox(width: 15),
-                        Text(
-                          tr(AppStrings.rememberDevice),
-                          style: context.bodySmall.copyWith(
-                            color: AppColors.secondaryText,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Gap(12.w),
-                  Flexible(
-                    child: GestureDetector(
-                      onTap: () {
-                        context.push(
-                          RoutePath.forgetPasswordScreen,
-                          extra: const ForgotPasswordArgs(role: OtpRole.parent),
-                        );
-                      },
-                      child: Text(
-                        tr(AppStrings.forgotPassword),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: context.titleSmall.copyWith(
-                          fontSize: 16.sp,
-                          color: AppColors.primary,
-                          fontWeight: FontWeight.w600,
-                        ),
+                    child: Text(
+                      tr(AppStrings.forgotPassword),
+                      style: context.bodySmall.copyWith(
+                        color: AppColors.primary,
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                   ),
                 ],
               ),
 
-              Gap(36.h),
+              const SizedBox(height: 24),
 
               if (kDebugMode) ...[
                 AulaPrimaryButton(
-                  text: 'Configurar Perfil',
+                  text: 'Direct Otp (Debug)',
+                  onTap: () {
+                    context.push(
+                      RoutePath.activeOtpScreen,
+                      extra: OtpArgs(
+                        email: emailController.text.trim().isEmpty
+                            ? 'parent@aula360.com'
+                            : emailController.text.trim(),
+                        purpose: OtpPurpose.signup,
+                        role: OtpRole.parent,
+                      ),
+                    );
+                  },
+                ),
+                Gap(16.h),
+                AulaPrimaryButton(
+                  text: 'Setup Profile (Debug)',
                   onTap: () {
                     context.go(RoutePath.profileSetup);
                   },
                 ),
-
-                Gap(36.h),
+                Gap(16.h),
                 AulaPrimaryButton(
                   text: 'Acceso directo (Demo)',
                   onTap: () {
@@ -194,12 +213,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     context.go(RoutePath.navigationPages);
                   },
                 ),
-
-                Gap(36.h),
+                Gap(16.h),
               ],
               AulaPrimaryButton(
                 text: tr(AppStrings.btnLoginAula360),
-                onTap: _login,
+                onTap: authState.isLoading ? () {} : _login,
               ),
 
               SizedBox(height: 29.h),

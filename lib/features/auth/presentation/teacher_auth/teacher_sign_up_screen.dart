@@ -1,9 +1,11 @@
 import '../../../../core/helper/snackbar/api_snackbar.dart';
+import '../../../../utils/enum/app_enum.dart';
 import '../../../share/export/screen_export.dart';
 import '../../../share/widgets/button/app_logo.dart';
 import '../../../share/widgets/button/custom_back_button.dart';
 import '../../../share/widgets/text_field/custom_text_field.dart';
 import '../../abc.dart';
+import '../controllers/auth_controller.dart';
 import '../screens/active_otp_screen.dart';
 
 class TeacherSignUpScreen extends ConsumerStatefulWidget {
@@ -15,13 +17,21 @@ class TeacherSignUpScreen extends ConsumerStatefulWidget {
 }
 
 class _TeacherSignUpScreenState extends ConsumerState<TeacherSignUpScreen> {
-  final fullNameController = TextEditingController();
-  final mobileController = TextEditingController();
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
+  late final TextEditingController fullNameController;
+  late final TextEditingController mobileController;
+  late final TextEditingController emailController;
+  late final TextEditingController passwordController;
+  bool _agreedToTerms = false;
+  bool _obscurePassword = true;
 
-  bool obscurePassword = true;
-  bool agreedToTerms = false;
+  @override
+  void initState() {
+    super.initState();
+    fullNameController = TextEditingController();
+    mobileController = TextEditingController();
+    emailController = TextEditingController();
+    passwordController = TextEditingController();
+  }
 
   @override
   void dispose() {
@@ -32,10 +42,10 @@ class _TeacherSignUpScreenState extends ConsumerState<TeacherSignUpScreen> {
     super.dispose();
   }
 
-  void _createAccount() {
+  Future<void> _createAccount() async {
     if (!AulaValidation.required(
       value: fullNameController.text,
-      fieldName: 'Full Name',
+      fieldName: ref.tr(AppStrings.fieldFullName),
     )) {
       return;
     }
@@ -52,20 +62,42 @@ class _TeacherSignUpScreenState extends ConsumerState<TeacherSignUpScreen> {
       return;
     }
 
-    if (!agreedToTerms) {
-      ApiSnackbar.show('Por favor, acepta los Términos y Condiciones.');
+    if (!_agreedToTerms) {
+      ApiSnackbar.show(
+        ref.tr(AppStrings.teacherTermsRequired),
+        title: ref.tr(AppStrings.termsAndConditions),
+        type: SnackbarType.error,
+      );
       return;
     }
 
-    context.go(
-      RoutePath.activeOtpScreen,
-      extra: OtpArgs(purpose: OtpPurpose.signup, role: OtpRole.parent),
+    final success = await ref.read(authControllerProvider.notifier).signUp(
+      fullName: fullNameController.text.trim(),
+      email: emailController.text.trim(),
+      phone: mobileController.text.trim(),
+      password: passwordController.text.trim(),
+      role: UserRole.teacher,
     );
+
+    if (!mounted) return;
+
+    if (success) {
+      context.go(
+        RoutePath.activeOtpScreen,
+        extra: OtpArgs(
+          email: emailController.text.trim(),
+          purpose: OtpPurpose.signup,
+          role: OtpRole.teacher,
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final tr = ref.watchTr;
+    final authState = ref.watch(authControllerProvider);
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -106,23 +138,13 @@ class _TeacherSignUpScreenState extends ConsumerState<TeacherSignUpScreen> {
                 ),
               ),
 
-              const SizedBox(height: 27),
+              const SizedBox(height: 28),
 
               AppTextField(
                 controller: fullNameController,
                 label: tr(AppStrings.fieldFullName),
                 hint: tr(AppStrings.fieldFullNameHint),
                 icon: Icons.person_outline_rounded,
-              ),
-
-              const SizedBox(height: 16),
-
-              AppTextField(
-                controller: emailController,
-                label: tr(AppStrings.fieldEmailOrFacultyId),
-                hint: tr(AppStrings.fieldEmailOrFacultyIdHint),
-                icon: Icons.email_outlined,
-                keyboardType: TextInputType.emailAddress,
               ),
 
               const SizedBox(height: 16),
@@ -138,92 +160,84 @@ class _TeacherSignUpScreenState extends ConsumerState<TeacherSignUpScreen> {
               const SizedBox(height: 16),
 
               AppTextField(
+                controller: emailController,
+                label: tr(AppStrings.fieldAcademyEmail),
+                hint: tr(AppStrings.fieldAcademyEmailHint),
+                icon: Icons.school_outlined,
+                keyboardType: TextInputType.emailAddress,
+              ),
+
+              const SizedBox(height: 16),
+
+              AppTextField(
                 controller: passwordController,
                 label: tr(AppStrings.fieldPassword),
-                hint: tr(AppStrings.fieldPasswordCreateHint),
+                hint: tr(AppStrings.fieldPasswordHint),
                 icon: Icons.lock_outline_rounded,
-                obscureText: obscurePassword,
+                obscureText: _obscurePassword,
                 onTogglePassword: () {
-                  setState(() {
-                    obscurePassword = !obscurePassword;
-                  });
+                  setState(() => _obscurePassword = !_obscurePassword);
                 },
               ),
 
-              const SizedBox(height: 7),
+              const SizedBox(height: 14),
 
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                    width: 24,
-                    height: 24,
+                    width: 20,
+                    height: 20,
                     child: Checkbox(
-                      value: agreedToTerms,
+                      value: _agreedToTerms,
                       onChanged: (value) {
-                        setState(() {
-                          agreedToTerms = value ?? false;
-                        });
+                        setState(() => _agreedToTerms = value ?? false);
                       },
                       activeColor: AppColors.primary,
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
                   ),
-
-                  const SizedBox(width: 8),
-
+                  const SizedBox(width: 10),
                   Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          agreedToTerms = !agreedToTerms;
-                        });
-                      },
-                      child: Text.rich(
-                        TextSpan(
-                          text: 'Acepto los ',
-                          style: TxtStyle.titleLarge(
-                            color: AppColors.secondaryText,
-                            fontSize: 15.5.sp,
-                            height: 1.4,
-                          ),
-                          children: [
-                            TextSpan(
-                              text: 'Términos y Condiciones',
-                              style: TxtStyle.titleLarge(
-                                color: AppColors.primary,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            TextSpan(
-                              text: ' y la ',
-                              style: TxtStyle.titleLarge(
-                                color: AppColors.secondaryText,
-                              ),
-                            ),
-                            TextSpan(
-                              text: 'Política de Privacidad',
-                              style: TxtStyle.titleLarge(
-                                color: AppColors.primary,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            const TextSpan(text: '.'),
-                          ],
+                    child: Text.rich(
+                      TextSpan(
+                        text: '${tr(AppStrings.agreeTermsPrefix)} ',
+                        style: TxtStyle.bodySmall(
+                          color: AppColors.secondaryText,
+                          fontSize: 14.sp,
                         ),
+                        children: [
+                          TextSpan(
+                            text: tr(AppStrings.termsAndConditions),
+                            style: TxtStyle.bodySmall(
+                              color: AppColors.primary,
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          TextSpan(text: ' ${tr(AppStrings.termsAnd)} '),
+                          TextSpan(
+                            text: tr(AppStrings.privacyPolicy),
+                            style: TxtStyle.bodySmall(
+                              color: AppColors.primary,
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 21),
+
+              const SizedBox(height: 22),
 
               AulaPrimaryButton(
                 text: tr(AppStrings.btnCreateAccount),
-                onTap: _createAccount,
+                onTap: authState.isLoading ? () {} : _createAccount,
               ),
 
-              const SizedBox(height: 17),
+              const SizedBox(height: 20),
 
               Center(
                 child: GestureDetector(
@@ -235,13 +249,14 @@ class _TeacherSignUpScreenState extends ConsumerState<TeacherSignUpScreen> {
                       text: '${tr(AppStrings.alreadyHaveAccount)} ',
                       style: TxtStyle.titleLarge(
                         color: AppColors.secondaryText,
-                        fontSize: 16.sp,
+                        fontSize: 15.sp,
                       ),
                       children: [
                         TextSpan(
-                          text: tr(AppStrings.btnLogIn),
+                          text: tr(AppStrings.logIn),
                           style: TxtStyle.titleLarge(
                             color: AppColors.primary,
+                            fontSize: 15.sp,
                             fontWeight: FontWeight.w700,
                           ),
                         ),

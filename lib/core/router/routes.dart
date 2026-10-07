@@ -10,7 +10,6 @@ import 'package:aula360/features/parent_all/payment/payment_screen.dart';
 import 'package:aula360/features/parent_all/reports/homework/parent_homework_detail_screen.dart';
 import 'package:aula360/features/parent_all/reports/homework/parent_homework_screen.dart';
 import 'package:aula360/features/parent_all/reports/parent_report_detail_screen.dart';
-import 'package:aula360/features/parent_all/reports/parent_report_screen.dart';
 import 'package:aula360/features/parent_all/schedule/schedule_screen.dart';
 import 'package:aula360/features/parent_all/settings/settings_screen.dart';
 import 'package:aula360/features/teacher_all/attendance/teacher_end_class_screen.dart';

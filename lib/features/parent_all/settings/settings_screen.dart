@@ -1,24 +1,20 @@
 import '../../share/export/screen_export.dart';
 import '../../teacher_all/settings/language_picker.dart';
+import '../presentation/controllers/parent_settings_controller.dart';
 
-class SettingsScreen extends ConsumerStatefulWidget {
+class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
   @override
-  ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
-}
-
-class _SettingsScreenState extends ConsumerState<SettingsScreen> {
-  bool pushNotifications = true;
-  bool attendanceAlerts = true;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final tr = ref.watchTr;
     final currentLang = ref.watch(languageProvider).valueOrNull?.language;
     final langLabel = currentLang == AppLanguage.spanish
         ? tr(AppStrings.languageSpanishLabel)
         : tr(AppStrings.languageEnglishUs);
+
+    final settings = ref.watch(parentSettingsControllerProvider);
+    final controller = ref.read(parentSettingsControllerProvider.notifier);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
@@ -35,17 +31,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
               _sectionLabel(tr(AppStrings.settingsSectionAccount)),
               SizedBox(height: 8.h),
-              _accountCard(tr),
+              _accountCard(context, tr),
 
               SizedBox(height: 22.h),
 
-              _languageCard(tr, langLabel),
+              _languageCard(context, ref, tr, langLabel),
 
               SizedBox(height: 22.h),
 
               _sectionLabel(tr(AppStrings.settingsSectionNotifications)),
               SizedBox(height: 8.h),
-              _notificationCard(tr),
+              _notificationCard(tr, settings, controller),
             ],
           ),
         ),
@@ -122,7 +118,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
-  Widget _accountCard(String Function(String) tr) {
+  Widget _accountCard(BuildContext context, String Function(String) tr) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -145,7 +141,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
-  Widget _languageCard(String Function(String) tr, String langLabel) {
+  Widget _languageCard(BuildContext context, WidgetRef ref, String Function(String) tr, String langLabel) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -187,7 +183,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
-  Widget _notificationCard(String Function(String) tr) {
+  Widget _notificationCard(
+    String Function(String) tr,
+    ParentSettingsState settings,
+    ParentSettingsController controller,
+  ) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -201,24 +201,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             icon: Icons.notifications_none,
             title: tr(AppStrings.settingsNotifPush),
             subtitle: tr(AppStrings.settingsNotifPushSub),
-            value: pushNotifications,
-            onChanged: (value) {
-              setState(() {
-                pushNotifications = value;
-              });
-            },
+            value: settings.pushNotifications,
+            onChanged: (value) => controller.togglePush(value),
           ),
           _settingsDivider(),
           _notificationRow(
             icon: Icons.fact_check_outlined,
             title: tr(AppStrings.settingsNotifAttendanceAlerts),
             subtitle: tr(AppStrings.settingsNotifAttendanceAlertsSub),
-            value: attendanceAlerts,
-            onChanged: (value) {
-              setState(() {
-                attendanceAlerts = value;
-              });
-            },
+            value: settings.attendanceAlerts,
+            onChanged: (value) => controller.toggleAttendanceAlerts(value),
           ),
         ],
       ),
@@ -336,7 +328,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             child: Switch(
               value: value,
               onChanged: onChanged,
-              activeColor: Colors.white,
+              activeThumbColor: Colors.white,
               activeTrackColor: AppColors.primary,
               inactiveThumbColor: Colors.white,
               inactiveTrackColor: AppColors.inactiveBackground,

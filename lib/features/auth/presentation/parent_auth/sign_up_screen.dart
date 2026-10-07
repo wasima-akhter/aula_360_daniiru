@@ -1,10 +1,12 @@
 import 'package:aula360/features/auth/presentation/screens/active_otp_screen.dart';
 
+import '../../../../utils/enum/app_enum.dart';
 import '../../../share/export/screen_export.dart';
 import '../../../share/widgets/button/app_logo.dart';
 import '../../../share/widgets/button/custom_back_button.dart';
 import '../../../share/widgets/text_field/custom_text_field.dart';
 import '../../abc.dart';
+import '../controllers/auth_controller.dart';
 
 class SignUpScreen extends ConsumerStatefulWidget {
   const SignUpScreen({super.key});
@@ -14,12 +16,20 @@ class SignUpScreen extends ConsumerStatefulWidget {
 }
 
 class _SignUpScreenState extends ConsumerState<SignUpScreen> {
-  final fullNameController = TextEditingController();
-  final mobileController = TextEditingController();
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
+  late final TextEditingController fullNameController;
+  late final TextEditingController mobileController;
+  late final TextEditingController emailController;
+  late final TextEditingController passwordController;
+  bool _obscurePassword = true;
 
-  bool obscurePassword = true;
+  @override
+  void initState() {
+    super.initState();
+    fullNameController = TextEditingController();
+    mobileController = TextEditingController();
+    emailController = TextEditingController();
+    passwordController = TextEditingController();
+  }
 
   @override
   void dispose() {
@@ -30,10 +40,10 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     super.dispose();
   }
 
-  void _createAccount() {
+  Future<void> _createAccount() async {
     if (!AulaValidation.required(
       value: fullNameController.text,
-      fieldName: 'Full Name',
+      fieldName: ref.tr(AppStrings.fieldFullName),
     )) {
       return;
     }
@@ -50,15 +60,33 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       return;
     }
 
-    context.go(
-      RoutePath.activeOtpScreen,
-      extra: OtpArgs(purpose: OtpPurpose.signup, role: OtpRole.parent),
+    final success = await ref.read(authControllerProvider.notifier).signUp(
+      fullName: fullNameController.text.trim(),
+      email: emailController.text.trim(),
+      phone: mobileController.text.trim(),
+      password: passwordController.text.trim(),
+      role: UserRole.parent,
     );
+
+    if (!mounted) return;
+
+    if (success) {
+      context.go(
+        RoutePath.activeOtpScreen,
+        extra: OtpArgs(
+          email: emailController.text.trim(),
+          purpose: OtpPurpose.signup,
+          role: OtpRole.parent,
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final tr = ref.watchTr;
+    final authState = ref.watch(authControllerProvider);
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -99,7 +127,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                 ),
               ),
 
-              const SizedBox(height: 27),
+              const SizedBox(height: 28),
 
               AppTextField(
                 controller: fullNameController,
@@ -133,46 +161,22 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
               AppTextField(
                 controller: passwordController,
                 label: tr(AppStrings.fieldPassword),
-                hint: tr(AppStrings.fieldPasswordCreateHint),
+                hint: tr(AppStrings.fieldPasswordHint),
                 icon: Icons.lock_outline_rounded,
-                obscureText: obscurePassword,
+                obscureText: _obscurePassword,
                 onTogglePassword: () {
-                  setState(() {
-                    obscurePassword = !obscurePassword;
-                  });
+                  setState(() => _obscurePassword = !_obscurePassword);
                 },
               ),
 
-              const SizedBox(height: 7),
-
-              Row(
-                children: [
-                  Icon(
-                    Icons.info_outline_rounded,
-                    size: 19.sp,
-                    color: AppColors.secondaryText,
-                  ),
-                  const SizedBox(width: 4),
-                  Flexible(
-                    child: Text(
-                      tr(AppStrings.passwordReqNotice),
-                      style: TxtStyle.titleLarge(
-                        color: AppColors.secondaryText,
-                        fontSize: 16.sp,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 21),
+              const SizedBox(height: 22),
 
               AulaPrimaryButton(
                 text: tr(AppStrings.btnCreateAccount),
-                onTap: _createAccount,
+                onTap: authState.isLoading ? () {} : _createAccount,
               ),
 
-              const SizedBox(height: 17),
+              const SizedBox(height: 20),
 
               Center(
                 child: GestureDetector(
@@ -184,13 +188,14 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                       text: '${tr(AppStrings.alreadyHaveAccount)} ',
                       style: TxtStyle.titleLarge(
                         color: AppColors.secondaryText,
-                        fontSize: 16.sp,
+                        fontSize: 15.sp,
                       ),
                       children: [
                         TextSpan(
-                          text: tr(AppStrings.btnLogIn),
+                          text: tr(AppStrings.logIn),
                           style: TxtStyle.titleLarge(
                             color: AppColors.primary,
+                            fontSize: 15.sp,
                             fontWeight: FontWeight.w700,
                           ),
                         ),

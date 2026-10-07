@@ -1,37 +1,20 @@
 import '../../parent_all/helper/parent_widgets.dart';
 import '../../share/component/logout_btn.dart';
 import '../../share/export/screen_export.dart';
+import '../presentation/controllers/teacher_profile_controller.dart';
 
 /// ===============================================================
 /// PROFILE SCREEN
 /// ===============================================================
 
-/// ===============================================================
-/// FACULTY PROFILE
-/// ===============================================================
-
-class TeacherProfileScreen extends ConsumerStatefulWidget {
+class TeacherProfileScreen extends ConsumerWidget {
   const TeacherProfileScreen({super.key});
 
   @override
-  ConsumerState<TeacherProfileScreen> createState() =>
-      _TeacherProfileScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(teacherProfileControllerProvider);
+    final profile = state.profile;
 
-class _TeacherProfileScreenState extends ConsumerState<TeacherProfileScreen> {
-  String name = 'Dra. Sarah Jenkins';
-  String email = 's.jenkins@aula360.academy';
-  String phone = '+34 912 345 678';
-  String department = 'Matemáticas y Física';
-  String office = 'Aula 2 / Despacho 4';
-  String bio =
-      'Docente titular de matemáticas especializado en bachillerato, '
-      'álgebra y preparación académica.';
-
-  String language = 'Español';
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
       appBar: simpleAppBar(
@@ -39,48 +22,42 @@ class _TeacherProfileScreenState extends ConsumerState<TeacherProfileScreen> {
         ref.watchTr(AppStrings.childProfile),
         showBackButton: false,
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          padding: EdgeInsets.fromLTRB(14.w, 16.h, 14.w, 30.h),
-          child: Column(
-            children: [
-              _profileCard(),
-              SizedBox(height: 20.h),
-
-              _sectionLabel(ref.watchTr(AppStrings.academyNavigationTitle)),
-              SizedBox(height: 8.h),
-
-              _navigationCard(),
-
-              SizedBox(height: 18.h),
-
-              LogoutBtn(),
-
-              SizedBox(height: 22.h),
-
-              Text(
-                ref.watchTr(AppStrings.teacherPortalBadge),
-                textAlign: TextAlign.center,
-                style: TxtStyle.titleLarge(
-                  color: AppColors.subtitleTextColor,
-                  fontSize: 15.sp,
+      body: state.isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SafeArea(
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                padding: EdgeInsets.fromLTRB(14.w, 16.h, 14.w, 30.h),
+                child: Column(
+                  children: [
+                    _profileCard(ref, profile),
+                    SizedBox(height: 20.h),
+                    _sectionLabel(ref.watchTr(AppStrings.academyNavigationTitle)),
+                    SizedBox(height: 8.h),
+                    _navigationCard(context, ref),
+                    SizedBox(height: 18.h),
+                    const LogoutBtn(),
+                    SizedBox(height: 22.h),
+                    Text(
+                      ref.watchTr(AppStrings.teacherPortalBadge),
+                      textAlign: TextAlign.center,
+                      style: TxtStyle.titleLarge(
+                        color: AppColors.subtitleTextColor,
+                        fontSize: 15.sp,
+                      ),
+                    ),
+                    SizedBox(height: 4.h),
+                    Text(
+                      ref.watchTr(AppStrings.teacherIdBadge),
+                      style: TxtStyle.titleLarge(
+                        color: AppColors.hintTextColor,
+                        fontSize: 14.5.sp,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-
-              SizedBox(height: 4.h),
-
-              Text(
-                ref.watchTr(AppStrings.teacherIdBadge),
-                style: TxtStyle.titleLarge(
-                  color: AppColors.hintTextColor,
-                  fontSize: 14.5.sp,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 
@@ -88,7 +65,7 @@ class _TeacherProfileScreenState extends ConsumerState<TeacherProfileScreen> {
   // PROFILE CARD
   // ===============================================================
 
-  Widget _profileCard() {
+  Widget _profileCard(WidgetRef ref, profile) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.fromLTRB(15.w, 18.h, 15.w, 15.h),
@@ -128,7 +105,6 @@ class _TeacherProfileScreenState extends ConsumerState<TeacherProfileScreen> {
                   ),
                 ),
               ),
-
               Positioned(
                 right: 0,
                 bottom: 2,
@@ -144,11 +120,9 @@ class _TeacherProfileScreenState extends ConsumerState<TeacherProfileScreen> {
               ),
             ],
           ),
-
           SizedBox(height: 11.h),
-
           Text(
-            name,
+            profile.name,
             textAlign: TextAlign.center,
             style: TxtStyle.titleLarge(
               color: AppColors.text,
@@ -156,20 +130,16 @@ class _TeacherProfileScreenState extends ConsumerState<TeacherProfileScreen> {
               fontWeight: FontWeight.w800,
             ),
           ),
-
           SizedBox(height: 4.h),
-
           Text(
-            department,
+            profile.department,
             textAlign: TextAlign.center,
             style: TxtStyle.titleLarge(
               color: AppColors.subtitleTextColor,
               fontSize: 15.sp,
             ),
           ),
-
           SizedBox(height: 8.h),
-
           Container(
             padding: EdgeInsets.symmetric(horizontal: 9.w, vertical: 4.h),
             decoration: BoxDecoration(
@@ -196,23 +166,14 @@ class _TeacherProfileScreenState extends ConsumerState<TeacherProfileScreen> {
               ],
             ),
           ),
-
           SizedBox(height: 14.h),
-
           Divider(height: 1, color: AppColors.backgroundsLinesColor),
-
           SizedBox(height: 12.h),
-
-          _contactRow(Icons.mail_outline, email),
-
+          _contactRow(Icons.mail_outline, profile.email),
           SizedBox(height: 7.h),
-
-          _contactRow(Icons.phone_outlined, phone),
-
+          _contactRow(Icons.phone_outlined, profile.phone),
           SizedBox(height: 7.h),
-
-          _contactRow(Icons.location_on_outlined, office),
-
+          _contactRow(Icons.location_on_outlined, profile.office),
           SizedBox(height: 10.h),
         ],
       ),
@@ -244,7 +205,7 @@ class _TeacherProfileScreenState extends ConsumerState<TeacherProfileScreen> {
   // NAVIGATION
   // ===============================================================
 
-  Widget _navigationCard() {
+  Widget _navigationCard(BuildContext context, WidgetRef ref) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -258,20 +219,16 @@ class _TeacherProfileScreenState extends ConsumerState<TeacherProfileScreen> {
             icon: Icons.person_outline,
             title: ref.watchTr(AppStrings.editProfileTitle),
             subtitle: ref.watchTr(AppStrings.personalContactInfoSubtitle),
-            onTap: _editProfile,
+            onTap: () => context.push(RoutePath.teacherEditProfile),
           ),
-
           _divider(),
-
           _navigationItem(
             icon: Icons.chat_bubble_outline,
             title: ref.watchTr(AppStrings.communicationTitle),
             subtitle: ref.watchTr(AppStrings.academyAnnouncementsSubtitle),
-            onTap: _openCommunication,
+            onTap: () => _openCommunication(context, ref),
           ),
-
           _divider(),
-
           _navigationItem(
             icon: Icons.settings_outlined,
             title: ref.watchTr(AppStrings.settingsTitle),
@@ -306,9 +263,7 @@ class _TeacherProfileScreenState extends ConsumerState<TeacherProfileScreen> {
               ),
               child: Icon(icon, color: AppColors.primaryDark, size: 17.sp),
             ),
-
             SizedBox(width: 10.w),
-
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -332,7 +287,6 @@ class _TeacherProfileScreenState extends ConsumerState<TeacherProfileScreen> {
                 ],
               ),
             ),
-
             Icon(
               Icons.chevron_right,
               color: AppColors.subtitleTextColor,
@@ -348,44 +302,7 @@ class _TeacherProfileScreenState extends ConsumerState<TeacherProfileScreen> {
     return Container(height: 1, color: AppColors.backgroundsLinesColor);
   }
 
-  // ===============================================================
-  // EDIT PROFILE
-  // ===============================================================
-
-  Future<void> _editProfile() async {
-    final result = await context.push(
-      RoutePath.teacherEditProfile,
-      extra: {
-        'name': name,
-        'email': email,
-        'phone': phone,
-        'department': department,
-        'office': office,
-        'bio': bio,
-        'language': language,
-      },
-    );
-
-    if (!mounted || result == null) return;
-
-    if (result is Map<String, dynamic>) {
-      setState(() {
-        name = result['name'] ?? name;
-        email = result['email'] ?? email;
-        phone = result['phone'] ?? phone;
-        department = result['department'] ?? department;
-        office = result['office'] ?? office;
-        bio = result['bio'] ?? bio;
-        language = result['language'] ?? language;
-      });
-    }
-  }
-
-  // ===============================================================
-  // COMMUNICATION
-  // ===============================================================
-
-  void _openCommunication() {
+  void _openCommunication(BuildContext context, WidgetRef ref) {
     showModalBottomSheet<void>(
       context: context,
       backgroundColor: Colors.white,
@@ -393,7 +310,7 @@ class _TeacherProfileScreenState extends ConsumerState<TeacherProfileScreen> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(18.r)),
       ),
-      builder: (context) {
+      builder: (bottomSheetContext) {
         return SafeArea(
           child: Padding(
             padding: EdgeInsets.fromLTRB(18.w, 5.h, 18.w, 20.h),
@@ -405,7 +322,7 @@ class _TeacherProfileScreenState extends ConsumerState<TeacherProfileScreen> {
                   ref.watchTr(AppStrings.academyMessagesTitle),
                   ref.watchTr(AppStrings.academyMessagesSubtitle),
                   () {
-                    Navigator.pop(context);
+                    Navigator.pop(bottomSheetContext);
                     _showMessage(ref.watchTr(AppStrings.academyMessagesTitle));
                   },
                 ),
@@ -414,7 +331,7 @@ class _TeacherProfileScreenState extends ConsumerState<TeacherProfileScreen> {
                   ref.watchTr(AppStrings.announcementsTitle),
                   ref.watchTr(AppStrings.announcementsSubtitle),
                   () {
-                    Navigator.pop(context);
+                    Navigator.pop(bottomSheetContext);
                     _showMessage(ref.watchTr(AppStrings.announcementsTitle));
                   },
                 ),
@@ -423,7 +340,7 @@ class _TeacherProfileScreenState extends ConsumerState<TeacherProfileScreen> {
                   ref.watchTr(AppStrings.familyCommunicationTitle),
                   ref.watchTr(AppStrings.familyCommunicationSubtitle),
                   () {
-                    Navigator.pop(context);
+                    Navigator.pop(bottomSheetContext);
                     context.push(RoutePath.chatInbox);
                   },
                 ),
@@ -471,25 +388,25 @@ class _TeacherProfileScreenState extends ConsumerState<TeacherProfileScreen> {
       trailing: const Icon(Icons.chevron_right),
     );
   }
-}
 
-void _showMessage(String message) {
-  ScaffoldMessenger.of(AppRouter.navigatorKey.currentContext!).showSnackBar(
-    SnackBar(content: Text(message), behavior: SnackBarBehavior.floating),
-  );
-}
+  void _showMessage(String message) {
+    ScaffoldMessenger.of(AppRouter.navigatorKey.currentContext!).showSnackBar(
+      SnackBar(content: Text(message), behavior: SnackBarBehavior.floating),
+    );
+  }
 
-Widget _sectionLabel(String text) {
-  return Align(
-    alignment: Alignment.centerLeft,
-    child: Text(
-      text,
-      style: TxtStyle.bodyLarge(
-        color: AppColors.subtitleTextColor,
-        fontSize: 15.sp,
-        fontWeight: FontWeight.w800,
-        letterSpacing: .4,
+  Widget _sectionLabel(String text) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Text(
+        text,
+        style: TxtStyle.bodyLarge(
+          color: AppColors.subtitleTextColor,
+          fontSize: 15.sp,
+          fontWeight: FontWeight.w800,
+          letterSpacing: .4,
+        ),
       ),
-    ),
-  );
+    );
+  }
 }

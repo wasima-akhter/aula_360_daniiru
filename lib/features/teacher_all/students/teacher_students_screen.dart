@@ -2,72 +2,54 @@ import '../../parent_all/helper/parent_home_helper.dart';
 import '../../share/export/screen_export.dart';
 import '../helper/teacher_enums.dart';
 import '../helper/teacher_models.dart';
+import '../presentation/controllers/teacher_students_controller.dart';
 
 /// ===============================================================
 /// TEACHER STUDENTS SCREEN
 /// ===============================================================
 
-class TeacherStudentsScreen extends ConsumerStatefulWidget {
+class TeacherStudentsScreen extends ConsumerWidget {
   const TeacherStudentsScreen({super.key});
 
   @override
-  ConsumerState<TeacherStudentsScreen> createState() =>
-      _TeacherStudentsScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(teacherStudentsControllerProvider);
+    final controller = ref.read(teacherStudentsControllerProvider.notifier);
+    final filteredStudents = state.filteredStudents;
 
-class _TeacherStudentsScreenState
-    extends ConsumerState<TeacherStudentsScreen> {
-  StudentGroupFilter selectedFilter = StudentGroupFilter.all;
-
-  List<TeacherStudent> get filteredStudents {
-    switch (selectedFilter) {
-      case StudentGroupFilter.all:
-        return students;
-
-      case StudentGroupFilter.groupA:
-        return students
-            .where((student) => student.group == StudentGroup.groupA)
-            .toList();
-
-      case StudentGroupFilter.groupB:
-        return students
-            .where((student) => student.group == StudentGroup.groupB)
-            .toList();
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.softBackground,
       appBar: AulaAppBar(
         title: ref.watchTr(AppStrings.myStudentsTitle),
         showBack: false,
       ),
-      body: Column(
-        children: [
-          _searchSection(),
-          _filterSection(),
-          Expanded(
-            child: ListView(
-              physics: const BouncingScrollPhysics(),
-              padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 30.h),
+      body: state.isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : Column(
               children: [
-                _rosterHeader(),
-                SizedBox(height: 7.h),
-                _studentList(),
+                _searchSection(ref, controller),
+                _filterSection(ref, state, controller),
+                Expanded(
+                  child: ListView(
+                    physics: const BouncingScrollPhysics(),
+                    padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 30.h),
+                    children: [
+                      _rosterHeader(ref, state.students),
+                      SizedBox(height: 7.h),
+                      _studentList(context, ref, filteredStudents),
+                    ],
+                  ),
+                ),
               ],
             ),
-          ),
-        ],
-      ),
     );
   }
 
-  Widget _searchSection() {
+  Widget _searchSection(WidgetRef ref, TeacherStudentsController controller) {
     return Padding(
       padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 10.h),
       child: TextField(
+        onChanged: controller.setSearchQuery,
         decoration: InputDecoration(
           hintText: ref.watchTr(AppStrings.searchStudentHint),
           hintStyle: TxtStyle.bodyMedium(
@@ -86,7 +68,11 @@ class _TeacherStudentsScreenState
     );
   }
 
-  Widget _filterSection() {
+  Widget _filterSection(
+    WidgetRef ref,
+    TeacherStudentsState state,
+    TeacherStudentsController controller,
+  ) {
     return SizedBox(
       height: 42.h,
       child: ListView(
@@ -94,19 +80,28 @@ class _TeacherStudentsScreenState
         scrollDirection: Axis.horizontal,
         children: [
           _filterChip(
-            StudentGroupFilter.all,
+            ref,
+            filter: StudentGroupFilter.all,
+            selectedFilter: state.selectedFilter,
             label: ref.watchTr(AppStrings.allTab),
-            count: students.length,
+            count: state.students.length,
+            onTap: () => controller.selectFilter(StudentGroupFilter.all),
           ),
           SizedBox(width: 8.w),
           _filterChip(
-            StudentGroupFilter.groupA,
+            ref,
+            filter: StudentGroupFilter.groupA,
+            selectedFilter: state.selectedFilter,
             label: ref.watchTr(StudentGroup.groupA.stringKey),
+            onTap: () => controller.selectFilter(StudentGroupFilter.groupA),
           ),
           SizedBox(width: 8.w),
           _filterChip(
-            StudentGroupFilter.groupB,
+            ref,
+            filter: StudentGroupFilter.groupB,
+            selectedFilter: state.selectedFilter,
             label: ref.watchTr(StudentGroup.groupB.stringKey),
+            onTap: () => controller.selectFilter(StudentGroupFilter.groupB),
           ),
         ],
       ),
@@ -114,19 +109,19 @@ class _TeacherStudentsScreenState
   }
 
   Widget _filterChip(
-    StudentGroupFilter filter, {
+    WidgetRef ref, {
+    required StudentGroupFilter filter,
+    required StudentGroupFilter selectedFilter,
     required String label,
     int? count,
+    required VoidCallback onTap,
   }) {
     final selected = selectedFilter == filter;
 
     return GestureDetector(
-      onTap: () {
-        setState(() {
-          selectedFilter = filter;
-        });
-      },
-      child: Container(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
         padding: EdgeInsets.symmetric(horizontal: 13.w),
         alignment: Alignment.center,
         decoration: BoxDecoration(
@@ -150,7 +145,9 @@ class _TeacherStudentsScreenState
     );
   }
 
-  Widget _rosterHeader() {
+  Widget _rosterHeader(WidgetRef ref, List<TeacherStudent> students) {
+    final presentStudentsCount = students.where((s) => s.status == StudentStatus.present).length;
+
     return Row(
       children: [
         Text(
@@ -173,7 +170,7 @@ class _TeacherStudentsScreenState
         ),
         SizedBox(width: 4.w),
         Text(
-          '22 ${ref.watchTr(AppStrings.present)}',
+          '$presentStudentsCount ${ref.watchTr(AppStrings.present)}',
           style: TxtStyle.bodyMedium(
             color: AppColors.subtitleTextColor,
             fontSize: 14.sp,
@@ -183,7 +180,11 @@ class _TeacherStudentsScreenState
     );
   }
 
-  Widget _studentList() {
+  Widget _studentList(
+    BuildContext context,
+    WidgetRef ref,
+    List<TeacherStudent> filteredStudents,
+  ) {
     return Container(
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
@@ -198,6 +199,8 @@ class _TeacherStudentsScreenState
             final student = entry.value;
 
             return _studentTile(
+              context,
+              ref,
               student,
               showBottomBorder: index != filteredStudents.length - 1,
             );
@@ -208,6 +211,8 @@ class _TeacherStudentsScreenState
   }
 
   Widget _studentTile(
+    BuildContext context,
+    WidgetRef ref,
     TeacherStudent student, {
     required bool showBottomBorder,
   }) {
@@ -267,7 +272,7 @@ class _TeacherStudentsScreenState
               ),
             ),
             SizedBox(width: 5.w),
-            _attendanceText(student),
+            _attendanceText(ref, student),
             SizedBox(width: 5.w),
             Icon(
               Icons.chevron_right_rounded,
@@ -320,7 +325,7 @@ class _TeacherStudentsScreenState
     );
   }
 
-  Widget _attendanceText(TeacherStudent student) {
+  Widget _attendanceText(WidgetRef ref, TeacherStudent student) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [

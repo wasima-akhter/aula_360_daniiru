@@ -1,17 +1,29 @@
 import '../../share/export/screen_export.dart';
-import '../helper/parent_models.dart';
+import '../domain/models/parent_models.dart';
 import '../helper/parent_widgets.dart';
+import '../presentation/controllers/parent_children_controller.dart';
 
 /// ===============================================================
 /// 5. CHILD PROFILE / PERFIL DEL ALUMNO
 /// ===============================================================
 
 class ChildProfileScreen extends ConsumerWidget {
-  const ChildProfileScreen({super.key});
-  final child = sophiaChild;
+  final ChildModel? child;
+
+  const ChildProfileScreen({super.key, this.child});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(parentChildrenControllerProvider);
+    final activeChild = child ?? state.selectedChild ?? (state.children.isNotEmpty ? state.children.first : null);
+
+    if (activeChild == null) {
+      return Scaffold(
+        appBar: simpleAppBar(context, ref.watchTr(AppStrings.childProfile)),
+        body: const Center(child: Text('No hay información disponible')),
+      );
+    }
+
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
       appBar: simpleAppBar(context, ref.watchTr(AppStrings.childProfile)),
@@ -21,13 +33,13 @@ class ChildProfileScreen extends ConsumerWidget {
           padding: EdgeInsets.fromLTRB(14.w, 14.h, 14.w, 30.h),
           child: Column(
             children: [
-              _studentHeader(context, ref),
+              _studentHeader(context, ref, activeChild),
               SizedBox(height: 18.h),
               _sectionLabel(ref.watchTr(AppStrings.academicActivity).toUpperCase()),
               SizedBox(height: 8.h),
-              _activityCard(context, ref),
+              _activityCard(context, ref, activeChild),
               SizedBox(height: 13.h),
-              _messageCard(),
+              _messageCard(context),
             ],
           ),
         ),
@@ -35,7 +47,7 @@ class ChildProfileScreen extends ConsumerWidget {
     );
   }
 
-  Widget _studentHeader(BuildContext context, WidgetRef ref) {
+  Widget _studentHeader(BuildContext context, WidgetRef ref, ChildModel activeChild) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(12.w),
@@ -57,7 +69,22 @@ class ChildProfileScreen extends ConsumerWidget {
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8.r),
-                  child: Image.network(child.imageUrl, fit: BoxFit.cover),
+                  child: Image.network(
+                    activeChild.imageUrl,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, _, _) => Container(
+                      color: AppColors.blueSoft,
+                      alignment: Alignment.center,
+                      child: Text(
+                        activeChild.name.isNotEmpty ? activeChild.name[0] : '?',
+                        style: TextStyle(
+                          fontSize: 20.sp,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ),
               SizedBox(width: 10.w),
@@ -66,7 +93,7 @@ class ChildProfileScreen extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      child.name,
+                      activeChild.name,
                       style: TxtStyle.titleLarge(
                         color: AppColors.text,
                         fontSize: 19.sp,
@@ -75,7 +102,7 @@ class ChildProfileScreen extends ConsumerWidget {
                     ),
                     SizedBox(height: 3.h),
                     Text(
-                      '${child.grade} • ${child.room} • ID: ${child.id}',
+                      '${activeChild.grade} • ${activeChild.room} • ID: ${activeChild.id}',
                       style: TxtStyle.titleLarge(
                         color: AppColors.subtitleTextColor,
                         fontSize: 14.sp,
@@ -112,7 +139,7 @@ class ChildProfileScreen extends ConsumerWidget {
               Expanded(
                 child: _stat(
                   ref.watchTr(AppStrings.attendance),
-                  '${child.attendance.toStringAsFixed(1)}%',
+                  '${activeChild.attendance.toStringAsFixed(1)}%',
                   AppColors.emeraldGreenColor,
                 ),
               ),
@@ -164,7 +191,7 @@ class ChildProfileScreen extends ConsumerWidget {
     );
   }
 
-  Widget _activityCard(BuildContext context, WidgetRef ref) {
+  Widget _activityCard(BuildContext context, WidgetRef ref, ChildModel activeChild) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -178,7 +205,9 @@ class ChildProfileScreen extends ConsumerWidget {
             color: AppColors.primaryDark,
             title: ref.watchTr(AppStrings.navSchedule),
             subtitle: "Clases de hoy y horario",
-            onTap: () {},
+            onTap: () {
+              context.push(RoutePath.schedule);
+            },
           ),
           _divider(),
           _activityRow(
@@ -186,9 +215,9 @@ class ChildProfileScreen extends ConsumerWidget {
             color: AppColors.emeraldGreenColor,
             title: ref.watchTr(AppStrings.attendance),
             subtitle:
-                '${child.attendance.toStringAsFixed(0)}% registro de asistencia',
+                '${activeChild.attendance.toStringAsFixed(0)}% registro de asistencia',
             onTap: () {
-              context.push(RoutePath.attendance, extra: child);
+              context.push(RoutePath.attendance, extra: activeChild);
             },
           ),
           _divider(),
@@ -197,7 +226,9 @@ class ChildProfileScreen extends ConsumerWidget {
             color: AppColors.primaryDark,
             title: ref.watchTr(AppStrings.navReports),
             subtitle: 'Resúmenes e informes de clase',
-            onTap: () {},
+            onTap: () {
+              context.push(RoutePath.navigationPages, extra: 2);
+            },
           ),
           _divider(),
           _activityRow(
@@ -205,7 +236,9 @@ class ChildProfileScreen extends ConsumerWidget {
             color: AppColors.orangeColor,
             title: 'Tareas',
             subtitle: '2 ejercicios pendientes',
-            onTap: () {},
+            onTap: () {
+              context.push(RoutePath.homework);
+            },
           ),
           _divider(),
           _activityRow(
@@ -220,8 +253,10 @@ class ChildProfileScreen extends ConsumerWidget {
             icon: Icons.school_outlined,
             color: AppColors.subtitleTextColor,
             title: 'Información del Profesor',
-            subtitle: 'Dña. Sarah Vance y equipo docente',
-            onTap: () {},
+            subtitle: activeChild.parentTeacher,
+            onTap: () {
+              context.push(RoutePath.teacherInformation);
+            },
           ),
         ],
       ),
@@ -285,9 +320,11 @@ class ChildProfileScreen extends ConsumerWidget {
     );
   }
 
-  Widget _messageCard() {
+  Widget _messageCard(BuildContext context) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        context.push(RoutePath.chatInbox);
+      },
       borderRadius: BorderRadius.circular(8.r),
       child: Container(
         padding: EdgeInsets.all(11.w),

@@ -1,66 +1,20 @@
 import '../../share/export/screen_export.dart';
+import '../domain/models/parent_models.dart';
+import '../presentation/controllers/parent_notifications_controller.dart';
 
 /// ===============================================================
 /// 1. NOTIFICATIONS SCREEN / NOTIFICACIONES
 /// ===============================================================
 
-class NotificationsScreen extends ConsumerStatefulWidget {
+class NotificationsScreen extends ConsumerWidget {
   const NotificationsScreen({super.key});
 
   @override
-  ConsumerState<NotificationsScreen> createState() =>
-      _NotificationsScreenState();
-}
-
-class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
-  // ─────────────────────────────────────────────────────────────────────────────
-  // SAMPLE / MOCK DATA (Spanish Academy Context)
-  // ─────────────────────────────────────────────────────────────────────────────
-
-  final List<_NotificationItem> notifications = [
-    const _NotificationItem(
-      icon: Icons.description_outlined,
-      title: 'Informe de clase disponible',
-      description:
-          'Dña. Sarah Vance ha publicado el informe de clase de Lengua Castellana para Lucas.',
-      time: 'Hoy • 09:55',
-      unread: true,
-    ),
-    const _NotificationItem(
-      icon: Icons.assignment_outlined,
-      title: 'Nueva tarea asignada',
-      description:
-          'D. Roberto Hayes ha asignado la relación de problemas de Matemáticas para Lucas (Entrega: 29 Oct).',
-      time: 'Hoy • 08:30',
-      unread: true,
-    ),
-    const _NotificationItem(
-      icon: Icons.fact_check_outlined,
-      title: 'Asistencia confirmada',
-      description:
-          'Sophia Rivera ha sido registrada como Presente en 5º Primaria, Aula 1A.',
-      time: 'Ayer • 08:35',
-      action: 'Ver Asistencia',
-    ),
-    const _NotificationItem(
-      icon: Icons.calendar_month_outlined,
-      title: 'Horario de exámenes publicado',
-      description:
-          'El calendario de exámenes del trimestre ha sido actualizado en la pestaña Horario.',
-      time: '21 Oct • 14:15',
-    ),
-    const _NotificationItem(
-      icon: Icons.campaign_outlined,
-      title: 'Semana de tutorías con familias',
-      description:
-          'La reserva de citas individuales con los tutores estará disponible a partir del próximo lunes.',
-      time: '19 Oct • 11:00',
-    ),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    final unreadCount = notifications.where((e) => e.unread).length;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final notifState = ref.watch(parentNotificationsControllerProvider);
+    final notifController = ref.read(parentNotificationsControllerProvider.notifier);
+    final notifications = notifState.notifications;
+    final unreadCount = notifState.unreadCount;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
@@ -79,7 +33,11 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
         centerTitle: true,
         actions: [
           IconButton(
-            onPressed: _markAllRead,
+            onPressed: () {
+              for (final n in notifications) {
+                notifController.markAsRead(n.id);
+              }
+            },
             icon: Icon(
               Icons.done_all,
               color: AppColors.primaryDark,
@@ -92,7 +50,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            _updatesHeader(unreadCount),
+            _updatesHeader(ref, unreadCount),
             Expanded(
               child: ListView.separated(
                 physics: const BouncingScrollPhysics(),
@@ -101,10 +59,13 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                 separatorBuilder: (_, _) => SizedBox(height: 8.h),
                 itemBuilder: (context, index) {
                   if (index == notifications.length) {
-                    return _allCaughtUp();
+                    return _allCaughtUp(ref);
                   }
 
-                  return _notificationCard(notifications[index], index);
+                  return _notificationCard(
+                    notifications[index],
+                    () => notifController.markAsRead(notifications[index].id),
+                  );
                 },
               ),
             ),
@@ -114,7 +75,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     );
   }
 
-  Widget _updatesHeader(int unreadCount) {
+  Widget _updatesHeader(WidgetRef ref, int unreadCount) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.fromLTRB(13.w, 10.h, 13.w, 10.h),
@@ -165,13 +126,11 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     );
   }
 
-  Widget _notificationCard(_NotificationItem item, int index) {
+  Widget _notificationCard(ParentNotificationModel item, VoidCallback onTap) {
+    final unread = !item.isRead;
+
     return InkWell(
-      onTap: () {
-        setState(() {
-          notifications[index] = item.copyWith(unread: false);
-        });
-      },
+      onTap: onTap,
       borderRadius: BorderRadius.circular(9.r),
       child: Container(
         padding: EdgeInsets.fromLTRB(10.w, 10.h, 10.w, 9.h),
@@ -179,7 +138,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
           color: Colors.white,
           borderRadius: BorderRadius.circular(9.r),
           border: Border.all(
-            color: item.unread ? const Color(0xFFBFCBFF) : AppColors.border,
+            color: unread ? const Color(0xFFBFCBFF) : AppColors.border,
           ),
         ),
         child: Row(
@@ -205,7 +164,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                           ),
                         ),
                       ),
-                      if (item.unread)
+                      if (unread)
                         Container(
                           margin: EdgeInsets.only(left: 5.w, top: 3.h),
                           width: 5.w,
@@ -219,7 +178,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                   ),
                   SizedBox(height: 4.h),
                   Text(
-                    item.description,
+                    item.message,
                     style: TxtStyle.bodyMedium(
                       color: AppColors.subtitleTextColor,
                       fontSize: 13.5.sp,
@@ -236,22 +195,12 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                       ),
                       SizedBox(width: 3.w),
                       Text(
-                        item.time,
+                        item.timeAgo,
                         style: TxtStyle.titleLarge(
                           color: AppColors.subtitleTextColor,
                           fontSize: 13.sp,
                         ),
                       ),
-                      const Spacer(),
-                      if (item.action != null)
-                        Text(
-                          item.action!,
-                          style: TxtStyle.titleLarge(
-                            color: AppColors.primaryDark,
-                            fontSize: 13.sp,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
                     ],
                   ),
                 ],
@@ -263,23 +212,31 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     );
   }
 
-  Widget _notificationIcon(_NotificationItem item) {
+  Widget _notificationIcon(ParentNotificationModel item) {
+    final unread = !item.isRead;
+    final IconData icon = switch (item.type) {
+      'report' => Icons.description_outlined,
+      'attendance' => Icons.fact_check_outlined,
+      'homework' => Icons.assignment_outlined,
+      _ => Icons.notifications_none,
+    };
+
     return Container(
       width: 29.w,
       height: 29.w,
       decoration: BoxDecoration(
-        color: item.unread ? const Color(0xFFE8EDFF) : const Color(0xFFF0F2F7),
+        color: unread ? const Color(0xFFE8EDFF) : const Color(0xFFF0F2F7),
         borderRadius: BorderRadius.circular(6.r),
       ),
       child: Icon(
-        item.icon,
-        color: item.unread ? AppColors.primaryDark : const Color(0xFF718096),
+        icon,
+        color: unread ? AppColors.primaryDark : const Color(0xFF718096),
         size: 15.sp,
       ),
     );
   }
 
-  Widget _allCaughtUp() {
+  Widget _allCaughtUp(WidgetRef ref) {
     return Padding(
       padding: EdgeInsets.only(top: 5.h),
       child: Row(
@@ -298,50 +255,6 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
           Expanded(child: Container(height: 1, color: const Color(0xFFE7E4ED))),
         ],
       ),
-    );
-  }
-
-  void _markAllRead() {
-    setState(() {
-      for (var i = 0; i < notifications.length; i++) {
-        notifications[i] = notifications[i].copyWith(unread: false);
-      }
-    });
-  }
-}
-
-class _NotificationItem {
-  final IconData icon;
-  final String title;
-  final String description;
-  final String time;
-  final String? action;
-  final bool unread;
-
-  const _NotificationItem({
-    required this.icon,
-    required this.title,
-    required this.description,
-    required this.time,
-    this.action,
-    this.unread = false,
-  });
-
-  _NotificationItem copyWith({
-    IconData? icon,
-    String? title,
-    String? description,
-    String? time,
-    String? action,
-    bool? unread,
-  }) {
-    return _NotificationItem(
-      icon: icon ?? this.icon,
-      title: title ?? this.title,
-      description: description ?? this.description,
-      time: time ?? this.time,
-      action: action ?? this.action,
-      unread: unread ?? this.unread,
     );
   }
 }

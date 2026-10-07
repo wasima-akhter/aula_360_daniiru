@@ -1,36 +1,28 @@
 import '../../share/export/screen_export.dart';
+import '../presentation/controllers/teacher_settings_controller.dart';
 import 'language_picker.dart';
 
 /// ===============================================================
 /// TEACHER SETTINGS SCREEN
 /// ===============================================================
 
-class TeacherSettingsScreen extends ConsumerStatefulWidget {
+class TeacherSettingsScreen extends ConsumerWidget {
   const TeacherSettingsScreen({super.key});
 
   @override
-  ConsumerState<TeacherSettingsScreen> createState() =>
-      _TeacherSettingsScreenState();
-}
-
-class _TeacherSettingsScreenState
-    extends ConsumerState<TeacherSettingsScreen> {
-  bool classReminders = true;
-  bool parentMessages = true;
-  bool postClassReports = true;
-  bool biometricAccess = true;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final tr = ref.watchTr;
     final currentLang = ref.watch(languageProvider).valueOrNull?.language;
     final langLabel = currentLang == AppLanguage.spanish
         ? tr(AppStrings.languageSpanishLabel)
         : tr(AppStrings.languageEnglishUs);
 
+    final settingsState = ref.watch(teacherSettingsControllerProvider);
+    final settingsController = ref.read(teacherSettingsControllerProvider.notifier);
+
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
-      appBar: _appBar(tr),
+      appBar: _appBar(context, tr),
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
@@ -38,28 +30,19 @@ class _TeacherSettingsScreenState
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _breadcrumb(tr),
-
+              _breadcrumb(context, tr),
               SizedBox(height: 22.h),
-
               _sectionLabel(tr(AppStrings.settingsSectionLanguage)),
               SizedBox(height: 8.h),
-
-              _languageCard(tr, langLabel),
-
+              _languageCard(context, ref, tr, langLabel),
               SizedBox(height: 22.h),
-
               _sectionLabel(tr(AppStrings.settingsSectionNotifications)),
               SizedBox(height: 8.h),
-
-              _notificationCard(tr),
-
+              _notificationCard(context, tr, settingsState, settingsController),
               SizedBox(height: 22.h),
-
               _sectionLabel(tr(AppStrings.settingsSectionAccountSecurity)),
               SizedBox(height: 8.h),
-
-              _securityCard(tr),
+              _securityCard(context, tr, settingsState, settingsController),
             ],
           ),
         ),
@@ -71,7 +54,7 @@ class _TeacherSettingsScreenState
   // APP BAR
   // ===============================================================
 
-  PreferredSizeWidget _appBar(String Function(String) tr) {
+  PreferredSizeWidget _appBar(BuildContext context, String Function(String) tr) {
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
@@ -99,7 +82,7 @@ class _TeacherSettingsScreenState
   // BREADCRUMB
   // ===============================================================
 
-  Widget _breadcrumb(String Function(String) tr) {
+  Widget _breadcrumb(BuildContext context, String Function(String) tr) {
     return Row(
       children: [
         GestureDetector(
@@ -112,7 +95,6 @@ class _TeacherSettingsScreenState
             ),
           ),
         ),
-
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 5.w),
           child: Text(
@@ -123,7 +105,6 @@ class _TeacherSettingsScreenState
             ),
           ),
         ),
-
         Text(
           tr(AppStrings.settingsTitle),
           style: TxtStyle.titleLarge(
@@ -140,7 +121,12 @@ class _TeacherSettingsScreenState
   // LANGUAGE
   // ===============================================================
 
-  Widget _languageCard(String Function(String) tr, String langLabel) {
+  Widget _languageCard(
+    BuildContext context,
+    WidgetRef ref,
+    String Function(String) tr,
+    String langLabel,
+  ) {
     return _card(
       child: _settingsRow(
         icon: Icons.language_outlined,
@@ -180,7 +166,12 @@ class _TeacherSettingsScreenState
   // NOTIFICATIONS
   // ===============================================================
 
-  Widget _notificationCard(String Function(String) tr) {
+  Widget _notificationCard(
+    BuildContext context,
+    String Function(String) tr,
+    TeacherSettingsState state,
+    TeacherSettingsController controller,
+  ) {
     return _card(
       child: Column(
         children: [
@@ -188,53 +179,43 @@ class _TeacherSettingsScreenState
             icon: Icons.notifications_none,
             title: tr(AppStrings.settingsNotifClassReminders),
             subtitle: tr(AppStrings.settingsNotifClassRemindersSub),
-            value: classReminders,
+            value: state.classReminders,
             onChanged: (value) {
-              setState(() {
-                classReminders = value;
-              });
-
+              controller.toggleClassReminders(value);
               _showMessage(
+                context,
                 value
                     ? tr(AppStrings.settingsClassRemindersEnabled)
                     : tr(AppStrings.settingsClassRemindersDisabled),
               );
             },
           ),
-
           _divider(),
-
           _switchRow(
             icon: Icons.chat_bubble_outline,
             title: tr(AppStrings.settingsNotifParentMessages),
             subtitle: tr(AppStrings.settingsNotifParentMessagesSub),
-            value: parentMessages,
+            value: state.pushNotifications,
             onChanged: (value) {
-              setState(() {
-                parentMessages = value;
-              });
-
+              controller.togglePush(value);
               _showMessage(
+                context,
                 value
                     ? tr(AppStrings.settingsParentMessagesEnabled)
                     : tr(AppStrings.settingsParentMessagesDisabled),
               );
             },
           ),
-
           _divider(),
-
           _switchRow(
             icon: Icons.description_outlined,
             title: tr(AppStrings.settingsNotifPostClass),
             subtitle: tr(AppStrings.settingsNotifPostClassSub),
-            value: postClassReports,
+            value: state.studentReportsAlert,
             onChanged: (value) {
-              setState(() {
-                postClassReports = value;
-              });
-
+              controller.toggleStudentReportsAlert(value);
               _showMessage(
+                context,
                 value
                     ? tr(AppStrings.settingsPostClassEnabled)
                     : tr(AppStrings.settingsPostClassDisabled),
@@ -250,7 +231,12 @@ class _TeacherSettingsScreenState
   // SECURITY
   // ===============================================================
 
-  Widget _securityCard(String Function(String) tr) {
+  Widget _securityCard(
+    BuildContext context,
+    String Function(String) tr,
+    TeacherSettingsState state,
+    TeacherSettingsController controller,
+  ) {
     return _card(
       child: Column(
         children: [
@@ -258,12 +244,18 @@ class _TeacherSettingsScreenState
             icon: Icons.fingerprint,
             title: tr(AppStrings.settingsSecurityBiometric),
             subtitle: tr(AppStrings.settingsSecurityBiometricSub),
-            value: biometricAccess,
-            onChanged: (val) => _toggleBiometric(val, tr),
+            value: state.emailNotifications,
+            onChanged: (val) {
+              controller.toggleEmail(val);
+              _showMessage(
+                context,
+                val
+                    ? tr(AppStrings.settingsBiometricEnabled)
+                    : tr(AppStrings.settingsBiometricDisabled),
+              );
+            },
           ),
-
           _divider(),
-
           _settingsRow(
             icon: Icons.lock_outline,
             title: tr(AppStrings.settingsSecurityChangePassword),
@@ -272,9 +264,7 @@ class _TeacherSettingsScreenState
               context.push(RoutePath.changePassword);
             },
           ),
-
           _divider(),
-
           _settingsRow(
             icon: Icons.devices_outlined,
             title: tr(AppStrings.settingsSecurityActiveSessions),
@@ -306,7 +296,7 @@ class _TeacherSettingsScreenState
                 ),
               ],
             ),
-            onTap: () => _showActiveSessions(tr),
+            onTap: () => _showActiveSessions(context, tr),
           ),
         ],
       ),
@@ -314,26 +304,10 @@ class _TeacherSettingsScreenState
   }
 
   // ===============================================================
-  // BIOMETRIC
-  // ===============================================================
-
-  void _toggleBiometric(bool value, String Function(String) tr) {
-    setState(() {
-      biometricAccess = value;
-    });
-
-    _showMessage(
-      value
-          ? tr(AppStrings.settingsBiometricEnabled)
-          : tr(AppStrings.settingsBiometricDisabled),
-    );
-  }
-
-  // ===============================================================
   // ACTIVE SESSIONS
   // ===============================================================
 
-  void _showActiveSessions(String Function(String) tr) {
+  void _showActiveSessions(BuildContext context, String Function(String) tr) {
     showModalBottomSheet<void>(
       context: context,
       backgroundColor: Colors.white,
@@ -341,7 +315,7 @@ class _TeacherSettingsScreenState
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(18.r)),
       ),
-      builder: (context) {
+      builder: (bottomSheetContext) {
         return SafeArea(
           child: Padding(
             padding: EdgeInsets.fromLTRB(18.w, 5.h, 18.w, 22.h),
@@ -359,9 +333,7 @@ class _TeacherSettingsScreenState
                     ),
                   ),
                 ),
-
                 SizedBox(height: 5.h),
-
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
@@ -372,9 +344,7 @@ class _TeacherSettingsScreenState
                     ),
                   ),
                 ),
-
                 SizedBox(height: 16.h),
-
                 _sessionTile(
                   icon: Icons.phone_iphone,
                   device: 'iPhone 15 Pro',
@@ -382,9 +352,7 @@ class _TeacherSettingsScreenState
                   current: true,
                   currentBadge: tr(AppStrings.settingsSessionsBadge),
                 ),
-
                 SizedBox(height: 8.h),
-
                 _sessionTile(
                   icon: Icons.laptop_mac_outlined,
                   device: 'MacBook Pro',
@@ -392,22 +360,19 @@ class _TeacherSettingsScreenState
                   current: false,
                   currentBadge: tr(AppStrings.settingsSessionsBadge),
                 ),
-
                 SizedBox(height: 14.h),
-
                 SizedBox(
                   width: double.infinity,
-
                   child: OutlinedButton(
                     onPressed: () {
-                      Navigator.pop(context);
-
-                      _showMessage(tr(AppStrings.settingsSessionsSignedout));
+                      Navigator.pop(bottomSheetContext);
+                      _showMessage(context, tr(AppStrings.settingsSessionsSignedout));
                     },
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppColors.error,
-                      side:
-                          BorderSide(color: AppColors.error.withOpacity(.3)),
+                      side: BorderSide(
+                        color: AppColors.error.withValues(alpha: .3),
+                      ),
                     ),
                     child: Text(tr(AppStrings.settingsSessionsSignoutOthers)),
                   ),
@@ -445,9 +410,7 @@ class _TeacherSettingsScreenState
             ),
             child: Icon(icon, color: AppColors.primaryDark),
           ),
-
           SizedBox(width: 10.w),
-
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -471,7 +434,6 @@ class _TeacherSettingsScreenState
               ],
             ),
           ),
-
           if (current)
             Container(
               padding: EdgeInsets.symmetric(horizontal: 7.w, vertical: 4.h),
@@ -531,9 +493,7 @@ class _TeacherSettingsScreenState
               ),
               child: Icon(icon, color: AppColors.primaryDark, size: 16.sp),
             ),
-
             SizedBox(width: 10.w),
-
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -558,7 +518,6 @@ class _TeacherSettingsScreenState
                 ],
               ),
             ),
-
             if (trailing != null)
               trailing
             else
@@ -593,9 +552,7 @@ class _TeacherSettingsScreenState
             ),
             child: Icon(icon, color: AppColors.primaryDark, size: 16.sp),
           ),
-
           SizedBox(width: 10.w),
-
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -620,13 +577,12 @@ class _TeacherSettingsScreenState
               ],
             ),
           ),
-
           SizedBox(
             height: 30.h,
             child: Switch(
               value: value,
               onChanged: onChanged,
-              activeColor: Colors.white,
+              activeThumbColor: Colors.white,
               activeTrackColor: AppColors.primary,
               inactiveThumbColor: Colors.white,
               inactiveTrackColor: AppColors.inactiveBackground,
@@ -653,7 +609,7 @@ class _TeacherSettingsScreenState
     );
   }
 
-  void _showMessage(String message) {
+  void _showMessage(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(

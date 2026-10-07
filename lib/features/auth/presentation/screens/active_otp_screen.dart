@@ -1,11 +1,11 @@
-import 'dart:async';
-
 import '../../../../core/helper/snackbar/api_snackbar.dart';
 import '../../../share/export/screen_export.dart';
 import '../../../share/widgets/button/app_logo.dart';
 import '../../../share/widgets/button/custom_back_button.dart';
+import '../../domain/models/auth_state_model.dart';
+import '../controllers/otp_controller.dart';
 
-enum OtpPurpose { signup, forgotPassword }
+export '../../domain/models/auth_state_model.dart';
 
 enum OtpRole { parent, teacher }
 
@@ -32,49 +32,14 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
 
   final List<FocusNode> focusNodes = List.generate(6, (_) => FocusNode());
 
-  Timer? timer;
-
-  int seconds = 47;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _startTimer();
-  }
-
-  void _startTimer() {
-    timer?.cancel();
-
-    setState(() {
-      seconds = 47;
-    });
-
-    timer = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (!mounted) return;
-
-      if (seconds > 0) {
-        setState(() {
-          seconds--;
-        });
-      } else {
-        timer?.cancel();
-      }
-    });
-  }
-
   @override
   void dispose() {
-    timer?.cancel();
-
     for (final controller in otpControllers) {
       controller.dispose();
     }
-
     for (final node in focusNodes) {
       node.dispose();
     }
-
     super.dispose();
   }
 
@@ -83,16 +48,13 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
   }
 
   OtpPurpose get purpose => widget.args.purpose;
-
   OtpRole get role => widget.args.role;
-
   String? get email => widget.args.email;
 
   String purposeTitle(WidgetRef ref) {
     switch (purpose) {
       case OtpPurpose.signup:
         return ref.watchTr(AppStrings.otpVerifyAccount);
-
       case OtpPurpose.forgotPassword:
         return ref.watchTr(AppStrings.otpVerifyIdentity);
     }
@@ -102,7 +64,6 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
     switch (purpose) {
       case OtpPurpose.signup:
         return ref.watchTr(AppStrings.otpSignupDesc);
-
       case OtpPurpose.forgotPassword:
         return ref.watchTr(AppStrings.otpForgotDesc);
     }
@@ -112,7 +73,6 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
     switch (purpose) {
       case OtpPurpose.signup:
         return ref.watchTr(AppStrings.otpVerifyContinue);
-
       case OtpPurpose.forgotPassword:
         return ref.watchTr(AppStrings.otpVerifyReset);
     }
@@ -125,13 +85,11 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
           case OtpRole.parent:
             context.go(RoutePath.profileSetup);
             break;
-
           case OtpRole.teacher:
             context.go(RoutePath.teacherProfileSetup);
             break;
         }
         break;
-
       case OtpPurpose.forgotPassword:
         context.go(RoutePath.resetPasswordScreen, extra: email);
         break;
@@ -139,24 +97,34 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
   }
 
   Future<void> _verify() async {
-    if (otp.length != 6) {
+    final enteredOtp = otp;
+    if (enteredOtp.length != 6) {
       ApiSnackbar.show(
-        ref.watchTr(AppStrings.otpRequiredMessage),
-        title: ref.watchTr(AppStrings.otpRequiredTitle),
+        ref.tr(AppStrings.otpRequiredMessage),
+        title: ref.tr(AppStrings.otpRequiredTitle),
         type: SnackbarType.error,
       );
       return;
     }
 
-    _navigateAfterVerification();
+    ref.read(otpControllerProvider.notifier).updateOtp(enteredOtp);
+    final success = await ref.read(otpControllerProvider.notifier).verifyOtp(purpose);
+
+    if (!mounted) return;
+
+    if (success) {
+      _navigateAfterVerification();
+    }
   }
 
   Future<void> _resendCode() async {
-    _startTimer();
+    await ref.read(otpControllerProvider.notifier).resendOtp(email ?? 'user@aula360.com', purpose);
   }
 
   @override
   Widget build(BuildContext context) {
+    final otpState = ref.watch(otpControllerProvider);
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -171,9 +139,7 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
               ),
 
               const SizedBox(height: 35),
-
               const Center(child: AulaLogo(width: 130)),
-
               const SizedBox(height: 25),
 
               Center(
@@ -198,7 +164,6 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
 
               if (widget.args.email != null) ...[
                 const SizedBox(height: 3),
-
                 Center(
                   child: Text(
                     widget.args.email!,
@@ -230,11 +195,8 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-
                     Gap(30.h),
-
                     Row(children: List.generate(6, (index) => _otpBox(index))),
-
                     const SizedBox(height: 8),
                   ],
                 ),
@@ -262,22 +224,18 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
                           size: 13,
                           color: AppColors.primary,
                         ),
-
                         const SizedBox(width: 5),
-
                         Text(
-                          '${ref.watchTr(AppStrings.otpExpiresPrefix)} 00:${seconds.toString().padLeft(2, '0')}',
+                          '${ref.watchTr(AppStrings.otpExpiresPrefix)} 00:${otpState.timerSeconds.toString().padLeft(2, '0')}',
                           style: const TextStyle(
                             color: AppColors.primary,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
-
                         const SizedBox(width: 15),
-
                         Flexible(
                           child: TextButton(
-                            onPressed: seconds == 0 ? _resendCode : null,
+                            onPressed: otpState.canResend ? _resendCode : null,
                             style: TextButton.styleFrom(
                               padding: EdgeInsets.zero,
                               minimumSize: Size.zero,
@@ -288,16 +246,16 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: TxtStyle.labelLarge(
-                                color: AppColors.blackMainTextColor,
+                                color: otpState.canResend
+                                    ? AppColors.primary
+                                    : AppColors.secondaryText,
                               ),
                             ),
                           ),
                         ),
                       ],
                     ),
-
                     const SizedBox(height: 4),
-
                     Text(
                       ref.watchTr(AppStrings.otpSpamNote),
                       textAlign: TextAlign.center,
@@ -312,7 +270,10 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
 
               const SizedBox(height: 20),
 
-              AulaPrimaryButton(text: buttonText(ref), onTap: _verify),
+              AulaPrimaryButton(
+                text: buttonText(ref),
+                onTap: otpState.isVerifying ? () {} : _verify,
+              ),
             ],
           ),
         ),
@@ -341,10 +302,10 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
               if (value.isNotEmpty && index < 5) {
                 focusNodes[index + 1].requestFocus();
               }
-
               if (value.isEmpty && index > 0) {
                 focusNodes[index - 1].requestFocus();
               }
+              ref.read(otpControllerProvider.notifier).updateOtp(otp);
             },
             decoration: InputDecoration(
               counterText: '',

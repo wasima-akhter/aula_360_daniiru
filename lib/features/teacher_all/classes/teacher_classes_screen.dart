@@ -3,71 +3,65 @@ import '../../share/export/screen_export.dart';
 import '../helper/teacher_enums.dart';
 import '../helper/teacher_models.dart';
 import '../helper/teacher_widgets.dart';
+import '../presentation/controllers/teacher_classes_controller.dart';
 
 /// ===============================================================
 /// 1. CLASSES SCREEN
 /// ===============================================================
 
-class TeacherClassesScreen extends ConsumerStatefulWidget {
+class TeacherClassesScreen extends ConsumerWidget {
   const TeacherClassesScreen({super.key});
 
   @override
-  ConsumerState<TeacherClassesScreen> createState() => _TeacherClassesScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(teacherClassesControllerProvider);
+    final controller = ref.read(teacherClassesControllerProvider.notifier);
 
-class _TeacherClassesScreenState extends ConsumerState<TeacherClassesScreen> {
-  ClassTab selectedTab = ClassTab.today;
+    final visibleClasses = state.selectedTab == ClassTab.today
+        ? state.todayClasses
+        : state.upcomingClasses;
 
-  List<AcademyClass> get visibleClasses {
-    switch (selectedTab) {
-      case ClassTab.today:
-        return todayClasses;
-      case ClassTab.upcoming:
-        return upcomingClasses;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.softBackground,
       appBar: AulaAppBar(title: ref.watchTr(AppStrings.navClasses), showBack: false),
-      body: CustomScrollView(
-        physics: const BouncingScrollPhysics(),
-        slivers: [
-          SliverToBoxAdapter(child: _pageHeader()),
+      body: state.isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : CustomScrollView(
+              physics: const BouncingScrollPhysics(),
+              slivers: [
+                SliverToBoxAdapter(child: _pageHeader(ref)),
 
-          /// Sticky tabs.
-          SliverPersistentHeader(
-            pinned: true,
-            delegate: StickyHeaderDelegate(
-              minHeight: 59.h,
-              maxHeight: 59.h,
-              child: _tabs(),
-            ),
-          ),
+                /// Sticky tabs.
+                SliverPersistentHeader(
+                  pinned: true,
+                  delegate: StickyHeaderDelegate(
+                    minHeight: 59.h,
+                    maxHeight: 59.h,
+                    child: _tabs(ref, state, controller),
+                  ),
+                ),
 
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 30.h),
-              child: Column(
-                children: [
-                  ...visibleClasses.map(
-                    (academyClass) => Padding(
-                      padding: EdgeInsets.only(bottom: 1.h),
-                      child: _classCard(academyClass),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 30.h),
+                    child: Column(
+                      children: [
+                        ...visibleClasses.map(
+                          (academyClass) => Padding(
+                            padding: EdgeInsets.only(bottom: 1.h),
+                            child: _classCard(context, ref, academyClass),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
     );
   }
 
-  Widget _pageHeader() {
+  Widget _pageHeader(WidgetRef ref) {
     return Padding(
       padding: EdgeInsets.fromLTRB(16.w, 19.h, 16.w, 10.h),
       child: Column(
@@ -97,30 +91,49 @@ class _TeacherClassesScreenState extends ConsumerState<TeacherClassesScreen> {
     );
   }
 
-  Widget _tabs() {
+  Widget _tabs(
+    WidgetRef ref,
+    TeacherClassesState state,
+    TeacherClassesController controller,
+  ) {
     return Container(
       color: AppColors.softBackground,
       padding: EdgeInsets.symmetric(horizontal: 16.w),
       child: Row(
         children: [
-          _tab(ClassTab.today, count: 4),
+          _tab(
+            ref,
+            tab: ClassTab.today,
+            count: state.todayClasses.length,
+            selected: state.selectedTab == ClassTab.today,
+            onTap: () => controller.selectTab(ClassTab.today),
+          ),
           SizedBox(width: 27.w),
-          _tab(ClassTab.upcoming, count: 2),
+          _tab(
+            ref,
+            tab: ClassTab.upcoming,
+            count: state.upcomingClasses.length,
+            selected: state.selectedTab == ClassTab.upcoming,
+            onTap: () => controller.selectTab(ClassTab.upcoming),
+          ),
         ],
       ),
     );
   }
 
-  Widget _tab(ClassTab tab, {required int count}) {
-    final bool selected = selectedTab == tab;
-    final tabLabel = tab == ClassTab.today ? ref.watchTr(AppStrings.today) : ref.watchTr(AppStrings.upcomingClasses);
+  Widget _tab(
+    WidgetRef ref, {
+    required ClassTab tab,
+    required int count,
+    required bool selected,
+    required VoidCallback onTap,
+  }) {
+    final tabLabel = tab == ClassTab.today
+        ? ref.watchTr(AppStrings.today)
+        : ref.watchTr(AppStrings.upcomingClasses);
 
     return GestureDetector(
-      onTap: () {
-        setState(() {
-          selectedTab = tab;
-        });
-      },
+      onTap: onTap,
       child: Container(
         height: 59.h,
         padding: EdgeInsets.symmetric(horizontal: 2.w),
@@ -168,7 +181,7 @@ class _TeacherClassesScreenState extends ConsumerState<TeacherClassesScreen> {
     );
   }
 
-  Widget _classCard(AcademyClass academyClass) {
+  Widget _classCard(BuildContext context, WidgetRef ref, AcademyClass academyClass) {
     return GestureDetector(
       onTap: () {
         context.push(RoutePath.teacherClassDetail);
@@ -185,7 +198,7 @@ class _TeacherClassesScreenState extends ConsumerState<TeacherClassesScreen> {
           children: [
             Row(
               children: [
-                _statusTag(academyClass.status),
+                _statusTag(ref, academyClass.status),
                 const Spacer(),
                 Text(
                   academyClass.time,
@@ -196,9 +209,7 @@ class _TeacherClassesScreenState extends ConsumerState<TeacherClassesScreen> {
                 ),
               ],
             ),
-
             SizedBox(height: 7.h),
-
             Text(
               academyClass.title,
               style: TxtStyle.titleLarge(
@@ -207,9 +218,7 @@ class _TeacherClassesScreenState extends ConsumerState<TeacherClassesScreen> {
                 fontWeight: FontWeight.w700,
               ),
             ),
-
             SizedBox(height: 4.h),
-
             Text(
               '${academyClass.room} • ${academyClass.group} • '
               '${academyClass.students} ${ref.watchTr(AppStrings.studentsCount)}',
@@ -218,17 +227,15 @@ class _TeacherClassesScreenState extends ConsumerState<TeacherClassesScreen> {
                 fontSize: 15.5.sp,
               ),
             ),
-
             SizedBox(height: 12.h),
-
-            _cardFooter(academyClass),
+            _cardFooter(ref, academyClass),
           ],
         ),
       ),
     );
   }
 
-  Widget _statusTag(ClassStatus status) {
+  Widget _statusTag(WidgetRef ref, ClassStatus status) {
     final isNext = status == ClassStatus.next;
 
     return Container(
@@ -238,7 +245,9 @@ class _TeacherClassesScreenState extends ConsumerState<TeacherClassesScreen> {
         borderRadius: BorderRadius.circular(5.r),
       ),
       child: Text(
-        isNext ? ref.watchTr(AppStrings.homeNextLabel) : ref.watchTr(AppStrings.upcomingClasses).toUpperCase(),
+        isNext
+            ? ref.watchTr(AppStrings.homeNextLabel)
+            : ref.watchTr(AppStrings.upcomingClasses).toUpperCase(),
         style: TxtStyle.bodyMedium(
           color: isNext ? AppColors.primaryDark : AppColors.subtitleTextColor,
           fontSize: 12.5.sp,
@@ -249,7 +258,7 @@ class _TeacherClassesScreenState extends ConsumerState<TeacherClassesScreen> {
     );
   }
 
-  Widget _cardFooter(AcademyClass academyClass) {
+  Widget _cardFooter(WidgetRef ref, AcademyClass academyClass) {
     if (academyClass.status == ClassStatus.next) {
       return Container(
         padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),

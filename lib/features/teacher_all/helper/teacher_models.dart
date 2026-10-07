@@ -9,12 +9,20 @@ class TeacherProfileData {
   final String name;
   final String email;
   final String phone;
+  final String department;
+  final String office;
+  final String bio;
+  final String language;
   final String? profileImagePath;
 
   const TeacherProfileData({
     required this.name,
     required this.email,
     required this.phone,
+    this.department = 'Matemáticas y Física',
+    this.office = 'Aula 2 / Despacho 4',
+    this.bio = 'Docente titular de matemáticas especializado en bachillerato, álgebra y preparación académica.',
+    this.language = 'Español',
     this.profileImagePath,
   });
 
@@ -22,12 +30,20 @@ class TeacherProfileData {
     String? name,
     String? email,
     String? phone,
+    String? department,
+    String? office,
+    String? bio,
+    String? language,
     String? profileImagePath,
   }) {
     return TeacherProfileData(
       name: name ?? this.name,
       email: email ?? this.email,
       phone: phone ?? this.phone,
+      department: department ?? this.department,
+      office: office ?? this.office,
+      bio: bio ?? this.bio,
+      language: language ?? this.language,
       profileImagePath: profileImagePath ?? this.profileImagePath,
     );
   }

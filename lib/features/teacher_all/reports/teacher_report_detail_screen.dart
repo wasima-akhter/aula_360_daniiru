@@ -229,13 +229,15 @@ class TeacherReportDetailsScreen extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                title,
-                style: TxtStyle.titleLarge(
-                  color: AppColors.subtitleTextColor,
-                  fontSize: 17.sp,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: .45,
+              Flexible(
+                child: Text(
+                  title,
+                  style: TxtStyle.titleLarge(
+                    color: AppColors.subtitleTextColor,
+                    fontSize: 17.sp,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: .45,
+                  ),
                 ),
               ),
 

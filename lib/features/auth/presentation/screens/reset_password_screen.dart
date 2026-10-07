@@ -4,6 +4,7 @@ import '../../../share/widgets/button/app_logo.dart';
 import '../../../share/widgets/button/custom_back_button.dart';
 import '../../../share/widgets/text_field/custom_text_field.dart';
 import '../../abc.dart';
+import '../controllers/password_recovery_controller.dart';
 
 class ResetPasswordScreen extends ConsumerStatefulWidget {
   final String? email;
@@ -16,11 +17,17 @@ class ResetPasswordScreen extends ConsumerStatefulWidget {
 }
 
 class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
-  final passwordController = TextEditingController();
-  final confirmPasswordController = TextEditingController();
+  late final TextEditingController passwordController;
+  late final TextEditingController confirmPasswordController;
+  bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true;
 
-  bool obscurePassword = true;
-  bool obscureConfirmPassword = true;
+  @override
+  void initState() {
+    super.initState();
+    passwordController = TextEditingController();
+    confirmPasswordController = TextEditingController();
+  }
 
   @override
   void dispose() {
@@ -29,38 +36,50 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
     super.dispose();
   }
 
-  void _resetPassword() {
+  Future<void> _resetPassword() async {
     if (!AulaValidation.password(passwordController.text)) {
       return;
     }
 
     if (!AulaValidation.required(
       value: confirmPasswordController.text,
-      fieldName: ref.watchTr(AppStrings.fieldConfirmPassword),
+      fieldName: ref.tr(AppStrings.fieldConfirmPassword),
     )) {
       return;
     }
 
     if (passwordController.text != confirmPasswordController.text) {
       ApiSnackbar.show(
-        ref.watchTr(AppStrings.passwordMismatchMessage),
-        title: ref.watchTr(AppStrings.passwordMismatchTitle),
+        ref.tr(AppStrings.passwordMismatchMessage),
+        title: ref.tr(AppStrings.passwordMismatchTitle),
         type: SnackbarType.error,
       );
       return;
     }
 
-    ApiSnackbar.show(
-      ref.watchTr(AppStrings.passwordResetSuccessMessage),
-      title: ref.watchTr(AppStrings.passwordResetSuccessTitle),
-      type: SnackbarType.success,
-    );
+    final success = await ref
+        .read(passwordRecoveryControllerProvider.notifier)
+        .resetPassword(
+          email: widget.email ?? 'user@aula360.com',
+          newPassword: passwordController.text.trim(),
+        );
 
-    context.go(RoutePath.loginScreen.addBasePath);
+    if (!mounted) return;
+
+    if (success) {
+      ApiSnackbar.show(
+        ref.tr(AppStrings.passwordResetSuccessMessage),
+        title: ref.tr(AppStrings.passwordResetSuccessTitle),
+        type: SnackbarType.success,
+      );
+      context.go(RoutePath.loginScreen.addBasePath);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final recoveryState = ref.watch(passwordRecoveryControllerProvider);
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -75,9 +94,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
               ),
 
               const SizedBox(height: 43),
-
               const Center(child: AulaLogo(width: 130)),
-
               const SizedBox(height: 28),
 
               Center(
@@ -112,11 +129,9 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
                 label: ref.watchTr(AppStrings.fieldNewPassword),
                 hint: ref.watchTr(AppStrings.fieldNewPasswordHint),
                 icon: Icons.lock_outline_rounded,
-                obscureText: obscurePassword,
+                obscureText: _obscurePassword,
                 onTogglePassword: () {
-                  setState(() {
-                    obscurePassword = !obscurePassword;
-                  });
+                  setState(() => _obscurePassword = !_obscurePassword);
                 },
               ),
 
@@ -127,11 +142,11 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
                 label: ref.watchTr(AppStrings.fieldConfirmPassword),
                 hint: ref.watchTr(AppStrings.fieldConfirmPasswordHint),
                 icon: Icons.lock_outline_rounded,
-                obscureText: obscureConfirmPassword,
+                obscureText: _obscureConfirmPassword,
                 onTogglePassword: () {
-                  setState(() {
-                    obscureConfirmPassword = !obscureConfirmPassword;
-                  });
+                  setState(
+                    () => _obscureConfirmPassword = !_obscureConfirmPassword,
+                  );
                 },
               ),
 
@@ -139,7 +154,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
 
               AulaPrimaryButton(
                 text: ref.watchTr(AppStrings.btnResetPassword),
-                onTap: _resetPassword,
+                onTap: recoveryState.isLoading ? () {} : _resetPassword,
               ),
             ],
           ),

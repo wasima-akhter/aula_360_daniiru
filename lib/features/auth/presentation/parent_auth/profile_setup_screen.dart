@@ -1,11 +1,12 @@
 import 'dart:io';
 
-import '../../../../core/helper/snackbar/api_snackbar.dart';
+import '../../../nav/user_role/user_role_provider.dart';
 import '../../../share/export/screen_export.dart';
 import '../../../share/widgets/custom_image/app_image_picker.dart';
 import '../../../share/widgets/dropdown/custom_dropdown_field.dart';
 import '../../../share/widgets/text_field/custom_text_field.dart';
 import '../../abc.dart';
+import '../controllers/auth_controller.dart';
 
 class ProfileSetupScreen extends ConsumerStatefulWidget {
   const ProfileSetupScreen({super.key});
@@ -15,23 +16,29 @@ class ProfileSetupScreen extends ConsumerStatefulWidget {
 }
 
 class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
-  final nameController = TextEditingController(text: 'Elena Vance');
-  final phoneController = TextEditingController(text: '+34 612 345 678');
-  final emailController = TextEditingController(
-    text: 'elena.vance@example.com',
-  );
-  final addressController = TextEditingController();
+  late final TextEditingController nameController;
+  late final TextEditingController phoneController;
+  late final TextEditingController emailController;
+  late final TextEditingController addressController;
+  String _relationship = 'Madre';
+  File? _profileImage;
 
-  String relationship = 'Madre';
-  File? profileImage;
+  @override
+  void initState() {
+    super.initState();
+    nameController = TextEditingController(text: 'Elena Vance');
+    phoneController = TextEditingController(text: '+34 612 345 678');
+    emailController = TextEditingController(text: 'elena.vance@example.com');
+    addressController = TextEditingController();
+  }
 
-  Future<void> _pickProfileImage() async {
-    final image = await AppImagePicker.pickFromGallery();
-    if (image == null || !mounted) return;
-
-    setState(() {
-      profileImage = image;
-    });
+  @override
+  void dispose() {
+    nameController.dispose();
+    phoneController.dispose();
+    emailController.dispose();
+    addressController.dispose();
+    super.dispose();
   }
 
   Future<void> _showImagePicker() async {
@@ -41,7 +48,7 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (context) {
+      builder: (bottomSheetContext) {
         return SafeArea(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
@@ -77,7 +84,7 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
                   icon: Icons.photo_library_outlined,
                   title: ref.watchTr(AppStrings.chooseFromGallery),
                   onTap: () {
-                    Navigator.pop(context, ImagePickerSource.gallery);
+                    Navigator.pop(bottomSheetContext, ImagePickerSource.gallery);
                   },
                 ),
                 const SizedBox(height: 10),
@@ -85,7 +92,7 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
                   icon: Icons.camera_alt_outlined,
                   title: ref.watchTr(AppStrings.takeAPhoto),
                   onTap: () {
-                    Navigator.pop(context, ImagePickerSource.camera);
+                    Navigator.pop(bottomSheetContext, ImagePickerSource.camera);
                   },
                 ),
               ],
@@ -97,110 +104,74 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
 
     if (source == null) return;
 
-    final image = await AppImagePicker.pickImage(
-      source: source,
-      imageQuality: 85,
-    );
-
+    final image = await AppImagePicker.pickImage(source: source);
     if (image == null || !mounted) return;
 
-    setState(() {
-      profileImage = image;
-    });
+    setState(() => _profileImage = image);
   }
 
-  @override
-  void dispose() {
-    nameController.dispose();
-    phoneController.dispose();
-    emailController.dispose();
-    addressController.dispose();
-    super.dispose();
-  }
-
-  bool validateForm() {
+  Future<void> _completeProfile() async {
     if (!AulaValidation.required(
       value: nameController.text,
-      fieldName: ref.watchTr(AppStrings.parentFullName),
+      fieldName: ref.tr(AppStrings.parentFullName),
     )) {
-      return false;
+      return;
     }
+
     if (!AulaValidation.phone(phoneController.text)) {
-      return false;
+      return;
     }
+
     if (!AulaValidation.email(emailController.text)) {
-      return false;
+      return;
     }
-    if (relationship.isEmpty) {
-      ApiSnackbar.show(
-        'Por favor, selecciona el parentesco con el alumno.',
-        title: 'Parentesco Requerido',
-        type: SnackbarType.error,
-      );
-      return false;
-    }
-    if (!AulaValidation.required(
-      value: addressController.text,
-      fieldName: ref.watchTr(AppStrings.residentialAddress),
-    )) {
-      return false;
-    }
-    if (profileImage == null) {
-      ApiSnackbar.show(
-        'Por favor, añade una foto de perfil para continuar.',
-        title: 'Foto de Perfil Requerida',
-        type: SnackbarType.error,
-      );
-      return false;
-    }
-    return true;
-  }
 
-  void _completeProfile() {
-    if (!validateForm()) return;
-
-    ApiSnackbar.show(
-      ref.watchTr(AppStrings.profileCompletedSuccess),
-      title: ref.watchTr(AppStrings.profileCompletedTitle),
-      type: SnackbarType.success,
+    final success = await ref.read(authControllerProvider.notifier).setupProfile(
+      name: nameController.text.trim(),
+      phone: phoneController.text.trim(),
+      avatarPath: _profileImage?.path,
     );
 
-    context.go(RoutePath.navigationPages);
+    if (!mounted) return;
+
+    if (success) {
+      ref.read(userRoleProvider.notifier).loginAsParent();
+      context.go(RoutePath.navigationPages);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
+    final authState = ref.watch(authControllerProvider);
 
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
           children: [
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.symmetric(vertical: 6.h),
-              decoration: const BoxDecoration(
-                border: Border(bottom: BorderSide(color: AppColors.border)),
-              ),
-              child: Column(
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              child: Row(
                 children: [
-                  Text(
-                    ref.watchTr(AppStrings.profileSetupTitle).toUpperCase(),
-                    style: TxtStyle.titleLarge(
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.primary,
+                  GestureDetector(
+                    onTap: () => context.pop(),
+                    child: Container(
+                      width: 40.w,
+                      height: 40.w,
+                      alignment: Alignment.center,
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.arrow_back_ios_new_rounded,
+                        size: 15.sp,
+                        color: AppColors.text,
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 2),
-                  Text(
-                    ref.watchTr(AppStrings.parentPortal),
-                    style: TxtStyle.titleLarge(
-                      color: AppColors.secondaryText,
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+                  const Spacer(),
                 ],
               ),
             ),
@@ -247,9 +218,9 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
                               ),
                             ),
                             child: ClipOval(
-                              child: profileImage != null
+                              child: _profileImage != null
                                   ? Image.file(
-                                      profileImage!,
+                                      _profileImage!,
                                       width: 70.w,
                                       height: 70.w,
                                       fit: BoxFit.cover,
@@ -322,12 +293,10 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
                         ref.watchTr(AppStrings.relationshipFather),
                         ref.watchTr(AppStrings.relationshipGuardian),
                       ],
-                      value: relationship,
+                      value: _relationship,
                       onChanged: (value) {
                         if (value == null) return;
-                        setState(() {
-                          relationship = value;
-                        });
+                        setState(() => _relationship = value);
                       },
                     ),
                     const SizedBox(height: 15),
@@ -340,7 +309,7 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
                     const SizedBox(height: 22),
                     AulaPrimaryButton(
                       text: ref.watchTr(AppStrings.btnCompleteProfile),
-                      onTap: _completeProfile,
+                      onTap: authState.isLoading ? () {} : _completeProfile,
                     ),
                     const SizedBox(height: 8),
                     Center(

@@ -1,118 +1,31 @@
 import '../../../share/export/screen_export.dart';
 import '../../helper/parent_home_helper.dart';
-import '../parent_report_screen.dart';
+import '../../presentation/controllers/parent_homework_controller.dart';
 
-class HomeworkScreen extends ConsumerStatefulWidget {
+class HomeworkScreen extends ConsumerWidget {
   const HomeworkScreen({super.key});
 
-  @override
-  ConsumerState<HomeworkScreen> createState() => _HomeworkScreenState();
-}
-
-class _HomeworkScreenState extends ConsumerState<HomeworkScreen> {
-  int selectedStudent = 0;
-  int selectedTab = 0;
-
-  // ─────────────────────────────────────────────────────────────────────────────
-  // SAMPLE / MOCK DATA (Spanish Academy Context)
-  // ─────────────────────────────────────────────────────────────────────────────
-
-  final students = const [
-    StudentModel(
-      name: 'Lucas Rivera',
-      grade: '2º ESO • Aula 3B',
-      initials: 'LR',
-    ),
-    StudentModel(
-      name: 'Sophia Rivera',
-      grade: '5º Primaria • Aula 1A',
-      initials: 'SR',
-    ),
-  ];
-
-  final homework = const [
-    HomeworkModel(
-      subject: 'Lengua Castellana y Literatura',
-      teacher: 'Dña. Sarah Vance',
-      period: '3ª Hora',
-      title: 'Borrador: Análisis literario del capítulo 3',
-      description:
-          'Escribe un borrador de 500 palabras evaluando el conflicto y los recursos expresivos.',
-      status: HomeworkStatus.pending,
-      deadline: 'Entrega: 26 Oct',
-      time: '17:00',
-    ),
-    HomeworkModel(
-      subject: 'Matemáticas Avanzadas',
-      teacher: 'D. Roberto Hayes',
-      period: '3ª Hora',
-      title: 'Relación de Problemas: Polinomios y Funciones',
-      description:
-          'Ejercicios 4.2 al 4.5 del libro de texto. Representación gráfica de funciones.',
-      status: HomeworkStatus.pending,
-      deadline: 'Lunes, 29 Oct',
-      time: '08:30',
-    ),
-    HomeworkModel(
-      subject: 'Física y Química',
-      teacher: 'Dra. Ángela Bennett',
-      period: '5ª Hora',
-      title: 'Ficha de Laboratorio: Óptica y Refracción',
-      description:
-          'Resumir los datos experimentales obtenidos el miércoles y calcular el índice de refracción.',
-      status: HomeworkStatus.pending,
-      deadline: 'Miércoles, 31 Oct',
-      time: '23:59',
-    ),
-    HomeworkModel(
-      subject: 'Geografía e Historia',
-      teacher: 'D. Marcos Brody',
-      period: '2ª Hora',
-      title: 'Comentario de Texto: Revolución Industrial',
-      description:
-          'Lectura y comentario sobre testimonios históricos del siglo XIX.',
-      status: HomeworkStatus.completed,
-      deadline: 'Completada: 22 Oct',
-      time: '',
-    ),
-    HomeworkModel(
-      subject: 'Lengua Castellana y Literatura',
-      teacher: 'Dña. Sarah Vance',
-      period: '3ª Hora',
-      title: 'Análisis Poético: Métrica y Figuras',
-      description: 'Métrica y figuras retóricas en el Siglo de Oro.',
-      status: HomeworkStatus.completed,
-      deadline: 'Completada: 19 Oct',
-      time: '',
-    ),
-  ];
-
-  List<String> _getTabs() {
+  List<String> _getTabs(WidgetRef ref, int total, int pending, int completed) {
     return [
-      '${ref.watchTr(AppStrings.allTab)} (5)',
-      '${ref.watchTr(AppStrings.pendingTab)} (3)',
-      '${ref.watchTr(AppStrings.completedTab)} (2)',
+      '${ref.watchTr(AppStrings.allTab)} ($total)',
+      '${ref.watchTr(AppStrings.pendingTab)} ($pending)',
+      '${ref.watchTr(AppStrings.completedTab)} ($completed)',
     ];
   }
 
-  List<HomeworkModel> get filteredHomework {
-    if (selectedTab == 0) {
-      return homework;
-    }
-
-    if (selectedTab == 1) {
-      return homework
-          .where((item) => item.status == HomeworkStatus.pending)
-          .toList();
-    }
-
-    return homework
-        .where((item) => item.status == HomeworkStatus.completed)
-        .toList();
-  }
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(parentHomeworkControllerProvider);
+    final controller = ref.read(parentHomeworkControllerProvider.notifier);
+
+    final pendingCount =
+        state.homework.where((h) => h.status == HomeworkStatus.pending).length;
+    final completedCount =
+        state.homework.where((h) => h.status == HomeworkStatus.completed).length;
+
+    final tabs = _getTabs(ref, state.homework.length, pendingCount, completedCount);
+    final filtered = state.filteredHomework;
+
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
       appBar: AulaAppBar(title: ref.watchTr(AppStrings.homeworkTitle), showBack: true),
@@ -124,9 +37,9 @@ class _HomeworkScreenState extends ConsumerState<HomeworkScreen> {
               padding: EdgeInsets.fromLTRB(16.w, 18.h, 16.w, 20.h),
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
-                  _studentSelector(),
+                  _studentSelector(state, controller),
                   SizedBox(height: 22.h),
-                  _tabs(),
+                  _tabs(state, controller, tabs),
                 ]),
               ),
             ),
@@ -135,8 +48,8 @@ class _HomeworkScreenState extends ConsumerState<HomeworkScreen> {
               padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 30.h),
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
-                  for (final item in filteredHomework) ...[
-                    _homeworkCard(item),
+                  for (final item in filtered) ...[
+                    _homeworkCard(context, ref, item),
                     SizedBox(height: 12.h),
                   ],
                 ]),
@@ -148,29 +61,33 @@ class _HomeworkScreenState extends ConsumerState<HomeworkScreen> {
     );
   }
 
-  Widget _studentSelector() {
+  Widget _studentSelector(
+    ParentHomeworkState state,
+    ParentHomeworkController controller,
+  ) {
     return Row(
       children: [
-        for (int i = 0; i < students.length; i++) ...[
-          Expanded(child: _studentCard(i)),
-          if (i != students.length - 1) SizedBox(width: 9.w),
+        for (int i = 0; i < state.students.length; i++) ...[
+          Expanded(child: _studentCard(state, controller, i)),
+          if (i != state.students.length - 1) SizedBox(width: 9.w),
         ],
       ],
     );
   }
 
-  Widget _studentCard(int index) {
-    final student = students[index];
-    final selected = selectedStudent == index;
+  Widget _studentCard(
+    ParentHomeworkState state,
+    ParentHomeworkController controller,
+    int index,
+  ) {
+    final student = state.students[index];
+    final selected = state.selectedStudentIndex == index;
 
     return GestureDetector(
-      onTap: () {
-        setState(() {
-          selectedStudent = index;
-        });
-      },
+      onTap: () => controller.selectStudent(index),
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeInOut,
         height: 72.h,
         padding: EdgeInsets.all(10.w),
         decoration: BoxDecoration(
@@ -182,6 +99,15 @@ class _HomeworkScreenState extends ConsumerState<HomeworkScreen> {
                 : AppColors.backgroundsLinesColor,
             width: selected ? 1.6 : 1,
           ),
+          boxShadow: selected
+              ? [
+                  BoxShadow(
+                    color: AppColors.primary.withValues(alpha: .08),
+                    blurRadius: 8,
+                    offset: const Offset(0, 3),
+                  ),
+                ]
+              : null,
         ),
         child: Row(
           children: [
@@ -221,19 +147,22 @@ class _HomeworkScreenState extends ConsumerState<HomeworkScreen> {
     );
   }
 
-  Widget _tabs() {
-    final tabs = _getTabs();
-
+  Widget _tabs(
+    ParentHomeworkState state,
+    ParentHomeworkController controller,
+    List<String> tabs,
+  ) {
     return SizedBox(
       height: 40.h,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
         child: Row(
           children: [
             for (int i = 0; i < tabs.length; i++)
               Padding(
                 padding: EdgeInsets.only(right: 8.w),
-                child: _tab(i, tabs[i]),
+                child: _tab(state, controller, i, tabs[i]),
               ),
           ],
         ),
@@ -241,17 +170,19 @@ class _HomeworkScreenState extends ConsumerState<HomeworkScreen> {
     );
   }
 
-  Widget _tab(int index, String title) {
-    final selected = selectedTab == index;
+  Widget _tab(
+    ParentHomeworkState state,
+    ParentHomeworkController controller,
+    int index,
+    String title,
+  ) {
+    final selected = state.selectedTab == index;
 
     return GestureDetector(
-      onTap: () {
-        setState(() {
-          selectedTab = index;
-        });
-      },
+      onTap: () => controller.selectTab(index),
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeInOut,
         padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 9.h),
         decoration: BoxDecoration(
           color: selected ? AppColors.primary : const Color(0xFFEDECF4),
@@ -269,7 +200,7 @@ class _HomeworkScreenState extends ConsumerState<HomeworkScreen> {
     );
   }
 
-  Widget _homeworkCard(HomeworkModel item) {
+  Widget _homeworkCard(BuildContext context, WidgetRef ref, HomeworkModel item) {
     final completed = item.status == HomeworkStatus.completed;
 
     return GestureDetector(
@@ -364,28 +295,4 @@ class _HomeworkScreenState extends ConsumerState<HomeworkScreen> {
       ),
     );
   }
-}
-
-enum HomeworkStatus { pending, completed }
-
-class HomeworkModel {
-  final String subject;
-  final String teacher;
-  final String period;
-  final String title;
-  final String description;
-  final HomeworkStatus status;
-  final String deadline;
-  final String time;
-
-  const HomeworkModel({
-    required this.subject,
-    required this.teacher,
-    required this.period,
-    required this.title,
-    required this.description,
-    required this.status,
-    required this.deadline,
-    required this.time,
-  });
 }

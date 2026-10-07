@@ -1,21 +1,13 @@
 import '../../../share/export/screen_export.dart';
 import '../../helper/parent_home_helper.dart';
-import 'parent_homework_screen.dart';
 
-class HomeworkDetailsScreen extends ConsumerStatefulWidget {
+class HomeworkDetailsScreen extends ConsumerWidget {
   final HomeworkModel homework;
 
   const HomeworkDetailsScreen({super.key, required this.homework});
 
   @override
-  ConsumerState<HomeworkDetailsScreen> createState() => _HomeworkDetailsScreenState();
-}
-
-class _HomeworkDetailsScreenState extends ConsumerState<HomeworkDetailsScreen> {
-  @override
-  Widget build(BuildContext context) {
-    final homework = widget.homework;
-
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
       appBar: AulaAppBar(title: ref.watchTr(AppStrings.homeworkDetailsTitle), showBack: true),
@@ -27,15 +19,15 @@ class _HomeworkDetailsScreenState extends ConsumerState<HomeworkDetailsScreen> {
               padding: EdgeInsets.fromLTRB(16.w, 18.h, 16.w, 30.h),
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
-                  _assignmentHeader(homework),
+                  _assignmentHeader(ref, homework),
                   SizedBox(height: 15.h),
-                  _teacherCard(homework),
+                  _teacherCard(ref, homework),
                   SizedBox(height: 15.h),
-                  _instructions(homework),
+                  _instructions(ref, homework),
                   SizedBox(height: 15.h),
-                  _attachmentSection(),
+                  _attachmentSection(ref),
                   SizedBox(height: 15.h),
-                  _submissionInfo(homework),
+                  _submissionInfo(ref, homework),
                 ]),
               ),
             ),
@@ -45,7 +37,7 @@ class _HomeworkDetailsScreenState extends ConsumerState<HomeworkDetailsScreen> {
     );
   }
 
-  Widget _assignmentHeader(HomeworkModel homework) {
+  Widget _assignmentHeader(WidgetRef ref, HomeworkModel homework) {
     return AulaCard(
       padding: EdgeInsets.all(16.w),
       child: Column(
@@ -83,7 +75,7 @@ class _HomeworkDetailsScreenState extends ConsumerState<HomeworkDetailsScreen> {
     );
   }
 
-  Widget _teacherCard(HomeworkModel homework) {
+  Widget _teacherCard(WidgetRef ref, HomeworkModel homework) {
     return AulaCard(
       padding: EdgeInsets.all(14.w),
       child: Row(
@@ -123,7 +115,7 @@ class _HomeworkDetailsScreenState extends ConsumerState<HomeworkDetailsScreen> {
     );
   }
 
-  Widget _instructions(HomeworkModel homework) {
+  Widget _instructions(WidgetRef ref, HomeworkModel homework) {
     return AulaCard(
       padding: EdgeInsets.all(15.w),
       child: Column(
@@ -152,7 +144,7 @@ class _HomeworkDetailsScreenState extends ConsumerState<HomeworkDetailsScreen> {
     );
   }
 
-  Widget _attachmentSection() {
+  Widget _attachmentSection(WidgetRef ref) {
     return AulaCard(
       padding: EdgeInsets.all(15.w),
       child: Column(
@@ -236,7 +228,7 @@ class _HomeworkDetailsScreenState extends ConsumerState<HomeworkDetailsScreen> {
     );
   }
 
-  Widget _submissionInfo(HomeworkModel homework) {
+  Widget _submissionInfo(WidgetRef ref, HomeworkModel homework) {
     final completed = homework.status == HomeworkStatus.completed;
 
     return AulaCard(

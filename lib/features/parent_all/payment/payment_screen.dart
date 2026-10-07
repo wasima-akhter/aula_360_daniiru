@@ -1,4 +1,5 @@
 import '../../share/export/screen_export.dart';
+import '../presentation/controllers/parent_payment_controller.dart';
 
 class TuitionPaymentScreen extends ConsumerStatefulWidget {
   const TuitionPaymentScreen({super.key});
@@ -12,6 +13,9 @@ class _TuitionPaymentScreenState extends ConsumerState<TuitionPaymentScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final paymentState = ref.watch(parentPaymentControllerProvider);
+    final paymentController = ref.read(parentPaymentControllerProvider.notifier);
+
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
       appBar: _paymentAppBar(),
@@ -30,7 +34,7 @@ class _TuitionPaymentScreenState extends ConsumerState<TuitionPaymentScreen> {
               SizedBox(height: 10.h),
               _saveCard(),
               SizedBox(height: 20.h),
-              _payButton(),
+              _payButton(paymentState, paymentController),
             ],
           ),
         ),
@@ -423,7 +427,7 @@ class _TuitionPaymentScreenState extends ConsumerState<TuitionPaymentScreen> {
                 saveCard = value;
               });
             },
-            activeColor: Colors.white,
+            activeThumbColor: Colors.white,
             activeTrackColor: AppColors.primaryDark,
           ),
         ],
@@ -431,16 +435,27 @@ class _TuitionPaymentScreenState extends ConsumerState<TuitionPaymentScreen> {
     );
   }
 
-  Widget _payButton() {
+  Widget _payButton(ParentPaymentState state, ParentPaymentController controller) {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton.icon(
-        onPressed: () {
-          context.go(RoutePath.paymentReceipt);
-        },
-        icon: Icon(Icons.lock_outline, color: Colors.white, size: 15.sp),
+        onPressed: state.isProcessing
+            ? null
+            : () async {
+                final success = await controller.processPayment('INV-2026-001');
+                if (success && mounted) {
+                  context.go(RoutePath.paymentReceipt);
+                }
+              },
+        icon: state.isProcessing
+            ? SizedBox(
+                width: 16.w,
+                height: 16.w,
+                child: const CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+              )
+            : Icon(Icons.lock_outline, color: Colors.white, size: 15.sp),
         label: Text(
-          '${ref.watchTr(AppStrings.payNowBtn)} 340,00 €',
+          state.isProcessing ? 'Procesando...' : '${ref.watchTr(AppStrings.payNowBtn)} 340,00 €',
           style: TxtStyle.titleLarge(
             color: Colors.white,
             fontSize: 16.sp,

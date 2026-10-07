@@ -1,9 +1,8 @@
 import 'dart:io';
-
 import 'package:image_picker/image_picker.dart';
-
 import '../../share/export/screen_export.dart';
 import '../helper/parent_widgets.dart';
+import '../presentation/controllers/parent_profile_controller.dart';
 
 /// ===============================================================
 /// 2. EDIT PROFILE / EDITAR PERFIL
@@ -19,16 +18,25 @@ class EditProfileScreen extends ConsumerStatefulWidget {
 class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  final nameController = TextEditingController(text: 'Eleanor Rivera');
-  final emailController = TextEditingController(
-    text: 'eleanor.rivera@email.com',
-  );
-  final phoneController = TextEditingController(text: '+34 612 345 678');
-  final addressController = TextEditingController(
-    text: 'Calle Gran Vía 28, Madrid',
-  );
+  late final TextEditingController nameController;
+  late final TextEditingController emailController;
+  late final TextEditingController phoneController;
+  late final TextEditingController addressController;
 
   String language = 'Español';
+  final ImagePicker _imagePicker = ImagePicker();
+  File? _profileImage;
+
+  @override
+  void initState() {
+    super.initState();
+    final profile = ref.read(parentProfileControllerProvider);
+    nameController = TextEditingController(text: profile.name);
+    emailController = TextEditingController(text: profile.email);
+    phoneController = TextEditingController(text: profile.phone);
+    addressController = TextEditingController(text: profile.address);
+    language = profile.language;
+  }
 
   @override
   void dispose() {
@@ -39,12 +47,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     super.dispose();
   }
 
-  final ImagePicker _imagePicker = ImagePicker();
-  File? _profileImage;
-
   Future<void> _pickProfileImage() async {
     final XFile? pickedImage = await _imagePicker.pickImage(
-      source: ImageSource.camera,
+      source: ImageSource.gallery,
       imageQuality: 85,
       maxWidth: 1200,
       maxHeight: 1200,
@@ -59,6 +64,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final profileState = ref.watch(parentProfileControllerProvider);
+
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
       appBar: simpleAppBar(context, ref.watchTr(AppStrings.editProfileTitle)),
@@ -71,7 +78,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _profilePhotoCard(),
+                _profilePhotoCard(profileState),
                 SizedBox(height: 20.h),
                 _sectionLabel(ref.watchTr(AppStrings.parentContactDetails)),
                 SizedBox(height: 9.h),
@@ -111,7 +118,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 SizedBox(height: 9.h),
                 _languageDropdown(),
                 SizedBox(height: 19.h),
-                _saveButton(),
+                _saveButton(profileState),
                 SizedBox(height: 10.h),
                 Center(
                   child: TextButton(
@@ -133,7 +140,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     );
   }
 
-  Widget _profilePhotoCard() {
+  Widget _profilePhotoCard(ParentProfileState profile) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.fromLTRB(15.w, 13.h, 15.w, 15.h),
@@ -166,7 +173,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                             fit: BoxFit.cover,
                           )
                         : Image.network(
-                            'https://i.pravatar.cc/300?img=47',
+                            profile.avatarUrl ?? 'https://i.pravatar.cc/300?img=47',
                             width: 80.w,
                             height: 80.w,
                             fit: BoxFit.cover,
@@ -198,7 +205,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                         border: Border.all(color: AppColors.white, width: 2),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(.15),
+                            color: Colors.black.withValues(alpha: .15),
                             blurRadius: 5,
                             offset: const Offset(0, 2),
                           ),
@@ -218,7 +225,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
           SizedBox(height: 10.h),
           Text(
-            'Eleanor Rivera',
+            profile.name,
             style: TxtStyle.titleLarge(
               color: AppColors.text,
               fontSize: 18.sp,
@@ -428,30 +435,44 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     );
   }
 
-  Widget _saveButton() {
+  Widget _saveButton(ParentProfileState state) {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: () {
-          if (!_formKey.currentState!.validate()) {
-            return;
-          }
+        onPressed: state.isSaving
+            ? null
+            : () async {
+                if (!_formKey.currentState!.validate()) {
+                  return;
+                }
 
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                ref.watchTr(AppStrings.profileUpdatedSuccess),
-                style: TxtStyle.titleLarge(
-                  fontSize: 14.sp,
-                  color: Colors.white,
-                ),
-              ),
-              behavior: SnackBarBehavior.floating,
-            ),
-          );
+                final success = await ref
+                    .read(parentProfileControllerProvider.notifier)
+                    .updateProfile(
+                      name: nameController.text.trim(),
+                      phone: phoneController.text.trim(),
+                      email: emailController.text.trim(),
+                      address: addressController.text.trim(),
+                      language: language,
+                      avatarUrl: _profileImage?.path,
+                    );
 
-          context.pop();
-        },
+                if (success && mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        ref.watchTr(AppStrings.profileUpdatedSuccess),
+                        style: TxtStyle.titleLarge(
+                          fontSize: 14.sp,
+                          color: Colors.white,
+                        ),
+                      ),
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                  context.pop();
+                }
+              },
         style: ElevatedButton.styleFrom(
           elevation: 0,
           backgroundColor: AppColors.primaryDark,
@@ -462,16 +483,24 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.check, size: 15.sp, color: Colors.white),
-            SizedBox(width: 5.w),
-            Text(
-              ref.watchTr(AppStrings.btnSaveChanges),
-              style: TxtStyle.titleLarge(
-                color: Colors.white,
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w800,
+            if (state.isSaving)
+              SizedBox(
+                width: 16.w,
+                height: 16.w,
+                child: const CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+              )
+            else ...[
+              Icon(Icons.check, size: 15.sp, color: Colors.white),
+              SizedBox(width: 5.w),
+              Text(
+                ref.watchTr(AppStrings.btnSaveChanges),
+                style: TxtStyle.titleLarge(
+                  color: Colors.white,
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w800,
+                ),
               ),
-            ),
+            ],
           ],
         ),
       ),

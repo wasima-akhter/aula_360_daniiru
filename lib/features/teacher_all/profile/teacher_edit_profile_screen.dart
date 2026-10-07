@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 
 import '../../share/export/screen_export.dart';
+import '../helper/teacher_models.dart';
+import '../presentation/controllers/teacher_profile_controller.dart';
 
 /// ===============================================================
 /// EDIT FACULTY PROFILE
@@ -32,44 +34,20 @@ class _EditTeacherProfileScreenState
   final ImagePicker _imagePicker = ImagePicker();
 
   File? _profileImage;
-
   String language = 'Español';
-  bool _saving = false;
 
   @override
   void initState() {
     super.initState();
+    final profile = ref.read(teacherProfileControllerProvider).profile;
 
-    final data = widget.initialData ?? {};
-
-    nameController = TextEditingController(
-      text: data['name'] ?? 'Dra. Sarah Jenkins',
-    );
-
-    emailController = TextEditingController(
-      text: data['email'] ?? 's.jenkins@aula360.academy',
-    );
-
-    phoneController = TextEditingController(
-      text: data['phone'] ?? '+34 912 345 678',
-    );
-
-    departmentController = TextEditingController(
-      text: data['department'] ?? 'Matemáticas y Física',
-    );
-
-    officeController = TextEditingController(
-      text: data['office'] ?? 'Aula 2 / Despacho 4',
-    );
-
-    bioController = TextEditingController(
-      text:
-          data['bio'] ??
-          'Docente titular de matemáticas especializado en bachillerato, '
-              'álgebra y preparación académica.',
-    );
-
-    language = data['language'] ?? 'Español';
+    nameController = TextEditingController(text: profile.name);
+    emailController = TextEditingController(text: profile.email);
+    phoneController = TextEditingController(text: profile.phone);
+    departmentController = TextEditingController(text: profile.department);
+    officeController = TextEditingController(text: profile.office);
+    bioController = TextEditingController(text: profile.bio);
+    language = profile.language;
   }
 
   @override
@@ -80,12 +58,13 @@ class _EditTeacherProfileScreenState
     departmentController.dispose();
     officeController.dispose();
     bioController.dispose();
-
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(teacherProfileControllerProvider);
+
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
       appBar: AppBar(
@@ -135,20 +114,15 @@ class _EditTeacherProfileScreenState
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _profilePhotoCard(),
-
                 SizedBox(height: 20.h),
-
                 _sectionLabel(ref.watchTr(AppStrings.facultyInfoTitle)),
-
                 SizedBox(height: 9.h),
-
                 _field(
                   label: ref.watchTr(AppStrings.parentFullName),
                   controller: nameController,
                   icon: Icons.person_outline,
                   requiredField: true,
                 ),
-
                 _field(
                   label: ref.watchTr(AppStrings.emailAddressTitle),
                   controller: emailController,
@@ -157,7 +131,6 @@ class _EditTeacherProfileScreenState
                   requiredField: true,
                   validator: _validateEmail,
                 ),
-
                 _field(
                   label: ref.watchTr(AppStrings.primaryMobileNumber),
                   controller: phoneController,
@@ -165,30 +138,23 @@ class _EditTeacherProfileScreenState
                   keyboardType: TextInputType.phone,
                   requiredField: true,
                 ),
-
                 _field(
                   label: ref.watchTr(AppStrings.deptSubjectLabel),
                   controller: departmentController,
                   icon: Icons.school_outlined,
                   requiredField: true,
                 ),
-
                 _field(
                   label: ref.watchTr(AppStrings.officeRoomLabel),
                   controller: officeController,
                   icon: Icons.meeting_room_outlined,
                   requiredField: true,
                 ),
-
                 _bioField(),
-
                 SizedBox(height: 10.h),
-
                 _languageDropdown(),
-
                 SizedBox(height: 20.h),
-
-                _saveButton(),
+                _saveButton(state.isSaving),
               ],
             ),
           ),
@@ -243,7 +209,6 @@ class _EditTeacherProfileScreenState
                         ),
                 ),
               ),
-
               Positioned(
                 right: -2.w,
                 bottom: 0,
@@ -267,9 +232,7 @@ class _EditTeacherProfileScreenState
               ),
             ],
           ),
-
           SizedBox(height: 10.h),
-
           Text(
             nameController.text,
             style: TxtStyle.titleLarge(
@@ -278,9 +241,7 @@ class _EditTeacherProfileScreenState
               fontWeight: FontWeight.w800,
             ),
           ),
-
           SizedBox(height: 5.h),
-
           Container(
             padding: EdgeInsets.symmetric(horizontal: 9.w, vertical: 4.h),
             decoration: BoxDecoration(
@@ -296,9 +257,7 @@ class _EditTeacherProfileScreenState
               ),
             ),
           ),
-
           SizedBox(height: 9.h),
-
           Text(
             ref.watchTr(AppStrings.jpgPngMax5mb),
             style: TxtStyle.titleLarge(
@@ -376,17 +335,14 @@ class _EditTeacherProfileScreenState
       if (picked == null) return;
 
       final file = File(picked.path);
-
       final size = await file.length();
 
       // 5 MB limit
       if (size > 5 * 1024 * 1024) {
         if (!mounted) return;
-
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(ref.watchTr(AppStrings.imageSizeLimitError))),
         );
-
         return;
       }
 
@@ -395,7 +351,6 @@ class _EditTeacherProfileScreenState
       });
     } catch (e) {
       if (!mounted) return;
-
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(ref.watchTr(AppStrings.imageSelectError))));
@@ -420,20 +375,15 @@ class _EditTeacherProfileScreenState
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _fieldLabel(label, requiredField: requiredField),
-
           SizedBox(height: 5.h),
-
           TextFormField(
             controller: controller,
             keyboardType: keyboardType,
-            validator:
-                validator ??
+            validator: validator ??
                 (value) {
-                  if (requiredField &&
-                      (value == null || value.trim().isEmpty)) {
+                  if (requiredField && (value == null || value.trim().isEmpty)) {
                     return '$label ${ref.watchTr(AppStrings.fieldIsRequiredSuffix)}';
                   }
-
                   return null;
                 },
             style: TxtStyle.titleLarge(
@@ -458,9 +408,7 @@ class _EditTeacherProfileScreenState
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _fieldLabel(ref.watchTr(AppStrings.briefBioNotes)),
-
         SizedBox(height: 5.h),
-
         TextFormField(
           controller: bioController,
           minLines: 4,
@@ -537,9 +485,7 @@ class _EditTeacherProfileScreenState
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _fieldLabel(ref.watchTr(AppStrings.preferredLanguage)),
-
         SizedBox(height: 5.h),
-
         DropdownButtonFormField<String>(
           initialValue: language,
           decoration: _inputDecoration(icon: Icons.translate),
@@ -552,7 +498,6 @@ class _EditTeacherProfileScreenState
           ],
           onChanged: (value) {
             if (value == null) return;
-
             setState(() {
               language = value;
             });
@@ -566,12 +511,11 @@ class _EditTeacherProfileScreenState
   // SAVE
   // ===============================================================
 
-  Widget _saveButton() {
+  Widget _saveButton(bool isSaving) {
     return SizedBox(
       width: double.infinity,
-
       child: ElevatedButton(
-        onPressed: _saving ? null : _save,
+        onPressed: isSaving ? null : _save,
         style: ElevatedButton.styleFrom(
           elevation: 0,
           backgroundColor: AppColors.primaryDark,
@@ -580,7 +524,7 @@ class _EditTeacherProfileScreenState
             borderRadius: BorderRadius.circular(7.r),
           ),
         ),
-        child: _saving
+        child: isSaving
             ? SizedBox(
                 width: 19.w,
                 height: 19.w,
@@ -613,39 +557,32 @@ class _EditTeacherProfileScreenState
       return;
     }
 
-    setState(() {
-      _saving = true;
-    });
-
-    // Simulate API request.
-    await Future.delayed(const Duration(milliseconds: 700));
-
-    if (!mounted) return;
-
-    setState(() {
-      _saving = false;
-    });
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(ref.watchTr(AppStrings.profileUpdatedSuccess)),
-        behavior: SnackBarBehavior.floating,
-      ),
+    final updatedProfile = TeacherProfileData(
+      name: nameController.text.trim(),
+      email: emailController.text.trim(),
+      phone: phoneController.text.trim(),
+      department: departmentController.text.trim(),
+      office: officeController.text.trim(),
+      bio: bioController.text.trim(),
+      language: language,
+      profileImagePath: _profileImage?.path,
     );
 
-    await Future.delayed(const Duration(milliseconds: 250));
+    final success = await ref
+        .read(teacherProfileControllerProvider.notifier)
+        .updateProfile(updatedProfile);
 
     if (!mounted) return;
 
-    context.pop({
-      'name': nameController.text.trim(),
-      'email': emailController.text.trim(),
-      'phone': phoneController.text.trim(),
-      'department': departmentController.text.trim(),
-      'office': officeController.text.trim(),
-      'bio': bioController.text.trim(),
-      'language': language,
-    });
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(ref.watchTr(AppStrings.profileUpdatedSuccess)),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      context.pop();
+    }
   }
 
   String? _validateEmail(String? value) {
@@ -654,11 +591,9 @@ class _EditTeacherProfileScreenState
     }
 
     final emailRegex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
-
     if (!emailRegex.hasMatch(value.trim())) {
       return ref.watchTr(AppStrings.validEmailAddress);
     }
-
     return null;
   }
 

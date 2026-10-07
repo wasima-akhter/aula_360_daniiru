@@ -4,31 +4,18 @@
 library;
 
 import '../../share/export/screen_export.dart';
-import '../helper/parent_models.dart';
+import '../domain/models/parent_models.dart';
 import '../helper/parent_widgets.dart';
+import '../presentation/controllers/parent_children_controller.dart';
 
-class MyChildrenScreen extends ConsumerStatefulWidget {
+class MyChildrenScreen extends ConsumerWidget {
   const MyChildrenScreen({super.key});
 
   @override
-  ConsumerState<MyChildrenScreen> createState() => _MyChildrenScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(parentChildrenControllerProvider);
+    final children = state.children;
 
-class _MyChildrenScreenState extends ConsumerState<MyChildrenScreen> {
-  final List<ChildModel> children = [lucasChild, sophiaChild];
-
-  Future<void> _addChild() async {
-    final result = await context.push(RoutePath.addChild);
-
-    if (result is ChildModel) {
-      setState(() {
-        children.add(result);
-      });
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
       appBar: simpleAppBar(context, ref.watchTr(AppStrings.myChildren)),
@@ -39,10 +26,10 @@ class _MyChildrenScreenState extends ConsumerState<MyChildrenScreen> {
           child: Column(
             children: [
               for (final child in children) ...[
-                _childCard(child),
+                _childCard(context, ref, child),
                 SizedBox(height: 12.h),
               ],
-              _addChildButton(),
+              _addChildButton(context, ref),
             ],
           ),
         ),
@@ -50,7 +37,7 @@ class _MyChildrenScreenState extends ConsumerState<MyChildrenScreen> {
     );
   }
 
-  Widget _childCard(ChildModel child) {
+  Widget _childCard(BuildContext context, WidgetRef ref, ChildModel child) {
     return InkWell(
       onTap: () {
         context.push(RoutePath.childProfile, extra: child);
@@ -153,6 +140,7 @@ class _MyChildrenScreenState extends ConsumerState<MyChildrenScreen> {
               children: [
                 Expanded(
                   child: _activeBadge(
+                    ref,
                     '${child.attendance.toStringAsFixed(0)}% ${ref.watchTr(AppStrings.attendance)}',
                   ),
                 ),
@@ -177,7 +165,18 @@ class _MyChildrenScreenState extends ConsumerState<MyChildrenScreen> {
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(7.r),
-            child: Image.network(child.imageUrl, fit: BoxFit.cover),
+            child: Image.network(
+              child.imageUrl,
+              fit: BoxFit.cover,
+              errorBuilder: (_, _, _) => Container(
+                color: AppColors.blueSoft,
+                alignment: Alignment.center,
+                child: Text(
+                  child.name.isNotEmpty ? child.name[0] : '?',
+                  style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold, color: AppColors.primary),
+                ),
+              ),
+            ),
           ),
         ),
         Positioned(
@@ -197,7 +196,7 @@ class _MyChildrenScreenState extends ConsumerState<MyChildrenScreen> {
     );
   }
 
-  Widget _activeBadge(String text) {
+  Widget _activeBadge(WidgetRef ref, String text) {
     return Align(
       alignment: Alignment.centerLeft,
       child: Container(
@@ -218,9 +217,9 @@ class _MyChildrenScreenState extends ConsumerState<MyChildrenScreen> {
     );
   }
 
-  Widget _addChildButton() {
+  Widget _addChildButton(BuildContext context, WidgetRef ref) {
     return InkWell(
-      onTap: _addChild,
+      onTap: () => context.push(RoutePath.addChild),
       borderRadius: BorderRadius.circular(8.r),
       child: Container(
         width: double.infinity,

@@ -2,43 +2,21 @@ import '../../parent_all/helper/parent_home_helper.dart';
 import '../../share/export/screen_export.dart';
 import '../helper/teacher_enums.dart';
 import '../helper/teacher_models.dart';
+import '../presentation/controllers/teacher_reports_controller.dart';
 
 /// ===============================================================
 /// REPORTS SCREEN
 /// ===============================================================
 
-class TeacherReportsScreen extends ConsumerStatefulWidget {
+class TeacherReportsScreen extends ConsumerWidget {
   const TeacherReportsScreen({super.key});
 
   @override
-  ConsumerState<TeacherReportsScreen> createState() =>
-      _TeacherReportsScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(teacherReportsControllerProvider);
+    final controller = ref.read(teacherReportsControllerProvider.notifier);
+    final filteredReports = state.filteredReports;
 
-class _TeacherReportsScreenState extends ConsumerState<TeacherReportsScreen> {
-  ReportFilter selectedFilter = ReportFilter.all;
-
-  List<TeacherReport> get filteredReports {
-    switch (selectedFilter) {
-      case ReportFilter.all:
-        return reports;
-      case ReportFilter.groupA:
-        return reports
-            .where((report) => report.group == StudentGroup.groupA)
-            .toList();
-      case ReportFilter.groupB:
-        return reports
-            .where((report) => report.group == StudentGroup.groupB)
-            .toList();
-      case ReportFilter.oneOnOne:
-        return reports
-            .where((report) => report.category == ReportCategory.studentReport)
-            .toList();
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.softBackground,
       appBar: AulaAppBar(
@@ -49,49 +27,55 @@ class _TeacherReportsScreenState extends ConsumerState<TeacherReportsScreen> {
           SizedBox(width: 13.w),
         ],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _header(),
-          _filters(),
-          Expanded(
-            child: ListView.builder(
-              physics: const BouncingScrollPhysics(),
-              padding: EdgeInsets.fromLTRB(16.w, 5.h, 16.w, 30.h),
-              itemCount: filteredReports.length,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: EdgeInsets.only(bottom: 9.h),
-                  child: _reportCard(filteredReports[index]),
-                );
-              },
+      body: state.isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _header(ref, state.reports.length),
+                _filters(ref, state.selectedFilter, controller),
+                Expanded(
+                  child: ListView.builder(
+                    physics: const BouncingScrollPhysics(),
+                    padding: EdgeInsets.fromLTRB(16.w, 5.h, 16.w, 30.h),
+                    itemCount: filteredReports.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: EdgeInsets.only(bottom: 9.h),
+                        child: _reportCard(context, ref, filteredReports[index]),
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
     );
   }
 
-  Widget _filters() {
+  Widget _filters(
+    WidgetRef ref,
+    ReportFilter selectedFilter,
+    TeacherReportsController controller,
+  ) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          _reportFilter(ReportFilter.all),
+          _reportFilter(ref, ReportFilter.all, selectedFilter, controller),
           SizedBox(width: 6.w),
-          _reportFilter(ReportFilter.groupA),
+          _reportFilter(ref, ReportFilter.groupA, selectedFilter, controller),
           SizedBox(width: 6.w),
-          _reportFilter(ReportFilter.groupB),
+          _reportFilter(ref, ReportFilter.groupB, selectedFilter, controller),
           SizedBox(width: 6.w),
-          _reportFilter(ReportFilter.oneOnOne),
+          _reportFilter(ref, ReportFilter.oneOnOne, selectedFilter, controller),
         ],
       ),
     );
   }
 
-  Widget _header() {
+  Widget _header(WidgetRef ref, int totalCount) {
     return Padding(
       padding: EdgeInsets.fromLTRB(16.w, 11.h, 16.w, 5.h),
       child: Row(
@@ -121,7 +105,7 @@ class _TeacherReportsScreenState extends ConsumerState<TeacherReportsScreen> {
             ),
           ),
           Text(
-            '18 ${ref.watchTr(AppStrings.inTotal)}',
+            '$totalCount ${ref.watchTr(AppStrings.inTotal)}',
             style: TxtStyle.bodyMedium(
               color: AppColors.subtitleTextColor,
               fontSize: 15.sp,
@@ -132,16 +116,18 @@ class _TeacherReportsScreenState extends ConsumerState<TeacherReportsScreen> {
     );
   }
 
-  Widget _reportFilter(ReportFilter filter) {
+  Widget _reportFilter(
+    WidgetRef ref,
+    ReportFilter filter,
+    ReportFilter selectedFilter,
+    TeacherReportsController controller,
+  ) {
     final selected = selectedFilter == filter;
 
     return GestureDetector(
-      onTap: () {
-        setState(() {
-          selectedFilter = filter;
-        });
-      },
-      child: Container(
+      onTap: () => controller.selectFilter(filter),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
         padding: EdgeInsets.symmetric(horizontal: 13.w, vertical: 4.h),
         alignment: Alignment.center,
         decoration: BoxDecoration(
@@ -165,7 +151,7 @@ class _TeacherReportsScreenState extends ConsumerState<TeacherReportsScreen> {
     );
   }
 
-  Widget _reportCard(TeacherReport report) {
+  Widget _reportCard(BuildContext context, WidgetRef ref, TeacherReport report) {
     return InkWell(
       borderRadius: BorderRadius.circular(8.r),
       onTap: () {
@@ -185,7 +171,7 @@ class _TeacherReportsScreenState extends ConsumerState<TeacherReportsScreen> {
               children: [
                 Expanded(
                   child: Text(
-                    _reportLocation(report),
+                    _reportLocation(ref, report),
                     style: TxtStyle.bodyMedium(
                       color: AppColors.subtitleTextColor,
                       fontSize: 15.5.sp,
@@ -248,7 +234,7 @@ class _TeacherReportsScreenState extends ConsumerState<TeacherReportsScreen> {
     );
   }
 
-  String _reportLocation(TeacherReport report) {
+  String _reportLocation(WidgetRef ref, TeacherReport report) {
     if (report.category == ReportCategory.studentReport) {
       return '${report.studentName} (${report.studentId}) • ${ref.watchTr(AppStrings.aula1)}';
     }

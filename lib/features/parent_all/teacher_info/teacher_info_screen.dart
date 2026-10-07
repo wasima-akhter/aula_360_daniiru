@@ -1,4 +1,3 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../share/export/screen_export.dart';
 
 class TeacherInformationScreen extends ConsumerWidget {

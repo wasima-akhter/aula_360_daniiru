@@ -1,54 +1,25 @@
 import '../../share/export/screen_export.dart';
 import '../../share/widgets/button/app_logo.dart';
 import '../helper/parent_home_helper.dart';
+import '../presentation/controllers/parent_home_controller.dart';
 
-class HomeScreen extends ConsumerStatefulWidget {
+class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
-  @override
-  ConsumerState<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends ConsumerState<HomeScreen> {
-  int selectedBottomIndex = 0;
-
-  // ─────────────────────────────────────────────────────────────────────────────
-  // SAMPLE / MOCK DATA (Spanish Academy Context)
-  // ─────────────────────────────────────────────────────────────────────────────
-
-  final List<ClassModel> todayClasses = const [
-    ClassModel(
-      subject: 'Matemáticas Avanzadas',
-      teacher: 'D. Roberto Hayes',
-      time: '10:30',
-      duration: '12:00',
-      room: 'Aula 3B',
-      building: 'Edificio Principal',
-      category: 'Matemáticas',
-      color: Color(0xFF14388D),
-    ),
-    ClassModel(
-      subject: 'Física y Química',
-      teacher: 'Dra. Ángela Bennett',
-      time: '14:00',
-      duration: '15:20',
-      room: 'Laboratorio 2',
-      building: 'Edificio Ciencias',
-      category: 'Física',
-      color: Color(0xFF7656D8),
-    ),
-  ];
-
-  void _openSchedule() {
+  void _openSchedule(BuildContext context) {
     context.go(RoutePath.navigationPages, extra: 1);
   }
 
-  void _openDetails(ClassModel classData) {
+  void _openDetails(BuildContext context, ClassModel classData) {
     context.push(RoutePath.classDetail, extra: classData);
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final homeState = ref.watch(parentHomeControllerProvider);
+    final todayClasses = homeState.todayClasses;
+    final selectedChild = homeState.selectedChild;
+
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
       appBar: AulaAppBar(
@@ -59,7 +30,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              context.go(RoutePath.navigationPages, extra: 3);
+            },
             splashRadius: 22,
             icon: Icon(
               Icons.notifications_none_rounded,
@@ -125,7 +98,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   padding: EdgeInsets.all(13.w),
                   child: Row(
                     children: [
-                      const UserAvatar(initials: 'LR', size: 48),
+                      UserAvatar(
+                        initials: selectedChild != null && selectedChild.name.length >= 2
+                            ? selectedChild.name.substring(0, 2).toUpperCase()
+                            : 'LR',
+                        size: 48,
+                      ),
 
                       SizedBox(width: 12.w),
 
@@ -134,7 +112,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Lucas Rivera',
+                              selectedChild?.name ?? 'Lucas Rivera',
                               style: TxtStyle.titleLarge(
                                 color: AppColors.text,
                                 fontSize: 18.sp,
@@ -143,7 +121,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             ),
                             SizedBox(height: 3.h),
                             Text(
-                              '${ref.watchTr(AppStrings.eso2)} • ${ref.watchTr(AppStrings.aula3)}',
+                              '${selectedChild?.grade ?? ref.watchTr(AppStrings.eso2)} • ${selectedChild?.room ?? ref.watchTr(AppStrings.aula3)}',
                               style: TxtStyle.bodyMedium(
                                 color: AppColors.secondaryText,
                                 fontSize: 14.sp,
@@ -153,32 +131,37 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         ),
                       ),
 
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 11.w,
-                          vertical: 8.h,
-                        ),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFF1F4FA),
-                          borderRadius: BorderRadius.circular(8.r),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.swap_horiz_rounded,
-                              size: 16.sp,
-                              color: AppColors.primary,
-                            ),
-                            SizedBox(width: 4.w),
-                            Text(
-                              ref.watchTr(AppStrings.homeSwitch),
-                              style: TxtStyle.titleLarge(
+                      GestureDetector(
+                        onTap: () {
+                          context.push(RoutePath.children);
+                        },
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 11.w,
+                            vertical: 8.h,
+                          ),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF1F4FA),
+                            borderRadius: BorderRadius.circular(8.r),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.swap_horiz_rounded,
+                                size: 16.sp,
                                 color: AppColors.primary,
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w700,
                               ),
-                            ),
-                          ],
+                              SizedBox(width: 4.w),
+                              Text(
+                                ref.watchTr(AppStrings.homeSwitch),
+                                style: TxtStyle.titleLarge(
+                                  color: AppColors.primary,
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ],
@@ -190,116 +173,117 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 // ------------------------------------------------
                 // NEXT CLASS
                 // ------------------------------------------------
-                GestureDetector(
-                  onTap: () => _openDetails(todayClasses.first),
-                  child: Container(
-                    padding: EdgeInsets.all(17.w),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF082D7E),
-                      borderRadius: BorderRadius.circular(14.r),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            StatusPill(
-                              text: '${ref.watchTr(AppStrings.nextClass).toUpperCase()} • 45 MIN',
-                              color: const Color(0xFF38D99B),
-                            ),
-                            const Spacer(),
-                            Text(
-                              '${ref.watchTr(AppStrings.homeStarts)} 10:30',
-                              style: TxtStyle.titleLarge(
-                                color: Colors.white,
-                                fontSize: 13.5.sp,
-                                fontWeight: FontWeight.w600,
+                if (todayClasses.isNotEmpty)
+                  GestureDetector(
+                    onTap: () => _openDetails(context, todayClasses.first),
+                    child: Container(
+                      padding: EdgeInsets.all(17.w),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF082D7E),
+                        borderRadius: BorderRadius.circular(14.r),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              StatusPill(
+                                text: '${ref.watchTr(AppStrings.nextClass).toUpperCase()} • 45 MIN',
+                                color: const Color(0xFF38D99B),
                               ),
-                            ),
-                          ],
-                        ),
-
-                        SizedBox(height: 17.h),
-
-                        Text(
-                          'Matemáticas Avanzadas',
-                          style: TxtStyle.titleLarge(
-                            color: Colors.white,
-                            fontSize: 20.sp,
-                            fontWeight: FontWeight.w800,
+                              const Spacer(),
+                              Text(
+                                '${ref.watchTr(AppStrings.homeStarts)} ${todayClasses.first.time}',
+                                style: TxtStyle.titleLarge(
+                                  color: Colors.white,
+                                  fontSize: 13.5.sp,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
 
-                        SizedBox(height: 5.h),
+                          SizedBox(height: 17.h),
 
-                        Text(
-                          'Sistemas lineales y resolución de problemas',
-                          style: TxtStyle.titleLarge(
-                            color: Colors.white.withOpacity(.75),
-                            fontSize: 14.5.sp,
-                          ),
-                        ),
-
-                        SizedBox(height: 17.h),
-
-                        Divider(
-                          color: Colors.white.withOpacity(.18),
-                          height: 1,
-                        ),
-
-                        SizedBox(height: 13.h),
-
-                        Row(
-                          children: [
-                            const UserAvatar(
-                              initials: 'RH',
-                              size: 32,
-                              backgroundColor: Color(0xFFE4E9F8),
-                            ),
-                            SizedBox(width: 9.w),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'D. Roberto Hayes',
-                                    style: TxtStyle.titleLarge(
-                                      color: Colors.white,
-                                      fontSize: 14.5.sp,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                  SizedBox(height: 2.h),
-                                  Text(
-                                    ref.watchTr(AppStrings.aula3),
-                                    style: TxtStyle.titleLarge(
-                                      color: Colors.white.withOpacity(.65),
-                                      fontSize: 13.sp,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Text(
-                              ref.watchTr(AppStrings.homeDetails),
-                              style: TxtStyle.titleLarge(
-                                color: Colors.white,
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            SizedBox(width: 3.w),
-                            Icon(
-                              Icons.arrow_forward_ios_rounded,
+                          Text(
+                            todayClasses.first.subject,
+                            style: TxtStyle.titleLarge(
                               color: Colors.white,
-                              size: 12.sp,
+                              fontSize: 20.sp,
+                              fontWeight: FontWeight.w800,
                             ),
-                          ],
-                        ),
-                      ],
+                          ),
+
+                          SizedBox(height: 5.h),
+
+                          Text(
+                            'Sistemas lineales y resolución de problemas',
+                            style: TxtStyle.titleLarge(
+                              color: Colors.white.withValues(alpha: .75),
+                              fontSize: 14.5.sp,
+                            ),
+                          ),
+
+                          SizedBox(height: 17.h),
+
+                          Divider(
+                            color: Colors.white.withValues(alpha: .18),
+                            height: 1,
+                          ),
+
+                          SizedBox(height: 13.h),
+
+                          Row(
+                            children: [
+                              const UserAvatar(
+                                initials: 'RH',
+                                size: 32,
+                                backgroundColor: Color(0xFFE4E9F8),
+                              ),
+                              SizedBox(width: 9.w),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      todayClasses.first.teacher,
+                                      style: TxtStyle.titleLarge(
+                                        color: Colors.white,
+                                        fontSize: 14.5.sp,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                    SizedBox(height: 2.h),
+                                    Text(
+                                      todayClasses.first.room,
+                                      style: TxtStyle.titleLarge(
+                                        color: Colors.white.withValues(alpha: .65),
+                                        fontSize: 13.sp,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Text(
+                                ref.watchTr(AppStrings.homeDetails),
+                                style: TxtStyle.titleLarge(
+                                  color: Colors.white,
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              SizedBox(width: 3.w),
+                              Icon(
+                                Icons.arrow_forward_ios_rounded,
+                                color: Colors.white,
+                                size: 12.sp,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
 
                 SizedBox(height: 27.h),
 
@@ -309,31 +293,31 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 SectionHeader(
                   title: ref.watchTr(AppStrings.homeTodaysSchedule),
                   actionText: ref.watchTr(AppStrings.homeViewAll),
-                  onAction: _openSchedule,
+                  onAction: () => _openSchedule(context),
                 ),
 
                 SizedBox(height: 12.h),
 
-                AulaCard(
-                  padding: EdgeInsets.zero,
-                  child: Column(
-                    children: [
-                      _homeScheduleRow(
-                        todayClasses[0],
-                        onTap: () => _openDetails(todayClasses[0]),
-                        color: AppColors.darkTextColor,
-                      ),
-                      Divider(
-                        height: 1,
-                        color: AppColors.backgroundsLinesColor,
-                      ),
-                      _homeScheduleRow(
-                        todayClasses[1],
-                        onTap: () => _openDetails(todayClasses[1]),
-                      ),
-                    ],
+                if (todayClasses.isNotEmpty)
+                  AulaCard(
+                    padding: EdgeInsets.zero,
+                    child: Column(
+                      children: [
+                        for (int i = 0; i < todayClasses.length; i++) ...[
+                          _homeScheduleRow(
+                            todayClasses[i],
+                            onTap: () => _openDetails(context, todayClasses[i]),
+                            color: i == 0 ? AppColors.darkTextColor : null,
+                          ),
+                          if (i != todayClasses.length - 1)
+                            Divider(
+                              height: 1,
+                              color: AppColors.backgroundsLinesColor,
+                            ),
+                        ],
+                      ],
+                    ),
                   ),
-                ),
 
                 SizedBox(height: 24.h),
 
@@ -363,7 +347,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       SizedBox(height: 8.h),
 
                       Text(
-                        '96.4%',
+                        '${selectedChild?.attendance.toStringAsFixed(1) ?? '96.4'}%',
                         style: TxtStyle.titleLarge(
                           color: AppColors.text,
                           fontSize: 25.sp,

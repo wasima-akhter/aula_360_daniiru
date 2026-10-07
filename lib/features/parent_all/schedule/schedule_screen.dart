@@ -1,29 +1,10 @@
 import '../../share/export/screen_export.dart';
 import '../helper/parent_home_helper.dart';
+import '../presentation/controllers/parent_children_controller.dart';
+import '../presentation/controllers/parent_schedule_controller.dart';
 
-class ScheduleScreen extends ConsumerStatefulWidget {
+class ScheduleScreen extends ConsumerWidget {
   const ScheduleScreen({super.key});
-
-  @override
-  ConsumerState<ScheduleScreen> createState() => _ScheduleScreenState();
-}
-
-class _ScheduleScreenState extends ConsumerState<ScheduleScreen> {
-  int selectedStudent = 0;
-  int selectedDay = 2;
-
-  // ─────────────────────────────────────────────────────────────────────────────
-  // SAMPLE / MOCK DATA (Spanish Academy Context)
-  // ─────────────────────────────────────────────────────────────────────────────
-
-  final students = const [
-    {'name': 'Lucas Rivera', 'grade': '2º ESO • Aula 3B', 'initials': 'LR'},
-    {
-      'name': 'Sophia Rivera',
-      'grade': '5º Primaria • Aula 1A',
-      'initials': 'SR',
-    },
-  ];
 
   final days = const [
     {'day': 'Lun', 'date': '22'},
@@ -31,29 +12,6 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen> {
     {'day': 'Mié', 'date': '24'},
     {'day': 'Jue', 'date': '25'},
     {'day': 'Vie', 'date': '26'},
-  ];
-
-  final List<ClassModel> upcomingClasses = const [
-    ClassModel(
-      subject: 'Matemáticas Avanzadas',
-      teacher: 'D. Roberto Hayes',
-      time: '10:30',
-      duration: '12:00',
-      room: 'Aula 3B',
-      building: 'Edificio Principal',
-      category: 'Matemáticas',
-      color: Color(0xFF14388D),
-    ),
-    ClassModel(
-      subject: 'Física y Química',
-      teacher: 'Dra. Ángela Bennett',
-      time: '14:00',
-      duration: '15:20',
-      room: 'Laboratorio 2',
-      building: 'Edificio Ciencias',
-      category: 'Física',
-      color: Color(0xFF7656D8),
-    ),
   ];
 
   final List<ClassModel> completedClasses = const [
@@ -70,7 +28,13 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen> {
   ];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final scheduleState = ref.watch(parentScheduleControllerProvider);
+    final scheduleController = ref.read(parentScheduleControllerProvider.notifier);
+    final childrenState = ref.watch(parentChildrenControllerProvider);
+    final children = childrenState.children;
+    final upcomingClasses = scheduleState.classes;
+
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
       appBar: AulaAppBar(
@@ -100,7 +64,7 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen> {
                     ),
                     const Spacer(),
                     Text(
-                      '2 ${ref.watchTr(AppStrings.active)}',
+                      '${children.length} ${ref.watchTr(AppStrings.active)}',
                       style: TxtStyle.titleLarge(
                         color: AppColors.primary,
                         fontSize: 14.sp,
@@ -116,9 +80,10 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen> {
                   height: 78.h,
                   child: Row(
                     children: [
-                      Expanded(child: _studentCard(0)),
-                      SizedBox(width: 9.w),
-                      Expanded(child: _studentCard(1)),
+                      for (int i = 0; i < children.length && i < 2; i++) ...[
+                        Expanded(child: _studentCard(children[i], scheduleState.selectedChildIndex == i, () => scheduleController.selectChild(i))),
+                        if (i == 0 && children.length > 1) SizedBox(width: 9.w),
+                      ],
                     ],
                   ),
                 ),
@@ -177,7 +142,7 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen> {
                       Row(
                         children: [
                           for (int i = 0; i < days.length; i++)
-                            Expanded(child: _dayItem(i)),
+                            Expanded(child: _dayItem(i, scheduleState.selectedDayIndex == i, () => scheduleController.selectDay(i))),
                         ],
                       ),
                     ],
@@ -197,7 +162,7 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen> {
                 SizedBox(height: 12.h),
 
                 for (final classData in upcomingClasses) ...[
-                  _scheduleClassCard(classData),
+                  _scheduleClassCard(context, classData),
                   SizedBox(height: 12.h),
                 ],
 
@@ -214,7 +179,7 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen> {
                 SizedBox(height: 12.h),
 
                 for (final classData in completedClasses)
-                  _completedClassCard(classData),
+                  _completedClassCard(ref, classData),
               ]),
             ),
           ),
@@ -223,18 +188,12 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen> {
     );
   }
 
-  Widget _studentCard(int index) {
-    final student = students[index];
-    final selected = selectedStudent == index;
-
+  Widget _studentCard(ChildModel student, bool selected, VoidCallback onTap) {
     return GestureDetector(
-      onTap: () {
-        setState(() {
-          selectedStudent = index;
-        });
-      },
+      onTap: onTap,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeInOut,
         padding: EdgeInsets.all(11.w),
         decoration: BoxDecoration(
           color: Colors.white,
@@ -245,10 +204,22 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen> {
                 : AppColors.backgroundsLinesColor,
             width: selected ? 1.7.w : 1.w,
           ),
+          boxShadow: selected
+              ? [
+                  BoxShadow(
+                    color: AppColors.primary.withValues(alpha: .08),
+                    blurRadius: 8,
+                    offset: const Offset(0, 3),
+                  ),
+                ]
+              : null,
         ),
         child: Row(
           children: [
-            UserAvatar(initials: student['initials']!, size: 37),
+            UserAvatar(
+              initials: student.name.length >= 2 ? student.name.substring(0, 2).toUpperCase() : 'ST',
+              size: 37,
+            ),
             SizedBox(width: 8.w),
             Expanded(
               child: Column(
@@ -256,7 +227,7 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    student['name']!,
+                    student.name,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TxtStyle.titleLarge(
@@ -267,7 +238,7 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen> {
                   ),
                   SizedBox(height: 3.h),
                   Text(
-                    student['grade']!,
+                    student.grade,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TxtStyle.titleLarge(
@@ -284,17 +255,12 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen> {
     );
   }
 
-  Widget _dayItem(int index) {
-    final selected = selectedDay == index;
-
+  Widget _dayItem(int index, bool selected, VoidCallback onTap) {
     return GestureDetector(
-      onTap: () {
-        setState(() {
-          selectedDay = index;
-        });
-      },
+      onTap: onTap,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeInOut,
         margin: EdgeInsets.symmetric(horizontal: 2.w),
         padding: EdgeInsets.symmetric(vertical: 7.h),
         decoration: BoxDecoration(
@@ -337,7 +303,7 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen> {
     );
   }
 
-  Widget _scheduleClassCard(ClassModel classData) {
+  Widget _scheduleClassCard(BuildContext context, ClassModel classData) {
     return GestureDetector(
       onTap: () {
         context.push(RoutePath.classDetail, extra: classData);
@@ -420,7 +386,7 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen> {
     );
   }
 
-  Widget _completedClassCard(ClassModel classData) {
+  Widget _completedClassCard(WidgetRef ref, ClassModel classData) {
     return AulaCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

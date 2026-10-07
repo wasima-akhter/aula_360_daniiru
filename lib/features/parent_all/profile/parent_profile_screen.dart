@@ -1,26 +1,19 @@
 import '../../share/component/logout_btn.dart';
 import '../../share/export/screen_export.dart';
 import '../helper/parent_widgets.dart';
+import '../presentation/controllers/parent_profile_controller.dart';
 
 /// ===============================================================
 /// 1. PROFILE SCREEN / PERFIL DE PADRE
 /// ===============================================================
 
-class ParentProfileScreen extends ConsumerStatefulWidget {
+class ParentProfileScreen extends ConsumerWidget {
   const ParentProfileScreen({super.key});
 
   @override
-  ConsumerState<ParentProfileScreen> createState() =>
-      _ParentProfileScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final profile = ref.watch(parentProfileControllerProvider);
 
-class _ParentProfileScreenState extends ConsumerState<ParentProfileScreen> {
-  String parentName = 'Eleanor Rivera';
-  String email = 'eleanor.rivera@email.com';
-  String phone = '+34 612 345 678';
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
       appBar: simpleAppBar(
@@ -34,11 +27,11 @@ class _ParentProfileScreenState extends ConsumerState<ParentProfileScreen> {
           padding: EdgeInsets.fromLTRB(14.w, 16.h, 14.w, 30.h),
           child: Column(
             children: [
-              _profileHeader(),
+              _profileHeader(context, ref, profile),
               SizedBox(height: 20.h),
               _sectionLabel(ref.watchTr(AppStrings.academyAndFamily)),
               SizedBox(height: 8.h),
-              _menuCard(),
+              _menuCard(context, ref),
               SizedBox(height: 18.h),
               const LogoutBtn(),
               SizedBox(height: 25.h),
@@ -66,7 +59,7 @@ class _ParentProfileScreenState extends ConsumerState<ParentProfileScreen> {
     );
   }
 
-  Widget _profileHeader() {
+  Widget _profileHeader(BuildContext context, WidgetRef ref, ParentProfileState profile) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.only(top: 4.h),
@@ -112,8 +105,16 @@ class _ParentProfileScreenState extends ConsumerState<ParentProfileScreen> {
                   ),
                   child: ClipOval(
                     child: Image.network(
-                      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500',
+                      profile.avatarUrl ?? 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500',
                       fit: BoxFit.cover,
+                      errorBuilder: (_, _, _) => Container(
+                        color: AppColors.blueSoft,
+                        alignment: Alignment.center,
+                        child: Text(
+                          profile.name.isNotEmpty ? profile.name[0] : 'P',
+                          style: TextStyle(fontSize: 28.sp, fontWeight: FontWeight.bold, color: AppColors.primary),
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -135,7 +136,7 @@ class _ParentProfileScreenState extends ConsumerState<ParentProfileScreen> {
             ),
             SizedBox(height: 11.h),
             Text(
-              parentName,
+              profile.name,
               style: TxtStyle.titleLarge(
                 color: AppColors.text,
                 fontSize: 20.sp,
@@ -173,15 +174,15 @@ class _ParentProfileScreenState extends ConsumerState<ParentProfileScreen> {
             SizedBox(height: 13.h),
             Divider(height: 1, color: AppColors.backgroundsLinesColor),
             SizedBox(height: 11.h),
-            _contactLine(Icons.mail_outline, email),
+            _contactLine(Icons.mail_outline, profile.email),
             SizedBox(height: 7.h),
-            _contactLine(Icons.phone_outlined, phone),
+            _contactLine(Icons.phone_outlined, profile.phone),
             SizedBox(height: 14.h),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () async {
-                  await context.push(RoutePath.editProfile);
+                onPressed: () {
+                  context.push(RoutePath.editProfile);
                 },
                 style: ElevatedButton.styleFrom(
                   elevation: 0,
@@ -246,7 +247,7 @@ class _ParentProfileScreenState extends ConsumerState<ParentProfileScreen> {
     );
   }
 
-  Widget _menuCard() {
+  Widget _menuCard(BuildContext context, WidgetRef ref) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,

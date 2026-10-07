@@ -1,19 +1,24 @@
 import '../../share/export/screen_export.dart';
-import '../helper/parent_enums.dart';
-import '../helper/parent_models.dart';
+import '../domain/models/parent_models.dart';
 import '../helper/parent_widgets.dart';
+import '../presentation/controllers/parent_attendance_controller.dart';
+import '../presentation/controllers/parent_children_controller.dart';
 
 /// ===============================================================
 /// 6. ATTENDANCE / ASISTENCIA
 /// ===============================================================
 
 class AttendanceScreen extends ConsumerWidget {
-  const AttendanceScreen({super.key});
+  final ChildModel? child;
 
-  final child = sophiaChild;
+  const AttendanceScreen({super.key, this.child});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final childrenState = ref.watch(parentChildrenControllerProvider);
+    final attendanceState = ref.watch(parentAttendanceControllerProvider);
+    final activeChild = child ?? childrenState.selectedChild ?? (childrenState.children.isNotEmpty ? childrenState.children.first : null);
+
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
       appBar: simpleAppBar(context, ref.watchTr(AppStrings.attendance)),
@@ -23,11 +28,11 @@ class AttendanceScreen extends ConsumerWidget {
           padding: EdgeInsets.fromLTRB(14.w, 14.h, 14.w, 30.h),
           child: Column(
             children: [
-              _summaryCard(ref),
+              if (activeChild != null) _summaryCard(ref, activeChild),
               SizedBox(height: 17.h),
-              _monthHeader(ref),
+              _monthHeader(ref, attendanceState.records.length),
               SizedBox(height: 8.h),
-              _attendanceCard(ref),
+              _attendanceCard(ref, attendanceState.records),
             ],
           ),
         ),
@@ -35,7 +40,7 @@ class AttendanceScreen extends ConsumerWidget {
     );
   }
 
-  Widget _summaryCard(WidgetRef ref) {
+  Widget _summaryCard(WidgetRef ref, ChildModel child) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(12.w),
@@ -56,7 +61,22 @@ class AttendanceScreen extends ConsumerWidget {
                   shape: BoxShape.circle,
                 ),
                 child: ClipOval(
-                  child: Image.network(child.imageUrl, fit: BoxFit.cover),
+                  child: Image.network(
+                    child.imageUrl,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, _, _) => Container(
+                      color: AppColors.blueSoft,
+                      alignment: Alignment.center,
+                      child: Text(
+                        child.name.isNotEmpty ? child.name[0] : '?',
+                        style: TextStyle(
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ),
               SizedBox(width: 10.w),
@@ -161,7 +181,7 @@ class AttendanceScreen extends ConsumerWidget {
     );
   }
 
-  Widget _monthHeader(WidgetRef ref) {
+  Widget _monthHeader(WidgetRef ref, int sessionsCount) {
     return Row(
       children: [
         Text(
@@ -175,7 +195,7 @@ class AttendanceScreen extends ConsumerWidget {
         ),
         const Spacer(),
         Text(
-          '6 ${ref.watchTr(AppStrings.sessionsCount)}',
+          '$sessionsCount ${ref.watchTr(AppStrings.sessionsCount)}',
           style: TxtStyle.titleLarge(
             color: AppColors.subtitleTextColor,
             fontSize: 14.sp,
@@ -186,7 +206,7 @@ class AttendanceScreen extends ConsumerWidget {
     );
   }
 
-  Widget _attendanceCard(WidgetRef ref) {
+  Widget _attendanceCard(WidgetRef ref, List<AttendanceRecord> records) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(

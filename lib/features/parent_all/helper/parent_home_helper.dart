@@ -1,30 +1,6 @@
-﻿import '../../share/export/screen_export.dart';
+import '../../share/export/screen_export.dart';
 
-// ================================================================
-// MODELS
-// ================================================================
-
-class ClassModel {
-  final String subject;
-  final String teacher;
-  final String time;
-  final String duration;
-  final String room;
-  final String building;
-  final String category;
-  final Color color;
-
-  const ClassModel({
-    required this.subject,
-    required this.teacher,
-    required this.time,
-    required this.duration,
-    required this.room,
-    required this.building,
-    required this.category,
-    required this.color,
-  });
-}
+export '../domain/models/parent_models.dart';
 
 class AulaAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;

@@ -1,24 +1,31 @@
 import '../../parent_all/helper/parent_home_helper.dart';
 import '../../share/export/screen_export.dart';
 
+class TeacherFacultyNotesNotifier extends Notifier<List<String>> {
+  @override
+  List<String> build() => [];
+
+  void addNote(String note) {
+    state = [...state, note];
+  }
+}
+
+final teacherFacultyNotesProvider =
+    NotifierProvider<TeacherFacultyNotesNotifier, List<String>>(
+  TeacherFacultyNotesNotifier.new,
+);
+
 /// ===============================================================
 /// STUDENT DETAILS SCREEN
 /// ===============================================================
 
-class TeacherStudentDetailsScreen extends ConsumerStatefulWidget {
+class TeacherStudentDetailsScreen extends ConsumerWidget {
   const TeacherStudentDetailsScreen({super.key});
 
   @override
-  ConsumerState<TeacherStudentDetailsScreen> createState() =>
-      _TeacherStudentDetailsScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final facultyNotes = ref.watch(teacherFacultyNotesProvider);
 
-class _TeacherStudentDetailsScreenState
-    extends ConsumerState<TeacherStudentDetailsScreen> {
-  final List<String> _facultyNotes = [];
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.softBackground,
       appBar: AulaAppBar(
@@ -54,33 +61,35 @@ class _TeacherStudentDetailsScreenState
           physics: const BouncingScrollPhysics(),
           padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 30.h),
           children: [
-            _profileHeader(),
+            _profileHeader(ref),
             SizedBox(height: 13.h),
-            _metrics(),
+            _metrics(ref),
             SizedBox(height: 18.h),
             _sectionTitle(
+              ref,
               ref.watchTr(AppStrings.latestClassReportTitle),
               trailing: '24 Oct · Sesión #18',
             ),
             SizedBox(height: 8.h),
-            _latestReport(),
+            _latestReport(ref),
             SizedBox(height: 16.h),
             _sectionTitle(
+              ref,
               ref.watchTr(AppStrings.activeHomeworkTitle),
-              trailingWidget: _reviewDueTag(),
+              trailingWidget: _reviewDueTag(ref),
             ),
             SizedBox(height: 8.h),
-            _homeworkCard(),
+            _homeworkCard(ref),
             SizedBox(height: 17.h),
             _sectionTitle(
+              ref,
               ref.watchTr(AppStrings.facultyNoteTitle),
               trailing: 'Dra. S. Jenkins',
             ),
             SizedBox(height: 8.h),
-            _facultyNoteWidget(),
+            _facultyNoteWidget(facultyNotes),
             SizedBox(height: 8.h),
-            _addNoteButton(),
-
+            _addNoteButton(context, ref),
             Gap(20.h),
           ],
         ),
@@ -88,7 +97,7 @@ class _TeacherStudentDetailsScreenState
     );
   }
 
-  Widget _profileHeader() {
+  Widget _profileHeader(WidgetRef ref) {
     return Row(
       children: [
         Stack(
@@ -98,84 +107,53 @@ class _TeacherStudentDetailsScreenState
               height: 52.w,
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
-                color: Color(0xffdce5ef),
+                color: Color(0xffe8edf5),
               ),
               child: Center(
                 child: Text(
                   'LR',
                   style: TxtStyle.titleLarge(
                     color: AppColors.primaryDark,
-                    fontSize: 17.sp,
-                    fontWeight: FontWeight.w700,
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.w800,
                   ),
                 ),
               ),
             ),
             Positioned(
-              right: 1,
-              bottom: 1,
+              right: 0,
+              bottom: 0,
               child: Container(
-                width: 10.w,
-                height: 10.w,
+                width: 14.w,
+                height: 14.w,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: const Color(0xff18b86b),
-                  border: Border.all(color: Colors.white, width: 1.5),
+                  border: Border.all(color: Colors.white, width: 2),
                 ),
               ),
             ),
           ],
         ),
-        SizedBox(width: 11.w),
+        SizedBox(width: 13.w),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  Text(
-                    'Lucas Rivera',
-                    style: TxtStyle.titleLarge(
-                      color: AppColors.text,
-                      fontSize: 20.sp,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  SizedBox(width: 6.w),
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 7.w,
-                      vertical: 3.h,
-                    ),
-                    decoration: BoxDecoration(
-                      color: const Color(0xffdef7e9),
-                      borderRadius: BorderRadius.circular(10.r),
-                    ),
-                    child: Text(
-                      ref.watchTr(AppStrings.activeStatus),
-                      style: TxtStyle.bodyMedium(
-                        color: const Color(0xff15965a),
-                        fontSize: 13.5.sp,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ],
+              Text(
+                'Lucas Rivera',
+                style: TxtStyle.titleLarge(
+                  color: AppColors.text,
+                  fontSize: 22.sp,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
               SizedBox(height: 4.h),
               Text(
-                '${ref.watchTr(AppStrings.bachillerato1)} • ${ref.watchTr(AppStrings.groupA)} • ${ref.watchTr(AppStrings.subjectMath)}',
+                '${ref.watchTr(AppStrings.bachillerato1)} • ${ref.watchTr(AppStrings.groupA)} • Pupitre 04',
                 style: TxtStyle.bodyMedium(
                   color: AppColors.subtitleTextColor,
-                  fontSize: 15.sp,
-                ),
-              ),
-              SizedBox(height: 3.h),
-              Text(
-                '${ref.watchTr(AppStrings.aula2)} • ${ref.watchTr(AppStrings.deskPrefix)} 14    •    94% ${ref.watchTr(AppStrings.attendance)}',
-                style: TxtStyle.bodyMedium(
-                  color: AppColors.subtitleTextColor,
-                  fontSize: 15.sp,
+                  fontSize: 14.5.sp,
                 ),
               ),
             ],
@@ -185,55 +163,71 @@ class _TeacherStudentDetailsScreenState
     );
   }
 
-  Widget _metrics() {
+  Widget _metrics(WidgetRef ref) {
+    return Row(
+      children: [
+        Expanded(
+          child: _metricCard(
+            ref,
+            label: ref.watchTr(AppStrings.attendance).toUpperCase(),
+            value: '96%',
+            accentColor: const Color(0xff18b86b),
+          ),
+        ),
+        SizedBox(width: 8.w),
+        Expanded(
+          child: _metricCard(
+            ref,
+            label: ref.watchTr(AppStrings.absent).toUpperCase(),
+            value: '1',
+            accentColor: AppColors.primaryDark,
+          ),
+        ),
+        SizedBox(width: 8.w),
+        Expanded(
+          child: _metricCard(
+            ref,
+            label: ref.watchTr(AppStrings.late).toUpperCase(),
+            value: '0',
+            accentColor: AppColors.subtitleTextColor,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _metricCard(
+    WidgetRef ref, {
+    required String label,
+    required String value,
+    required Color accentColor,
+  }) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 12.h),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(7.r),
         border: Border.all(color: AppColors.backgroundsLinesColor),
       ),
-      child: Row(
-        children: [
-          _metric(
-            value: '16/17',
-            label: ref.watchTr(AppStrings.metricAttendances),
-          ),
-          _metricDivider(),
-          _metric(
-            value: '92%',
-            label: ref.watchTr(AppStrings.metricPerformance),
-            highlighted: true,
-          ),
-          _metricDivider(),
-          _metric(value: '8/9', label: ref.watchTr(AppStrings.metricHomework)),
-        ],
-      ),
-    );
-  }
-
-  Widget _metric({
-    required String value,
-    required String label,
-    bool highlighted = false,
-  }) {
-    return Expanded(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            value,
-            style: TxtStyle.titleLarge(
-              color: highlighted ? AppColors.primaryDark : AppColors.text,
-              fontSize: 20.sp,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          SizedBox(height: 2.h),
           Text(
             label,
             style: TxtStyle.bodyMedium(
               color: AppColors.subtitleTextColor,
-              fontSize: 15.5.sp,
+              fontSize: 13.sp,
+              fontWeight: FontWeight.w700,
+              letterSpacing: .3,
+            ),
+          ),
+          SizedBox(height: 6.h),
+          Text(
+            value,
+            style: TxtStyle.titleLarge(
+              color: accentColor,
+              fontSize: 24.sp,
+              fontWeight: FontWeight.w800,
             ),
           ),
         ],
@@ -241,55 +235,42 @@ class _TeacherStudentDetailsScreenState
     );
   }
 
-  Widget _metricDivider() {
-    return Container(
-      width: 1,
-      height: 30.h,
-      color: AppColors.backgroundsLinesColor,
-    );
-  }
-
   Widget _sectionTitle(
+    WidgetRef ref,
     String title, {
     String? trailing,
     Widget? trailingWidget,
   }) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           title,
           style: TxtStyle.titleLarge(
-            color: AppColors.subtitleTextColor,
-            fontSize: 16.sp,
+            color: AppColors.text,
+            fontSize: 17.sp,
             fontWeight: FontWeight.w700,
-            letterSpacing: .45,
           ),
         ),
-
-        if (trailing != null) ...[
-          Gap(12.w),
-          Flexible(
-            child: Text(
-              trailing,
-              textAlign: TextAlign.end,
-              style: TxtStyle.bodyMedium(
-                color: AppColors.subtitleTextColor,
-                fontSize: 14.5.sp,
-              ),
+        const Spacer(),
+        if (trailingWidget != null)
+          trailingWidget
+        else if (trailing != null)
+          Text(
+            trailing,
+            style: TxtStyle.bodyMedium(
+              color: AppColors.subtitleTextColor,
+              fontSize: 14.sp,
             ),
           ),
-        ],
-        ?trailingWidget,
       ],
     );
   }
 
-  Widget _latestReport() {
+  Widget _latestReport(WidgetRef ref) {
     return Container(
       padding: EdgeInsets.all(11.w),
       decoration: BoxDecoration(
-        color: const Color(0xfff3f6fa),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(7.r),
         border: Border.all(color: AppColors.backgroundsLinesColor),
       ),
@@ -319,7 +300,7 @@ class _TeacherStudentDetailsScreenState
     );
   }
 
-  Widget _reviewDueTag() {
+  Widget _reviewDueTag(WidgetRef ref) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
       decoration: BoxDecoration(
@@ -337,7 +318,7 @@ class _TeacherStudentDetailsScreenState
     );
   }
 
-  Widget _homeworkCard() {
+  Widget _homeworkCard(WidgetRef ref) {
     return Container(
       padding: EdgeInsets.all(11.w),
       decoration: BoxDecoration(
@@ -403,12 +384,12 @@ class _TeacherStudentDetailsScreenState
     );
   }
 
-  Widget _facultyNoteWidget() {
+  Widget _facultyNoteWidget(List<String> facultyNotes) {
     const defaultNote =
         'Demuestra un sólido entendimiento conceptual en los ejercicios de pizarra. '
         'Ayuda activamente a sus compañeros del Grupo A.';
 
-    final notes = [defaultNote, ..._facultyNotes];
+    final notes = [defaultNote, ...facultyNotes];
 
     return Column(
       children: notes.map((note) {
@@ -435,9 +416,9 @@ class _TeacherStudentDetailsScreenState
     );
   }
 
-  Widget _addNoteButton() {
+  Widget _addNoteButton(BuildContext context, WidgetRef ref) {
     return OutlinedButton(
-      onPressed: _showAddNoteBottomSheet,
+      onPressed: () => _showAddNoteBottomSheet(context, ref),
       style: OutlinedButton.styleFrom(
         minimumSize: Size(double.infinity, 38.h),
         side: BorderSide(color: AppColors.backgroundsLinesColor),
@@ -454,7 +435,7 @@ class _TeacherStudentDetailsScreenState
     );
   }
 
-  Future<void> _showAddNoteBottomSheet() async {
+  Future<void> _showAddNoteBottomSheet(BuildContext context, WidgetRef ref) async {
     final note = await showModalBottomSheet<String>(
       context: context,
       isScrollControlled: true,
@@ -465,12 +446,8 @@ class _TeacherStudentDetailsScreenState
       },
     );
 
-    if (!mounted) return;
-
     if (note != null && note.trim().isNotEmpty) {
-      setState(() {
-        _facultyNotes.add(note.trim());
-      });
+      ref.read(teacherFacultyNotesProvider.notifier).addNote(note.trim());
     }
   }
 }
@@ -500,11 +477,9 @@ class _AddNoteBottomSheetState extends ConsumerState<_AddNoteBottomSheet> {
 
   void _saveNote() {
     final note = _controller.text.trim();
-
     if (note.isEmpty) {
       return;
     }
-
     Navigator.of(context).pop(note);
   }
 
@@ -533,9 +508,7 @@ class _AddNoteBottomSheetState extends ConsumerState<_AddNoteBottomSheet> {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-
                 SizedBox(height: 16.h),
-
                 TextField(
                   controller: _controller,
                   maxLines: 5,
@@ -567,12 +540,9 @@ class _AddNoteBottomSheetState extends ConsumerState<_AddNoteBottomSheet> {
                     ),
                   ),
                 ),
-
                 SizedBox(height: 16.h),
-
                 SizedBox(
                   width: double.infinity,
-
                   child: ElevatedButton(
                     onPressed: _saveNote,
                     child: Text(

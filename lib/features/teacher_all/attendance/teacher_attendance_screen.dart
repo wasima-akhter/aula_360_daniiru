@@ -3,175 +3,63 @@ import '../../share/export/screen_export.dart';
 import '../helper/teacher_enums.dart';
 import '../helper/teacher_models.dart';
 import '../helper/teacher_widgets.dart';
+import '../presentation/controllers/teacher_attendance_controller.dart';
 
 /// ===============================================================
 /// 3. ATTENDANCE SCREEN
 /// ===============================================================
 
-class TeacherAttendanceScreen extends ConsumerStatefulWidget {
+class TeacherAttendanceScreen extends ConsumerWidget {
   const TeacherAttendanceScreen({super.key});
 
   @override
-  ConsumerState<TeacherAttendanceScreen> createState() =>
-      _TeacherAttendanceScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(teacherAttendanceControllerProvider);
+    final controller = ref.read(teacherAttendanceControllerProvider.notifier);
 
-class _TeacherAttendanceScreenState extends ConsumerState<TeacherAttendanceScreen> {
-  final List<AttendanceStudent> students = [
-    AttendanceStudent(
-      name: 'Lucas Rivera',
-      initials: 'LR',
-      desk: 'Pupitre 04',
-      status: TeacherAttendanceStatus.present,
-    ),
-    AttendanceStudent(
-      name: 'Sophia Chen',
-      initials: 'SC',
-      desk: 'Pupitre 09',
-      status: TeacherAttendanceStatus.present,
-    ),
-    AttendanceStudent(
-      name: 'Mateo Garcia',
-      initials: 'MG',
-      desk: 'Pupitre 12 • Sin justificar',
-      status: TeacherAttendanceStatus.absent,
-    ),
-    AttendanceStudent(
-      name: 'Emma Watson',
-      initials: 'EW',
-      desk: 'Pupitre 17',
-      status: TeacherAttendanceStatus.present,
-    ),
-    AttendanceStudent(
-      name: 'Liam Johnson',
-      initials: 'LJ',
-      desk: 'Pupitre 02',
-      status: TeacherAttendanceStatus.present,
-    ),
-    AttendanceStudent(
-      name: 'Olivia Davis',
-      initials: 'OD',
-      desk: 'Pupitre 07',
-      status: TeacherAttendanceStatus.present,
-    ),
-    AttendanceStudent(
-      name: 'Noah Miller',
-      initials: 'NM',
-      desk: 'Pupitre 15 • Justificante médico',
-      status: TeacherAttendanceStatus.absent,
-    ),
-    AttendanceStudent(
-      name: 'Ava Martinez',
-      initials: 'AM',
-      desk: 'Pupitre 21',
-      status: TeacherAttendanceStatus.present,
-    ),
-    AttendanceStudent(
-      name: 'Ethan Wilson',
-      initials: 'EW',
-      desk: 'Pupitre 03',
-      status: TeacherAttendanceStatus.present,
-    ),
-    AttendanceStudent(
-      name: 'Mia Anderson',
-      initials: 'MA',
-      desk: 'Pupitre 11',
-      status: TeacherAttendanceStatus.present,
-    ),
-    AttendanceStudent(
-      name: 'James Thomas',
-      initials: 'JT',
-      desk: 'Pupitre 08',
-      status: TeacherAttendanceStatus.present,
-    ),
-    AttendanceStudent(
-      name: 'Charlotte Moore',
-      initials: 'CM',
-      desk: 'Pupitre 13',
-      status: TeacherAttendanceStatus.present,
-    ),
-    AttendanceStudent(
-      name: 'Benjamin Taylor',
-      initials: 'BT',
-      desk: 'Pupitre 18',
-      status: TeacherAttendanceStatus.present,
-    ),
-    AttendanceStudent(
-      name: 'Amelia Brown',
-      initials: 'AB',
-      desk: 'Pupitre 06',
-      status: TeacherAttendanceStatus.present,
-    ),
-    AttendanceStudent(
-      name: 'Henry White',
-      initials: 'HW',
-      desk: 'Pupitre 20',
-      status: TeacherAttendanceStatus.present,
-    ),
-    AttendanceStudent(
-      name: 'Harper Harris',
-      initials: 'HH',
-      desk: 'Pupitre 10',
-      status: TeacherAttendanceStatus.present,
-    ),
-    AttendanceStudent(
-      name: 'Daniel Martin',
-      initials: 'DM',
-      desk: 'Pupitre 16',
-      status: TeacherAttendanceStatus.present,
-    ),
-    AttendanceStudent(
-      name: 'Evelyn Thompson',
-      initials: 'ET',
-      desk: 'Pupitre 14',
-      status: TeacherAttendanceStatus.present,
-    ),
-  ];
-
-  int get presentCount => students
-      .where((student) => student.status == TeacherAttendanceStatus.present)
-      .length;
-
-  int get absentCount => students
-      .where((student) => student.status == TeacherAttendanceStatus.absent)
-      .length;
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.softBackground,
       appBar: AulaAppBar(title: ref.watchTr(AppStrings.takeAttendance), showBack: true),
-      body: CustomScrollView(
-        physics: const BouncingScrollPhysics(),
-        slivers: [
-          SliverPersistentHeader(
-            pinned: true,
-            delegate: StickyHeaderDelegate(
-              minHeight: 110.h,
-              maxHeight: 110.h,
-              child: _attendanceSummary(),
+      body: state.isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : CustomScrollView(
+              physics: const BouncingScrollPhysics(),
+              slivers: [
+                SliverPersistentHeader(
+                  pinned: true,
+                  delegate: StickyHeaderDelegate(
+                    minHeight: 110.h,
+                    maxHeight: 110.h,
+                    child: _attendanceSummary(context, ref, state, controller),
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(16.w, 2.h, 16.w, 100.h),
+                    child: Column(
+                      children: [
+                        for (int i = 0; i < state.students.length; i++)
+                          _studentRow(
+                            ref,
+                            state.students[i],
+                            onSelectStatus: (status) {
+                              controller.updateStudentStatus(i, status);
+                            },
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ),
-
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(16.w, 2.h, 16.w, 100.h),
-              child: Column(
-                children: [...students.map((student) => _studentRow(student))],
-              ),
-            ),
-          ),
-        ],
-      ),
 
       /// Bottom action only — NOT navigation.
       bottomNavigationBar: SafeArea(
         minimum: EdgeInsets.fromLTRB(16.w, 7.h, 16.w, 10.h),
-
         child: Container(
           padding: EdgeInsets.only(bottom: 20.h),
           child: ElevatedButton(
-            onPressed: _completeAttendance,
+            onPressed: () => _completeAttendance(context, ref, state),
             style: ElevatedButton.styleFrom(
               elevation: 0,
               backgroundColor: AppColors.primaryDark,
@@ -204,7 +92,12 @@ class _TeacherAttendanceScreenState extends ConsumerState<TeacherAttendanceScree
     );
   }
 
-  Widget _attendanceSummary() {
+  Widget _attendanceSummary(
+    BuildContext context,
+    WidgetRef ref,
+    TeacherAttendanceState state,
+    TeacherAttendanceController controller,
+  ) {
     return Container(
       color: AppColors.softBackground,
       padding: EdgeInsets.fromLTRB(16.w, 13.h, 16.w, 0.h),
@@ -233,7 +126,7 @@ class _TeacherAttendanceScreenState extends ConsumerState<TeacherAttendanceScree
           Row(
             children: [
               Text(
-                '$presentCount de ${students.length}',
+                '${state.presentCount} de ${state.totalCount}',
                 style: TxtStyle.titleLarge(
                   color: AppColors.text,
                   fontSize: 16.sp,
@@ -250,7 +143,21 @@ class _TeacherAttendanceScreenState extends ConsumerState<TeacherAttendanceScree
               ),
               const Spacer(),
               InkWell(
-                onTap: _markAllPresent,
+                onTap: () {
+                  controller.markAllPresent();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        '${ref.watchTr(AppStrings.allStudentsMarkedPresent)} (${state.totalCount})',
+                        style: TxtStyle.titleLarge(
+                          fontSize: 15.sp,
+                          color: Colors.white,
+                        ),
+                      ),
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                },
                 child: Text(
                   ref.watchTr(AppStrings.markAllPresent),
                   style: TxtStyle.titleLarge(
@@ -267,7 +174,11 @@ class _TeacherAttendanceScreenState extends ConsumerState<TeacherAttendanceScree
     );
   }
 
-  Widget _studentRow(AttendanceStudent student) {
+  Widget _studentRow(
+    WidgetRef ref,
+    AttendanceStudent student, {
+    required ValueChanged<TeacherAttendanceStatus> onSelectStatus,
+  }) {
     final bool isPresent = student.status == TeacherAttendanceStatus.present;
 
     return Container(
@@ -296,9 +207,7 @@ class _TeacherAttendanceScreenState extends ConsumerState<TeacherAttendanceScree
               ),
             ),
           ),
-
           SizedBox(width: 10.w),
-
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -323,25 +232,18 @@ class _TeacherAttendanceScreenState extends ConsumerState<TeacherAttendanceScree
               ],
             ),
           ),
-
           _attendanceButton(
             label: ref.watchTr(AppStrings.present),
             selected: isPresent,
             color: AppColors.emeraldGreenColor,
-            onTap: () {
-              _setAttendance(student, TeacherAttendanceStatus.present);
-            },
+            onTap: () => onSelectStatus(TeacherAttendanceStatus.present),
           ),
-
           SizedBox(width: 2.w),
-
           _attendanceButton(
             label: ref.watchTr(AppStrings.absent),
             selected: !isPresent,
             color: const Color(0xFFE91E55),
-            onTap: () {
-              _setAttendance(student, TeacherAttendanceStatus.absent);
-            },
+            onTap: () => onSelectStatus(TeacherAttendanceStatus.absent),
           ),
         ],
       ),
@@ -368,7 +270,7 @@ class _TeacherAttendanceScreenState extends ConsumerState<TeacherAttendanceScree
           label,
           style: TxtStyle.titleLarge(
             color: selected ? Colors.white : AppColors.subtitleTextColor,
-            fontSize: 14.sp,
+            fontSize: 14.5.sp,
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -376,34 +278,11 @@ class _TeacherAttendanceScreenState extends ConsumerState<TeacherAttendanceScree
     );
   }
 
-  void _setAttendance(
-    AttendanceStudent student,
-    TeacherAttendanceStatus status,
+  void _completeAttendance(
+    BuildContext context,
+    WidgetRef ref,
+    TeacherAttendanceState state,
   ) {
-    setState(() {
-      student.status = status;
-    });
-  }
-
-  void _markAllPresent() {
-    setState(() {
-      for (final student in students) {
-        student.status = TeacherAttendanceStatus.present;
-      }
-    });
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          '${ref.watchTr(AppStrings.allStudentsMarkedPresent)} (${students.length})',
-          style: TxtStyle.titleLarge(fontSize: 15.sp, color: Colors.white),
-        ),
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
-  }
-
-  void _completeAttendance() {
     showDialog<void>(
       context: context,
       builder: (dialogContext) {
@@ -416,8 +295,8 @@ class _TeacherAttendanceScreenState extends ConsumerState<TeacherAttendanceScree
             ),
           ),
           content: Text(
-            '$presentCount ${ref.watchTr(AppStrings.studentsCount)} ${ref.watchTr(AppStrings.present).toLowerCase()} y '
-            '$absentCount ${ref.watchTr(AppStrings.studentsCount)} ${ref.watchTr(AppStrings.absent).toLowerCase()}.',
+            '${state.presentCount} ${ref.watchTr(AppStrings.studentsCount)} ${ref.watchTr(AppStrings.present).toLowerCase()} y '
+            '${state.absentCount} ${ref.watchTr(AppStrings.studentsCount)} ${ref.watchTr(AppStrings.absent).toLowerCase()}.',
             style: TxtStyle.titleLarge(
               fontSize: 17.sp,
               height: 1.4,

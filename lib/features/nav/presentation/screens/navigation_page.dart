@@ -40,58 +40,21 @@ class _NavigationPageState extends ConsumerState<NavigationPage> {
   List<Widget> _getPages(UserRole role) {
     switch (role) {
       case UserRole.teacher:
-        return const [
-          // _NavigationPlaceholder(title: 'Home', icon: Icons.home_outlined),
-
-          TeacherHomeScreen(),
-          // _NavigationPlaceholder(title: 'Classes', icon: Icons.class_outlined),
-          TeacherClassesScreen(),
-          // _NavigationPlaceholder(
-          //   title: 'Students',
-          //   icon: Icons.people_outline_rounded,
-          // ),
-          TeacherStudentsScreen(),
-          // _NavigationPlaceholder(
-          //   title: 'Reports',
-          //   icon: Icons.bar_chart_outlined,
-          // ),
-
-          TeacherReportsScreen(),
-          // _NavigationPlaceholder(
-          //   title: 'Profile',
-          //   icon: Icons.person_outline_rounded,
-          // ),
-
-          TeacherProfileScreen(),
+        return [
+          const TeacherHomeScreen(),
+          const TeacherClassesScreen(),
+          const TeacherStudentsScreen(),
+          const TeacherReportsScreen(),
+          const TeacherProfileScreen(),
         ];
 
       case UserRole.parent:
-        return const [
-          // _NavigationPlaceholder(title: 'Home', icon: Icons.home_outlined),
-          HomeScreen(),
-
-          // _NavigationPlaceholder(
-          //   title: 'Schedule',
-          //   icon: Icons.calendar_month_outlined,
-          // ),
-          ScheduleScreen(),
-          // _NavigationPlaceholder(
-          //   title: 'Reports',
-          //   icon: Icons.bar_chart_outlined,
-          // ),
-          ReportsScreen(),
-          // _NavigationPlaceholder(
-          //   title: 'Notifications',
-          //   icon: Icons.notifications_none_rounded,
-          // ),
-
-          NotificationsScreen(),
-          // _NavigationPlaceholder(
-          //   title: 'Profile',
-          //   icon: Icons.person_outline_rounded,
-          // ),
-
-          ParentProfileScreen(),
+        return [
+          const HomeScreen(),
+          const ScheduleScreen(),
+          const ReportsScreen(),
+          const NotificationsScreen(),
+          const ParentProfileScreen(),
         ];
     }
   }
@@ -265,39 +228,6 @@ class _NavigationPageState extends ConsumerState<NavigationPage> {
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-// ------------------------------------------------------------
-// TEMPORARY PAGE
-// ------------------------------------------------------------
-
-class _NavigationPlaceholder extends StatelessWidget {
-  final String title;
-  final IconData icon;
-
-  const _NavigationPlaceholder({required this.title, required this.icon});
-
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 55, color: const Color(0xFF123B8F)),
-            const SizedBox(height: 12),
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 25.5,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ],
         ),
       ),
     );

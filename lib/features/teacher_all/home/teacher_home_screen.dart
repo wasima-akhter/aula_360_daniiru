@@ -3,24 +3,22 @@ import 'package:aula360/features/parent_all/helper/parent_home_helper.dart';
 import '../../share/export/screen_export.dart';
 import '../../share/widgets/button/app_logo.dart';
 import '../helper/teacher_models.dart';
+import '../presentation/controllers/teacher_home_controller.dart';
 
 /// ===============================================================
 /// HOME SCREEN
 /// ===============================================================
 
-class TeacherHomeScreen extends ConsumerStatefulWidget {
+class TeacherHomeScreen extends ConsumerWidget {
   const TeacherHomeScreen({super.key});
 
   @override
-  ConsumerState<TeacherHomeScreen> createState() => _TeacherHomeScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(teacherHomeControllerProvider);
+    final schedule = state.schedule;
 
-class _TeacherHomeScreenState extends ConsumerState<TeacherHomeScreen> {
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.softBackground,
-
       appBar: AulaAppBar(
         title: '',
         leading: const Padding(
@@ -45,31 +43,39 @@ class _TeacherHomeScreenState extends ConsumerState<TeacherHomeScreen> {
           ),
         ],
       ),
-
-      body: CustomScrollView(
-        physics: const BouncingScrollPhysics(),
-        slivers: [
-          SliverToBoxAdapter(child: _topSection()),
-
-          SliverPersistentHeader(
-            pinned: true,
-            delegate: _HomeStickyHeaderDelegate(
-              minHeight: 48.h,
-              maxHeight: 48.h,
-              child: _scheduleHeader(),
+      body: state.isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : CustomScrollView(
+              physics: const BouncingScrollPhysics(),
+              slivers: [
+                SliverToBoxAdapter(child: _topSection(context, ref, schedule)),
+                SliverPersistentHeader(
+                  pinned: true,
+                  delegate: _HomeStickyHeaderDelegate(
+                    minHeight: 48.h,
+                    maxHeight: 48.h,
+                    child: _scheduleHeader(ref),
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(16.w, 4.h, 16.w, 30.h),
+                    child: Column(
+                      children: [
+                        ...schedule.asMap().entries.map(
+                              (entry) => _scheduleItem(
+                                context,
+                                ref,
+                                entry.value,
+                                entry.key,
+                              ),
+                            ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ),
-
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(16.w, 4.h, 16.w, 30.h),
-              child: Column(
-                children: [...homeSchedule.map((item) => _scheduleItem(item))],
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 
@@ -77,7 +83,7 @@ class _TeacherHomeScreenState extends ConsumerState<TeacherHomeScreen> {
   /// TOP SECTION
   /// =============================================================
 
-  Widget _topSection() {
+  Widget _topSection(BuildContext context, WidgetRef ref, List<HomeScheduleItem> schedule) {
     return Padding(
       padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 12.h),
       child: Column(
@@ -92,9 +98,7 @@ class _TeacherHomeScreenState extends ConsumerState<TeacherHomeScreen> {
               letterSpacing: -.35,
             ),
           ),
-
           SizedBox(height: 17.h),
-
           Text(
             'HOY • JUE, 24 OCT',
             style: TxtStyle.titleMedium(
@@ -104,11 +108,9 @@ class _TeacherHomeScreenState extends ConsumerState<TeacherHomeScreen> {
               letterSpacing: .55,
             ),
           ),
-
           SizedBox(height: 3.h),
-
           Text(
-            '4 ${ref.watchTr(AppStrings.homeClassesScheduled).toLowerCase()}',
+            '${schedule.length} ${ref.watchTr(AppStrings.homeClassesScheduled).toLowerCase()}',
             style: TxtStyle.titleLarge(
               color: AppColors.text,
               fontSize: 24.sp,
@@ -116,10 +118,8 @@ class _TeacherHomeScreenState extends ConsumerState<TeacherHomeScreen> {
               letterSpacing: -.3,
             ),
           ),
-
           SizedBox(height: 26.h),
-
-          _nextClassCard(),
+          if (schedule.isNotEmpty) _nextClassCard(context, ref, schedule.first),
         ],
       ),
     );
@@ -129,19 +129,16 @@ class _TeacherHomeScreenState extends ConsumerState<TeacherHomeScreen> {
   /// NEXT CLASS
   /// =============================================================
 
-  Widget _nextClassCard() {
-    final HomeScheduleItem nextClass = homeSchedule.first;
-
+  Widget _nextClassCard(BuildContext context, WidgetRef ref, HomeScheduleItem nextClass) {
     return InkWell(
       borderRadius: BorderRadius.circular(8.r),
-      onTap: () => _openClass(nextClass),
+      onTap: () => _openClass(context, nextClass),
       child: Container(
         width: double.infinity,
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
         decoration: BoxDecoration(
           color: AppColors.blueSoft,
           borderRadius: BorderRadius.circular(10.r),
-
           border: Border(
             bottom: BorderSide(color: AppColors.backgroundsLinesColor),
           ),
@@ -152,7 +149,7 @@ class _TeacherHomeScreenState extends ConsumerState<TeacherHomeScreen> {
             Row(
               children: [
                 Text(
-                  '${ref.watchTr(AppStrings.homeNextLabel)} • 09:00 – 10:30',
+                  '${ref.watchTr(AppStrings.homeNextLabel)} • ${nextClass.startTime} – ${nextClass.endTime}',
                   style: TxtStyle.titleLarge(
                     color: AppColors.primaryDark,
                     fontSize: 15.sp,
@@ -168,11 +165,9 @@ class _TeacherHomeScreenState extends ConsumerState<TeacherHomeScreen> {
                 ),
               ],
             ),
-
             SizedBox(height: 8.h),
-
             Text(
-              '${ref.watchTr(AppStrings.subjectMath)} (1º Bachillerato)',
+              nextClass.title,
               style: TxtStyle.titleLarge(
                 color: AppColors.text,
                 fontSize: 22.sp,
@@ -180,11 +175,9 @@ class _TeacherHomeScreenState extends ConsumerState<TeacherHomeScreen> {
                 height: 1.25,
               ),
             ),
-
             SizedBox(height: 5.h),
-
             Text(
-              '${ref.watchTr(AppStrings.aula2)} • Grupo A • 18 ${ref.watchTr(AppStrings.studentsCount)}',
+              '${nextClass.room} • ${nextClass.group} • ${nextClass.students} ${ref.watchTr(AppStrings.studentsCount)}',
               style: TxtStyle.titleLarge(
                 color: AppColors.subtitleTextColor,
                 fontSize: 16.sp,
@@ -201,7 +194,7 @@ class _TeacherHomeScreenState extends ConsumerState<TeacherHomeScreen> {
   /// STICKY SCHEDULE HEADER
   /// =============================================================
 
-  Widget _scheduleHeader() {
+  Widget _scheduleHeader(WidgetRef ref) {
     return Container(
       color: AppColors.softBackground,
       padding: EdgeInsets.fromLTRB(16.w, 11.h, 16.w, 8.h),
@@ -233,9 +226,14 @@ class _TeacherHomeScreenState extends ConsumerState<TeacherHomeScreen> {
   /// SCHEDULE ITEM
   /// =============================================================
 
-  Widget _scheduleItem(HomeScheduleItem item) {
-    final index = homeSchedule.indexOf(item);
+  Widget _scheduleItem(
+    BuildContext context,
+    WidgetRef ref,
+    HomeScheduleItem item,
+    int index,
+  ) {
     return InkWell(
+      onTap: () => _openClass(context, item),
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 14.h),
         decoration: BoxDecoration(
@@ -246,10 +244,6 @@ class _TeacherHomeScreenState extends ConsumerState<TeacherHomeScreen> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            /// ---------------------------------------------------
-            /// TIME
-            /// ---------------------------------------------------
-
             SizedBox(
               width: 89.w,
               child: Column(
@@ -275,10 +269,6 @@ class _TeacherHomeScreenState extends ConsumerState<TeacherHomeScreen> {
                 ],
               ),
             ),
-
-            /// ---------------------------------------------------
-            /// CLASS
-            /// ---------------------------------------------------
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -291,9 +281,7 @@ class _TeacherHomeScreenState extends ConsumerState<TeacherHomeScreen> {
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-
                   SizedBox(height: 4.h),
-
                   Text(
                     '${item.room} • ${item.group} • '
                     '${item.students} ${ref.watchTr(AppStrings.studentsCount)}',
@@ -306,9 +294,7 @@ class _TeacherHomeScreenState extends ConsumerState<TeacherHomeScreen> {
                 ],
               ),
             ),
-
             SizedBox(width: 5.w),
-
             Padding(
               padding: EdgeInsets.only(top: 6.h),
               child: Icon(
@@ -327,7 +313,7 @@ class _TeacherHomeScreenState extends ConsumerState<TeacherHomeScreen> {
   /// NAVIGATION
   /// =============================================================
 
-  void _openClass(HomeScheduleItem item) {
+  void _openClass(BuildContext context, HomeScheduleItem item) {
     context.push(RoutePath.teacherClassDetail, extra: item);
   }
 }

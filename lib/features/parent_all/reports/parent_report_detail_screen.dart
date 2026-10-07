@@ -1,6 +1,5 @@
-import '../../parent_all/helper/parent_home_helper.dart';
 import '../../share/export/screen_export.dart';
-import 'parent_report_screen.dart';
+import '../helper/parent_home_helper.dart';
 
 class ReportDetailsScreen extends ConsumerStatefulWidget {
   final ReportModel report;
@@ -119,7 +118,6 @@ class _ReportDetailsScreenState extends ConsumerState<ReportDetailsScreen> {
                     Icon(
                       Icons.schedule_rounded,
                       size: 16.sp,
-                      color: AppColors.secondaryText,
                     ),
                     SizedBox(width: 6.w),
                     Flexible(

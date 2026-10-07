@@ -1,82 +1,11 @@
-import '../../parent_all/helper/parent_home_helper.dart';
 import '../../share/export/screen_export.dart';
+import '../helper/parent_home_helper.dart';
+import '../presentation/controllers/parent_reports_controller.dart';
 
-class ReportsScreen extends ConsumerStatefulWidget {
+class ReportsScreen extends ConsumerWidget {
   const ReportsScreen({super.key});
 
-  @override
-  ConsumerState<ReportsScreen> createState() => _ReportsScreenState();
-}
-
-class _ReportsScreenState extends ConsumerState<ReportsScreen> {
-  int selectedStudent = 0;
-  int selectedCategory = 0;
-
-  // ─────────────────────────────────────────────────────────────────────────────
-  // SAMPLE / MOCK DATA (Spanish Academy Context)
-  // ─────────────────────────────────────────────────────────────────────────────
-
-  final List<StudentModel> students = const [
-    StudentModel(
-      name: 'Lucas Rivera',
-      grade: '2º ESO • Aula 3B',
-      initials: 'LR',
-    ),
-    StudentModel(
-      name: 'Sophia Rivera',
-      grade: '5º Primaria • Aula 1A',
-      initials: 'SR',
-    ),
-  ];
-
-  final List<ReportModel> reports = const [
-    ReportModel(
-      dateLabel: 'HOY — MIÉRCOLES, 24 OCT',
-      subject: 'Lengua Castellana y Literatura',
-      teacher: 'Dña. Sarah Vance',
-      time: '08:30 – 09:50',
-      category: 'Lengua',
-      status: 'Presente',
-      note:
-          'Lucas mostró excelente participación en la sesión de hoy y aportó reflexiones muy acertadas.',
-      initials: 'SV',
-    ),
-    ReportModel(
-      dateLabel: 'AYER — MARTES, 23 OCT',
-      subject: 'Matemáticas Avanzadas',
-      teacher: 'D. Roberto Hayes',
-      time: '10:30 – 12:00',
-      category: 'Matemáticas',
-      status: 'Presente',
-      note:
-          'Superó la prueba de factorización de polinomios con nota sobresaliente (98%). Tarea asignada del tema 4.',
-      initials: 'RH',
-    ),
-    ReportModel(
-      dateLabel: 'AYER — MARTES, 23 OCT',
-      subject: 'Física y Química',
-      teacher: 'Dra. Ángela Bennett',
-      time: '14:00 – 15:20',
-      category: 'Ciencias',
-      status: 'Presente',
-      note:
-          'Realizó con éxito la práctica de óptica y refracción en el laboratorio. Cuaderno revisado y firmado.',
-      initials: 'AB',
-    ),
-    ReportModel(
-      dateLabel: 'LUNES, 21 OCT',
-      subject: 'Geografía e Historia',
-      teacher: 'D. Marcos Brody',
-      time: '13:00 – 14:15',
-      category: 'Historia',
-      status: 'Presente',
-      note:
-          'Participación activa en el debate. Excelente preparación con las lecturas asignadas.',
-      initials: 'MB',
-    ),
-  ];
-
-  List<String> _getCategories() {
+  List<String> _getCategories(WidgetRef ref) {
     return [
       ref.watchTr(AppStrings.allReports),
       ref.watchTr(AppStrings.subjectMath),
@@ -85,23 +14,13 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
     ];
   }
 
-  List<ReportModel> get filteredReports {
-    if (selectedCategory == 0) {
-      return reports;
-    }
-
-    final categories = _getCategories();
-    final category = categories[selectedCategory];
-
-    return reports.where((report) {
-      return report.category.toLowerCase().contains(category.toLowerCase()) ||
-          category.toLowerCase().contains(report.category.toLowerCase());
-    }).toList();
-  }
-
   @override
-  Widget build(BuildContext context) {
-    final groupedReports = _groupReports(filteredReports);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(parentReportsControllerProvider);
+    final controller = ref.read(parentReportsControllerProvider.notifier);
+    final categories = _getCategories(ref);
+    final groupedReports = state.getGroupedReports(categories);
+    final filteredReports = state.getFilteredReports(categories);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
@@ -113,9 +32,9 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
             padding: EdgeInsets.fromLTRB(16.w, 18.h, 16.w, 20.h),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
-                _studentSection(),
+                _studentSection(ref, state, controller),
                 SizedBox(height: 22.h),
-                _categoryTabs(),
+                _categoryTabs(state, controller, categories),
               ]),
             ),
           ),
@@ -150,7 +69,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
                   for (final report in entry.value) ...[
-                    _reportCard(report),
+                    _reportCard(context, ref, report),
                     SizedBox(height: 12.h),
                   ],
                 ]),
@@ -159,7 +78,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
           ],
 
           if (filteredReports.isEmpty)
-            SliverFillRemaining(hasScrollBody: false, child: _emptyState()),
+            SliverFillRemaining(hasScrollBody: false, child: _emptyState(ref)),
 
           SliverToBoxAdapter(child: SizedBox(height: 20.h)),
         ],
@@ -171,7 +90,11 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
   // STUDENT SECTION
   // ===============================================================
 
-  Widget _studentSection() {
+  Widget _studentSection(
+    WidgetRef ref,
+    ParentReportsState state,
+    ParentReportsController controller,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -188,7 +111,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
             ),
             const Spacer(),
             Text(
-              '${students.length} ${ref.watchTr(AppStrings.active)}',
+              '${state.students.length} ${ref.watchTr(AppStrings.active)}',
               style: TxtStyle.titleLarge(
                 color: AppColors.primary,
                 fontSize: 14.sp,
@@ -208,9 +131,9 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
               height: 82.h,
               child: Row(
                 children: [
-                  SizedBox(width: cardWidth, child: _studentCard(0)),
+                  SizedBox(width: cardWidth, child: _studentCard(state, controller, 0)),
                   SizedBox(width: 10.w),
-                  SizedBox(width: cardWidth, child: _studentCard(1)),
+                  SizedBox(width: cardWidth, child: _studentCard(state, controller, 1)),
                 ],
               ),
             );
@@ -220,18 +143,20 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
     );
   }
 
-  Widget _studentCard(int index) {
-    final student = students[index];
-    final selected = selectedStudent == index;
+  Widget _studentCard(
+    ParentReportsState state,
+    ParentReportsController controller,
+    int index,
+  ) {
+    if (index >= state.students.length) return const SizedBox.shrink();
+    final student = state.students[index];
+    final selected = state.selectedStudentIndex == index;
 
     return GestureDetector(
-      onTap: () {
-        setState(() {
-          selectedStudent = index;
-        });
-      },
+      onTap: () => controller.selectStudent(index),
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeInOut,
         padding: EdgeInsets.symmetric(horizontal: 11.w, vertical: 10.h),
         decoration: BoxDecoration(
           color: Colors.white,
@@ -245,7 +170,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
           boxShadow: selected
               ? [
                   BoxShadow(
-                    color: AppColors.primary.withValues(alpha: .06),
+                    color: AppColors.primary.withValues(alpha: .08),
                     blurRadius: 8,
                     offset: const Offset(0, 3),
                   ),
@@ -308,9 +233,11 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
   // CATEGORY TABS
   // ===============================================================
 
-  Widget _categoryTabs() {
-    final categories = _getCategories();
-
+  Widget _categoryTabs(
+    ParentReportsState state,
+    ParentReportsController controller,
+    List<String> categories,
+  ) {
     return SizedBox(
       height: 43.h,
       child: SingleChildScrollView(
@@ -323,7 +250,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                 padding: EdgeInsets.only(
                   right: index == categories.length - 1 ? 0 : 8.w,
                 ),
-                child: _categoryTab(index, categories[index]),
+                child: _categoryTab(state, controller, index, categories[index]),
               ),
           ],
         ),
@@ -331,17 +258,19 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
     );
   }
 
-  Widget _categoryTab(int index, String title) {
-    final selected = selectedCategory == index;
+  Widget _categoryTab(
+    ParentReportsState state,
+    ParentReportsController controller,
+    int index,
+    String title,
+  ) {
+    final selected = state.selectedCategoryIndex == index;
 
     return GestureDetector(
-      onTap: () {
-        setState(() {
-          selectedCategory = index;
-        });
-      },
+      onTap: () => controller.selectCategory(index),
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeInOut,
         padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
         decoration: BoxDecoration(
           color: selected ? AppColors.primary : const Color(0xFFEDECF4),
@@ -363,7 +292,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
   // REPORT CARD
   // ===============================================================
 
-  Widget _reportCard(ReportModel report) {
+  Widget _reportCard(BuildContext context, WidgetRef ref, ReportModel report) {
     return GestureDetector(
       onTap: () {
         context.push(RoutePath.reportDetail, extra: report);
@@ -513,7 +442,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
   // EMPTY STATE
   // ===============================================================
 
-  Widget _emptyState() {
+  Widget _emptyState(WidgetRef ref) {
     return Center(
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 35.w),
@@ -557,53 +486,6 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
       ),
     );
   }
-
-  Map<String, List<ReportModel>> _groupReports(List<ReportModel> data) {
-    final Map<String, List<ReportModel>> grouped = {};
-    for (final report in data) {
-      grouped.putIfAbsent(report.dateLabel, () => []);
-      grouped[report.dateLabel]!.add(report);
-    }
-    return grouped;
-  }
-}
-
-// =================================================================
-// MODELS
-// =================================================================
-
-class StudentModel {
-  final String name;
-  final String grade;
-  final String initials;
-
-  const StudentModel({
-    required this.name,
-    required this.grade,
-    required this.initials,
-  });
-}
-
-class ReportModel {
-  final String dateLabel;
-  final String subject;
-  final String teacher;
-  final String time;
-  final String category;
-  final String status;
-  final String note;
-  final String initials;
-
-  const ReportModel({
-    required this.dateLabel,
-    required this.subject,
-    required this.teacher,
-    required this.time,
-    required this.category,
-    required this.status,
-    required this.note,
-    required this.initials,
-  });
 }
 
 // =================================================================

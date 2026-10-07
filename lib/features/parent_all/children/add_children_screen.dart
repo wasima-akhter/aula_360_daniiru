@@ -1,6 +1,6 @@
 import '../../share/export/screen_export.dart';
-import '../helper/parent_models.dart';
 import '../helper/parent_widgets.dart';
+import '../presentation/controllers/parent_children_controller.dart';
 
 /// ===============================================================
 /// 4. ADD CHILD / MATRÍCULA DE ESTUDIANTE
@@ -143,7 +143,7 @@ class _AddChildScreenState extends ConsumerState<AddChildScreen> {
             ),
             alignment: Alignment.center,
             child: Text(
-              'ER',
+              'EV',
               style: TxtStyle.titleLarge(
                 color: AppColors.primaryDark,
                 fontSize: 14.sp,
@@ -166,7 +166,7 @@ class _AddChildScreenState extends ConsumerState<AddChildScreen> {
                 ),
                 SizedBox(height: 2.h),
                 Text(
-                  'Eleanor Rivera',
+                  'Eleanor Vance',
                   style: TxtStyle.titleLarge(
                     color: AppColors.text,
                     fontSize: 14.5.sp,
@@ -409,7 +409,8 @@ class _AddChildScreenState extends ConsumerState<AddChildScreen> {
     return Expanded(
       child: GestureDetector(
         onTap: () => setState(() => genderKey = key),
-        child: Container(
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
           alignment: Alignment.center,
           decoration: BoxDecoration(
             color: selected ? Colors.white : Colors.transparent,
@@ -527,28 +528,22 @@ class _AddChildScreenState extends ConsumerState<AddChildScreen> {
     );
   }
 
-  void _saveChild() {
+  void _saveChild() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
 
-    final newChild = ChildModel(
-      id: studentIdController.text.trim().isEmpty
-          ? '#STU-${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}'
-          : studentIdController.text.trim(),
+    final parentTeacher = ref.read(languageProvider).valueOrNull?.tr(AppStrings.assignedAfterEnrollment) ?? 'Asignado tras matrícula';
+    await ref.read(parentChildrenControllerProvider.notifier).addChild(
       name: fullNameController.text.trim(),
       grade: grade,
       room: 'Aula 2A',
-      imageUrl:
-          'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400',
-      parentTeacher: ref.watchTr(AppStrings.assignedAfterEnrollment),
-      attendance: 100,
-      present: 0,
-      absent: 0,
-      late: 0,
+      parentTeacher: parentTeacher,
     );
 
-    context.pop(newChild);
+    if (mounted) {
+      context.pop();
+    }
   }
 
   Widget _label(String text, {required bool requiredField}) {

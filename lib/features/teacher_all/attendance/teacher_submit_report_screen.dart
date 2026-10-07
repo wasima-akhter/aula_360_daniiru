@@ -1,6 +1,7 @@
 import '../../parent_all/helper/parent_home_helper.dart';
 import '../../share/export/screen_export.dart';
 import '../helper/teacher_enums.dart';
+import '../presentation/controllers/teacher_reports_controller.dart';
 
 /// ===============================================================
 /// 2. POST CLASS REPORT SCREEN
@@ -16,11 +17,16 @@ class TeacherPostClassReportScreen extends ConsumerStatefulWidget {
 
 class _TeacherPostClassReportScreenState
     extends ConsumerState<TeacherPostClassReportScreen> {
-  StudentConduct conduct = StudentConduct.excellent;
-  WorkEffort effort = WorkEffort.highEffort;
+  late final TextEditingController homeworkController;
+  late final TextEditingController notesController;
 
-  final homeworkController = TextEditingController();
-  final notesController = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    final formState = ref.read(teacherReportFormControllerProvider);
+    homeworkController = TextEditingController(text: formState.homework);
+    notesController = TextEditingController(text: formState.notes);
+  }
 
   @override
   void dispose() {
@@ -31,6 +37,9 @@ class _TeacherPostClassReportScreenState
 
   @override
   Widget build(BuildContext context) {
+    final formState = ref.watch(teacherReportFormControllerProvider);
+    final formController = ref.read(teacherReportFormControllerProvider.notifier);
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AulaAppBar(title: ref.watchTr(AppStrings.postClassReportTitle), showBack: true),
@@ -42,20 +51,14 @@ class _TeacherPostClassReportScreenState
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _classHeader(),
-
               SizedBox(height: 24.h),
-
               _sectionLabel(ref.watchTr(AppStrings.contentDeliveredTitle)),
-
               SizedBox(height: 8.h),
-
               _textCard(
                 'Regla de la cadena y derivación implícita; ejercicios\n'
                 'prácticos resueltos en pizarra.',
               ),
-
               SizedBox(height: 19.h),
-
               Row(
                 children: [
                   _sectionLabel(ref.watchTr(AppStrings.assignedTasksTitle)),
@@ -69,88 +72,57 @@ class _TeacherPostClassReportScreenState
                   ),
                 ],
               ),
-
               SizedBox(height: 8.h),
-
               _editableTextCard(
                 controller: homeworkController,
                 hint: 'Relación 4: Ejercicios 12–25 (Entrega próximo martes)',
+                onChanged: formController.setHomework,
               ),
-
               SizedBox(height: 20.h),
-
               _selectionSection(
                 title: ref.watchTr(AppStrings.conductAndAttitudeTitle),
-                value: _conductLabel(conduct),
+                value: _conductLabel(formState.conduct),
                 children: [
                   _choiceButton(
                     label: ref.watchTr(AppStrings.conductNeedsAttention),
-                    selected: conduct == StudentConduct.needsAttention,
-                    onTap: () {
-                      setState(() {
-                        conduct = StudentConduct.needsAttention;
-                      });
-                    },
+                    selected: formState.conduct == StudentConduct.needsAttention,
+                    onTap: () => formController.setConduct(StudentConduct.needsAttention),
                   ),
                   _choiceButton(
                     label: ref.watchTr(AppStrings.conductSatisfactory),
-                    selected: conduct == StudentConduct.satisfactory,
-                    onTap: () {
-                      setState(() {
-                        conduct = StudentConduct.satisfactory;
-                      });
-                    },
+                    selected: formState.conduct == StudentConduct.satisfactory,
+                    onTap: () => formController.setConduct(StudentConduct.satisfactory),
                   ),
                   _choiceButton(
                     label: ref.watchTr(AppStrings.conductExcellent),
-                    selected: conduct == StudentConduct.excellent,
-                    onTap: () {
-                      setState(() {
-                        conduct = StudentConduct.excellent;
-                      });
-                    },
+                    selected: formState.conduct == StudentConduct.excellent,
+                    onTap: () => formController.setConduct(StudentConduct.excellent),
                   ),
                 ],
               ),
-
               SizedBox(height: 20.h),
-
               _selectionSection(
                 title: ref.watchTr(AppStrings.effortAndDedicationTitle),
-                value: _effortLabel(effort),
+                value: _effortLabel(formState.effort),
                 children: [
                   _choiceButton(
                     label: ref.watchTr(AppStrings.effortModerate),
-                    selected: effort == WorkEffort.moderate,
-                    onTap: () {
-                      setState(() {
-                        effort = WorkEffort.moderate;
-                      });
-                    },
+                    selected: formState.effort == WorkEffort.moderate,
+                    onTap: () => formController.setEffort(WorkEffort.moderate),
                   ),
                   _choiceButton(
                     label: ref.watchTr(AppStrings.effortAdequate),
-                    selected: effort == WorkEffort.onTrack,
-                    onTap: () {
-                      setState(() {
-                        effort = WorkEffort.onTrack;
-                      });
-                    },
+                    selected: formState.effort == WorkEffort.onTrack,
+                    onTap: () => formController.setEffort(WorkEffort.onTrack),
                   ),
                   _choiceButton(
                     label: ref.watchTr(AppStrings.effortHighPerformance),
-                    selected: effort == WorkEffort.highEffort,
-                    onTap: () {
-                      setState(() {
-                        effort = WorkEffort.highEffort;
-                      });
-                    },
+                    selected: formState.effort == WorkEffort.highEffort,
+                    onTap: () => formController.setEffort(WorkEffort.highEffort),
                   ),
                 ],
               ),
-
               SizedBox(height: 20.h),
-
               Row(
                 children: [
                   _sectionLabel(ref.watchTr(AppStrings.quickNotesTitle)),
@@ -164,13 +136,9 @@ class _TeacherPostClassReportScreenState
                   ),
                 ],
               ),
-
               SizedBox(height: 8.h),
-
-              _notesField(),
-
+              _notesField(onChanged: formController.setNotes),
               SizedBox(height: 32.h),
-
               SizedBox(
                 width: double.infinity,
                 child: AulaPrimaryButton(
@@ -261,13 +229,14 @@ class _TeacherPostClassReportScreenState
   Widget _editableTextCard({
     required TextEditingController controller,
     required String hint,
+    required ValueChanged<String> onChanged,
   }) {
     return SizedBox(
       width: double.infinity,
       height: 58.h,
-
       child: TextField(
         controller: controller,
+        onChanged: onChanged,
         maxLines: 2,
         style: TxtStyle.bodyMedium(
           color: AppColors.subtitleTextColor,
@@ -363,13 +332,13 @@ class _TeacherPostClassReportScreenState
     );
   }
 
-  Widget _notesField() {
+  Widget _notesField({required ValueChanged<String> onChanged}) {
     return SizedBox(
       width: double.infinity,
       height: 62.h,
-
       child: TextField(
         controller: notesController,
+        onChanged: onChanged,
         maxLines: 3,
         style: TxtStyle.bodyMedium(color: AppColors.text, fontSize: 14.5.sp),
         decoration: InputDecoration(
