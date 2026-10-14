@@ -19,7 +19,10 @@ class TeacherAttendanceScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppColors.softBackground,
-      appBar: AulaAppBar(title: ref.watchTr(AppStrings.takeAttendance), showBack: true),
+      appBar: AulaAppBar(
+        title: ref.watchTr(AppStrings.takeAttendance),
+        showBack: true,
+      ),
       body: state.isLoading
           ? const Center(child: CircularProgressIndicator())
           : CustomScrollView(

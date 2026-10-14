@@ -13,7 +13,8 @@ extension LanguageRefExtension on WidgetRef {
     final asyncState = read(languageProvider);
     return asyncState.maybeWhen(
       data: (state) => state.tr,
-      orElse: () => (key) => key,
+      orElse: () =>
+          (key) => key,
     );
   }
 
@@ -22,7 +23,8 @@ extension LanguageRefExtension on WidgetRef {
     final asyncState = watch(languageProvider);
     return asyncState.maybeWhen(
       data: (state) => state.tr,
-      orElse: () => (key) => key,
+      orElse: () =>
+          (key) => key,
     );
   }
 }

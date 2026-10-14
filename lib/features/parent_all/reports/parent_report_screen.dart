@@ -24,7 +24,10 @@ class ReportsScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
-      appBar: AulaAppBar(title: ref.watchTr(AppStrings.navReports), showBack: false),
+      appBar: AulaAppBar(
+        title: ref.watchTr(AppStrings.navReports),
+        showBack: false,
+      ),
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
@@ -131,9 +134,15 @@ class ReportsScreen extends ConsumerWidget {
               height: 82.h,
               child: Row(
                 children: [
-                  SizedBox(width: cardWidth, child: _studentCard(state, controller, 0)),
+                  SizedBox(
+                    width: cardWidth,
+                    child: _studentCard(state, controller, 0),
+                  ),
                   SizedBox(width: 10.w),
-                  SizedBox(width: cardWidth, child: _studentCard(state, controller, 1)),
+                  SizedBox(
+                    width: cardWidth,
+                    child: _studentCard(state, controller, 1),
+                  ),
                 ],
               ),
             );
@@ -250,7 +259,12 @@ class ReportsScreen extends ConsumerWidget {
                 padding: EdgeInsets.only(
                   right: index == categories.length - 1 ? 0 : 8.w,
                 ),
-                child: _categoryTab(state, controller, index, categories[index]),
+                child: _categoryTab(
+                  state,
+                  controller,
+                  index,
+                  categories[index],
+                ),
               ),
           ],
         ),

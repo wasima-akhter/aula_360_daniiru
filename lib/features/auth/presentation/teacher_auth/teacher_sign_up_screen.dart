@@ -4,7 +4,7 @@ import '../../../share/export/screen_export.dart';
 import '../../../share/widgets/button/app_logo.dart';
 import '../../../share/widgets/button/custom_back_button.dart';
 import '../../../share/widgets/text_field/custom_text_field.dart';
-import '../../abc.dart';
+import '../../../../core/utils/validators.dart';
 import '../controllers/auth_controller.dart';
 import '../screens/active_otp_screen.dart';
 
@@ -71,13 +71,15 @@ class _TeacherSignUpScreenState extends ConsumerState<TeacherSignUpScreen> {
       return;
     }
 
-    final success = await ref.read(authControllerProvider.notifier).signUp(
-      fullName: fullNameController.text.trim(),
-      email: emailController.text.trim(),
-      phone: mobileController.text.trim(),
-      password: passwordController.text.trim(),
-      role: UserRole.teacher,
-    );
+    final success = await ref
+        .read(authControllerProvider.notifier)
+        .signUp(
+          fullName: fullNameController.text.trim(),
+          email: emailController.text.trim(),
+          phone: mobileController.text.trim(),
+          password: passwordController.text.trim(),
+          role: UserRole.teacher,
+        );
 
     if (!mounted) return;
 
@@ -90,6 +92,11 @@ class _TeacherSignUpScreenState extends ConsumerState<TeacherSignUpScreen> {
           role: OtpRole.teacher,
         ),
       );
+    } else {
+      final error =
+          ref.read(authControllerProvider).errorMessage ??
+          'Error al crear la cuenta de profesor';
+      ApiSnackbar.show(error, type: SnackbarType.error);
     }
   }
 

@@ -34,9 +34,13 @@ class ParentHomeworkState {
   List<HomeworkModel> get filteredHomework {
     if (selectedTab == 0) return homework;
     if (selectedTab == 1) {
-      return homework.where((item) => item.status == HomeworkStatus.pending).toList();
+      return homework
+          .where((item) => item.status == HomeworkStatus.pending)
+          .toList();
     }
-    return homework.where((item) => item.status == HomeworkStatus.completed).toList();
+    return homework
+        .where((item) => item.status == HomeworkStatus.completed)
+        .toList();
   }
 
   ParentHomeworkState copyWith({
@@ -60,8 +64,8 @@ class ParentHomeworkState {
 
 final parentHomeworkControllerProvider =
     NotifierProvider<ParentHomeworkController, ParentHomeworkState>(
-  ParentHomeworkController.new,
-);
+      ParentHomeworkController.new,
+    );
 
 class ParentHomeworkController extends Notifier<ParentHomeworkState> {
   late final ParentRepository _repository;

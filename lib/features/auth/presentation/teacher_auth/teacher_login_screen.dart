@@ -1,12 +1,14 @@
 import 'package:aula360/features/share/export/screen_export.dart';
 import 'package:flutter/foundation.dart';
 
+import '../../../../core/helper/snackbar/api_snackbar.dart';
+import '../../../../core/storage/storage_provider.dart';
 import '../../../../utils/enum/app_enum.dart';
 import '../../../nav/user_role/user_role_provider.dart';
 import '../../../share/widgets/button/app_logo.dart';
 import '../../../share/widgets/button/custom_back_button.dart';
 import '../../../share/widgets/text_field/custom_text_field.dart';
-import '../../abc.dart';
+import '../../../../core/utils/validators.dart';
 import '../controllers/auth_controller.dart';
 import '../screens/active_otp_screen.dart';
 import '../screens/forget_password_screen.dart';
@@ -27,7 +29,10 @@ class _TeacherLoginScreenState extends ConsumerState<TeacherLoginScreen> {
   @override
   void initState() {
     super.initState();
-    emailController = TextEditingController();
+    final storage = ref.read(storageServiceProvider);
+    _rememberMe = storage.rememberMe;
+    final remembered = storage.rememberedEmail;
+    emailController = TextEditingController(text: remembered ?? '');
     passwordController = TextEditingController();
   }
 
@@ -47,16 +52,29 @@ class _TeacherLoginScreenState extends ConsumerState<TeacherLoginScreen> {
       return;
     }
 
-    final success = await ref.read(authControllerProvider.notifier).login(
-      emailOrPhone: emailController.text.trim(),
-      password: passwordController.text.trim(),
-      role: UserRole.teacher,
-    );
+    final success = await ref
+        .read(authControllerProvider.notifier)
+        .login(
+          email: emailController.text.trim(),
+          password: passwordController.text.trim(),
+          role: UserRole.teacher,
+          rememberMe: _rememberMe,
+        );
 
     if (!mounted) return;
 
     if (success) {
-      context.go(RoutePath.navigationPages);
+      final authState = ref.read(authControllerProvider);
+      if (authState.user?.isProfileSetup == false) {
+        context.go(RoutePath.teacherProfileSetup);
+      } else {
+        context.go(RoutePath.navigationPages);
+      }
+    } else {
+      final error =
+          ref.read(authControllerProvider).errorMessage ??
+          'Inicio de sesión fallido';
+      ApiSnackbar.show(error, type: SnackbarType.error);
     }
   }
 
@@ -163,9 +181,7 @@ class _TeacherLoginScreenState extends ConsumerState<TeacherLoginScreen> {
                     onTap: () {
                       context.push(
                         RoutePath.forgetPasswordScreen,
-                        extra: const ForgotPasswordArgs(
-                          role: OtpRole.teacher,
-                        ),
+                        extra: const ForgotPasswordArgs(role: OtpRole.teacher),
                       );
                     },
                     child: Text(

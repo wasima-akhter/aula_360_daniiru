@@ -7,7 +7,7 @@ import '../../../share/widgets/custom_image/app_image_picker.dart';
 import '../../../share/widgets/dropdown/custom_dropdown_field.dart';
 import '../../../share/widgets/text_field/custom_text_field.dart';
 import '../../../share/widgets/text_field/description_text_field.dart';
-import '../../abc.dart';
+import '../../../../core/utils/validators.dart';
 import '../controllers/auth_controller.dart';
 
 class TeacherProfileSetupScreen extends ConsumerStatefulWidget {
@@ -112,7 +112,10 @@ class _TeacherProfileSetupScreenState
                   icon: Icons.photo_library_outlined,
                   title: ref.watchTr(AppStrings.chooseFromGallery),
                   onTap: () {
-                    Navigator.pop(bottomSheetContext, ImagePickerSource.gallery);
+                    Navigator.pop(
+                      bottomSheetContext,
+                      ImagePickerSource.gallery,
+                    );
                   },
                 ),
                 const SizedBox(height: 10),
@@ -268,18 +271,31 @@ class _TeacherProfileSetupScreenState
       return;
     }
 
-    final success = await ref.read(authControllerProvider.notifier).setupProfile(
-      name: nameController.text.trim(),
-      phone: phoneController.text.trim(),
-      avatarPath: _profileImage?.path,
-      subject: _subjects.join(', '),
-    );
+    final success = await ref
+        .read(authControllerProvider.notifier)
+        .setupTeacherProfile(
+          avatarFile: _profileImage,
+          department: _subjects.isNotEmpty
+              ? _subjects.join(', ')
+              : _selectedCampus,
+          designation: roomController.text.trim().isNotEmpty
+              ? roomController.text.trim()
+              : 'Profesor',
+          bio: bioController.text.trim().isNotEmpty
+              ? bioController.text.trim()
+              : null,
+        );
 
     if (!mounted) return;
 
     if (success) {
       ref.read(userRoleProvider.notifier).loginAsTeacher();
       context.go(RoutePath.navigationPages);
+    } else {
+      final error =
+          ref.read(authControllerProvider).errorMessage ??
+          'Error al completar el perfil del profesor';
+      ApiSnackbar.show(error, type: SnackbarType.error);
     }
   }
 
@@ -441,7 +457,9 @@ class _TeacherProfileSetupScreenState
                           Wrap(
                             spacing: 8,
                             runSpacing: 8,
-                            children: _subjects.map((s) => _subjectChip(s)).toList(),
+                            children: _subjects
+                                .map((s) => _subjectChip(s))
+                                .toList(),
                           ),
                           const SizedBox(height: 10),
                           GestureDetector(

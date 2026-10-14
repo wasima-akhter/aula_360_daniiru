@@ -92,7 +92,10 @@ class TeacherRepositoryImpl implements TeacherRepository {
   }
 
   @override
-  Future<void> updateStudentAttendance(int index, TeacherAttendanceStatus status) async {
+  Future<void> updateStudentAttendance(
+    int index,
+    TeacherAttendanceStatus status,
+  ) async {
     if (index >= 0 && index < _attendanceStudents.length) {
       _attendanceStudents[index].status = status;
     }

@@ -38,11 +38,16 @@ class _TeacherPostClassReportScreenState
   @override
   Widget build(BuildContext context) {
     final formState = ref.watch(teacherReportFormControllerProvider);
-    final formController = ref.read(teacherReportFormControllerProvider.notifier);
+    final formController = ref.read(
+      teacherReportFormControllerProvider.notifier,
+    );
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AulaAppBar(title: ref.watchTr(AppStrings.postClassReportTitle), showBack: true),
+      appBar: AulaAppBar(
+        title: ref.watchTr(AppStrings.postClassReportTitle),
+        showBack: true,
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
@@ -55,8 +60,7 @@ class _TeacherPostClassReportScreenState
               _sectionLabel(ref.watchTr(AppStrings.contentDeliveredTitle)),
               SizedBox(height: 8.h),
               _textCard(
-                'Regla de la cadena y derivación implícita; ejercicios\n'
-                'prácticos resueltos en pizarra.',
+                ref.watchTr(AppStrings.sessionInfoTitle),
               ),
               SizedBox(height: 19.h),
               Row(
@@ -75,7 +79,7 @@ class _TeacherPostClassReportScreenState
               SizedBox(height: 8.h),
               _editableTextCard(
                 controller: homeworkController,
-                hint: 'Relación 4: Ejercicios 12–25 (Entrega próximo martes)',
+                hint: ref.watchTr(AppStrings.assignedTasksTitle),
                 onChanged: formController.setHomework,
               ),
               SizedBox(height: 20.h),
@@ -85,18 +89,23 @@ class _TeacherPostClassReportScreenState
                 children: [
                   _choiceButton(
                     label: ref.watchTr(AppStrings.conductNeedsAttention),
-                    selected: formState.conduct == StudentConduct.needsAttention,
-                    onTap: () => formController.setConduct(StudentConduct.needsAttention),
+                    selected:
+                        formState.conduct == StudentConduct.needsAttention,
+                    onTap: () => formController.setConduct(
+                      StudentConduct.needsAttention,
+                    ),
                   ),
                   _choiceButton(
                     label: ref.watchTr(AppStrings.conductSatisfactory),
                     selected: formState.conduct == StudentConduct.satisfactory,
-                    onTap: () => formController.setConduct(StudentConduct.satisfactory),
+                    onTap: () =>
+                        formController.setConduct(StudentConduct.satisfactory),
                   ),
                   _choiceButton(
                     label: ref.watchTr(AppStrings.conductExcellent),
                     selected: formState.conduct == StudentConduct.excellent,
-                    onTap: () => formController.setConduct(StudentConduct.excellent),
+                    onTap: () =>
+                        formController.setConduct(StudentConduct.excellent),
                   ),
                 ],
               ),
@@ -118,7 +127,8 @@ class _TeacherPostClassReportScreenState
                   _choiceButton(
                     label: ref.watchTr(AppStrings.effortHighPerformance),
                     selected: formState.effort == WorkEffort.highEffort,
-                    onTap: () => formController.setEffort(WorkEffort.highEffort),
+                    onTap: () =>
+                        formController.setEffort(WorkEffort.highEffort),
                   ),
                 ],
               ),

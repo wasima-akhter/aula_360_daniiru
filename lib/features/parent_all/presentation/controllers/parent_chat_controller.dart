@@ -28,7 +28,9 @@ class ParentChatState {
 }
 
 final parentChatControllerProvider =
-    NotifierProvider<ParentChatController, ParentChatState>(ParentChatController.new);
+    NotifierProvider<ParentChatController, ParentChatState>(
+      ParentChatController.new,
+    );
 
 class ParentChatController extends Notifier<ParentChatState> {
   late final ParentRepository _repository;

@@ -1,19 +1,17 @@
 import '../../../../utils/enum/app_enum.dart';
-import '../models/auth_state_model.dart';
-import '../models/auth_user_model.dart';
+import '../../data/dtos/profile_setup_dtos.dart';
+import '../entities/auth_session.dart';
+import '../entities/auth_user.dart';
 
 export '../../../../utils/enum/app_enum.dart';
-export '../models/auth_state_model.dart';
-export '../models/auth_user_model.dart';
+export '../../data/dtos/auth_request_dtos.dart';
+export '../../data/dtos/profile_setup_dtos.dart';
+export '../entities/auth_session.dart';
+export '../entities/auth_user.dart';
 
 abstract class AuthRepository {
-  Future<AuthUser> login({
-    required String emailOrPhone,
-    required String password,
-    required UserRole role,
-  });
-
-  Future<AuthUser> signUp({
+  /// Sign up a new user. Returns temporary `otpPageToken`.
+  Future<String> signUp({
     required String fullName,
     required String email,
     required String phone,
@@ -21,32 +19,47 @@ abstract class AuthRepository {
     required UserRole role,
   });
 
-  Future<void> sendOtp({
-    required String target,
-    required OtpPurpose purpose,
-  });
-
-  Future<bool> verifyOtp({
+  /// Verify signup OTP using the temporary `otpPageToken`. Returns `AuthSession`.
+  Future<AuthSession> verifyOtp({
     required String otp,
-    required OtpPurpose purpose,
+    required String deviceIdentifier,
+    String? fcmToken,
   });
 
+  /// Resends the verification email for the active `otpPageToken`.
+  Future<void> resendOtp();
+
+  /// Logs in a user with email, password, and persistent deviceIdentifier. Returns `AuthSession`.
+  Future<AuthSession> login({
+    required String email,
+    required String password,
+    required UserRole role,
+    required String deviceIdentifier,
+    bool rememberMe = false,
+    String? fcmToken,
+  });
+
+  /// Validates session with backend /auth/check. Returns updated `AuthUser` or null if invalid.
+  Future<AuthUser?> checkSession({String? fcmToken});
+
+  /// Performs complete logout, invalidating backend session and clearing local tokens.
+  Future<void> logout();
+
+  /// Completes profile setup for a parent.
+  Future<AuthUser> setupParentProfile(ParentProfileSetupDto dto);
+
+  /// Completes profile setup for a teacher.
+  Future<AuthUser> setupTeacherProfile(TeacherProfileSetupDto dto);
+
+  /// Synchronously or locally retrieves the cached user, if any.
+  AuthUser? getCurrentUser();
+
+  /// Request password reset email (if backend supports).
   Future<void> requestPasswordReset({required String email});
 
+  /// Reset password with new password (if backend supports).
   Future<void> resetPassword({
     required String email,
     required String newPassword,
   });
-
-  Future<AuthUser> setupProfile({
-    required String name,
-    required String phone,
-    String? avatarPath,
-    String? subject,
-    String? grade,
-  });
-
-  Future<void> logout();
-
-  AuthUser? getCurrentUser();
 }

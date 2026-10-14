@@ -32,7 +32,9 @@ class ParentHomeState {
 }
 
 final parentHomeControllerProvider =
-    NotifierProvider<ParentHomeController, ParentHomeState>(ParentHomeController.new);
+    NotifierProvider<ParentHomeController, ParentHomeState>(
+      ParentHomeController.new,
+    );
 
 class ParentHomeController extends Notifier<ParentHomeState> {
   late final ParentRepository _repository;

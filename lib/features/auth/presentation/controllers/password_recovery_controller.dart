@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../data/repositories/auth_repository_impl.dart';
+import '../providers/auth_providers.dart';
 import '../../domain/repositories/auth_repository.dart';
 
 class PasswordRecoveryState {
@@ -28,8 +28,8 @@ class PasswordRecoveryState {
 
 final passwordRecoveryControllerProvider =
     NotifierProvider<PasswordRecoveryController, PasswordRecoveryState>(
-  PasswordRecoveryController.new,
-);
+      PasswordRecoveryController.new,
+    );
 
 class PasswordRecoveryController extends Notifier<PasswordRecoveryState> {
   late final AuthRepository _repository;
@@ -58,10 +58,7 @@ class PasswordRecoveryController extends Notifier<PasswordRecoveryState> {
   }) async {
     state = state.copyWith(isLoading: true, error: null);
     try {
-      await _repository.resetPassword(
-        email: email,
-        newPassword: newPassword,
-      );
+      await _repository.resetPassword(email: email, newPassword: newPassword);
       state = state.copyWith(isLoading: false, isSuccess: true);
       return true;
     } catch (e) {

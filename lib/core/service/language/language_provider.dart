@@ -22,7 +22,7 @@ enum AppLanguage {
   static AppLanguage fromCode(String code) {
     return AppLanguage.values.firstWhere(
       (l) => l.code == code,
-      orElse: () => AppLanguage.spanish,
+      orElse: () => AppLanguage.english,
     );
   }
 }
@@ -47,9 +47,15 @@ class LanguageState {
     );
   }
 
-  /// Translate a key, falling back to Spanish fallback then English fallback or key itself if not found.
+  /// Translate a key, falling back to active language fallback then alternate fallback or key itself.
   String tr(String key) {
-    return strings[key] ?? _spanishFallback[key] ?? _englishFallback[key] ?? key;
+    final val = strings[key];
+    if (val != null && val.isNotEmpty) return val;
+
+    if (language == AppLanguage.spanish) {
+      return _spanishFallback[key] ?? _englishFallback[key] ?? key;
+    }
+    return _englishFallback[key] ?? _spanishFallback[key] ?? key;
   }
 }
 
@@ -67,14 +73,14 @@ class LanguageNotifier extends AsyncNotifier<LanguageState> {
       final saved = prefs.getString(_prefKey);
       final lang = saved != null
           ? AppLanguage.fromCode(saved)
-          : AppLanguage.spanish;
+          : AppLanguage.english;
       final strings = await _loadStrings(lang.code);
       return LanguageState(language: lang, strings: strings);
     } catch (e, stack) {
       debugPrint('LanguageNotifier build error: $e\n$stack');
       return LanguageState(
-        language: AppLanguage.spanish,
-        strings: _fallbackStrings('es'),
+        language: AppLanguage.english,
+        strings: _fallbackStrings('en'),
       );
     }
   }

@@ -17,7 +17,12 @@ class AttendanceScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final childrenState = ref.watch(parentChildrenControllerProvider);
     final attendanceState = ref.watch(parentAttendanceControllerProvider);
-    final activeChild = child ?? childrenState.selectedChild ?? (childrenState.children.isNotEmpty ? childrenState.children.first : null);
+    final activeChild =
+        child ??
+        childrenState.selectedChild ??
+        (childrenState.children.isNotEmpty
+            ? childrenState.children.first
+            : null);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
@@ -306,7 +311,11 @@ class AttendanceScreen extends ConsumerWidget {
     );
   }
 
-  Widget _attendanceTag(WidgetRef ref, AttendanceStatus status, {String? detail}) {
+  Widget _attendanceTag(
+    WidgetRef ref,
+    AttendanceStatus status, {
+    String? detail,
+  }) {
     final suffix = detail == null ? '' : ' ($detail)';
 
     final IconData icon = switch (status) {

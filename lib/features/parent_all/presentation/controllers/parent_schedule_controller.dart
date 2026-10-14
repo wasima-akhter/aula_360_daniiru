@@ -37,8 +37,8 @@ class ParentScheduleState {
 
 final parentScheduleControllerProvider =
     NotifierProvider<ParentScheduleController, ParentScheduleState>(
-  ParentScheduleController.new,
-);
+      ParentScheduleController.new,
+    );
 
 class ParentScheduleController extends Notifier<ParentScheduleState> {
   late final ParentRepository _repository;

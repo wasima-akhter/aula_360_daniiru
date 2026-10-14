@@ -1,4 +1,6 @@
+import 'package:aula360/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:aula360/features/share/export/screen_export.dart';
+import 'package:aula360/utils/enum/app_enum.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key, this.onInitializationComplete});
@@ -26,9 +28,35 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   }
 
   Future<void> _initializeApp() async {
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(milliseconds: 1500));
 
     if (!mounted) return;
+
+    // Validate or restore session
+    final authNotifier = ref.read(authControllerProvider.notifier);
+    final isAuthenticated = await authNotifier.checkSession();
+
+    if (!mounted) return;
+
+    if (isAuthenticated) {
+      final authState = ref.read(authControllerProvider);
+      final user = authState.user;
+      final role = authState.role ?? user?.role;
+
+      // Check profile completion status
+      if (user != null && !user.isProfileSetup) {
+        if (role == UserRole.teacher) {
+          context.pushReplacement(RoutePath.teacherProfileSetup);
+        } else {
+          context.pushReplacement(RoutePath.profileSetup);
+        }
+        return;
+      }
+
+      // Fully authenticated with completed profile
+      context.pushReplacement(RoutePath.navigationPages);
+      return;
+    }
 
     // Check if the user has already chosen a language.
     final hasChosen = await ref
@@ -38,8 +66,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     if (!mounted) return;
 
     if (hasChosen) {
-      // context.pushReplacement(RoutePath.onboardingScreen);
-      context.pushReplacement(RoutePath.chooseLanguageScreen);
+      context.pushReplacement(RoutePath.chooseRoleScreen);
     } else {
       context.pushReplacement(RoutePath.chooseLanguageScreen);
     }
@@ -186,12 +213,14 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
               ),
             ),
             const SizedBox(width: 6),
-            Text(
-              'Initializing secure session...',
-              style: TxtStyle.titleLarge(
-                fontSize: 16.sp,
-                color: Color(0xFF7D8AA3),
-                fontWeight: FontWeight.w400,
+            Flexible(
+              child: Text(
+                'Initializing secure session...',
+                style: TxtStyle.titleLarge(
+                  fontSize: 16.sp,
+                  color: Color(0xFF7D8AA3),
+                  fontWeight: FontWeight.w400,
+                ),
               ),
             ),
           ],

@@ -57,8 +57,8 @@ class TeacherReportsState {
 
 final teacherReportsControllerProvider =
     NotifierProvider<TeacherReportsController, TeacherReportsState>(
-  TeacherReportsController.new,
-);
+      TeacherReportsController.new,
+    );
 
 class TeacherReportsController extends Notifier<TeacherReportsState> {
   late final TeacherRepository _repository;
@@ -127,8 +127,8 @@ class TeacherReportFormState {
 
 final teacherReportFormControllerProvider =
     NotifierProvider<TeacherReportFormController, TeacherReportFormState>(
-  TeacherReportFormController.new,
-);
+      TeacherReportFormController.new,
+    );
 
 class TeacherReportFormController extends Notifier<TeacherReportFormState> {
   @override

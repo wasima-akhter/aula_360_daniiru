@@ -35,7 +35,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     emailController = TextEditingController(text: profile.email);
     phoneController = TextEditingController(text: profile.phone);
     addressController = TextEditingController(text: profile.address);
-    language = profile.language;
+    final activeLang = ref.read(languageProvider).valueOrNull?.language;
+    language = activeLang == AppLanguage.spanish ? 'Español' : 'English';
   }
 
   @override
@@ -96,9 +97,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   keyboardType: TextInputType.emailAddress,
                   requiredField: true,
                 ),
-                _fieldHint(
-                  ref.watchTr(AppStrings.emailNotificationNotice),
-                ),
+                _fieldHint(ref.watchTr(AppStrings.emailNotificationNotice)),
                 _field(
                   label: ref.watchTr(AppStrings.fieldMobileNumber),
                   controller: phoneController,
@@ -106,9 +105,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   keyboardType: TextInputType.phone,
                   requiredField: true,
                 ),
-                _fieldHint(
-                  ref.watchTr(AppStrings.phoneUrgentNotice),
-                ),
+                _fieldHint(ref.watchTr(AppStrings.phoneUrgentNotice)),
                 _field(
                   label: ref.watchTr(AppStrings.fieldResidentialAddress),
                   controller: addressController,
@@ -173,7 +170,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                             fit: BoxFit.cover,
                           )
                         : Image.network(
-                            profile.avatarUrl ?? 'https://i.pravatar.cc/300?img=47',
+                            profile.avatarUrl ??
+                                'https://i.pravatar.cc/300?img=47',
                             width: 80.w,
                             height: 80.w,
                             fit: BoxFit.cover,
@@ -457,6 +455,16 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       avatarUrl: _profileImage?.path,
                     );
 
+                if (language == 'English') {
+                  ref
+                      .read(languageProvider.notifier)
+                      .changeLanguage(AppLanguage.english);
+                } else if (language == 'Español') {
+                  ref
+                      .read(languageProvider.notifier)
+                      .changeLanguage(AppLanguage.spanish);
+                }
+
                 if (success && mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
@@ -487,7 +495,10 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
               SizedBox(
                 width: 16.w,
                 height: 16.w,
-                child: const CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                child: const CircularProgressIndicator(
+                  color: Colors.white,
+                  strokeWidth: 2,
+                ),
               )
             else ...[
               Icon(Icons.check, size: 15.sp, color: Colors.white),

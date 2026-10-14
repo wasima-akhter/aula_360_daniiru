@@ -59,7 +59,11 @@ class ParentProfileScreen extends ConsumerWidget {
     );
   }
 
-  Widget _profileHeader(BuildContext context, WidgetRef ref, ParentProfileState profile) {
+  Widget _profileHeader(
+    BuildContext context,
+    WidgetRef ref,
+    ParentProfileState profile,
+  ) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.only(top: 4.h),
@@ -105,14 +109,19 @@ class ParentProfileScreen extends ConsumerWidget {
                   ),
                   child: ClipOval(
                     child: Image.network(
-                      profile.avatarUrl ?? 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500',
+                      profile.avatarUrl ??
+                          'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500',
                       fit: BoxFit.cover,
                       errorBuilder: (_, _, _) => Container(
                         color: AppColors.blueSoft,
                         alignment: Alignment.center,
                         child: Text(
                           profile.name.isNotEmpty ? profile.name[0] : 'P',
-                          style: TextStyle(fontSize: 28.sp, fontWeight: FontWeight.bold, color: AppColors.primary),
+                          style: TextStyle(
+                            fontSize: 28.sp,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.primary,
+                          ),
                         ),
                       ),
                     ),

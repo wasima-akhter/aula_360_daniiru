@@ -1,3 +1,6 @@
+import 'package:intl/intl.dart';
+
+import '../../auth/presentation/providers/auth_provider.dart';
 import '../../share/export/screen_export.dart';
 import '../../share/widgets/button/app_logo.dart';
 import '../helper/parent_home_helper.dart';
@@ -14,11 +17,32 @@ class HomeScreen extends ConsumerWidget {
     context.push(RoutePath.classDetail, extra: classData);
   }
 
+  static String _extractInitials(String name) {
+    final parts = name.trim().split(RegExp(r'\s+'));
+    if (parts.isEmpty || parts[0].isEmpty) return 'U';
+    if (parts.length == 1) {
+      return parts[0].substring(0, parts[0].length >= 2 ? 2 : 1).toUpperCase();
+    }
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final homeState = ref.watch(parentHomeControllerProvider);
     final todayClasses = homeState.todayClasses;
     final selectedChild = homeState.selectedChild;
+
+    final currentUser = ref.watch(authControllerProvider).user;
+    final parentName = currentUser?.fullName.isNotEmpty == true
+        ? currentUser!.fullName
+        : 'Eleanor';
+    final userInitials = _extractInitials(parentName);
+
+    final langCode =
+        ref.watch(languageProvider).valueOrNull?.language.code ?? 'en';
+    final formattedDate = DateFormat('EEEE, d MMM', langCode)
+        .format(DateTime.now())
+        .toUpperCase();
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
@@ -42,7 +66,7 @@ class HomeScreen extends ConsumerWidget {
           ),
           Padding(
             padding: EdgeInsets.only(left: 2.w, right: 15.w),
-            child: const UserAvatar(initials: 'EV', size: 38),
+            child: UserAvatar(initials: userInitials, size: 38),
           ),
         ],
       ),
@@ -60,7 +84,7 @@ class HomeScreen extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'MIÉRCOLES, 24 OCT',
+                      formattedDate,
                       style: TxtStyle.titleLarge(
                         color: AppColors.secondaryText,
                         fontSize: 13.5.sp,
@@ -78,7 +102,7 @@ class HomeScreen extends ConsumerWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        '${ref.watchTr(AppStrings.goodMorning)}, Eleanor',
+                        '${ref.watchTr(AppStrings.goodMorning)}, $parentName',
                         style: TxtStyle.titleLarge(
                           color: AppColors.text,
                           fontSize: 25.sp,
@@ -99,7 +123,9 @@ class HomeScreen extends ConsumerWidget {
                   child: Row(
                     children: [
                       UserAvatar(
-                        initials: selectedChild != null && selectedChild.name.length >= 2
+                        initials:
+                            selectedChild != null &&
+                                selectedChild.name.length >= 2
                             ? selectedChild.name.substring(0, 2).toUpperCase()
                             : 'LR',
                         size: 48,
@@ -188,7 +214,8 @@ class HomeScreen extends ConsumerWidget {
                           Row(
                             children: [
                               StatusPill(
-                                text: '${ref.watchTr(AppStrings.nextClass).toUpperCase()} • 45 MIN',
+                                text:
+                                    '${ref.watchTr(AppStrings.nextClass).toUpperCase()} • 45 MIN',
                                 color: const Color(0xFF38D99B),
                               ),
                               const Spacer(),
@@ -217,7 +244,9 @@ class HomeScreen extends ConsumerWidget {
                           SizedBox(height: 5.h),
 
                           Text(
-                            'Sistemas lineales y resolución de problemas',
+                            todayClasses.first.category.isNotEmpty
+                                ? todayClasses.first.category
+                                : todayClasses.first.subject,
                             style: TxtStyle.titleLarge(
                               color: Colors.white.withValues(alpha: .75),
                               fontSize: 14.5.sp,
@@ -235,10 +264,12 @@ class HomeScreen extends ConsumerWidget {
 
                           Row(
                             children: [
-                              const UserAvatar(
-                                initials: 'RH',
+                              UserAvatar(
+                                initials: _extractInitials(
+                                  todayClasses.first.teacher,
+                                ),
                                 size: 32,
-                                backgroundColor: Color(0xFFE4E9F8),
+                                backgroundColor: const Color(0xFFE4E9F8),
                               ),
                               SizedBox(width: 9.w),
                               Expanded(
@@ -257,7 +288,9 @@ class HomeScreen extends ConsumerWidget {
                                     Text(
                                       todayClasses.first.room,
                                       style: TxtStyle.titleLarge(
-                                        color: Colors.white.withValues(alpha: .65),
+                                        color: Colors.white.withValues(
+                                          alpha: .65,
+                                        ),
                                         fontSize: 13.sp,
                                       ),
                                     ),
@@ -340,7 +373,9 @@ class HomeScreen extends ConsumerWidget {
                             ),
                           ),
                           const Spacer(),
-                          StatusPill(text: ref.watchTr(AppStrings.homePresentToday)),
+                          StatusPill(
+                            text: ref.watchTr(AppStrings.homePresentToday),
+                          ),
                         ],
                       ),
 

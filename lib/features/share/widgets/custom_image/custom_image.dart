@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-enum ImageType {
-  png,
-  svg,
-}
+enum ImageType { png, svg }
 
 class CustomImage extends StatefulWidget {
   final String imageSrc;
@@ -47,20 +44,8 @@ class _CustomImageState extends State<CustomImage> {
   }
 
   @override
-  Widget build(BuildContext context) { 
-    
-     if(widget.imageSrc.endsWith('svg')){
-       imageWidget = SvgPicture.asset(
-         widget.imageSrc,
-         // ignore: deprecated_member_use
-         color: widget.imageColor,
-         height: widget.height,
-         width: widget.width,
-         fit: widget.boxFit ?? BoxFit.cover,
-       );
-     }
-    
- if (widget.imageType == ImageType.svg) {
+  Widget build(BuildContext context) {
+    if (widget.imageSrc.endsWith('svg')) {
       imageWidget = SvgPicture.asset(
         widget.imageSrc,
         // ignore: deprecated_member_use
@@ -71,6 +56,16 @@ class _CustomImageState extends State<CustomImage> {
       );
     }
 
+    if (widget.imageType == ImageType.svg) {
+      imageWidget = SvgPicture.asset(
+        widget.imageSrc,
+        // ignore: deprecated_member_use
+        color: widget.imageColor,
+        height: widget.height,
+        width: widget.width,
+        fit: widget.boxFit ?? BoxFit.cover,
+      );
+    }
 
     if (widget.imageSrc.endsWith('png')) {
       imageWidget = Image.asset(
@@ -84,9 +79,12 @@ class _CustomImageState extends State<CustomImage> {
     }
 
     return Container(
-        margin: EdgeInsets.symmetric(
-            horizontal: widget.horizontal, vertical: widget.vertical),
-        width: widget.sizeWidth,
-        child: imageWidget);
+      margin: EdgeInsets.symmetric(
+        horizontal: widget.horizontal,
+        vertical: widget.vertical,
+      ),
+      width: widget.sizeWidth,
+      child: imageWidget,
+    );
   }
 }

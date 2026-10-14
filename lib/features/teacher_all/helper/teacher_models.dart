@@ -21,7 +21,8 @@ class TeacherProfileData {
     required this.phone,
     this.department = 'Matemáticas y Física',
     this.office = 'Aula 2 / Despacho 4',
-    this.bio = 'Docente titular de matemáticas especializado en bachillerato, álgebra y preparación académica.',
+    this.bio =
+        'Docente titular de matemáticas especializado en bachillerato, álgebra y preparación académica.',
     this.language = 'Español',
     this.profileImagePath,
   });

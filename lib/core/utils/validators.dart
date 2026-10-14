@@ -1,4 +1,4 @@
-import '../../core/helper/snackbar/api_snackbar.dart';
+import '../helper/snackbar/api_snackbar.dart';
 
 class AulaValidation {
   static bool required({required String value, required String fieldName}) {

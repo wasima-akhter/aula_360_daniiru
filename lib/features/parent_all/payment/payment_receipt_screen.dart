@@ -158,12 +158,16 @@ class PaymentReceiptScreen extends ConsumerWidget {
       ),
       child: Column(
         children: [
-          _receiptRow(ref.watchTr(AppStrings.periodLabel), ref.watchTr(AppStrings.academicYearLabel)),
+          _receiptRow(
+            ref.watchTr(AppStrings.periodLabel),
+            ref.watchTr(AppStrings.academicYearLabel),
+          ),
           _receiptDivider(),
           _receiptRow(
             ref.watchTr(AppStrings.studentLabel),
             'Lucas Rivera',
-            subValue: '${ref.watchTr(AppStrings.eso2)} • ${ref.watchTr(AppStrings.aula3)}',
+            subValue:
+                '${ref.watchTr(AppStrings.eso2)} • ${ref.watchTr(AppStrings.aula3)}',
           ),
           _receiptDivider(),
           _receiptRow(ref.watchTr(AppStrings.invoiceLabel), '#A360-8492'),

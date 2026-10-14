@@ -18,7 +18,9 @@ class TeacherSettingsScreen extends ConsumerWidget {
         : tr(AppStrings.languageEnglishUs);
 
     final settingsState = ref.watch(teacherSettingsControllerProvider);
-    final settingsController = ref.read(teacherSettingsControllerProvider.notifier);
+    final settingsController = ref.read(
+      teacherSettingsControllerProvider.notifier,
+    );
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
@@ -54,7 +56,10 @@ class TeacherSettingsScreen extends ConsumerWidget {
   // APP BAR
   // ===============================================================
 
-  PreferredSizeWidget _appBar(BuildContext context, String Function(String) tr) {
+  PreferredSizeWidget _appBar(
+    BuildContext context,
+    String Function(String) tr,
+  ) {
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
@@ -366,7 +371,10 @@ class TeacherSettingsScreen extends ConsumerWidget {
                   child: OutlinedButton(
                     onPressed: () {
                       Navigator.pop(bottomSheetContext);
-                      _showMessage(context, tr(AppStrings.settingsSessionsSignedout));
+                      _showMessage(
+                        context,
+                        tr(AppStrings.settingsSessionsSignedout),
+                      );
                     },
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppColors.error,

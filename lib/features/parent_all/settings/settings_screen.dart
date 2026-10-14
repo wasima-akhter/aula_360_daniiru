@@ -50,7 +50,9 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   PreferredSizeWidget _settingsAppBar(
-      BuildContext context, String Function(String) tr) {
+    BuildContext context,
+    String Function(String) tr,
+  ) {
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
@@ -141,7 +143,12 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _languageCard(BuildContext context, WidgetRef ref, String Function(String) tr, String langLabel) {
+  Widget _languageCard(
+    BuildContext context,
+    WidgetRef ref,
+    String Function(String) tr,
+    String langLabel,
+  ) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(

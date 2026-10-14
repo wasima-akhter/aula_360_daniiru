@@ -32,7 +32,9 @@ class TeacherProfileScreen extends ConsumerWidget {
                   children: [
                     _profileCard(ref, profile),
                     SizedBox(height: 20.h),
-                    _sectionLabel(ref.watchTr(AppStrings.academyNavigationTitle)),
+                    _sectionLabel(
+                      ref.watchTr(AppStrings.academyNavigationTitle),
+                    ),
                     SizedBox(height: 8.h),
                     _navigationCard(context, ref),
                     SizedBox(height: 18.h),

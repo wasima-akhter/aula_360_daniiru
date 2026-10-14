@@ -32,7 +32,8 @@ class ParentReportsState {
   });
 
   List<ReportModel> getFilteredReports(List<String> categories) {
-    if (selectedCategoryIndex == 0 || selectedCategoryIndex >= categories.length) {
+    if (selectedCategoryIndex == 0 ||
+        selectedCategoryIndex >= categories.length) {
       return reports;
     }
     final category = categories[selectedCategoryIndex].toLowerCase();
@@ -64,7 +65,8 @@ class ParentReportsState {
       reports: reports ?? this.reports,
       students: students ?? this.students,
       selectedStudentIndex: selectedStudentIndex ?? this.selectedStudentIndex,
-      selectedCategoryIndex: selectedCategoryIndex ?? this.selectedCategoryIndex,
+      selectedCategoryIndex:
+          selectedCategoryIndex ?? this.selectedCategoryIndex,
       isLoading: isLoading ?? this.isLoading,
       error: error,
     );
@@ -73,8 +75,8 @@ class ParentReportsState {
 
 final parentReportsControllerProvider =
     NotifierProvider<ParentReportsController, ParentReportsState>(
-  ParentReportsController.new,
-);
+      ParentReportsController.new,
+    );
 
 class ParentReportsController extends Notifier<ParentReportsState> {
   late final ParentRepository _repository;

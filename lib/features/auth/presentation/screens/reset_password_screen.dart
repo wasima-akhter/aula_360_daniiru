@@ -3,7 +3,7 @@ import '../../../share/export/screen_export.dart';
 import '../../../share/widgets/button/app_logo.dart';
 import '../../../share/widgets/button/custom_back_button.dart';
 import '../../../share/widgets/text_field/custom_text_field.dart';
-import '../../abc.dart';
+import '../../../../core/utils/validators.dart';
 import '../controllers/password_recovery_controller.dart';
 
 class ResetPasswordScreen extends ConsumerStatefulWidget {

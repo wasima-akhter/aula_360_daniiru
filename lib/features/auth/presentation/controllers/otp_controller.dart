@@ -1,7 +1,8 @@
 import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../data/repositories/auth_repository_impl.dart';
-import '../../domain/repositories/auth_repository.dart';
+
+import 'auth_controller.dart';
 
 class OtpState {
   final String otp;
@@ -35,16 +36,15 @@ class OtpState {
   }
 }
 
-final otpControllerProvider =
-    NotifierProvider<OtpController, OtpState>(OtpController.new);
+final otpControllerProvider = NotifierProvider<OtpController, OtpState>(
+  OtpController.new,
+);
 
 class OtpController extends Notifier<OtpState> {
   Timer? _timer;
-  late final AuthRepository _repository;
 
   @override
   OtpState build() {
-    _repository = ref.watch(authRepositoryProvider);
     _startTimer();
     ref.onDispose(() {
       _timer?.cancel();
@@ -71,7 +71,9 @@ class OtpController extends Notifier<OtpState> {
 
   Future<void> resendOtp(String target, OtpPurpose purpose) async {
     if (!state.canResend) return;
-    await _repository.sendOtp(target: target, purpose: purpose);
+    if (purpose == OtpPurpose.signup) {
+      await ref.read(authControllerProvider.notifier).resendOtp();
+    }
     _startTimer();
   }
 
@@ -82,12 +84,17 @@ class OtpController extends Notifier<OtpState> {
     }
     state = state.copyWith(isVerifying: true, error: null);
     try {
-      final success = await _repository.verifyOtp(
-        otp: state.otp,
-        purpose: purpose,
-      );
-      state = state.copyWith(isVerifying: false);
-      return success;
+      if (purpose == OtpPurpose.signup) {
+        final success = await ref
+            .read(authControllerProvider.notifier)
+            .verifyOtp(otp: state.otp.trim());
+        state = state.copyWith(isVerifying: false);
+        return success;
+      } else {
+        // forgot password flow simulation/placeholder until backend reset-otp endpoint is available
+        state = state.copyWith(isVerifying: false);
+        return state.otp.trim().length == 6;
+      }
     } catch (e) {
       state = state.copyWith(isVerifying: false, error: e.toString());
       return false;

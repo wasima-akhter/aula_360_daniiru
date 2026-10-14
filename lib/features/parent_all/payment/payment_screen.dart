@@ -5,7 +5,8 @@ class TuitionPaymentScreen extends ConsumerStatefulWidget {
   const TuitionPaymentScreen({super.key});
 
   @override
-  ConsumerState<TuitionPaymentScreen> createState() => _TuitionPaymentScreenState();
+  ConsumerState<TuitionPaymentScreen> createState() =>
+      _TuitionPaymentScreenState();
 }
 
 class _TuitionPaymentScreenState extends ConsumerState<TuitionPaymentScreen> {
@@ -14,7 +15,9 @@ class _TuitionPaymentScreenState extends ConsumerState<TuitionPaymentScreen> {
   @override
   Widget build(BuildContext context) {
     final paymentState = ref.watch(parentPaymentControllerProvider);
-    final paymentController = ref.read(parentPaymentControllerProvider.notifier);
+    final paymentController = ref.read(
+      parentPaymentControllerProvider.notifier,
+    );
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
@@ -311,7 +314,10 @@ class _TuitionPaymentScreenState extends ConsumerState<TuitionPaymentScreen> {
                 ),
               ),
               Expanded(
-                child: _field(title: ref.watchTr(AppStrings.postalCode), value: '28013'),
+                child: _field(
+                  title: ref.watchTr(AppStrings.postalCode),
+                  value: '28013',
+                ),
               ),
             ],
           ),
@@ -435,7 +441,10 @@ class _TuitionPaymentScreenState extends ConsumerState<TuitionPaymentScreen> {
     );
   }
 
-  Widget _payButton(ParentPaymentState state, ParentPaymentController controller) {
+  Widget _payButton(
+    ParentPaymentState state,
+    ParentPaymentController controller,
+  ) {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton.icon(
@@ -451,11 +460,16 @@ class _TuitionPaymentScreenState extends ConsumerState<TuitionPaymentScreen> {
             ? SizedBox(
                 width: 16.w,
                 height: 16.w,
-                child: const CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                child: const CircularProgressIndicator(
+                  color: Colors.white,
+                  strokeWidth: 2,
+                ),
               )
             : Icon(Icons.lock_outline, color: Colors.white, size: 15.sp),
         label: Text(
-          state.isProcessing ? 'Procesando...' : '${ref.watchTr(AppStrings.payNowBtn)} 340,00 €',
+          state.isProcessing
+              ? 'Procesando...'
+              : '${ref.watchTr(AppStrings.payNowBtn)} 340,00 €',
           style: TxtStyle.titleLarge(
             color: Colors.white,
             fontSize: 16.sp,

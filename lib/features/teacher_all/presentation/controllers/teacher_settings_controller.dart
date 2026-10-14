@@ -48,8 +48,8 @@ class TeacherSettingsState {
 
 final teacherSettingsControllerProvider =
     NotifierProvider<TeacherSettingsController, TeacherSettingsState>(
-  TeacherSettingsController.new,
-);
+      TeacherSettingsController.new,
+    );
 
 class TeacherSettingsController extends Notifier<TeacherSettingsState> {
   late final TeacherRepository _repository;
@@ -60,10 +60,13 @@ class TeacherSettingsController extends Notifier<TeacherSettingsState> {
     return const TeacherSettingsState();
   }
 
-  void toggleEmail(bool value) => state = state.copyWith(emailNotifications: value);
-  void togglePush(bool value) => state = state.copyWith(pushNotifications: value);
+  void toggleEmail(bool value) =>
+      state = state.copyWith(emailNotifications: value);
+  void togglePush(bool value) =>
+      state = state.copyWith(pushNotifications: value);
   void toggleSms(bool value) => state = state.copyWith(smsNotifications: value);
-  void toggleClassReminders(bool value) => state = state.copyWith(classReminders: value);
+  void toggleClassReminders(bool value) =>
+      state = state.copyWith(classReminders: value);
   void toggleStudentReportsAlert(bool value) =>
       state = state.copyWith(studentReportsAlert: value);
   void toggleDarkMode(bool value) => state = state.copyWith(darkMode: value);
@@ -81,7 +84,10 @@ class TeacherSettingsController extends Notifier<TeacherSettingsState> {
       state = state.copyWith(isChangingPassword: false);
       return true;
     } catch (e) {
-      state = state.copyWith(isChangingPassword: false, passwordError: e.toString());
+      state = state.copyWith(
+        isChangingPassword: false,
+        passwordError: e.toString(),
+      );
       return false;
     }
   }

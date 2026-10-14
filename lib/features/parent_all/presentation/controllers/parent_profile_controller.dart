@@ -1,5 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/service/language/language_provider.dart';
+import '../../../auth/presentation/providers/auth_provider.dart';
+
 class ParentProfileState {
   final String name;
   final String email;
@@ -11,11 +14,11 @@ class ParentProfileState {
   final String? error;
 
   const ParentProfileState({
-    this.name = 'Eleanor Vance',
-    this.email = 'eleanor.vance@gmail.com',
-    this.phone = '+34 612 345 678',
-    this.address = 'Calle Gran Vía 28, Madrid',
-    this.language = 'Español',
+    this.name = '',
+    this.email = '',
+    this.phone = '',
+    this.address = '',
+    this.language = 'English',
     this.avatarUrl,
     this.isSaving = false,
     this.error,
@@ -46,13 +49,26 @@ class ParentProfileState {
 
 final parentProfileControllerProvider =
     NotifierProvider<ParentProfileController, ParentProfileState>(
-  ParentProfileController.new,
-);
+      ParentProfileController.new,
+    );
 
 class ParentProfileController extends Notifier<ParentProfileState> {
   @override
   ParentProfileState build() {
-    return const ParentProfileState();
+    final authUser = ref.watch(authControllerProvider).user;
+    final currentLang =
+        ref.watch(languageProvider).valueOrNull?.language.label ?? 'English';
+
+    return ParentProfileState(
+      name: authUser?.fullName.isNotEmpty == true
+          ? authUser!.fullName
+          : 'Parent User',
+      email: authUser?.email.isNotEmpty == true ? authUser!.email : '',
+      phone: authUser?.phone ?? '',
+      address: authUser?.address ?? '',
+      language: currentLang,
+      avatarUrl: authUser?.avatarUrl,
+    );
   }
 
   Future<bool> updateProfile({

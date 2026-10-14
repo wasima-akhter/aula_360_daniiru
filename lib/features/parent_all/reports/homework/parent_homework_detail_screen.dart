@@ -10,7 +10,10 @@ class HomeworkDetailsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
-      appBar: AulaAppBar(title: ref.watchTr(AppStrings.homeworkDetailsTitle), showBack: true),
+      appBar: AulaAppBar(
+        title: ref.watchTr(AppStrings.homeworkDetailsTitle),
+        showBack: true,
+      ),
       body: SafeArea(
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
@@ -132,7 +135,9 @@ class HomeworkDetailsScreen extends ConsumerWidget {
           ),
           SizedBox(height: 10.h),
           Text(
-            'Escribe un análisis de 500 palabras examinando los temas principales del texto. Cita al menos dos fragmentos específicos de los capítulos trabajados.',
+            homework.description.isNotEmpty
+                ? homework.description
+                : ref.watchTr(AppStrings.instructionsTitle),
             style: TxtStyle.bodyMedium(
               color: AppColors.text,
               fontSize: 15.sp,
@@ -164,14 +169,14 @@ class HomeworkDetailsScreen extends ConsumerWidget {
             children: [
               _fileCard(
                 icon: Icons.picture_as_pdf_outlined,
-                title: 'PDF o DOCX',
-                subtitle: 'Máx 10 MB',
+                title: 'PDF / DOCX',
+                subtitle: '10 MB',
               ),
               SizedBox(width: 10.w),
               _fileCard(
                 icon: Icons.description_outlined,
-                title: 'Guía de Apoyo',
-                subtitle: 'Tema 10–28',
+                title: ref.watchTr(AppStrings.navReports),
+                subtitle: ref.watchTr(AppStrings.allReports),
               ),
             ],
           ),
@@ -247,7 +252,11 @@ class HomeworkDetailsScreen extends ConsumerWidget {
                 ),
               ),
               const Spacer(),
-              StatusPill(text: completed ? ref.watchTr(AppStrings.completedTab) : ref.watchTr(AppStrings.pendingTab)),
+              StatusPill(
+                text: completed
+                    ? ref.watchTr(AppStrings.completedTab)
+                    : ref.watchTr(AppStrings.pendingTab),
+              ),
             ],
           ),
           SizedBox(height: 14.h),

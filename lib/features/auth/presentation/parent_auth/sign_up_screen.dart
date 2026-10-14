@@ -1,11 +1,12 @@
 import 'package:aula360/features/auth/presentation/screens/active_otp_screen.dart';
 
+import '../../../../core/helper/snackbar/api_snackbar.dart';
 import '../../../../utils/enum/app_enum.dart';
 import '../../../share/export/screen_export.dart';
 import '../../../share/widgets/button/app_logo.dart';
 import '../../../share/widgets/button/custom_back_button.dart';
 import '../../../share/widgets/text_field/custom_text_field.dart';
-import '../../abc.dart';
+import '../../../../core/utils/validators.dart';
 import '../controllers/auth_controller.dart';
 
 class SignUpScreen extends ConsumerStatefulWidget {
@@ -60,13 +61,15 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       return;
     }
 
-    final success = await ref.read(authControllerProvider.notifier).signUp(
-      fullName: fullNameController.text.trim(),
-      email: emailController.text.trim(),
-      phone: mobileController.text.trim(),
-      password: passwordController.text.trim(),
-      role: UserRole.parent,
-    );
+    final success = await ref
+        .read(authControllerProvider.notifier)
+        .signUp(
+          fullName: fullNameController.text.trim(),
+          email: emailController.text.trim(),
+          phone: mobileController.text.trim(),
+          password: passwordController.text.trim(),
+          role: UserRole.parent,
+        );
 
     if (!mounted) return;
 
@@ -79,6 +82,11 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           role: OtpRole.parent,
         ),
       );
+    } else {
+      final error =
+          ref.read(authControllerProvider).errorMessage ??
+          'Error al crear la cuenta';
+      ApiSnackbar.show(error, type: SnackbarType.error);
     }
   }
 

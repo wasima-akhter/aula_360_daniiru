@@ -47,7 +47,8 @@ class _EditTeacherProfileScreenState
     departmentController = TextEditingController(text: profile.department);
     officeController = TextEditingController(text: profile.office);
     bioController = TextEditingController(text: profile.bio);
-    language = profile.language;
+    final activeLang = ref.read(languageProvider).valueOrNull?.language;
+    language = activeLang == AppLanguage.spanish ? 'Español' : 'English (US)';
   }
 
   @override
@@ -351,9 +352,9 @@ class _EditTeacherProfileScreenState
       });
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(ref.watchTr(AppStrings.imageSelectError))));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(ref.watchTr(AppStrings.imageSelectError))),
+      );
     }
   }
 
@@ -379,9 +380,11 @@ class _EditTeacherProfileScreenState
           TextFormField(
             controller: controller,
             keyboardType: keyboardType,
-            validator: validator ??
+            validator:
+                validator ??
                 (value) {
-                  if (requiredField && (value == null || value.trim().isEmpty)) {
+                  if (requiredField &&
+                      (value == null || value.trim().isEmpty)) {
                     return '$label ${ref.watchTr(AppStrings.fieldIsRequiredSuffix)}';
                   }
                   return null;
@@ -571,6 +574,12 @@ class _EditTeacherProfileScreenState
     final success = await ref
         .read(teacherProfileControllerProvider.notifier)
         .updateProfile(updatedProfile);
+
+    if (language.contains('English')) {
+      ref.read(languageProvider.notifier).changeLanguage(AppLanguage.english);
+    } else if (language.contains('Español')) {
+      ref.read(languageProvider.notifier).changeLanguage(AppLanguage.spanish);
+    }
 
     if (!mounted) return;
 

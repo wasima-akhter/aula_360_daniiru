@@ -236,8 +236,6 @@ class DateConverter {
     final difference = date.difference(current);
 
     final days = difference.inDays;
-    final hours = difference.inHours.remainder(24);
-    final minutes = difference.inMinutes.remainder(60);
 
     final parts = <String>[];
 

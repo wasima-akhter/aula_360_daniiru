@@ -42,7 +42,11 @@ class TeacherReportsScreen extends ConsumerWidget {
                     itemBuilder: (context, index) {
                       return Padding(
                         padding: EdgeInsets.only(bottom: 9.h),
-                        child: _reportCard(context, ref, filteredReports[index]),
+                        child: _reportCard(
+                          context,
+                          ref,
+                          filteredReports[index],
+                        ),
                       );
                     },
                   ),
@@ -151,7 +155,11 @@ class TeacherReportsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _reportCard(BuildContext context, WidgetRef ref, TeacherReport report) {
+  Widget _reportCard(
+    BuildContext context,
+    WidgetRef ref,
+    TeacherReport report,
+  ) {
     return InkWell(
       borderRadius: BorderRadius.circular(8.r),
       onTap: () {

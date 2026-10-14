@@ -123,11 +123,20 @@ class TeacherReportSubmittedScreen extends ConsumerWidget {
       ),
       child: Column(
         children: [
-          _summaryRow(label: ref.watchTr(AppStrings.classroom), value: '${ref.watchTr(AppStrings.subjectMath)} Avanzadas'),
+          _summaryRow(
+            label: ref.watchTr(AppStrings.classroom),
+            value: '${ref.watchTr(AppStrings.subjectMath)} Avanzadas',
+          ),
           SizedBox(height: 12.h),
-          _summaryRow(label: 'Grupo', value: 'Grupo A • ${ref.watchTr(AppStrings.bachillerato1)}'),
+          _summaryRow(
+            label: 'Grupo',
+            value: 'Grupo A • ${ref.watchTr(AppStrings.bachillerato1)}',
+          ),
           SizedBox(height: 12.h),
-          _summaryRow(label: ref.watchTr(AppStrings.dateTime), value: '24 Oct 2024 • 10:28'),
+          _summaryRow(
+            label: ref.watchTr(AppStrings.dateTime),
+            value: '24 Oct 2024 • 10:28',
+          ),
         ],
       ),
     );

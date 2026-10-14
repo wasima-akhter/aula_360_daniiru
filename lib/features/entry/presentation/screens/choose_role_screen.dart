@@ -54,9 +54,7 @@ class ChooseRoleScreen extends ConsumerWidget {
                 description: tr(AppStrings.roleParentDescription),
                 selected: selectedRole == UserRole.parent,
                 onTap: () {
-                  ref
-                      .read(userRoleProvider.notifier)
-                      .setRole(UserRole.parent);
+                  ref.read(userRoleProvider.notifier).setRole(UserRole.parent);
                 },
               ),
 
@@ -70,9 +68,7 @@ class ChooseRoleScreen extends ConsumerWidget {
                 description: tr(AppStrings.roleTeacherDescription),
                 selected: selectedRole == UserRole.teacher,
                 onTap: () {
-                  ref
-                      .read(userRoleProvider.notifier)
-                      .setRole(UserRole.teacher);
+                  ref.read(userRoleProvider.notifier).setRole(UserRole.teacher);
                 },
               ),
 

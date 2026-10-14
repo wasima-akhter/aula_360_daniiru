@@ -7,7 +7,8 @@ class ReportDetailsScreen extends ConsumerStatefulWidget {
   const ReportDetailsScreen({super.key, required this.report});
 
   @override
-  ConsumerState<ReportDetailsScreen> createState() => _ReportDetailsScreenState();
+  ConsumerState<ReportDetailsScreen> createState() =>
+      _ReportDetailsScreenState();
 }
 
 class _ReportDetailsScreenState extends ConsumerState<ReportDetailsScreen> {
@@ -19,7 +20,10 @@ class _ReportDetailsScreenState extends ConsumerState<ReportDetailsScreen> {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
-      appBar: AulaAppBar(title: ref.watchTr(AppStrings.reportDetailTitle), showBack: true),
+      appBar: AulaAppBar(
+        title: ref.watchTr(AppStrings.reportDetailTitle),
+        showBack: true,
+      ),
       body: SafeArea(
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
@@ -101,7 +105,9 @@ class _ReportDetailsScreenState extends ConsumerState<ReportDetailsScreen> {
                     SizedBox(width: 7.w),
                     Flexible(
                       child: Text(
-                        report.dateLabel.replaceAll('HOY — ', '').replaceAll('AYER — ', ''),
+                        report.dateLabel
+                            .replaceAll('HOY — ', '')
+                            .replaceAll('AYER — ', ''),
                         style: TxtStyle.titleLarge(
                           color: AppColors.secondaryText,
                           fontSize: 13.5.sp,
@@ -115,10 +121,7 @@ class _ReportDetailsScreenState extends ConsumerState<ReportDetailsScreen> {
               Expanded(
                 child: Row(
                   children: [
-                    Icon(
-                      Icons.schedule_rounded,
-                      size: 16.sp,
-                    ),
+                    Icon(Icons.schedule_rounded, size: 16.sp),
                     SizedBox(width: 6.w),
                     Flexible(
                       child: Text(
@@ -147,7 +150,9 @@ class _ReportDetailsScreenState extends ConsumerState<ReportDetailsScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Redacción: Análisis del tema literario',
+            report.subject.isNotEmpty
+                ? '${report.subject}: ${ref.watchTr(AppStrings.homeworkTitle)}'
+                : ref.watchTr(AppStrings.homeworkAndTasks),
             style: TxtStyle.titleLarge(
               color: AppColors.text,
               fontSize: 17.sp,
@@ -156,7 +161,7 @@ class _ReportDetailsScreenState extends ConsumerState<ReportDetailsScreen> {
           ),
           SizedBox(height: 5.h),
           Text(
-            'Entrega: 26 Oct',
+            '${ref.watchTr(AppStrings.deadlinePrefix)} ${report.dateLabel}',
             style: TxtStyle.titleLarge(
               color: const Color(0xFFE68A27),
               fontSize: 14.sp,
@@ -165,7 +170,9 @@ class _ReportDetailsScreenState extends ConsumerState<ReportDetailsScreen> {
           ),
           SizedBox(height: 10.h),
           Text(
-            'Escribe un análisis de 500 palabras explicando la evolución de los personajes en el capítulo seleccionado.',
+            report.note.isNotEmpty
+                ? report.note
+                : ref.watchTr(AppStrings.homeworkAndTasks),
             style: TxtStyle.bodyMedium(
               color: AppColors.secondaryText,
               fontSize: 14.5.sp,
@@ -260,7 +267,9 @@ class _ReportDetailsScreenState extends ConsumerState<ReportDetailsScreen> {
               });
             },
             child: Text(
-              showFullNote ? ref.watchTr(AppStrings.showLess) : ref.watchTr(AppStrings.readFullNote),
+              showFullNote
+                  ? ref.watchTr(AppStrings.showLess)
+                  : ref.watchTr(AppStrings.readFullNote),
               style: TxtStyle.titleLarge(
                 color: AppColors.primary,
                 fontSize: 14.sp,
@@ -279,9 +288,19 @@ class _ReportDetailsScreenState extends ConsumerState<ReportDetailsScreen> {
       child: Row(
         children: [
           Expanded(
-            child: _statItem(ref.watchTr(AppStrings.status), ref.watchTr(AppStrings.present), const Color(0xFF2B9D70)),
+            child: _statItem(
+              ref.watchTr(AppStrings.status),
+              ref.watchTr(AppStrings.present),
+              const Color(0xFF2B9D70),
+            ),
           ),
-          Expanded(child: _statItem(ref.watchTr(AppStrings.duration), '1h 20min', AppColors.primary)),
+          Expanded(
+            child: _statItem(
+              ref.watchTr(AppStrings.duration),
+              '1h 20min',
+              AppColors.primary,
+            ),
+          ),
           Expanded(
             child: _statItem(
               ref.watchTr(AppStrings.participation),

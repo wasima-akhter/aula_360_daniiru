@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 import '../../share/export/screen_export.dart';
 import '../helper/parent_home_helper.dart';
 import '../presentation/controllers/parent_children_controller.dart';
@@ -6,13 +8,22 @@ import '../presentation/controllers/parent_schedule_controller.dart';
 class ScheduleScreen extends ConsumerWidget {
   const ScheduleScreen({super.key});
 
-  final days = const [
-    {'day': 'Lun', 'date': '22'},
-    {'day': 'Mar', 'date': '23'},
-    {'day': 'Mié', 'date': '24'},
-    {'day': 'Jue', 'date': '25'},
-    {'day': 'Vie', 'date': '26'},
-  ];
+  static List<Map<String, String>> _getWeekDays(String langCode) {
+    final now = DateTime.now();
+    final monday = now.subtract(Duration(days: now.weekday - 1));
+    final formatter = DateFormat.E(langCode);
+    return List.generate(5, (index) {
+      final d = monday.add(Duration(days: index));
+      final rawDay = formatter.format(d);
+      final dayLabel = rawDay.isNotEmpty
+          ? rawDay[0].toUpperCase() + rawDay.substring(1).replaceAll('.', '')
+          : rawDay;
+      return {
+        'day': dayLabel,
+        'date': d.day.toString(),
+      };
+    });
+  }
 
   final List<ClassModel> completedClasses = const [
     ClassModel(
@@ -30,10 +41,26 @@ class ScheduleScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final scheduleState = ref.watch(parentScheduleControllerProvider);
-    final scheduleController = ref.read(parentScheduleControllerProvider.notifier);
+    final scheduleController = ref.read(
+      parentScheduleControllerProvider.notifier,
+    );
     final childrenState = ref.watch(parentChildrenControllerProvider);
     final children = childrenState.children;
     final upcomingClasses = scheduleState.classes;
+
+    final langCode =
+        ref.watch(languageProvider).valueOrNull?.language.code ?? 'en';
+    final days = _getWeekDays(langCode);
+    final now = DateTime.now();
+    final monday = now.subtract(Duration(days: now.weekday - 1));
+    final selectedDayDate = monday.add(
+      Duration(days: scheduleState.selectedDayIndex.clamp(0, 4)),
+    );
+    final isSelectedDayToday = selectedDayDate.day == now.day &&
+        selectedDayDate.month == now.month &&
+        selectedDayDate.year == now.year;
+    final selectedDayTitle =
+        DateFormat('EEEE, d MMM', langCode).format(selectedDayDate);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
@@ -81,7 +108,13 @@ class ScheduleScreen extends ConsumerWidget {
                   child: Row(
                     children: [
                       for (int i = 0; i < children.length && i < 2; i++) ...[
-                        Expanded(child: _studentCard(children[i], scheduleState.selectedChildIndex == i, () => scheduleController.selectChild(i))),
+                        Expanded(
+                          child: _studentCard(
+                            children[i],
+                            scheduleState.selectedChildIndex == i,
+                            () => scheduleController.selectChild(i),
+                          ),
+                        ),
                         if (i == 0 && children.length > 1) SizedBox(width: 9.w),
                       ],
                     ],
@@ -100,35 +133,37 @@ class ScheduleScreen extends ConsumerWidget {
                       Row(
                         children: [
                           Text(
-                            'Miércoles, 24 Oct',
+                            selectedDayTitle,
                             style: TxtStyle.titleLarge(
                               color: AppColors.text,
                               fontSize: 17.sp,
                               fontWeight: FontWeight.w800,
                             ),
                           ),
-                          SizedBox(width: 7.w),
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 7.w,
-                              vertical: 3.h,
-                            ),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFE6EDFF),
-                              borderRadius: BorderRadius.circular(5.r),
-                            ),
-                            child: Text(
-                              ref.watchTr(AppStrings.today),
-                              style: TxtStyle.titleLarge(
-                                color: AppColors.primary,
-                                fontSize: 13.sp,
-                                fontWeight: FontWeight.w800,
+                          if (isSelectedDayToday) ...[
+                            SizedBox(width: 7.w),
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 7.w,
+                                vertical: 3.h,
+                              ),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFE6EDFF),
+                                borderRadius: BorderRadius.circular(5.r),
+                              ),
+                              child: Text(
+                                ref.watchTr(AppStrings.today),
+                                style: TxtStyle.titleLarge(
+                                  color: AppColors.primary,
+                                  fontSize: 13.sp,
+                                  fontWeight: FontWeight.w800,
+                                ),
                               ),
                             ),
-                          ),
+                          ],
                           const Spacer(),
                           Text(
-                            '${ref.watchTr(AppStrings.weekPrefix)} 9',
+                            '${ref.watchTr(AppStrings.weekPrefix)} ${((selectedDayDate.day / 7).ceil()).clamp(1, 12)}',
                             style: TxtStyle.titleLarge(
                               color: AppColors.secondaryText,
                               fontSize: 14.sp,
@@ -142,7 +177,14 @@ class ScheduleScreen extends ConsumerWidget {
                       Row(
                         children: [
                           for (int i = 0; i < days.length; i++)
-                            Expanded(child: _dayItem(i, scheduleState.selectedDayIndex == i, () => scheduleController.selectDay(i))),
+                            Expanded(
+                              child: _dayItem(
+                                days,
+                                i,
+                                scheduleState.selectedDayIndex == i,
+                                () => scheduleController.selectDay(i),
+                              ),
+                            ),
                         ],
                       ),
                     ],
@@ -217,7 +259,9 @@ class ScheduleScreen extends ConsumerWidget {
         child: Row(
           children: [
             UserAvatar(
-              initials: student.name.length >= 2 ? student.name.substring(0, 2).toUpperCase() : 'ST',
+              initials: student.name.length >= 2
+                  ? student.name.substring(0, 2).toUpperCase()
+                  : 'ST',
               size: 37,
             ),
             SizedBox(width: 8.w),
@@ -255,7 +299,12 @@ class ScheduleScreen extends ConsumerWidget {
     );
   }
 
-  Widget _dayItem(int index, bool selected, VoidCallback onTap) {
+  Widget _dayItem(
+    List<Map<String, String>> days,
+    int index,
+    bool selected,
+    VoidCallback onTap,
+  ) {
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(

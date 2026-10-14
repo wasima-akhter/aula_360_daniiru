@@ -12,7 +12,10 @@ class TeacherEndClassScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AulaAppBar(title: ref.watchTr(AppStrings.endClassTitle), showBack: true),
+      appBar: AulaAppBar(
+        title: ref.watchTr(AppStrings.endClassTitle),
+        showBack: true,
+      ),
       body: Column(
         children: [
           Expanded(

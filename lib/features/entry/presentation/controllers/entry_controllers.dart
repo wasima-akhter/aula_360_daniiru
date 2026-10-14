@@ -7,9 +7,10 @@ final onboardingItemsProvider = Provider<List<OnboardingItem>>((ref) {
   return repo.getOnboardingItems();
 });
 
-final onboardingPageIndexProvider = NotifierProvider<OnboardingPageIndexNotifier, int>(
-  OnboardingPageIndexNotifier.new,
-);
+final onboardingPageIndexProvider =
+    NotifierProvider<OnboardingPageIndexNotifier, int>(
+      OnboardingPageIndexNotifier.new,
+    );
 
 class OnboardingPageIndexNotifier extends Notifier<int> {
   @override

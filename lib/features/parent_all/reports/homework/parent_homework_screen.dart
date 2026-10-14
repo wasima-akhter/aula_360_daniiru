@@ -18,17 +18,27 @@ class HomeworkScreen extends ConsumerWidget {
     final state = ref.watch(parentHomeworkControllerProvider);
     final controller = ref.read(parentHomeworkControllerProvider.notifier);
 
-    final pendingCount =
-        state.homework.where((h) => h.status == HomeworkStatus.pending).length;
-    final completedCount =
-        state.homework.where((h) => h.status == HomeworkStatus.completed).length;
+    final pendingCount = state.homework
+        .where((h) => h.status == HomeworkStatus.pending)
+        .length;
+    final completedCount = state.homework
+        .where((h) => h.status == HomeworkStatus.completed)
+        .length;
 
-    final tabs = _getTabs(ref, state.homework.length, pendingCount, completedCount);
+    final tabs = _getTabs(
+      ref,
+      state.homework.length,
+      pendingCount,
+      completedCount,
+    );
     final filtered = state.filteredHomework;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
-      appBar: AulaAppBar(title: ref.watchTr(AppStrings.homeworkTitle), showBack: true),
+      appBar: AulaAppBar(
+        title: ref.watchTr(AppStrings.homeworkTitle),
+        showBack: true,
+      ),
       body: SafeArea(
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
@@ -200,7 +210,11 @@ class HomeworkScreen extends ConsumerWidget {
     );
   }
 
-  Widget _homeworkCard(BuildContext context, WidgetRef ref, HomeworkModel item) {
+  Widget _homeworkCard(
+    BuildContext context,
+    WidgetRef ref,
+    HomeworkModel item,
+  ) {
     final completed = item.status == HomeworkStatus.completed;
 
     return GestureDetector(

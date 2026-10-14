@@ -1,3 +1,4 @@
+import '../../auth/presentation/providers/auth_provider.dart';
 import '../../parent_all/helper/parent_home_helper.dart';
 import '../../share/export/screen_export.dart';
 
@@ -47,6 +48,11 @@ class TeacherReportDetailsScreen extends ConsumerWidget {
   }
 
   Widget _recordHeader(WidgetRef ref) {
+    final facultyName =
+        ref.watch(authControllerProvider).user?.fullName.isNotEmpty == true
+            ? ref.watch(authControllerProvider).user!.fullName
+            : 'Faculty';
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -61,7 +67,7 @@ class TeacherReportDetailsScreen extends ConsumerWidget {
         ),
         SizedBox(height: 7.h),
         Text(
-          'Matemáticas Avanzadas (Cálculo y Álgebra)',
+          ref.watchTr(AppStrings.subjectMath),
           style: TxtStyle.titleLarge(
             color: AppColors.text,
             fontSize: 22.sp,
@@ -70,7 +76,7 @@ class TeacherReportDetailsScreen extends ConsumerWidget {
         ),
         SizedBox(height: 5.h),
         Text(
-          '${ref.watchTr(AppStrings.groupA)}  •  ${ref.watchTr(AppStrings.aula2)}  •  24 Oct 2024',
+          '${ref.watchTr(AppStrings.groupA)}  •  ${ref.watchTr(AppStrings.aula2)}',
           style: TxtStyle.bodyMedium(
             color: AppColors.subtitleTextColor,
             fontSize: 15.sp,
@@ -86,7 +92,7 @@ class TeacherReportDetailsScreen extends ConsumerWidget {
             children: [
               TextSpan(text: ref.watchTr(AppStrings.facultyPrefix)),
               TextSpan(
-                text: 'Dra. Sarah Jenkins',
+                text: facultyName,
                 style: TxtStyle.bodyMedium(
                   color: AppColors.text,
                   fontSize: 15.sp,
@@ -107,7 +113,7 @@ class TeacherReportDetailsScreen extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '18 de 18 Presentes (100%)',
+            '18 / 18 ${ref.watchTr(AppStrings.present)} (100%)',
             style: TxtStyle.titleLarge(
               color: AppColors.text,
               fontSize: 16.sp,
@@ -116,7 +122,7 @@ class TeacherReportDetailsScreen extends ConsumerWidget {
           ),
           SizedBox(height: 5.h),
           Text(
-            'Valoración de actitud: 5.0 / 5.0 • Rigor académico: 4.8 / 5.0',
+            '${ref.watchTr(AppStrings.conductAndAttitudeTitle)}: 5.0 / 5.0',
             style: TxtStyle.bodyMedium(
               color: AppColors.subtitleTextColor,
               fontSize: 16.sp,
@@ -134,7 +140,7 @@ class TeacherReportDetailsScreen extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Tema 4: Regla de la cadena y derivación implícita',
+            ref.watchTr(AppStrings.sessionInfoTitle),
             style: TxtStyle.titleLarge(
               color: AppColors.text,
               fontSize: 16.sp,
@@ -143,9 +149,7 @@ class TeacherReportDetailsScreen extends ConsumerWidget {
           ),
           SizedBox(height: 6.h),
           Text(
-            'Se realizaron demostraciones en pizarra para funciones compuestas y trigonométricas. '
-            'Los 18 alumnos completaron 4 ejercicios prácticos en parejas, '
-            'seguidos de las actividades 14–28 del Tema 4.2.',
+            ref.watchTr(AppStrings.contentDeliveredTitle),
             style: TxtStyle.bodyMedium(
               color: AppColors.subtitleTextColor,
               fontSize: 16.sp,
@@ -160,12 +164,11 @@ class TeacherReportDetailsScreen extends ConsumerWidget {
   Widget _homeworkSection(WidgetRef ref) {
     return _detailSection(
       title: ref.watchTr(AppStrings.assignedTasksTitle).toUpperCase(),
-      trailing: 'Entrega: 29 Oct',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Relación 4: Derivación implícita y funciones compuestas',
+            ref.watchTr(AppStrings.homeworkTitle),
             style: TxtStyle.titleLarge(
               color: AppColors.text,
               fontSize: 16.sp,
@@ -174,7 +177,7 @@ class TeacherReportDetailsScreen extends ConsumerWidget {
           ),
           SizedBox(height: 6.h),
           Text(
-            'Ejercicios 12–25 del cuaderno de actividades (págs. 88–91) con justificación completa.',
+            ref.watchTr(AppStrings.assignedTasksTitle),
             style: TxtStyle.bodyMedium(
               color: AppColors.subtitleTextColor,
               fontSize: 16.sp,
@@ -189,7 +192,6 @@ class TeacherReportDetailsScreen extends ConsumerWidget {
   Widget _facultyObservation(WidgetRef ref) {
     return _detailSection(
       title: ref.watchTr(AppStrings.facultyObservationTitle),
-      trailing: '24 Oct, 10:28',
       child: Container(
         padding: EdgeInsets.only(left: 10.w),
         decoration: const BoxDecoration(
@@ -198,10 +200,7 @@ class TeacherReportDetailsScreen extends ConsumerWidget {
           ),
         ),
         child: Text(
-          '"El grupo demostró una rápida asimilación de la regla de la cadena. '
-          'Lucas Rivera y Sofía Chen guiaron con solvencia la resolución en pizarra. '
-          'Para la próxima sesión, reforzar con ejercicios de trigonometría inversa antes '
-          'de pasar a aplicaciones de la derivada."',
+          '"${ref.watchTr(AppStrings.facultyObservationTitle)}"',
           style: TxtStyle.bodyMedium(
             color: AppColors.subtitleTextColor,
             fontSize: 16.sp,

@@ -32,14 +32,20 @@ class AppStrings {
   static const String onboardingTitle1 = 'onboarding_title_1';
   static const String onboardingDesc1 = 'onboarding_desc_1';
   static const String onboardingTagUnifiedHub = 'onboarding_tag_unified_hub';
-  static const String onboardingTagSmartTimetables = 'onboarding_tag_smart_timetables';
-  static const String onboardingTagRealtimeSync = 'onboarding_tag_realtime_sync';
+  static const String onboardingTagSmartTimetables =
+      'onboarding_tag_smart_timetables';
+  static const String onboardingTagRealtimeSync =
+      'onboarding_tag_realtime_sync';
   static const String onboardingTitle2 = 'onboarding_title_2';
   static const String onboardingDesc2 = 'onboarding_desc_2';
-  static const String onboardingTagLiveAttendance = 'onboarding_tag_live_attendance';
-  static const String onboardingTagHomeworkTracker = 'onboarding_tag_homework_tracker';
-  static const String onboardingTagProgressReports = 'onboarding_tag_progress_reports';
-  static const String onboardingTagClassSchedules = 'onboarding_tag_class_schedules';
+  static const String onboardingTagLiveAttendance =
+      'onboarding_tag_live_attendance';
+  static const String onboardingTagHomeworkTracker =
+      'onboarding_tag_homework_tracker';
+  static const String onboardingTagProgressReports =
+      'onboarding_tag_progress_reports';
+  static const String onboardingTagClassSchedules =
+      'onboarding_tag_class_schedules';
   static const String onboardingTitle3 = 'onboarding_title_3';
   static const String onboardingDesc3 = 'onboarding_desc_3';
 
@@ -73,7 +79,8 @@ class AppStrings {
   static const String fieldMobileOrEmail = 'field_mobile_or_email';
   static const String fieldMobileOrEmailHint = 'field_mobile_or_email_hint';
   static const String fieldEmailOrFacultyId = 'field_email_or_faculty_id';
-  static const String fieldEmailOrFacultyIdHint = 'field_email_or_faculty_id_hint';
+  static const String fieldEmailOrFacultyIdHint =
+      'field_email_or_faculty_id_hint';
   static const String fieldPassword = 'field_password';
   static const String fieldPasswordHint = 'field_password_hint';
   static const String rememberDevice = 'remember_device';
@@ -131,12 +138,15 @@ class AppStrings {
   static const String btnResetPassword = 'btn_reset_password';
   static const String passwordMismatchTitle = 'password_mismatch_title';
   static const String passwordMismatchMessage = 'password_mismatch_message';
-  static const String passwordResetSuccessTitle = 'password_reset_success_title';
-  static const String passwordResetSuccessMessage = 'password_reset_success_message';
+  static const String passwordResetSuccessTitle =
+      'password_reset_success_title';
+  static const String passwordResetSuccessMessage =
+      'password_reset_success_message';
   static const String changePasswordTitle = 'change_password_title';
   static const String currentPassword = 'current_password';
   static const String currentPasswordHint = 'current_password_hint';
-  static const String changePasswordHeaderSubtitle = 'change_password_header_subtitle';
+  static const String changePasswordHeaderSubtitle =
+      'change_password_header_subtitle';
   static const String invalidPassword = 'invalid_password';
   static const String passwordDifferentMsg = 'password_different_msg';
   static const String passwordUpdatedMsg = 'password_updated_msg';
@@ -160,41 +170,62 @@ class AppStrings {
   static const String settingsTitle = 'settings_title';
   static const String settingsProfileBreadcrumb = 'settings_profile_breadcrumb';
   static const String settingsSectionLanguage = 'settings_section_language';
-  static const String settingsSectionNotifications = 'settings_section_notifications';
-  static const String settingsSectionAccountSecurity = 'settings_section_account_security';
+  static const String settingsSectionNotifications =
+      'settings_section_notifications';
+  static const String settingsSectionAccountSecurity =
+      'settings_section_account_security';
   static const String settingsSectionAccount = 'settings_section_account';
-  static const String settingsLangDisplayLanguage = 'settings_lang_display_language';
+  static const String settingsLangDisplayLanguage =
+      'settings_lang_display_language';
   static const String settingsLangSubtitle = 'settings_lang_subtitle';
   static const String settingsLangLabel = 'settings_lang_label';
-  static const String settingsNotifClassReminders = 'settings_notif_class_reminders';
-  static const String settingsNotifClassRemindersSub = 'settings_notif_class_reminders_sub';
-  static const String settingsNotifParentMessages = 'settings_notif_parent_messages';
-  static const String settingsNotifParentMessagesSub = 'settings_notif_parent_messages_sub';
+  static const String settingsNotifClassReminders =
+      'settings_notif_class_reminders';
+  static const String settingsNotifClassRemindersSub =
+      'settings_notif_class_reminders_sub';
+  static const String settingsNotifParentMessages =
+      'settings_notif_parent_messages';
+  static const String settingsNotifParentMessagesSub =
+      'settings_notif_parent_messages_sub';
   static const String settingsNotifPostClass = 'settings_notif_post_class';
-  static const String settingsNotifPostClassSub = 'settings_notif_post_class_sub';
+  static const String settingsNotifPostClassSub =
+      'settings_notif_post_class_sub';
   static const String settingsNotifPush = 'settings_notif_push';
   static const String settingsNotifPushSub = 'settings_notif_push_sub';
-  static const String settingsNotifAttendanceAlerts = 'settings_notif_attendance_alerts';
-  static const String settingsNotifAttendanceAlertsSub = 'settings_notif_attendance_alerts_sub';
+  static const String settingsNotifAttendanceAlerts =
+      'settings_notif_attendance_alerts';
+  static const String settingsNotifAttendanceAlertsSub =
+      'settings_notif_attendance_alerts_sub';
   static const String settingsSecurityBiometric = 'settings_security_biometric';
-  static const String settingsSecurityBiometricSub = 'settings_security_biometric_sub';
-  static const String settingsSecurityChangePassword = 'settings_security_change_password';
-  static const String settingsSecurityChangePasswordSub = 'settings_security_change_password_sub';
-  static const String settingsSecurityActiveSessions = 'settings_security_active_sessions';
-  static const String settingsSecurityActiveSessionsSub = 'settings_security_active_sessions_sub';
+  static const String settingsSecurityBiometricSub =
+      'settings_security_biometric_sub';
+  static const String settingsSecurityChangePassword =
+      'settings_security_change_password';
+  static const String settingsSecurityChangePasswordSub =
+      'settings_security_change_password_sub';
+  static const String settingsSecurityActiveSessions =
+      'settings_security_active_sessions';
+  static const String settingsSecurityActiveSessionsSub =
+      'settings_security_active_sessions_sub';
   static const String settingsSessionsTitle = 'settings_sessions_title';
   static const String settingsSessionsSubtitle = 'settings_sessions_subtitle';
-  static const String settingsSessionsSignoutOthers = 'settings_sessions_signout_others';
+  static const String settingsSessionsSignoutOthers =
+      'settings_sessions_signout_others';
   static const String settingsSessionsCurrent = 'settings_sessions_current';
   static const String settingsSessionsBadge = 'settings_sessions_badge';
   static const String settingsBiometricEnabled = 'settings_biometric_enabled';
   static const String settingsBiometricDisabled = 'settings_biometric_disabled';
-  static const String settingsClassRemindersEnabled = 'settings_class_reminders_enabled';
-  static const String settingsClassRemindersDisabled = 'settings_class_reminders_disabled';
-  static const String settingsParentMessagesEnabled = 'settings_parent_messages_enabled';
-  static const String settingsParentMessagesDisabled = 'settings_parent_messages_disabled';
+  static const String settingsClassRemindersEnabled =
+      'settings_class_reminders_enabled';
+  static const String settingsClassRemindersDisabled =
+      'settings_class_reminders_disabled';
+  static const String settingsParentMessagesEnabled =
+      'settings_parent_messages_enabled';
+  static const String settingsParentMessagesDisabled =
+      'settings_parent_messages_disabled';
   static const String settingsPostClassEnabled = 'settings_post_class_enabled';
-  static const String settingsPostClassDisabled = 'settings_post_class_disabled';
+  static const String settingsPostClassDisabled =
+      'settings_post_class_disabled';
   static const String settingsLangChanged = 'settings_lang_changed';
   static const String settingsSessionsSignedout = 'settings_sessions_signedout';
 
@@ -250,7 +281,8 @@ class AppStrings {
   static const String residentialAddressHint = 'residential_address_hint';
   static const String btnCompleteProfile = 'btn_complete_profile';
   static const String btnSaveChanges = 'btn_save_changes';
-  static const String navigatesToParentDashboard = 'navigates_to_parent_dashboard';
+  static const String navigatesToParentDashboard =
+      'navigates_to_parent_dashboard';
   static const String relationshipMother = 'relationship_mother';
   static const String relationshipFather = 'relationship_father';
   static const String relationshipGuardian = 'relationship_guardian';
@@ -276,7 +308,8 @@ class AppStrings {
   static const String facultyBioHint = 'faculty_bio_hint';
   static const String optional = 'optional';
   static const String btnCompleteTeacherSetup = 'btn_complete_teacher_setup';
-  static const String navigatesToFacultyDashboard = 'navigates_to_faculty_dashboard';
+  static const String navigatesToFacultyDashboard =
+      'navigates_to_faculty_dashboard';
   static const String logout = 'logout';
   static const String logoutConfirmTitle = 'logout_confirm_title';
   static const String logoutConfirmMessage = 'logout_confirm_message';
@@ -412,7 +445,8 @@ class AppStrings {
   static const String location = 'location';
   static const String scheduleTitle = 'schedule_title';
   static const String attendanceSummaryTitle = 'attendance_summary_title';
-  static const String finishClassAndCreateReport = 'finish_class_and_create_report';
+  static const String finishClassAndCreateReport =
+      'finish_class_and_create_report';
   static const String backToAttendance = 'back_to_attendance';
   static const String attendanceLockedNotice = 'attendance_locked_notice';
   static const String postClassReportTitle = 'post_class_report_title';
@@ -456,7 +490,8 @@ class AppStrings {
   static const String announcementsTitle = 'announcements_title';
   static const String announcementsSubtitle = 'announcements_subtitle';
   static const String familyCommunicationTitle = 'family_communication_title';
-  static const String familyCommunicationSubtitle = 'family_communication_subtitle';
+  static const String familyCommunicationSubtitle =
+      'family_communication_subtitle';
   static const String nextClass = 'next_class';
   static const String scheduled = 'scheduled';
   static const String groupA = 'group_a';
@@ -466,17 +501,21 @@ class AppStrings {
   static const String submitted = 'submitted';
   static const String needsCheckIn = 'needs_check_in';
   static const String attendanceRecordTitle = 'attendance_record_title';
-  static const String attendanceAndParticipationTitle = 'attendance_and_participation_title';
+  static const String attendanceAndParticipationTitle =
+      'attendance_and_participation_title';
   static const String facultyObservationTitle = 'faculty_observation_title';
-  static const String downloadOfficialRecordPdf = 'download_official_record_pdf';
+  static const String downloadOfficialRecordPdf =
+      'download_official_record_pdf';
   static const String facultyPrefix = 'faculty_prefix';
   static const String activeStatus = 'active_status';
   static const String deskPrefix = 'desk_prefix';
   static const String jpgPngMax5mb = 'jpg_png_max_5mb';
   static const String imageSizeLimitError = 'image_size_limit_error';
   static const String imageSelectError = 'image_select_error';
-  static const String personalContactInfoSubtitle = 'personal_contact_info_subtitle';
-  static const String academyAnnouncementsSubtitle = 'academy_announcements_subtitle';
+  static const String personalContactInfoSubtitle =
+      'personal_contact_info_subtitle';
+  static const String academyAnnouncementsSubtitle =
+      'academy_announcements_subtitle';
   static const String settingsNavSubtitle = 'settings_nav_subtitle';
   static const String facultyInfoTitle = 'faculty_info_title';
   static const String deptSubjectLabel = 'dept_subject_label';
@@ -547,7 +586,8 @@ class AppStrings {
   static const String listCurrentlyEmpty = 'list_currently_empty';
   static const String offlineMessage = 'offline_message';
   static const String unableToPlayVideo = 'unable_to_play_video';
-  static const String videoUnavailableOrConnectionFailed = 'video_unavailable_or_connection_failed';
+  static const String videoUnavailableOrConnectionFailed =
+      'video_unavailable_or_connection_failed';
 
   // ── Greetings ─────────────────────────────────────────────────────────────
   static const String goodMorning = 'good_morning';

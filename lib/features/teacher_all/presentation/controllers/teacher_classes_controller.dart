@@ -38,8 +38,8 @@ class TeacherClassesState {
 
 final teacherClassesControllerProvider =
     NotifierProvider<TeacherClassesController, TeacherClassesState>(
-  TeacherClassesController.new,
-);
+      TeacherClassesController.new,
+    );
 
 class TeacherClassesController extends Notifier<TeacherClassesState> {
   late final TeacherRepository _repository;

@@ -15,7 +15,10 @@ class ChildProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(parentChildrenControllerProvider);
-    final activeChild = child ?? state.selectedChild ?? (state.children.isNotEmpty ? state.children.first : null);
+    final activeChild =
+        child ??
+        state.selectedChild ??
+        (state.children.isNotEmpty ? state.children.first : null);
 
     if (activeChild == null) {
       return Scaffold(
@@ -35,7 +38,9 @@ class ChildProfileScreen extends ConsumerWidget {
             children: [
               _studentHeader(context, ref, activeChild),
               SizedBox(height: 18.h),
-              _sectionLabel(ref.watchTr(AppStrings.academicActivity).toUpperCase()),
+              _sectionLabel(
+                ref.watchTr(AppStrings.academicActivity).toUpperCase(),
+              ),
               SizedBox(height: 8.h),
               _activityCard(context, ref, activeChild),
               SizedBox(height: 13.h),
@@ -47,7 +52,11 @@ class ChildProfileScreen extends ConsumerWidget {
     );
   }
 
-  Widget _studentHeader(BuildContext context, WidgetRef ref, ChildModel activeChild) {
+  Widget _studentHeader(
+    BuildContext context,
+    WidgetRef ref,
+    ChildModel activeChild,
+  ) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(12.w),
@@ -143,7 +152,9 @@ class ChildProfileScreen extends ConsumerWidget {
                   AppColors.emeraldGreenColor,
                 ),
               ),
-              Expanded(child: _stat('Nota Media', '8.8', AppColors.primaryDark)),
+              Expanded(
+                child: _stat('Nota Media', '8.8', AppColors.primaryDark),
+              ),
               Expanded(
                 child: _stat('Tareas', '2 Pend.', AppColors.orangeColor),
               ),
@@ -191,7 +202,11 @@ class ChildProfileScreen extends ConsumerWidget {
     );
   }
 
-  Widget _activityCard(BuildContext context, WidgetRef ref, ChildModel activeChild) {
+  Widget _activityCard(
+    BuildContext context,
+    WidgetRef ref,
+    ChildModel activeChild,
+  ) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,

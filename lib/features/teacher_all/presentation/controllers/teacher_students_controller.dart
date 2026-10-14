@@ -26,7 +26,8 @@ class TeacherStudentsState {
         StudentGroupFilter.groupA => student.group == StudentGroup.groupA,
         StudentGroupFilter.groupB => student.group == StudentGroup.groupB,
       };
-      final matchesSearch = searchQuery.isEmpty ||
+      final matchesSearch =
+          searchQuery.isEmpty ||
           student.name.toLowerCase().contains(searchQuery.toLowerCase()) ||
           student.id.toLowerCase().contains(searchQuery.toLowerCase()) ||
           student.room.toLowerCase().contains(searchQuery.toLowerCase());
@@ -53,8 +54,8 @@ class TeacherStudentsState {
 
 final teacherStudentsControllerProvider =
     NotifierProvider<TeacherStudentsController, TeacherStudentsState>(
-  TeacherStudentsController.new,
-);
+      TeacherStudentsController.new,
+    );
 
 class TeacherStudentsController extends Notifier<TeacherStudentsState> {
   late final TeacherRepository _repository;

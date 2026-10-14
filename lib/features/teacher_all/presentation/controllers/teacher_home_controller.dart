@@ -28,7 +28,9 @@ class TeacherHomeState {
 }
 
 final teacherHomeControllerProvider =
-    NotifierProvider<TeacherHomeController, TeacherHomeState>(TeacherHomeController.new);
+    NotifierProvider<TeacherHomeController, TeacherHomeState>(
+      TeacherHomeController.new,
+    );
 
 class TeacherHomeController extends Notifier<TeacherHomeState> {
   late final TeacherRepository _repository;

@@ -1,5 +1,5 @@
 import '../../../../core/helper/snackbar/api_snackbar.dart';
-import '../../auth/abc.dart';
+import '../../../core/utils/validators.dart';
 import '../../share/export/screen_export.dart';
 import '../../share/widgets/button/app_logo.dart';
 import '../../share/widgets/button/custom_back_button.dart';
@@ -106,7 +106,9 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AuthBackButton(title: ref.watchTr(AppStrings.changePasswordTitle)),
+              AuthBackButton(
+                title: ref.watchTr(AppStrings.changePasswordTitle),
+              ),
               const SizedBox(height: 35),
               const Center(child: AulaLogo(width: 130)),
               const SizedBox(height: 24),
@@ -169,7 +171,9 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
               const SizedBox(height: 24),
               AulaPrimaryButton(
                 text: ref.watchTr(AppStrings.changePasswordTitle),
-                onTap: settingsState.isChangingPassword ? () {} : _changePassword,
+                onTap: settingsState.isChangingPassword
+                    ? () {}
+                    : _changePassword,
               ),
             ],
           ),

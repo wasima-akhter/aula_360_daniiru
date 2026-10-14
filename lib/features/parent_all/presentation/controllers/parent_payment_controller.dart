@@ -16,8 +16,10 @@ class ParentPaymentState {
     this.error,
   });
 
-  List<InvoiceModel> get pendingInvoices => invoices.where((i) => !i.isPaid).toList();
-  List<InvoiceModel> get paidInvoices => invoices.where((i) => i.isPaid).toList();
+  List<InvoiceModel> get pendingInvoices =>
+      invoices.where((i) => !i.isPaid).toList();
+  List<InvoiceModel> get paidInvoices =>
+      invoices.where((i) => i.isPaid).toList();
 
   ParentPaymentState copyWith({
     List<InvoiceModel>? invoices,
@@ -27,7 +29,8 @@ class ParentPaymentState {
   }) {
     return ParentPaymentState(
       invoices: invoices ?? this.invoices,
-      selectedPaymentMethod: selectedPaymentMethod ?? this.selectedPaymentMethod,
+      selectedPaymentMethod:
+          selectedPaymentMethod ?? this.selectedPaymentMethod,
       isProcessing: isProcessing ?? this.isProcessing,
       error: error,
     );
@@ -36,8 +39,8 @@ class ParentPaymentState {
 
 final parentPaymentControllerProvider =
     NotifierProvider<ParentPaymentController, ParentPaymentState>(
-  ParentPaymentController.new,
-);
+      ParentPaymentController.new,
+    );
 
 class ParentPaymentController extends Notifier<ParentPaymentState> {
   late final ParentRepository _repository;

@@ -33,8 +33,8 @@ class ParentChildrenState {
 
 final parentChildrenControllerProvider =
     NotifierProvider<ParentChildrenController, ParentChildrenState>(
-  ParentChildrenController.new,
-);
+      ParentChildrenController.new,
+    );
 
 class ParentChildrenController extends Notifier<ParentChildrenState> {
   late final ParentRepository _repository;
@@ -76,7 +76,8 @@ class ParentChildrenController extends Notifier<ParentChildrenState> {
         name: name,
         grade: grade,
         room: room,
-        imageUrl: 'https://images.unsplash.com/photo-1543610892-0b1f7e6d8ac1?w=400',
+        imageUrl:
+            'https://images.unsplash.com/photo-1543610892-0b1f7e6d8ac1?w=400',
         parentTeacher: parentTeacher,
         attendance: 100.0,
         present: 1,
@@ -85,7 +86,11 @@ class ParentChildrenController extends Notifier<ParentChildrenState> {
       );
       await _repository.addChild(newChild);
       final updated = await _repository.getChildren();
-      state = state.copyWith(children: updated, selectedChild: newChild, isLoading: false);
+      state = state.copyWith(
+        children: updated,
+        selectedChild: newChild,
+        isLoading: false,
+      );
       return true;
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());

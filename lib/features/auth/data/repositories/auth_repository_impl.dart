@@ -1,82 +1,197 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../domain/repositories/auth_repository.dart';
+import 'dart:convert';
 
-final authRepositoryProvider = Provider<AuthRepository>((ref) {
-  return AuthRepositoryImpl();
-});
+import '../../../../core/storage/storage_service.dart';
+import '../../domain/repositories/auth_repository.dart';
+import '../datasources/auth_remote_data_source.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
+  final AuthRemoteDataSource _remoteDataSource;
+  final StorageService _storageService;
+
   AuthUser? _currentUser;
+
+  AuthRepositoryImpl({
+    required this._remoteDataSource,
+    required this._storageService,
+  }) {
+    _loadCachedUser();
+  }
+
+  void _loadCachedUser() {
+    final cached = _storageService.getCurrentUserJson();
+    if (cached != null && cached.isNotEmpty) {
+      try {
+        final map = jsonDecode(cached) as Map<String, dynamic>;
+        _currentUser = AuthUser.fromJson(map);
+      } catch (_) {}
+    }
+  }
 
   @override
   AuthUser? getCurrentUser() => _currentUser;
 
   @override
-  Future<AuthUser> login({
-    required String emailOrPhone,
-    required String password,
-    required UserRole role,
-  }) async {
-    // Simulated network delay for realistic experience
-    await Future.delayed(const Duration(milliseconds: 400));
-
-    final user = AuthUser(
-      id: role == UserRole.parent ? 'PAR-001' : 'TEA-001',
-      name: role == UserRole.parent ? 'Eleanor Vance' : 'Dña. Sarah Vance',
-      email: emailOrPhone.contains('@') ? emailOrPhone : '$emailOrPhone@aula360.es',
-      phone: emailOrPhone.contains('@') ? '+34 612 345 678' : emailOrPhone,
-      avatarUrl: null,
-      role: role,
-    );
-
-    _currentUser = user;
-    return user;
-  }
-
-  @override
-  Future<AuthUser> signUp({
+  Future<String> signUp({
     required String fullName,
     required String email,
     required String phone,
     required String password,
     required UserRole role,
   }) async {
-    await Future.delayed(const Duration(milliseconds: 400));
-
-    final user = AuthUser(
-      id: role == UserRole.parent ? 'PAR-${DateTime.now().millisecondsSinceEpoch % 1000}' : 'TEA-${DateTime.now().millisecondsSinceEpoch % 1000}',
-      name: fullName,
+    final request = SignupRequestDto(
+      fullName: fullName,
       email: email,
       phone: phone,
-      avatarUrl: null,
       role: role,
+      password: password,
+      isLegalTermAccepted: true,
     );
 
-    _currentUser = user;
-    return user;
+    final otpPageToken = await _remoteDataSource.signup(request);
+    await _storageService.saveOtpPageToken(otpPageToken);
+    await _storageService.saveUserRole(role.isTeacher ? 'TEACHER' : 'PARENT');
+    return otpPageToken;
   }
 
   @override
-  Future<void> sendOtp({
-    required String target,
-    required OtpPurpose purpose,
-  }) async {
-    await Future.delayed(const Duration(milliseconds: 300));
-  }
-
-  @override
-  Future<bool> verifyOtp({
+  Future<AuthSession> verifyOtp({
     required String otp,
-    required OtpPurpose purpose,
+    required String deviceIdentifier,
+    String? fcmToken,
   }) async {
-    await Future.delayed(const Duration(milliseconds: 300));
-    // Accepts any 4 or 6 digit code for seamless testing
-    return otp.length >= 4;
+    final otpPageToken = await _storageService.getOtpPageToken();
+    final request = VerifyOtpRequestDto(
+      otp: otp,
+      deviceIdentifier: deviceIdentifier,
+      fcmToken: fcmToken,
+    );
+
+    final session = await _remoteDataSource.verifyOtp(
+      request: request,
+      otpPageToken: otpPageToken,
+    );
+
+    await _storageService.saveAccessToken(session.accessToken);
+    await _storageService.saveCurrentUserJson(
+      jsonEncode(session.user.toJson()),
+    );
+    await _storageService.saveUserRole(
+      session.user.role.isTeacher ? 'TEACHER' : 'PARENT',
+    );
+    await _storageService.clearOtpPageToken();
+
+    _currentUser = session.user;
+    return session;
+  }
+
+  @override
+  Future<void> resendOtp() async {
+    final otpPageToken = await _storageService.getOtpPageToken();
+    await _remoteDataSource.resendOtp(otpPageToken: otpPageToken);
+  }
+
+  @override
+  Future<AuthSession> login({
+    required String email,
+    required String password,
+    required UserRole role,
+    required String deviceIdentifier,
+    bool rememberMe = false,
+    String? fcmToken,
+  }) async {
+    final request = LoginRequestDto(
+      email: email,
+      password: password,
+      role: role,
+      deviceIdentifier: deviceIdentifier,
+      rememberMe: rememberMe,
+      fcmToken: fcmToken,
+    );
+
+    final session = await _remoteDataSource.login(request);
+
+    await _storageService.saveAccessToken(session.accessToken);
+    await _storageService.saveCurrentUserJson(
+      jsonEncode(session.user.toJson()),
+    );
+    await _storageService.saveUserRole(
+      session.user.role.isTeacher ? 'TEACHER' : 'PARENT',
+    );
+    await _storageService.setRememberMe(rememberMe);
+
+    if (rememberMe) {
+      await _storageService.setRememberedEmail(email);
+    }
+
+    _currentUser = session.user;
+    return session;
+  }
+
+  @override
+  Future<AuthUser?> checkSession({String? fcmToken}) async {
+    final token = await _storageService.getAccessToken();
+    if (token == null || token.isEmpty) {
+      return null;
+    }
+
+    try {
+      final user = await _remoteDataSource.checkSession(
+        request: CheckSessionRequestDto(fcmToken: fcmToken),
+      );
+
+      await _storageService.saveCurrentUserJson(jsonEncode(user.toJson()));
+      await _storageService.saveUserRole(
+        user.role.isTeacher ? 'TEACHER' : 'PARENT',
+      );
+      _currentUser = user;
+      return user;
+    } catch (e) {
+      // If error indicates unauthorized / invalid session, clear it
+      final errStr = e.toString().toLowerCase();
+      if (errStr.contains('401') ||
+          errStr.contains('unauthorized') ||
+          errStr.contains('jwt')) {
+        await _storageService.clearAuthentication();
+        _currentUser = null;
+        return null;
+      }
+
+      // Offline startup support: if network is down but we have a valid cached session, restore it
+      if (_currentUser != null) {
+        return _currentUser;
+      }
+      return null;
+    }
+  }
+
+  @override
+  Future<void> logout() async {
+    try {
+      await _remoteDataSource.logout();
+    } catch (_) {}
+    await _storageService.logout();
+    _currentUser = null;
+  }
+
+  @override
+  Future<AuthUser> setupParentProfile(ParentProfileSetupDto dto) async {
+    final updatedUser = await _remoteDataSource.setupParentProfile(dto);
+    await _storageService.saveCurrentUserJson(jsonEncode(updatedUser.toJson()));
+    _currentUser = updatedUser;
+    return updatedUser;
+  }
+
+  @override
+  Future<AuthUser> setupTeacherProfile(TeacherProfileSetupDto dto) async {
+    final updatedUser = await _remoteDataSource.setupTeacherProfile(dto);
+    await _storageService.saveCurrentUserJson(jsonEncode(updatedUser.toJson()));
+    _currentUser = updatedUser;
+    return updatedUser;
   }
 
   @override
   Future<void> requestPasswordReset({required String email}) async {
-    await Future.delayed(const Duration(milliseconds: 300));
+    // Optional endpoint support
   }
 
   @override
@@ -84,35 +199,6 @@ class AuthRepositoryImpl implements AuthRepository {
     required String email,
     required String newPassword,
   }) async {
-    await Future.delayed(const Duration(milliseconds: 300));
-  }
-
-  @override
-  Future<AuthUser> setupProfile({
-    required String name,
-    required String phone,
-    String? avatarPath,
-    String? subject,
-    String? grade,
-  }) async {
-    await Future.delayed(const Duration(milliseconds: 300));
-    final updated = (_currentUser ?? const AuthUser(
-      id: 'USER-001',
-      name: 'Usuario Demo',
-      email: 'user@aula360.es',
-      role: UserRole.parent,
-    )).copyWith(
-      name: name,
-      phone: phone,
-      avatarUrl: avatarPath,
-    );
-    _currentUser = updated;
-    return updated;
-  }
-
-  @override
-  Future<void> logout() async {
-    await Future.delayed(const Duration(milliseconds: 150));
-    _currentUser = null;
+    // Optional endpoint support
   }
 }

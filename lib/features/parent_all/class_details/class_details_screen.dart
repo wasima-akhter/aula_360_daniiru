@@ -165,7 +165,9 @@ class _ClassDetailsScreenState extends ConsumerState<ClassDetailsScreen> {
                       children: [
                         Row(
                           children: [
-                            _smallTitle(ref.watchTr(AppStrings.academyLocation)),
+                            _smallTitle(
+                              ref.watchTr(AppStrings.academyLocation),
+                            ),
                             const Spacer(),
                             Icon(
                               Icons.business_outlined,
@@ -299,7 +301,9 @@ class _ClassDetailsScreenState extends ConsumerState<ClassDetailsScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              _smallTitle(ref.watchTr(AppStrings.teacherInfoTitle)),
+                              _smallTitle(
+                                ref.watchTr(AppStrings.teacherInfoTitle),
+                              ),
                               const Icon(Icons.chevron_right),
                             ],
                           ),

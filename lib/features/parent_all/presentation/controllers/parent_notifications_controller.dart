@@ -31,8 +31,8 @@ class ParentNotificationsState {
 
 final parentNotificationsControllerProvider =
     NotifierProvider<ParentNotificationsController, ParentNotificationsState>(
-  ParentNotificationsController.new,
-);
+      ParentNotificationsController.new,
+    );
 
 class ParentNotificationsController extends Notifier<ParentNotificationsState> {
   late final ParentRepository _repository;

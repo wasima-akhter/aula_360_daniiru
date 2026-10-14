@@ -38,8 +38,8 @@ class ParentSettingsState {
 
 final parentSettingsControllerProvider =
     NotifierProvider<ParentSettingsController, ParentSettingsState>(
-  ParentSettingsController.new,
-);
+      ParentSettingsController.new,
+    );
 
 class ParentSettingsController extends Notifier<ParentSettingsState> {
   @override

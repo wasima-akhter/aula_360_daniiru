@@ -1,4 +1,5 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/service/language/language_provider.dart';
+import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../data/repositories/teacher_repository_impl.dart';
 import '../../domain/repositories/teacher_repository.dart';
 import '../../helper/teacher_models.dart';
@@ -11,9 +12,9 @@ class TeacherProfileState {
 
   const TeacherProfileState({
     this.profile = const TeacherProfileData(
-      name: 'Dña. Sarah Vance',
-      email: 'sarah.vance@aula360.es',
-      phone: '+34 654 987 321',
+      name: 'Educator',
+      email: '',
+      phone: '',
     ),
     this.isSaving = false,
     this.isLoading = false,
@@ -37,8 +38,8 @@ class TeacherProfileState {
 
 final teacherProfileControllerProvider =
     NotifierProvider<TeacherProfileController, TeacherProfileState>(
-  TeacherProfileController.new,
-);
+      TeacherProfileController.new,
+    );
 
 class TeacherProfileController extends Notifier<TeacherProfileState> {
   late final TeacherRepository _repository;
@@ -46,8 +47,24 @@ class TeacherProfileController extends Notifier<TeacherProfileState> {
   @override
   TeacherProfileState build() {
     _repository = ref.watch(teacherRepositoryProvider);
+    final authUser = ref.watch(authControllerProvider).user;
+    final currentLang =
+        ref.watch(languageProvider).valueOrNull?.language.label ?? 'English';
+
+    final initialProfile = TeacherProfileData(
+      name: authUser?.fullName.isNotEmpty == true
+          ? authUser!.fullName
+          : 'Educator',
+      email: authUser?.email.isNotEmpty == true ? authUser!.email : '',
+      phone: authUser?.phone ?? '',
+      department: authUser?.department ?? 'Academics',
+      bio: authUser?.bio ?? '',
+      language: currentLang,
+      profileImagePath: authUser?.avatarUrl,
+    );
+
     Future.microtask(() => loadProfile());
-    return const TeacherProfileState(isLoading: true);
+    return TeacherProfileState(profile: initialProfile, isLoading: false);
   }
 
   Future<void> loadProfile() async {

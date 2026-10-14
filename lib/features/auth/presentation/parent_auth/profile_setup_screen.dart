@@ -1,11 +1,12 @@
 import 'dart:io';
 
+import '../../../../core/helper/snackbar/api_snackbar.dart';
 import '../../../nav/user_role/user_role_provider.dart';
 import '../../../share/export/screen_export.dart';
 import '../../../share/widgets/custom_image/app_image_picker.dart';
 import '../../../share/widgets/dropdown/custom_dropdown_field.dart';
 import '../../../share/widgets/text_field/custom_text_field.dart';
-import '../../abc.dart';
+import '../../../../core/utils/validators.dart';
 import '../controllers/auth_controller.dart';
 
 class ProfileSetupScreen extends ConsumerStatefulWidget {
@@ -84,7 +85,10 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
                   icon: Icons.photo_library_outlined,
                   title: ref.watchTr(AppStrings.chooseFromGallery),
                   onTap: () {
-                    Navigator.pop(bottomSheetContext, ImagePickerSource.gallery);
+                    Navigator.pop(
+                      bottomSheetContext,
+                      ImagePickerSource.gallery,
+                    );
                   },
                 ),
                 const SizedBox(height: 10),
@@ -126,17 +130,27 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
       return;
     }
 
-    final success = await ref.read(authControllerProvider.notifier).setupProfile(
-      name: nameController.text.trim(),
-      phone: phoneController.text.trim(),
-      avatarPath: _profileImage?.path,
-    );
+    final success = await ref
+        .read(authControllerProvider.notifier)
+        .setupParentProfile(
+          avatarFile: _profileImage,
+          address: addressController.text.trim().isNotEmpty
+              ? addressController.text.trim()
+              : null,
+          occupation: nameController.text.trim(),
+          relationWithChild: _relationship,
+        );
 
     if (!mounted) return;
 
     if (success) {
       ref.read(userRoleProvider.notifier).loginAsParent();
       context.go(RoutePath.navigationPages);
+    } else {
+      final error =
+          ref.read(authControllerProvider).errorMessage ??
+          'Error al completar el perfil';
+      ApiSnackbar.show(error, type: SnackbarType.error);
     }
   }
 

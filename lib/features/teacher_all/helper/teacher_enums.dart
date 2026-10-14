@@ -25,14 +25,7 @@ extension ClassTabExtension on ClassTab {
     }
   }
 
-  String get label {
-    switch (this) {
-      case ClassTab.today:
-        return 'Hoy';
-      case ClassTab.upcoming:
-        return 'Próximas';
-    }
-  }
+  String localized(String Function(String) tr) => tr(stringKey);
 }
 
 extension ClassStatusExtension on ClassStatus {
@@ -45,14 +38,7 @@ extension ClassStatusExtension on ClassStatus {
     }
   }
 
-  String get label {
-    switch (this) {
-      case ClassStatus.next:
-        return 'Siguiente clase';
-      case ClassStatus.scheduled:
-        return 'Programada';
-    }
-  }
+  String localized(String Function(String) tr) => tr(stringKey);
 }
 
 extension TeacherAttendanceStatusExtension on TeacherAttendanceStatus {
@@ -65,14 +51,7 @@ extension TeacherAttendanceStatusExtension on TeacherAttendanceStatus {
     }
   }
 
-  String get label {
-    switch (this) {
-      case TeacherAttendanceStatus.present:
-        return 'Presente';
-      case TeacherAttendanceStatus.absent:
-        return 'Ausente';
-    }
-  }
+  String localized(String Function(String) tr) => tr(stringKey);
 }
 
 /// ===============================================================
@@ -91,14 +70,7 @@ extension HomeClassTypeExtension on HomeClassType {
     }
   }
 
-  String get label {
-    switch (this) {
-      case HomeClassType.next:
-        return 'SIGUIENTE';
-      case HomeClassType.scheduled:
-        return 'PROGRAMADA';
-    }
-  }
+  String localized(String Function(String) tr) => tr(stringKey);
 }
 
 //
@@ -181,16 +153,7 @@ enum StudentGroupFilter {
     }
   }
 
-  String get label {
-    switch (this) {
-      case StudentGroupFilter.all:
-        return 'Todos';
-      case StudentGroupFilter.groupA:
-        return 'Grupo A';
-      case StudentGroupFilter.groupB:
-        return 'Grupo B';
-    }
-  }
+  String localized(String Function(String) tr) => tr(stringKey);
 }
 
 enum StudentStatus {
@@ -206,14 +169,7 @@ enum StudentStatus {
     }
   }
 
-  String get label {
-    switch (this) {
-      case StudentStatus.present:
-        return 'Presente';
-      case StudentStatus.needsCheckIn:
-        return 'Requiere revisión';
-    }
-  }
+  String localized(String Function(String) tr) => tr(stringKey);
 }
 
 enum ReportFilter {
@@ -235,18 +191,7 @@ enum ReportFilter {
     }
   }
 
-  String get label {
-    switch (this) {
-      case ReportFilter.all:
-        return 'Todos';
-      case ReportFilter.groupA:
-        return 'Grupo A';
-      case ReportFilter.groupB:
-        return 'Grupo B';
-      case ReportFilter.oneOnOne:
-        return 'Individual';
-    }
-  }
+  String localized(String Function(String) tr) => tr(stringKey);
 }
 
 enum ReportCategory { classReport, studentReport }
@@ -264,12 +209,5 @@ enum ReportStatus {
     }
   }
 
-  String get label {
-    switch (this) {
-      case ReportStatus.filed:
-        return 'Archivado';
-      case ReportStatus.submitted:
-        return 'Enviado';
-    }
-  }
+  String localized(String Function(String) tr) => tr(stringKey);
 }

@@ -236,7 +236,10 @@ class AppDialog {
                   },
             child: Text(
               cancelText,
-              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16.5),
+              style: const TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 16.5,
+              ),
             ),
           ),
         ),

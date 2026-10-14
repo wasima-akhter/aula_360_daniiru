@@ -43,8 +43,8 @@ class ParentAttendanceState {
 
 final parentAttendanceControllerProvider =
     NotifierProvider<ParentAttendanceController, ParentAttendanceState>(
-  ParentAttendanceController.new,
-);
+      ParentAttendanceController.new,
+    );
 
 class ParentAttendanceController extends Notifier<ParentAttendanceState> {
   late final ParentRepository _repository;

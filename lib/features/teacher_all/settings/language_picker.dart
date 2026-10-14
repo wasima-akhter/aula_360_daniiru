@@ -55,25 +55,63 @@ class LanguagePicker extends ConsumerWidget {
             ),
 
             ...languages.map(
-              (lang) => RadioListTile<AppLanguage>(
-                value: lang,
-                groupValue: langAsync.valueOrNull?.language,
-                activeColor: AppColors.primary,
-                title: Text(
-                  lang == AppLanguage.english
-                      ? tr(AppStrings.languageEnglishUs)
-                      : tr(AppStrings.languageSpanishLabel),
-                  style: TxtStyle.titleLarge(fontSize: 16.sp),
-                ),
-                onChanged: (value) async {
-                  if (value != null) {
+              (lang) {
+                final isSelected = langAsync.valueOrNull?.language == lang;
+                return InkWell(
+                  onTap: () async {
                     await ref
                         .read(languageProvider.notifier)
-                        .changeLanguage(value);
+                        .changeLanguage(lang);
                     if (context.mounted) Navigator.pop(context);
-                  }
-                },
-              ),
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 18.w,
+                      vertical: 12.h,
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 20.w,
+                          height: 20.w,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: isSelected
+                                  ? AppColors.primary
+                                  : AppColors.secondaryText,
+                              width: isSelected ? 6.w : 1.5.w,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 14.w),
+                        Expanded(
+                          child: Text(
+                            lang == AppLanguage.english
+                                ? tr(AppStrings.languageEnglishUs)
+                                : tr(AppStrings.languageSpanishLabel),
+                            style: TxtStyle.titleLarge(
+                              fontSize: 16.sp,
+                              fontWeight: isSelected
+                                  ? FontWeight.w700
+                                  : FontWeight.w500,
+                              color: isSelected
+                                  ? AppColors.primary
+                                  : AppColors.text,
+                            ),
+                          ),
+                        ),
+                        if (isSelected)
+                          Icon(
+                            Icons.check_rounded,
+                            color: AppColors.primary,
+                            size: 20.sp,
+                          ),
+                      ],
+                    ),
+                  ),
+                );
+              },
             ),
           ],
         ),

@@ -1,5 +1,7 @@
 import 'package:aula360/features/parent_all/helper/parent_home_helper.dart';
+import 'package:intl/intl.dart';
 
+import '../../auth/presentation/providers/auth_provider.dart';
 import '../../share/export/screen_export.dart';
 import '../../share/widgets/button/app_logo.dart';
 import '../helper/teacher_models.dart';
@@ -12,10 +14,25 @@ import '../presentation/controllers/teacher_home_controller.dart';
 class TeacherHomeScreen extends ConsumerWidget {
   const TeacherHomeScreen({super.key});
 
+  static String _extractInitials(String name) {
+    final parts = name.trim().split(RegExp(r'\s+'));
+    if (parts.isEmpty || parts[0].isEmpty) return 'U';
+    if (parts.length == 1) {
+      return parts[0].substring(0, parts[0].length >= 2 ? 2 : 1).toUpperCase();
+    }
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(teacherHomeControllerProvider);
     final schedule = state.schedule;
+
+    final currentUser = ref.watch(authControllerProvider).user;
+    final teacherName = currentUser?.fullName.isNotEmpty == true
+        ? currentUser!.fullName
+        : 'Educator';
+    final userInitials = _extractInitials(teacherName);
 
     return Scaffold(
       backgroundColor: AppColors.softBackground,
@@ -39,7 +56,7 @@ class TeacherHomeScreen extends ConsumerWidget {
           ),
           Padding(
             padding: EdgeInsets.only(left: 2.w, right: 15.w),
-            child: const UserAvatar(initials: 'EV', size: 38),
+            child: UserAvatar(initials: userInitials, size: 38),
           ),
         ],
       ),
@@ -48,7 +65,9 @@ class TeacherHomeScreen extends ConsumerWidget {
           : CustomScrollView(
               physics: const BouncingScrollPhysics(),
               slivers: [
-                SliverToBoxAdapter(child: _topSection(context, ref, schedule)),
+                SliverToBoxAdapter(
+                  child: _topSection(context, ref, schedule, teacherName),
+                ),
                 SliverPersistentHeader(
                   pinned: true,
                   delegate: _HomeStickyHeaderDelegate(
@@ -63,13 +82,13 @@ class TeacherHomeScreen extends ConsumerWidget {
                     child: Column(
                       children: [
                         ...schedule.asMap().entries.map(
-                              (entry) => _scheduleItem(
-                                context,
-                                ref,
-                                entry.value,
-                                entry.key,
-                              ),
-                            ),
+                          (entry) => _scheduleItem(
+                            context,
+                            ref,
+                            entry.value,
+                            entry.key,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -83,14 +102,26 @@ class TeacherHomeScreen extends ConsumerWidget {
   /// TOP SECTION
   /// =============================================================
 
-  Widget _topSection(BuildContext context, WidgetRef ref, List<HomeScheduleItem> schedule) {
+  Widget _topSection(
+    BuildContext context,
+    WidgetRef ref,
+    List<HomeScheduleItem> schedule,
+    String teacherName,
+  ) {
+    final langCode =
+        ref.watch(languageProvider).valueOrNull?.language.code ?? 'en';
+    final dateStr = DateFormat('EEE, d MMM', langCode)
+        .format(DateTime.now())
+        .toUpperCase();
+    final todayPrefix = ref.watchTr(AppStrings.today).toUpperCase();
+
     return Padding(
       padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 12.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '${ref.watchTr(AppStrings.goodMorning)}, Dr. Vance',
+            '${ref.watchTr(AppStrings.goodMorning)}, $teacherName',
             style: TxtStyle.titleLarge(
               color: AppColors.primaryDark,
               fontSize: 20.sp,
@@ -100,7 +131,7 @@ class TeacherHomeScreen extends ConsumerWidget {
           ),
           SizedBox(height: 17.h),
           Text(
-            'HOY • JUE, 24 OCT',
+            '$todayPrefix • $dateStr',
             style: TxtStyle.titleMedium(
               color: AppColors.subtitleTextColor,
               fontSize: 14.5.sp,
@@ -129,7 +160,11 @@ class TeacherHomeScreen extends ConsumerWidget {
   /// NEXT CLASS
   /// =============================================================
 
-  Widget _nextClassCard(BuildContext context, WidgetRef ref, HomeScheduleItem nextClass) {
+  Widget _nextClassCard(
+    BuildContext context,
+    WidgetRef ref,
+    HomeScheduleItem nextClass,
+  ) {
     return InkWell(
       borderRadius: BorderRadius.circular(8.r),
       onTap: () => _openClass(context, nextClass),

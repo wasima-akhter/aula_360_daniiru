@@ -2,7 +2,7 @@ import '../../../../core/helper/snackbar/api_snackbar.dart';
 import '../../../share/export/screen_export.dart';
 import '../../../share/widgets/button/app_logo.dart';
 import '../../../share/widgets/button/custom_back_button.dart';
-import '../../domain/models/auth_state_model.dart';
+import '../controllers/auth_controller.dart';
 import '../controllers/otp_controller.dart';
 
 export '../../domain/models/auth_state_model.dart';
@@ -81,6 +81,11 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
   void _navigateAfterVerification() {
     switch (purpose) {
       case OtpPurpose.signup:
+        final authState = ref.read(authControllerProvider);
+        if (authState.user?.isProfileSetup == true) {
+          context.go(RoutePath.navigationPages);
+          return;
+        }
         switch (role) {
           case OtpRole.parent:
             context.go(RoutePath.profileSetup);
@@ -108,17 +113,31 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
     }
 
     ref.read(otpControllerProvider.notifier).updateOtp(enteredOtp);
-    final success = await ref.read(otpControllerProvider.notifier).verifyOtp(purpose);
+    final success = await ref
+        .read(otpControllerProvider.notifier)
+        .verifyOtp(purpose);
 
     if (!mounted) return;
 
     if (success) {
       _navigateAfterVerification();
+    } else {
+      final error =
+          ref.read(authControllerProvider).errorMessage ??
+          'Código de verificación incorrecto';
+      ApiSnackbar.show(error, type: SnackbarType.error);
     }
   }
 
   Future<void> _resendCode() async {
-    await ref.read(otpControllerProvider.notifier).resendOtp(email ?? 'user@aula360.com', purpose);
+    await ref
+        .read(otpControllerProvider.notifier)
+        .resendOtp(email ?? 'user@aula360.com', purpose);
+    if (!mounted) return;
+    ApiSnackbar.show(
+      'Código de verificación reenviado a tu correo.',
+      type: SnackbarType.success,
+    );
   }
 
   @override

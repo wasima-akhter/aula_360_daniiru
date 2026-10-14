@@ -356,12 +356,7 @@ class _AddChildScreenState extends ConsumerState<AddChildScreen> {
             initialValue: grade,
             decoration: _inputDecoration(Icons.school_outlined),
             items: gradesList
-                .map(
-                  (g) => DropdownMenuItem(
-                    value: g,
-                    child: Text(g),
-                  ),
-                )
+                .map((g) => DropdownMenuItem(value: g, child: Text(g)))
                 .toList(),
             onChanged: (value) {
               if (value != null) {
@@ -533,13 +528,20 @@ class _AddChildScreenState extends ConsumerState<AddChildScreen> {
       return;
     }
 
-    final parentTeacher = ref.read(languageProvider).valueOrNull?.tr(AppStrings.assignedAfterEnrollment) ?? 'Asignado tras matrícula';
-    await ref.read(parentChildrenControllerProvider.notifier).addChild(
-      name: fullNameController.text.trim(),
-      grade: grade,
-      room: 'Aula 2A',
-      parentTeacher: parentTeacher,
-    );
+    final parentTeacher =
+        ref
+            .read(languageProvider)
+            .valueOrNull
+            ?.tr(AppStrings.assignedAfterEnrollment) ??
+        'Asignado tras matrícula';
+    await ref
+        .read(parentChildrenControllerProvider.notifier)
+        .addChild(
+          name: fullNameController.text.trim(),
+          grade: grade,
+          room: 'Aula 2A',
+          parentTeacher: parentTeacher,
+        );
 
     if (mounted) {
       context.pop();

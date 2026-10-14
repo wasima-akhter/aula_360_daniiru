@@ -173,7 +173,11 @@ class MyChildrenScreen extends ConsumerWidget {
                 alignment: Alignment.center,
                 child: Text(
                   child.name.isNotEmpty ? child.name[0] : '?',
-                  style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold, color: AppColors.primary),
+                  style: TextStyle(
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primary,
+                  ),
                 ),
               ),
             ),

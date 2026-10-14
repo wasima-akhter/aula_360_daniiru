@@ -14,7 +14,8 @@ class ParentRepositoryImpl implements ParentRepository {
       name: 'Lucas Rivera',
       grade: '2º ESO',
       room: 'Aula 3B',
-      imageUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400',
+      imageUrl:
+          'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400',
       parentTeacher: 'Dña. Sarah Vance (Tutora)',
       attendance: 96.0,
       present: 48,
@@ -26,7 +27,8 @@ class ParentRepositoryImpl implements ParentRepository {
       name: 'Sophia Rivera',
       grade: '5º Primaria',
       room: 'Aula 1A',
-      imageUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400',
+      imageUrl:
+          'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400',
       parentTeacher: 'D. David Miller (Tutor)',
       attendance: 98.0,
       present: 49,
@@ -66,7 +68,8 @@ class ParentRepositoryImpl implements ParentRepository {
       time: '08:30 – 09:50',
       category: 'Lengua',
       status: 'Presente',
-      note: 'Lucas mostró excelente participación en la sesión de hoy y aportó reflexiones muy acertadas.',
+      note:
+          'Lucas mostró excelente participación en la sesión de hoy y aportó reflexiones muy acertadas.',
       initials: 'SV',
     ),
     ReportModel(
@@ -76,7 +79,8 @@ class ParentRepositoryImpl implements ParentRepository {
       time: '10:30 – 12:00',
       category: 'Matemáticas',
       status: 'Presente',
-      note: 'Superó la prueba de factorización de polinomios con nota sobresaliente (98%). Tarea asignada del tema 4.',
+      note:
+          'Superó la prueba de factorización de polinomios con nota sobresaliente (98%). Tarea asignada del tema 4.',
       initials: 'RH',
     ),
     ReportModel(
@@ -86,7 +90,8 @@ class ParentRepositoryImpl implements ParentRepository {
       time: '14:00 – 15:20',
       category: 'Ciencias',
       status: 'Presente',
-      note: 'Realizó con éxito la práctica de óptica y refracción en el laboratorio. Cuaderno revisado y firmado.',
+      note:
+          'Realizó con éxito la práctica de óptica y refracción en el laboratorio. Cuaderno revisado y firmado.',
       initials: 'AB',
     ),
     ReportModel(
@@ -96,7 +101,8 @@ class ParentRepositoryImpl implements ParentRepository {
       time: '13:00 – 14:15',
       category: 'Historia',
       status: 'Presente',
-      note: 'Participación activa en el debate. Excelente preparación con las lecturas asignadas.',
+      note:
+          'Participación activa en el debate. Excelente preparación con las lecturas asignadas.',
       initials: 'MB',
     ),
   ];
@@ -107,7 +113,8 @@ class ParentRepositoryImpl implements ParentRepository {
       teacher: 'Dña. Sarah Vance',
       period: '3ª Hora',
       title: 'Borrador: Análisis literario del capítulo 3',
-      description: 'Escribe un borrador de 500 palabras evaluando el conflicto y los recursos expresivos.',
+      description:
+          'Escribe un borrador de 500 palabras evaluando el conflicto y los recursos expresivos.',
       status: HomeworkStatus.pending,
       deadline: 'Entrega: 26 Oct',
       time: '17:00',
@@ -117,7 +124,8 @@ class ParentRepositoryImpl implements ParentRepository {
       teacher: 'D. Roberto Hayes',
       period: '3ª Hora',
       title: 'Relación de Problemas: Polinomios y Funciones',
-      description: 'Ejercicios 4.2 al 4.5 del libro de texto. Representación gráfica de funciones.',
+      description:
+          'Ejercicios 4.2 al 4.5 del libro de texto. Representación gráfica de funciones.',
       status: HomeworkStatus.pending,
       deadline: 'Lunes, 29 Oct',
       time: '08:30',
@@ -127,7 +135,8 @@ class ParentRepositoryImpl implements ParentRepository {
       teacher: 'Dra. Ángela Bennett',
       period: '5ª Hora',
       title: 'Ficha de Laboratorio: Óptica y Refracción',
-      description: 'Resumir los datos experimentales obtenidos el miércoles y calcular el índice de refracción.',
+      description:
+          'Resumir los datos experimentales obtenidos el miércoles y calcular el índice de refracción.',
       status: HomeworkStatus.pending,
       deadline: 'Miércoles, 31 Oct',
       time: '23:59',
@@ -137,7 +146,8 @@ class ParentRepositoryImpl implements ParentRepository {
       teacher: 'D. Marcos Brody',
       period: '2ª Hora',
       title: 'Comentario de Texto: Revolución Industrial',
-      description: 'Lectura y comentario sobre testimonios históricos del siglo XIX.',
+      description:
+          'Lectura y comentario sobre testimonios históricos del siglo XIX.',
       status: HomeworkStatus.completed,
       deadline: 'Completada: 22 Oct',
       time: '',
@@ -177,7 +187,8 @@ class ParentRepositoryImpl implements ParentRepository {
     const ParentNotificationModel(
       id: '1',
       title: 'Nuevo informe publicado',
-      message: 'Dña. Sarah Vance ha publicado el informe de Lengua Castellana de hoy.',
+      message:
+          'Dña. Sarah Vance ha publicado el informe de Lengua Castellana de hoy.',
       timeAgo: 'Hace 25 min',
       isRead: false,
       type: 'report',
@@ -204,7 +215,8 @@ class ParentRepositoryImpl implements ParentRepository {
     const ChatMessageModel(
       id: '1',
       senderName: 'Dña. Sarah Vance',
-      message: 'Hola Eleanor, quería felicitarte por el gran avance de Lucas en literatura.',
+      message:
+          'Hola Eleanor, quería felicitarte por el gran avance de Lucas en literatura.',
       time: '10:15',
       isMe: false,
     ),
@@ -352,7 +364,8 @@ class ParentRepositoryImpl implements ParentRepository {
         id: DateTime.now().millisecondsSinceEpoch.toString(),
         senderName: 'Eleanor Vance',
         message: message,
-        time: '${DateTime.now().hour}:${DateTime.now().minute.toString().padLeft(2, '0')}',
+        time:
+            '${DateTime.now().hour}:${DateTime.now().minute.toString().padLeft(2, '0')}',
         isMe: true,
       ),
     );

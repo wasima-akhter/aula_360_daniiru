@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 import '../../parent_all/helper/parent_home_helper.dart';
 import '../../share/export/screen_export.dart';
 import '../helper/teacher_models.dart';
@@ -15,14 +17,18 @@ class TeacherClassDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final classesState = ref.watch(teacherClassesControllerProvider);
-    final currentClass = academyClass ??
+    final currentClass =
+        academyClass ??
         (classesState.todayClasses.isNotEmpty
             ? classesState.todayClasses.first
             : todayClasses.first);
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AulaAppBar(title: ref.watchTr(AppStrings.classDetailsTitle), showBack: true),
+      appBar: AulaAppBar(
+        title: ref.watchTr(AppStrings.classDetailsTitle),
+        showBack: true,
+      ),
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
@@ -35,7 +41,7 @@ class TeacherClassDetailScreen extends ConsumerWidget {
                   _groupLabel(ref, currentClass),
                   SizedBox(height: 7.h),
                   Text(
-                    '${ref.watchTr(AppStrings.subjectMath)}\n(Cálculo y Álgebra)',
+                    '${currentClass.title}\n(${currentClass.subtitle})',
                     style: TxtStyle.titleLarge(
                       color: AppColors.text,
                       fontSize: 27.sp,
@@ -49,17 +55,19 @@ class TeacherClassDetailScreen extends ConsumerWidget {
                   SizedBox(height: 17.h),
                   _detailsRow(
                     label: ref.watchTr(AppStrings.dateTime),
-                    value: 'Hoy, 24 Oct • ${currentClass.time} (90 min)',
+                    value:
+                        '${ref.watchTr(AppStrings.today)}, ${DateFormat('d MMM', ref.watch(languageProvider).valueOrNull?.language.code ?? 'en').format(DateTime.now())} • ${currentClass.time}',
                   ),
                   _divider(),
                   _detailsRow(
                     label: ref.watchTr(AppStrings.classroom),
-                    value: '${currentClass.room}, Planta 1',
+                    value: currentClass.room,
                   ),
                   _divider(),
                   _detailsRow(
                     label: ref.watchTr(AppStrings.enrollment),
-                    value: '${currentClass.students} ${ref.watchTr(AppStrings.studentsCount)}',
+                    value:
+                        '${currentClass.students} ${ref.watchTr(AppStrings.studentsCount)}',
                   ),
                   SizedBox(height: 23.h),
                   Divider(color: AppColors.backgroundsLinesColor, height: 1),
@@ -76,7 +84,7 @@ class TeacherClassDetailScreen extends ConsumerWidget {
                   SizedBox(height: 10.h),
                   _infoCard(
                     title: ref.watchTr(AppStrings.todaysTopic),
-                    value: 'Regla de la Cadena y Derivación Implícita',
+                    value: currentClass.subtitle,
                   ),
                   SizedBox(height: 10.h),
                   _roomStatusCard(ref),

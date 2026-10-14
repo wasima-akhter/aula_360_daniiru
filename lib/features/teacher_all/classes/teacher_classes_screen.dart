@@ -23,7 +23,10 @@ class TeacherClassesScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppColors.softBackground,
-      appBar: AulaAppBar(title: ref.watchTr(AppStrings.navClasses), showBack: false),
+      appBar: AulaAppBar(
+        title: ref.watchTr(AppStrings.navClasses),
+        showBack: false,
+      ),
       body: state.isLoading
           ? const Center(child: CircularProgressIndicator())
           : CustomScrollView(
@@ -181,7 +184,11 @@ class TeacherClassesScreen extends ConsumerWidget {
     );
   }
 
-  Widget _classCard(BuildContext context, WidgetRef ref, AcademyClass academyClass) {
+  Widget _classCard(
+    BuildContext context,
+    WidgetRef ref,
+    AcademyClass academyClass,
+  ) {
     return GestureDetector(
       onTap: () {
         context.push(RoutePath.teacherClassDetail);

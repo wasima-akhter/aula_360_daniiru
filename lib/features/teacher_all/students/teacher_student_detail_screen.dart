@@ -12,8 +12,8 @@ class TeacherFacultyNotesNotifier extends Notifier<List<String>> {
 
 final teacherFacultyNotesProvider =
     NotifierProvider<TeacherFacultyNotesNotifier, List<String>>(
-  TeacherFacultyNotesNotifier.new,
-);
+      TeacherFacultyNotesNotifier.new,
+    );
 
 /// ===============================================================
 /// STUDENT DETAILS SCREEN
@@ -435,7 +435,10 @@ class TeacherStudentDetailsScreen extends ConsumerWidget {
     );
   }
 
-  Future<void> _showAddNoteBottomSheet(BuildContext context, WidgetRef ref) async {
+  Future<void> _showAddNoteBottomSheet(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
     final note = await showModalBottomSheet<String>(
       context: context,
       isScrollControlled: true,

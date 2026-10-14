@@ -146,7 +146,9 @@ class TeacherStudentsScreen extends ConsumerWidget {
   }
 
   Widget _rosterHeader(WidgetRef ref, List<TeacherStudent> students) {
-    final presentStudentsCount = students.where((s) => s.status == StudentStatus.present).length;
+    final presentStudentsCount = students
+        .where((s) => s.status == StudentStatus.present)
+        .length;
 
     return Row(
       children: [
