@@ -1,4 +1,4 @@
-import '../../auth/presentation/providers/auth_provider.dart';
+import '../../auth/presentation/controllers/auth_controller.dart';
 import '../../parent_all/helper/parent_home_helper.dart';
 import '../../share/export/screen_export.dart';
 
@@ -50,8 +50,8 @@ class TeacherReportDetailsScreen extends ConsumerWidget {
   Widget _recordHeader(WidgetRef ref) {
     final facultyName =
         ref.watch(authControllerProvider).user?.fullName.isNotEmpty == true
-            ? ref.watch(authControllerProvider).user!.fullName
-            : 'Faculty';
+        ? ref.watch(authControllerProvider).user!.fullName
+        : 'Faculty';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

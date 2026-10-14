@@ -29,10 +29,7 @@ class App extends ConsumerWidget {
           routerConfig: AppRouter.router,
           theme: lightTheme,
           locale: currentLocale,
-          supportedLocales: const [
-            Locale('en'),
-            Locale('es'),
-          ],
+          supportedLocales: const [Locale('en'), Locale('es')],
         );
       },
     );

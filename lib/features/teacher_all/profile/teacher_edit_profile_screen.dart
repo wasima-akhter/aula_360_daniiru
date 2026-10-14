@@ -517,40 +517,13 @@ class _EditTeacherProfileScreenState
   Widget _saveButton(bool isSaving) {
     return SizedBox(
       width: double.infinity,
-      child: ElevatedButton(
-        onPressed: isSaving ? null : _save,
-        style: ElevatedButton.styleFrom(
-          elevation: 0,
-          backgroundColor: AppColors.primaryDark,
-          disabledBackgroundColor: AppColors.primaryDark.withValues(alpha: .6),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(7.r),
-          ),
-        ),
-        child: isSaving
-            ? SizedBox(
-                width: 19.w,
-                height: 19.w,
-                child: const CircularProgressIndicator(
-                  strokeWidth: 2,
-                  color: Colors.white,
-                ),
-              )
-            : Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.check, size: 15.sp, color: Colors.white),
-                  SizedBox(width: 5.w),
-                  Text(
-                    ref.watchTr(AppStrings.btnSaveChanges),
-                    style: TxtStyle.titleLarge(
-                      color: Colors.white,
-                      fontSize: 16.5.sp,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                ],
-              ),
+      child: AulaPrimaryButton(
+        text: ref.watchTr(AppStrings.btnSaveChanges),
+        isLoading: isSaving,
+        backgroundColor: AppColors.primaryDark,
+        leading: Icon(Icons.check, size: 15.sp, color: Colors.white),
+        trailing: const SizedBox.shrink(),
+        onTap: _save,
       ),
     );
   }

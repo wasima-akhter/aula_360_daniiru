@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/service/language/language_provider.dart';
-import '../../../auth/presentation/providers/auth_provider.dart';
+import '../../../auth/presentation/controllers/auth_controller.dart';
 
 class ParentProfileState {
   final String name;

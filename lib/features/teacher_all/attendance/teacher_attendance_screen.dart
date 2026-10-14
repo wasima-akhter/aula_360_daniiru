@@ -61,34 +61,16 @@ class TeacherAttendanceScreen extends ConsumerWidget {
         minimum: EdgeInsets.fromLTRB(16.w, 7.h, 16.w, 10.h),
         child: Container(
           padding: EdgeInsets.only(bottom: 20.h),
-          child: ElevatedButton(
-            onPressed: () => _completeAttendance(context, ref, state),
-            style: ElevatedButton.styleFrom(
-              elevation: 0,
-              backgroundColor: AppColors.primaryDark,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(9.r),
-              ),
+          child: AulaPrimaryButton(
+            text: ref.watchTr(AppStrings.finishAttendance),
+            isLoading: state.isSubmitting,
+            backgroundColor: AppColors.primaryDark,
+            trailing: Icon(
+              Icons.arrow_forward_rounded,
+              color: Colors.white,
+              size: 18.sp,
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  ref.watchTr(AppStrings.finishAttendance),
-                  style: TxtStyle.titleLarge(
-                    color: Colors.white,
-                    fontSize: 17.sp,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                SizedBox(width: 7.w),
-                Icon(
-                  Icons.arrow_forward_rounded,
-                  color: Colors.white,
-                  size: 18.sp,
-                ),
-              ],
-            ),
+            onTap: () => _completeAttendance(context, ref, state),
           ),
         ),
       ),
@@ -109,7 +91,7 @@ class TeacherAttendanceScreen extends ConsumerWidget {
           Column(
             children: [
               Text(
-                '${ref.watchTr(AppStrings.subjectMath)} Avanzadas',
+                ref.watchTr(AppStrings.subjectMathAdvanced),
                 style: TxtStyle.titleLarge(
                   color: AppColors.text,
                   fontSize: 25.sp,
@@ -117,7 +99,7 @@ class TeacherAttendanceScreen extends ConsumerWidget {
                 ),
               ),
               Text(
-                'Sesión 1 • ${ref.watchTr(AppStrings.aula2)}',
+                '${ref.watchTr(AppStrings.sessionNumberPrefix)} 1 • ${ref.watchTr(AppStrings.aula2)}',
                 style: TxtStyle.titleLarge(
                   color: AppColors.subtitleTextColor,
                   fontSize: 14.5.sp,
@@ -129,7 +111,7 @@ class TeacherAttendanceScreen extends ConsumerWidget {
           Row(
             children: [
               Text(
-                '${state.presentCount} de ${state.totalCount}',
+                '${state.presentCount} ${ref.watchTr(AppStrings.ofCount)} ${state.totalCount}',
                 style: TxtStyle.titleLarge(
                   color: AppColors.text,
                   fontSize: 16.sp,
@@ -226,7 +208,9 @@ class TeacherAttendanceScreen extends ConsumerWidget {
                 ),
                 SizedBox(height: 3.h),
                 Text(
-                  student.desk,
+                  student.desk.contains(RegExp(r'\d+'))
+                      ? '${ref.watchTr(AppStrings.deskPrefix)} ${student.desk.replaceAll(RegExp(r'[^0-9]'), '')}'
+                      : student.desk,
                   style: TxtStyle.titleLarge(
                     color: AppColors.subtitleTextColor,
                     fontSize: 15.sp,

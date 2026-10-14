@@ -18,6 +18,9 @@ extension LanguageRefExtension on WidgetRef {
     );
   }
 
+  /// Alias for `tr` to read non-reactively.
+  String Function(String key) get readTr => tr;
+
   /// Watch (reactive) version — rebuilds on language change.
   String Function(String key) get watchTr {
     final asyncState = watch(languageProvider);

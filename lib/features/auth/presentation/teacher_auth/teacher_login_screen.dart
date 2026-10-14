@@ -1,7 +1,6 @@
 import 'package:aula360/features/share/export/screen_export.dart';
 import 'package:flutter/foundation.dart';
 
-import '../../../../core/helper/snackbar/api_snackbar.dart';
 import '../../../../core/storage/storage_provider.dart';
 import '../../../../utils/enum/app_enum.dart';
 import '../../../nav/user_role/user_role_provider.dart';
@@ -71,10 +70,18 @@ class _TeacherLoginScreenState extends ConsumerState<TeacherLoginScreen> {
         context.go(RoutePath.navigationPages);
       }
     } else {
-      final error =
-          ref.read(authControllerProvider).errorMessage ??
-          'Inicio de sesión fallido';
-      ApiSnackbar.show(error, type: SnackbarType.error);
+      final authState = ref.read(authControllerProvider);
+      if (authState.userMessage != null) {
+        ApiSnackbar.showUserMessage(authState.userMessage!);
+      } else {
+        final langCode =
+            ref.read(languageProvider).valueOrNull?.languageCode ?? 'en';
+        final resolved = AppErrorResolver.resolve(
+          authState.errorMessage,
+          languageCode: langCode,
+        );
+        ApiSnackbar.showUserMessage(resolved);
+      }
     }
   }
 
@@ -223,7 +230,7 @@ class _TeacherLoginScreenState extends ConsumerState<TeacherLoginScreen> {
                 ),
                 Gap(16.h),
                 AulaPrimaryButton(
-                  text: 'Acceso directo (Demo)',
+                  text: 'Direct Access (Debug)',
                   onTap: () {
                     ref.read(userRoleProvider.notifier).loginAsTeacher();
                     context.go(RoutePath.navigationPages);
@@ -233,7 +240,8 @@ class _TeacherLoginScreenState extends ConsumerState<TeacherLoginScreen> {
               ],
               AulaPrimaryButton(
                 text: tr(AppStrings.btnLoginAula360),
-                onTap: authState.isLoading ? () {} : _login,
+                isLoading: authState.isLoading,
+                onTap: _login,
               ),
 
               SizedBox(height: 29.h),

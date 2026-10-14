@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import '../../domain/models/parent_models.dart';
 import '../../domain/repositories/parent_repository.dart';
 
@@ -277,38 +278,46 @@ class ParentRepositoryImpl implements ParentRepository {
   @override
   Future<List<AttendanceRecord>> getAttendanceHistory(String childId) async {
     await Future.delayed(const Duration(milliseconds: 150));
-    return const [
+    final now = DateTime.now();
+    return [
       AttendanceRecord(
-        date: '24 Oct',
-        dayName: 'Miércoles',
+        date: DateFormat('d MMM').format(now),
+        dayName: DateFormat('EEEE').format(now),
         status: AttendanceStatus.present,
         checkInTime: '08:28',
       ),
       AttendanceRecord(
-        date: '23 Oct',
-        dayName: 'Martes',
+        date: DateFormat('d MMM').format(now.subtract(const Duration(days: 1))),
+        dayName: DateFormat(
+          'EEEE',
+        ).format(now.subtract(const Duration(days: 1))),
         status: AttendanceStatus.present,
         checkInTime: '08:25',
       ),
       AttendanceRecord(
-        date: '22 Oct',
-        dayName: 'Lunes',
+        date: DateFormat('d MMM').format(now.subtract(const Duration(days: 2))),
+        dayName: DateFormat(
+          'EEEE',
+        ).format(now.subtract(const Duration(days: 2))),
         status: AttendanceStatus.late,
         checkInTime: '08:42',
-        note: 'Retraso de 12 min por tráfico en acceso principal.',
+        note: '12 min',
       ),
       AttendanceRecord(
-        date: '19 Oct',
-        dayName: 'Viernes',
+        date: DateFormat('d MMM').format(now.subtract(const Duration(days: 3))),
+        dayName: DateFormat(
+          'EEEE',
+        ).format(now.subtract(const Duration(days: 3))),
         status: AttendanceStatus.present,
         checkInTime: '08:29',
       ),
       AttendanceRecord(
-        date: '18 Oct',
-        dayName: 'Jueves',
+        date: DateFormat('d MMM').format(now.subtract(const Duration(days: 4))),
+        dayName: DateFormat(
+          'EEEE',
+        ).format(now.subtract(const Duration(days: 4))),
         status: AttendanceStatus.excused,
         checkInTime: '-',
-        note: 'Cita médica justificada.',
       ),
     ];
   }

@@ -1,4 +1,3 @@
-import '../../../../core/helper/snackbar/api_snackbar.dart';
 import '../../../share/export/screen_export.dart';
 import '../../../share/widgets/button/app_logo.dart';
 import '../../../share/widgets/button/custom_back_button.dart';
@@ -73,6 +72,13 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
         type: SnackbarType.success,
       );
       context.go(RoutePath.loginScreen.addBasePath);
+    } else {
+      final recoveryState = ref.read(passwordRecoveryControllerProvider);
+      if (recoveryState.userMessage != null) {
+        ApiSnackbar.showUserMessage(recoveryState.userMessage!);
+      } else if (recoveryState.error != null) {
+        ApiSnackbar.show(recoveryState.error!);
+      }
     }
   }
 
@@ -154,7 +160,8 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
 
               AulaPrimaryButton(
                 text: ref.watchTr(AppStrings.btnResetPassword),
-                onTap: recoveryState.isLoading ? () {} : _resetPassword,
+                isLoading: recoveryState.isLoading,
+                onTap: _resetPassword,
               ),
             ],
           ),

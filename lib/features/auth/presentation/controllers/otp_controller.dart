@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/errors/app_error_resolver.dart';
 import 'auth_controller.dart';
 
 class OtpState {
@@ -9,6 +10,7 @@ class OtpState {
   final int timerSeconds;
   final bool canResend;
   final bool isVerifying;
+  final bool isResending;
   final String? error;
 
   const OtpState({
@@ -16,6 +18,7 @@ class OtpState {
     this.timerSeconds = 59,
     this.canResend = false,
     this.isVerifying = false,
+    this.isResending = false,
     this.error,
   });
 
@@ -24,6 +27,7 @@ class OtpState {
     int? timerSeconds,
     bool? canResend,
     bool? isVerifying,
+    bool? isResending,
     String? error,
   }) {
     return OtpState(
@@ -31,6 +35,7 @@ class OtpState {
       timerSeconds: timerSeconds ?? this.timerSeconds,
       canResend: canResend ?? this.canResend,
       isVerifying: isVerifying ?? this.isVerifying,
+      isResending: isResending ?? this.isResending,
       error: error,
     );
   }
@@ -70,16 +75,21 @@ class OtpController extends Notifier<OtpState> {
   }
 
   Future<void> resendOtp(String target, OtpPurpose purpose) async {
-    if (!state.canResend) return;
-    if (purpose == OtpPurpose.signup) {
-      await ref.read(authControllerProvider.notifier).resendOtp();
+    if (!state.canResend || state.isResending) return;
+    state = state.copyWith(isResending: true);
+    try {
+      if (purpose == OtpPurpose.signup) {
+        await ref.read(authControllerProvider.notifier).resendOtp();
+      }
+      _startTimer();
+    } finally {
+      state = state.copyWith(isResending: false);
     }
-    _startTimer();
   }
 
   Future<bool> verifyOtp(OtpPurpose purpose) async {
     if (state.otp.trim().isEmpty) {
-      state = state.copyWith(error: 'Introduce el código OTP');
+      state = state.copyWith(error: 'otp_required');
       return false;
     }
     state = state.copyWith(isVerifying: true, error: null);
@@ -96,7 +106,8 @@ class OtpController extends Notifier<OtpState> {
         return state.otp.trim().length == 6;
       }
     } catch (e) {
-      state = state.copyWith(isVerifying: false, error: e.toString());
+      final userMsg = AppErrorResolver.resolve(e);
+      state = state.copyWith(isVerifying: false, error: userMsg.displayMessage);
       return false;
     }
   }

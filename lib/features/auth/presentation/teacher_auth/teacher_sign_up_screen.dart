@@ -1,4 +1,3 @@
-import '../../../../core/helper/snackbar/api_snackbar.dart';
 import '../../../../utils/enum/app_enum.dart';
 import '../../../share/export/screen_export.dart';
 import '../../../share/widgets/button/app_logo.dart';
@@ -93,10 +92,18 @@ class _TeacherSignUpScreenState extends ConsumerState<TeacherSignUpScreen> {
         ),
       );
     } else {
-      final error =
-          ref.read(authControllerProvider).errorMessage ??
-          'Error al crear la cuenta de profesor';
-      ApiSnackbar.show(error, type: SnackbarType.error);
+      final authState = ref.read(authControllerProvider);
+      if (authState.userMessage != null) {
+        ApiSnackbar.showUserMessage(authState.userMessage!);
+      } else {
+        final langCode =
+            ref.read(languageProvider).valueOrNull?.languageCode ?? 'en';
+        final resolved = AppErrorResolver.resolve(
+          authState.errorMessage,
+          languageCode: langCode,
+        );
+        ApiSnackbar.showUserMessage(resolved);
+      }
     }
   }
 
@@ -241,7 +248,8 @@ class _TeacherSignUpScreenState extends ConsumerState<TeacherSignUpScreen> {
 
               AulaPrimaryButton(
                 text: tr(AppStrings.btnCreateAccount),
-                onTap: authState.isLoading ? () {} : _createAccount,
+                isLoading: authState.isLoading,
+                onTap: _createAccount,
               ),
 
               const SizedBox(height: 20),

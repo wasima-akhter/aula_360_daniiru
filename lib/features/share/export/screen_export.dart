@@ -1,5 +1,8 @@
+export 'package:aula360/core/errors/app_error_resolver.dart';
+export 'package:aula360/core/providers/button_loading_provider.dart';
 export 'package:aula360/core/helper/device_utils/device_utils.dart';
 export 'package:aula360/core/helper/layout/scaffold_safe_wrapper.dart';
+export 'package:aula360/core/helper/snackbar/api_snackbar.dart';
 export 'package:aula360/core/router/route_path.dart';
 export 'package:aula360/core/router/routes.dart';
 export 'package:aula360/core/service/language/language_provider.dart';

@@ -262,7 +262,7 @@ class HomeworkDetailsScreen extends ConsumerWidget {
           SizedBox(height: 14.h),
           if (completed)
             Text(
-              'Entregada correctamente el 22 de Octubre.',
+              ref.watchTr(AppStrings.homeworkSubmittedSuccess),
               style: TxtStyle.titleLarge(
                 color: const Color(0xFF2B9D70),
                 fontSize: 14.5.sp,

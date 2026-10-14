@@ -1,5 +1,7 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../../../core/service/language/language_provider.dart';
-import '../../../auth/presentation/providers/auth_provider.dart';
+import '../../../auth/presentation/controllers/auth_controller.dart';
 import '../../data/repositories/teacher_repository_impl.dart';
 import '../../domain/repositories/teacher_repository.dart';
 import '../../helper/teacher_models.dart';

@@ -1,15 +1,18 @@
+import 'package:aula360/core/providers/button_loading_provider.dart';
 import 'package:aula360/features/share/widgets/custom_text/custom_text.dart';
 import 'package:aula360/utils/color/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 
-class CustomButtonExtra extends StatelessWidget {
+class CustomButtonExtra extends ConsumerWidget {
   const CustomButtonExtra({
     super.key,
     this.height = 55,
     this.width = double.maxFinite,
-    required this.onTap,
+    this.onTap,
+    this.onTapAsync,
     this.title = '',
     this.marginVertical = 0,
     this.marginHorizontal = 0,
@@ -20,11 +23,14 @@ class CustomButtonExtra extends StatelessWidget {
     this.borderWidth,
     this.borderRadius,
     this.isLoading = false,
+    this.loadingProvider,
+    this.actionKey,
     this.showIcon = false,
     this.iconSize = 20,
     this.borderColor,
     this.icon,
     this.fontWeight,
+    this.enabled = true,
   });
 
   final Color? borderColor;
@@ -32,7 +38,8 @@ class CustomButtonExtra extends StatelessWidget {
   final double? width;
   final Color? fillColor;
   final Color textColor;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
+  final Future<void> Function()? onTapAsync;
   final String title;
   final double marginVertical;
   final double marginHorizontal;
@@ -41,18 +48,44 @@ class CustomButtonExtra extends StatelessWidget {
   final double? borderWidth;
   final double? borderRadius;
   final bool isLoading;
+  final ProviderListenable<bool>? loadingProvider;
+  final String? actionKey;
   final bool showIcon;
   final double iconSize;
   final Widget? icon;
   final FontWeight? fontWeight;
+  final bool enabled;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isActionLoading = actionKey != null
+        ? ref.watch(buttonActionLoadingProvider(actionKey!))
+        : false;
+    final isProviderLoading = loadingProvider != null
+        ? ref.watch(loadingProvider!)
+        : false;
+    final effectiveLoading = isLoading || isActionLoading || isProviderLoading;
+
+    final VoidCallback? effectiveOnTap = (effectiveLoading || !enabled)
+        ? null
+        : () {
+            if (onTapAsync != null) {
+              final key = actionKey ?? title;
+              ref.read(buttonActionLoadingProvider(key).notifier).execute(onTapAsync!);
+            } else if (onTap != null) {
+              onTap!();
+            }
+          };
+
+    final effectiveBgColor = effectiveLoading || !enabled
+        ? (fillColor ?? AppColors.primaryColor).withValues(alpha: 0.65)
+        : (fillColor ?? AppColors.primaryColor);
+
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: onTap,
+      onTap: effectiveOnTap,
       child: Container(
-        padding: EdgeInsets.symmetric(),
+        padding: const EdgeInsets.symmetric(),
         margin: EdgeInsets.symmetric(
           vertical: marginVertical,
           horizontal: marginHorizontal,
@@ -65,14 +98,21 @@ class CustomButtonExtra extends StatelessWidget {
               ? Border.all(
                   color: borderColor ?? Colors.black,
                   width: borderWidth ?? 2,
-                ) // Ensure fallback if borderColor is null
+                )
               : null,
           borderRadius: BorderRadius.circular(borderRadius ?? 6),
-          color: fillColor,
+          color: effectiveBgColor,
         ),
-        child: isLoading
+        child: effectiveLoading
             ? Center(
-                child: CircularProgressIndicator(color: AppColors.primaryColor),
+                child: SizedBox(
+                  width: 20.r,
+                  height: 20.r,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2.2,
+                    color: textColor,
+                  ),
+                ),
               )
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -84,9 +124,8 @@ class CustomButtonExtra extends StatelessWidget {
                     textAlign: TextAlign.center,
                     text: title,
                   ),
-                  Gap(8),
-                  // Show icon only if showIcon is true
-                  showIcon ? icon ?? SizedBox() : SizedBox.shrink(),
+                  const Gap(8),
+                  showIcon ? icon ?? const SizedBox() : const SizedBox.shrink(),
                 ],
               ),
       ),

@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 import '../../share/export/screen_export.dart';
 
 /// ===============================================================
@@ -113,6 +115,13 @@ class TeacherReportSubmittedScreen extends ConsumerWidget {
   }
 
   Widget _reportSummary(WidgetRef ref) {
+    final langCode =
+        ref.watch(languageProvider).valueOrNull?.language.code ?? 'en';
+    final dateTimeStr = DateFormat(
+      'd MMM yyyy • HH:mm',
+      langCode,
+    ).format(DateTime.now());
+
     return Container(
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 13.h),
@@ -125,17 +134,18 @@ class TeacherReportSubmittedScreen extends ConsumerWidget {
         children: [
           _summaryRow(
             label: ref.watchTr(AppStrings.classroom),
-            value: '${ref.watchTr(AppStrings.subjectMath)} Avanzadas',
+            value: ref.watchTr(AppStrings.subjectMathAdvanced),
           ),
           SizedBox(height: 12.h),
           _summaryRow(
-            label: 'Grupo',
-            value: 'Grupo A • ${ref.watchTr(AppStrings.bachillerato1)}',
+            label: ref.watchTr(AppStrings.group),
+            value:
+                '${ref.watchTr(AppStrings.groupA)} • ${ref.watchTr(AppStrings.bachillerato1)}',
           ),
           SizedBox(height: 12.h),
           _summaryRow(
             label: ref.watchTr(AppStrings.dateTime),
-            value: '24 Oct 2024 • 10:28',
+            value: dateTimeStr,
           ),
         ],
       ),

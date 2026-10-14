@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 import '../../share/export/screen_export.dart';
 import '../helper/parent_home_helper.dart';
 import '../presentation/controllers/parent_reports_controller.dart';
@@ -12,6 +14,27 @@ class ReportsScreen extends ConsumerWidget {
       ref.watchTr(AppStrings.subjectPhysicsChemistry),
       ref.watchTr(AppStrings.subjectSpanishLanguage),
     ];
+  }
+
+  String _formatDateHeader(String rawKey, WidgetRef ref) {
+    final langCode =
+        ref.watch(languageProvider).valueOrNull?.language.code ?? 'en';
+    final upper = rawKey.toUpperCase();
+    final today = DateFormat(
+      'EEEE, d MMM',
+      langCode,
+    ).format(DateTime.now()).toUpperCase();
+    final yesterday = DateFormat(
+      'EEEE, d MMM',
+      langCode,
+    ).format(DateTime.now().subtract(const Duration(days: 1))).toUpperCase();
+
+    if (upper.contains('HOY') || upper.contains('TODAY')) {
+      return '${ref.watchTr(AppStrings.today).toUpperCase()} — $today';
+    } else if (upper.contains('AYER') || upper.contains('YESTERDAY')) {
+      return '${ref.watchTr(AppStrings.yesterday).toUpperCase()} — $yesterday';
+    }
+    return rawKey;
   }
 
   @override
@@ -55,7 +78,7 @@ class ReportsScreen extends ConsumerWidget {
                   padding: EdgeInsets.fromLTRB(16.w, 0.h, 16.w, 7.h),
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    entry.key,
+                    _formatDateHeader(entry.key, ref),
                     style: TxtStyle.titleLarge(
                       color: AppColors.secondaryText,
                       fontSize: 13.5.sp,

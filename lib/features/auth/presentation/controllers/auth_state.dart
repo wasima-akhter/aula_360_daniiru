@@ -1,3 +1,4 @@
+import '../../../../core/errors/app_error_resolver.dart';
 import '../../../../utils/enum/app_enum.dart';
 import '../../domain/entities/auth_user.dart';
 
@@ -20,6 +21,7 @@ class AuthState {
   final String? otpPageToken;
   final UserRole? role;
   final String? errorMessage;
+  final UserFriendlyMessage? userMessage;
   final bool isLoading;
   final bool rememberMe;
 
@@ -30,6 +32,7 @@ class AuthState {
     this.otpPageToken,
     this.role,
     this.errorMessage,
+    this.userMessage,
     this.isLoading = false,
     this.rememberMe = false,
   });
@@ -50,6 +53,7 @@ class AuthState {
     String? otpPageToken,
     UserRole? role,
     String? errorMessage,
+    UserFriendlyMessage? userMessage,
     bool? isLoading,
     bool? rememberMe,
   }) {
@@ -60,6 +64,7 @@ class AuthState {
       otpPageToken: otpPageToken ?? this.otpPageToken,
       role: role ?? this.role,
       errorMessage: errorMessage,
+      userMessage: userMessage,
       isLoading: isLoading ?? this.isLoading,
       rememberMe: rememberMe ?? this.rememberMe,
     );

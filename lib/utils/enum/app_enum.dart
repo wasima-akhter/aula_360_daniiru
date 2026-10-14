@@ -1,12 +1,12 @@
+export '../../core/enums/backend_enums.dart';
+
 enum AppLogType { error, success, warning, defaultLog }
 
 enum AppToastType { success, error, warning, info }
 
 enum ApiStatus { loading, error, completed, internetError, noDataFound }
 
-enum SessionStatus { canceled, confirmed, pending }
-
-//
+/// Client-side role representation with helpers.
 enum UserRole {
   teacher,
   parent;

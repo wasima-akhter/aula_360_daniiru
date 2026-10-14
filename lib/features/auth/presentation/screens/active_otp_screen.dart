@@ -1,4 +1,3 @@
-import '../../../../core/helper/snackbar/api_snackbar.dart';
 import '../../../share/export/screen_export.dart';
 import '../../../share/widgets/button/app_logo.dart';
 import '../../../share/widgets/button/custom_back_button.dart';
@@ -122,10 +121,18 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
     if (success) {
       _navigateAfterVerification();
     } else {
-      final error =
-          ref.read(authControllerProvider).errorMessage ??
-          'Código de verificación incorrecto';
-      ApiSnackbar.show(error, type: SnackbarType.error);
+      final authState = ref.read(authControllerProvider);
+      if (authState.userMessage != null) {
+        ApiSnackbar.showUserMessage(authState.userMessage!);
+      } else {
+        final langCode =
+            ref.read(languageProvider).valueOrNull?.languageCode ?? 'en';
+        final resolved = AppErrorResolver.resolve(
+          authState.errorMessage ?? 'invalid_otp',
+          languageCode: langCode,
+        );
+        ApiSnackbar.showUserMessage(resolved);
+      }
     }
   }
 
@@ -134,8 +141,9 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
         .read(otpControllerProvider.notifier)
         .resendOtp(email ?? 'user@aula360.com', purpose);
     if (!mounted) return;
+    final tr = ref.readTr;
     ApiSnackbar.show(
-      'Código de verificación reenviado a tu correo.',
+      tr(AppStrings.otpResendSuccess),
       type: SnackbarType.success,
     );
   }
@@ -254,22 +262,38 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
                         const SizedBox(width: 15),
                         Flexible(
                           child: TextButton(
-                            onPressed: otpState.canResend ? _resendCode : null,
+                            onPressed:
+                                (otpState.canResend && !otpState.isResending)
+                                    ? _resendCode
+                                    : null,
                             style: TextButton.styleFrom(
                               padding: EdgeInsets.zero,
                               minimumSize: Size.zero,
                               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             ),
-                            child: Text(
-                              ref.watchTr(AppStrings.otpResend),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TxtStyle.labelLarge(
-                                color: otpState.canResend
-                                    ? AppColors.primary
-                                    : AppColors.secondaryText,
-                              ),
-                            ),
+                            child: otpState.isResending
+                                ? SizedBox(
+                                    width: 14.sp,
+                                    height: 14.sp,
+                                    child: const CircularProgressIndicator(
+                                      strokeWidth: 1.8,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                        AppColors.primary,
+                                      ),
+                                    ),
+                                  )
+                                : Text(
+                                    ref.watchTr(AppStrings.otpResend),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TxtStyle.labelLarge(
+                                      color:
+                                          (otpState.canResend &&
+                                                  !otpState.isResending)
+                                              ? AppColors.primary
+                                              : AppColors.secondaryText,
+                                    ),
+                                  ),
                           ),
                         ),
                       ],
@@ -291,7 +315,8 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
 
               AulaPrimaryButton(
                 text: buttonText(ref),
-                onTap: otpState.isVerifying ? () {} : _verify,
+                isLoading: otpState.isVerifying,
+                onTap: _verify,
               ),
             ],
           ),

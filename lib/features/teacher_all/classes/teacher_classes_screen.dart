@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 import '../../parent_all/helper/parent_home_helper.dart';
 import '../../share/export/screen_export.dart';
 import '../helper/teacher_enums.dart';
@@ -65,13 +67,21 @@ class TeacherClassesScreen extends ConsumerWidget {
   }
 
   Widget _pageHeader(WidgetRef ref) {
+    final langCode =
+        ref.watch(languageProvider).valueOrNull?.language.code ?? 'en';
+    final dateStr = DateFormat(
+      'EEE, d MMM',
+      langCode,
+    ).format(DateTime.now()).toUpperCase();
+    final todayPrefix = ref.watchTr(AppStrings.today).toUpperCase();
+
     return Padding(
       padding: EdgeInsets.fromLTRB(16.w, 19.h, 16.w, 10.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'HOY • JUE, 24 OCT',
+            '$todayPrefix • $dateStr',
             style: TxtStyle.titleLarge(
               color: AppColors.subtitleTextColor,
               fontSize: 15.sp,
@@ -310,7 +320,7 @@ class TeacherClassesScreen extends ConsumerWidget {
         ),
         SizedBox(width: 5.w),
         Text(
-          'Comienza en 3h',
+          ref.watchTr(AppStrings.startsInHours),
           style: TxtStyle.bodyMedium(
             color: AppColors.subtitleTextColor,
             fontSize: 14.5.sp,

@@ -1,3 +1,6 @@
+import 'package:intl/intl.dart';
+
+import '../../auth/presentation/controllers/auth_controller.dart';
 import '../../parent_all/helper/parent_home_helper.dart';
 import '../../share/export/screen_export.dart';
 import '../helper/teacher_enums.dart';
@@ -59,9 +62,7 @@ class _TeacherPostClassReportScreenState
               SizedBox(height: 24.h),
               _sectionLabel(ref.watchTr(AppStrings.contentDeliveredTitle)),
               SizedBox(height: 8.h),
-              _textCard(
-                ref.watchTr(AppStrings.sessionInfoTitle),
-              ),
+              _textCard(ref.watchTr(AppStrings.sessionInfoTitle)),
               SizedBox(height: 19.h),
               Row(
                 children: [
@@ -171,11 +172,19 @@ class _TeacherPostClassReportScreenState
   }
 
   Widget _classHeader() {
+    final langCode =
+        ref.watch(languageProvider).valueOrNull?.language.code ?? 'en';
+    final user = ref.watch(authControllerProvider).user;
+    final teacherName = user?.fullName.isNotEmpty == true
+        ? user!.fullName
+        : ref.watchTr(AppStrings.facultyPrefix);
+    final dateStr = DateFormat('E, d MMM', langCode).format(DateTime.now());
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'GRUPO A • ${ref.watchTr(AppStrings.bachillerato1).toUpperCase()} • ${ref.watchTr(AppStrings.aula2).toUpperCase()}',
+          '${ref.watchTr(AppStrings.groupA).toUpperCase()} • ${ref.watchTr(AppStrings.bachillerato1).toUpperCase()} • ${ref.watchTr(AppStrings.aula2).toUpperCase()}',
           style: TxtStyle.labelLarge(
             color: AppColors.subtitleTextColor,
             fontSize: 14.sp,
@@ -185,7 +194,7 @@ class _TeacherPostClassReportScreenState
         ),
         SizedBox(height: 7.h),
         Text(
-          '${ref.watchTr(AppStrings.subjectMath)} Avanzadas (Cálculo y Álgebra)',
+          '${ref.watchTr(AppStrings.subjectMathAdvanced)} (${ref.watchTr(AppStrings.subjectCalculusAlgebra)})',
           style: TxtStyle.titleLarge(
             color: AppColors.text,
             fontSize: 23.sp,
@@ -194,7 +203,7 @@ class _TeacherPostClassReportScreenState
         ),
         SizedBox(height: 5.h),
         Text(
-          'Jue, 24 Oct • Dra. Sarah Jenkins',
+          '$dateStr • $teacherName',
           style: TxtStyle.bodyMedium(
             color: AppColors.subtitleTextColor,
             fontSize: 16.sp,

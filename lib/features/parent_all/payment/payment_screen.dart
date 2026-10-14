@@ -447,42 +447,18 @@ class _TuitionPaymentScreenState extends ConsumerState<TuitionPaymentScreen> {
   ) {
     return SizedBox(
       width: double.infinity,
-      child: ElevatedButton.icon(
-        onPressed: state.isProcessing
-            ? null
-            : () async {
-                final success = await controller.processPayment('INV-2026-001');
-                if (success && mounted) {
-                  context.go(RoutePath.paymentReceipt);
-                }
-              },
-        icon: state.isProcessing
-            ? SizedBox(
-                width: 16.w,
-                height: 16.w,
-                child: const CircularProgressIndicator(
-                  color: Colors.white,
-                  strokeWidth: 2,
-                ),
-              )
-            : Icon(Icons.lock_outline, color: Colors.white, size: 15.sp),
-        label: Text(
-          state.isProcessing
-              ? 'Procesando...'
-              : '${ref.watchTr(AppStrings.payNowBtn)} 340,00 €',
-          style: TxtStyle.titleLarge(
-            color: Colors.white,
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-        style: ElevatedButton.styleFrom(
-          elevation: 0,
-          backgroundColor: AppColors.primaryDark,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.r),
-          ),
-        ),
+      child: AulaPrimaryButton(
+        text: '${ref.watchTr(AppStrings.payNowBtn)} 340,00 €',
+        isLoading: state.isProcessing,
+        backgroundColor: AppColors.primaryDark,
+        leading: Icon(Icons.lock_outline, color: Colors.white, size: 15.sp),
+        trailing: const SizedBox.shrink(),
+        onTapAsync: () async {
+          final success = await controller.processPayment('INV-2026-001');
+          if (success && mounted) {
+            context.go(RoutePath.paymentReceipt);
+          }
+        },
       ),
     );
   }

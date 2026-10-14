@@ -25,7 +25,7 @@ class TeacherEndClassScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _statusPill(),
+                  _statusPill(ref),
                   SizedBox(height: 15.h),
 
                   Center(
@@ -104,7 +104,7 @@ class TeacherEndClassScreen extends ConsumerWidget {
     );
   }
 
-  Widget _statusPill() {
+  Widget _statusPill(WidgetRef ref) {
     return Center(
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 5.h),
@@ -125,7 +125,7 @@ class TeacherEndClassScreen extends ConsumerWidget {
             ),
             SizedBox(width: 6.w),
             Text(
-              'Sesión en curso • 88 min',
+              '${ref.watchTr(AppStrings.sessionInProgress)} • 88 min',
               style: TxtStyle.labelLarge(
                 color: AppColors.primaryColor,
                 fontSize: 13.sp,
@@ -182,7 +182,7 @@ class TeacherEndClassScreen extends ConsumerWidget {
           SizedBox(height: 9.h),
 
           Text(
-            '${ref.watchTr(AppStrings.subjectMath)} Avanzadas',
+            ref.watchTr(AppStrings.subjectMathAdvanced),
             style: TxtStyle.titleLarge(
               color: AppColors.text,
               fontSize: 18.sp,
@@ -193,7 +193,7 @@ class TeacherEndClassScreen extends ConsumerWidget {
           SizedBox(height: 3.h),
 
           Text(
-            'Cálculo y Álgebra • Grupo A • ${ref.watchTr(AppStrings.bachillerato1)}',
+            '${ref.watchTr(AppStrings.subjectCalculusAlgebra)} • ${ref.watchTr(AppStrings.groupA)} • ${ref.watchTr(AppStrings.bachillerato1)}',
             style: TxtStyle.bodyMedium(
               color: AppColors.subtitleTextColor,
               fontSize: 14.5.sp,
@@ -212,7 +212,8 @@ class TeacherEndClassScreen extends ConsumerWidget {
                 child: _smallInfo(
                   icon: Icons.location_on_outlined,
                   title: ref.watchTr(AppStrings.location),
-                  value: '${ref.watchTr(AppStrings.aula2)}, Planta 1',
+                  value:
+                      '${ref.watchTr(AppStrings.aula2)}, ${ref.watchTr(AppStrings.floor1)}',
                 ),
               ),
               SizedBox(width: 8.w),
@@ -312,7 +313,7 @@ class TeacherEndClassScreen extends ConsumerWidget {
           Row(
             children: [
               Text(
-                '15 de 18 ${ref.watchTr(AppStrings.present)}',
+                '15 ${ref.watchTr(AppStrings.ofCount)} 18 ${ref.watchTr(AppStrings.present)}',
                 style: TxtStyle.titleLarge(
                   color: AppColors.text,
                   fontSize: 16.sp,

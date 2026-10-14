@@ -37,6 +37,8 @@ class LanguageState {
 
   const LanguageState({required this.language, required this.strings});
 
+  String get languageCode => language.code;
+
   LanguageState copyWith({
     AppLanguage? language,
     Map<String, String>? strings,
@@ -400,6 +402,31 @@ const Map<String, String> _englishFallback = {
   "unable_to_play_video": "Unable to play video",
   "video_unavailable_or_connection_failed":
       "The video is unavailable or your connection failed.",
+  "subject_math_advanced": "Advanced Mathematics",
+  "subject_calculus_algebra": "Calculus & Algebra",
+  "session_in_progress": "Session in progress",
+  "floor_1": "1st Floor",
+  "session_number_prefix": "Session",
+  "session_prefix": "Session",
+  "board_demonstration_title": "Board demonstration:",
+  "board_demonstration_desc":
+      "Great effort. Mastered the chain rule on the board with an excellent attitude.",
+  "homework_demo_title": "Problem Set 4: Implicit Differentiation",
+  "homework_demo_subtitle": "Exercises 12–25 • Notebook submission",
+  "due_prefix": "Due:",
+  "physical_copy": "In-hand copy",
+  "faculty_default_note":
+      "Demonstrates a solid conceptual understanding during board exercises. Actively helps classmates in Group A.",
+  "group": "Group",
+  "of_count": "of",
+  "yesterday": "Yesterday",
+  "subject_physical_education": "Physical Education",
+  "subject_visual_arts": "Visual & Plastic Arts",
+  "homework_submitted_success": "Successfully submitted on October 22.",
+  "starts_in_hours": "Starts in 3h",
+  "no_attendance_data": "No attendance records available",
+  "today": "Today",
+  "otp_resend_success": "Verification code resent to your email.",
 };
 
 const Map<String, String> _spanishFallback = {
@@ -663,4 +690,29 @@ const Map<String, String> _spanishFallback = {
   "unable_to_play_video": "No se puede reproducir el video",
   "video_unavailable_or_connection_failed":
       "El video no está disponible o falló la conexión.",
+  "subject_math_advanced": "Matemáticas Avanzadas",
+  "subject_calculus_algebra": "Cálculo y Álgebra",
+  "session_in_progress": "Sesión en curso",
+  "floor_1": "Planta 1",
+  "session_number_prefix": "Sesión",
+  "session_prefix": "Sesión",
+  "board_demonstration_title": "Demostración en pizarra:",
+  "board_demonstration_desc":
+      "Gran esfuerzo. Dominó la regla de la cadena en la pizarra con excelente actitud.",
+  "homework_demo_title": "Relación de ejercicios 4: Derivación implícita",
+  "homework_demo_subtitle": "Ejercicios 12–25 • Entrega en cuaderno",
+  "due_prefix": "Entrega:",
+  "physical_copy": "Copia en mano",
+  "faculty_default_note":
+      "Demuestra un sólido entendimiento conceptual en los ejercicios de pizarra. Ayuda activamente a sus compañeros del Grupo A.",
+  "group": "Grupo",
+  "of_count": "de",
+  "yesterday": "Ayer",
+  "subject_physical_education": "Educación Física",
+  "subject_visual_arts": "Educación Plástica y Visual",
+  "homework_submitted_success": "Entregada correctamente el 22 de Octubre.",
+  "starts_in_hours": "Comienza en 3h",
+  "no_attendance_data": "No hay registros de asistencia disponibles",
+  "today": "Hoy",
+  "otp_resend_success": "Código de verificación reenviado a tu correo electrónico.",
 };

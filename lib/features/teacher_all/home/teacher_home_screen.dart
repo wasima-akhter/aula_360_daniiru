@@ -1,7 +1,7 @@
 import 'package:aula360/features/parent_all/helper/parent_home_helper.dart';
 import 'package:intl/intl.dart';
 
-import '../../auth/presentation/providers/auth_provider.dart';
+import '../../auth/presentation/controllers/auth_controller.dart';
 import '../../share/export/screen_export.dart';
 import '../../share/widgets/button/app_logo.dart';
 import '../helper/teacher_models.dart';
@@ -110,9 +110,10 @@ class TeacherHomeScreen extends ConsumerWidget {
   ) {
     final langCode =
         ref.watch(languageProvider).valueOrNull?.language.code ?? 'en';
-    final dateStr = DateFormat('EEE, d MMM', langCode)
-        .format(DateTime.now())
-        .toUpperCase();
+    final dateStr = DateFormat(
+      'EEE, d MMM',
+      langCode,
+    ).format(DateTime.now()).toUpperCase();
     final todayPrefix = ref.watchTr(AppStrings.today).toUpperCase();
 
     return Padding(

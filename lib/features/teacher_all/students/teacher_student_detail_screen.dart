@@ -1,3 +1,6 @@
+import 'package:intl/intl.dart';
+
+import '../../auth/presentation/controllers/auth_controller.dart';
 import '../../parent_all/helper/parent_home_helper.dart';
 import '../../share/export/screen_export.dart';
 
@@ -25,6 +28,13 @@ class TeacherStudentDetailsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final facultyNotes = ref.watch(teacherFacultyNotesProvider);
+    final langCode =
+        ref.watch(languageProvider).valueOrNull?.language.code ?? 'en';
+    final user = ref.watch(authControllerProvider).user;
+    final facultyName = user?.fullName.isNotEmpty == true
+        ? user!.fullName
+        : ref.watchTr(AppStrings.facultyPrefix);
+    final formattedDate = DateFormat('d MMM', langCode).format(DateTime.now());
 
     return Scaffold(
       backgroundColor: AppColors.softBackground,
@@ -68,7 +78,8 @@ class TeacherStudentDetailsScreen extends ConsumerWidget {
             _sectionTitle(
               ref,
               ref.watchTr(AppStrings.latestClassReportTitle),
-              trailing: '24 Oct · Sesión #18',
+              trailing:
+                  '$formattedDate · ${ref.watchTr(AppStrings.sessionPrefix)} #18',
             ),
             SizedBox(height: 8.h),
             _latestReport(ref),
@@ -79,15 +90,15 @@ class TeacherStudentDetailsScreen extends ConsumerWidget {
               trailingWidget: _reviewDueTag(ref),
             ),
             SizedBox(height: 8.h),
-            _homeworkCard(ref),
+            _homeworkCard(ref, langCode),
             SizedBox(height: 17.h),
             _sectionTitle(
               ref,
               ref.watchTr(AppStrings.facultyNoteTitle),
-              trailing: 'Dra. S. Jenkins',
+              trailing: facultyName,
             ),
             SizedBox(height: 8.h),
-            _facultyNoteWidget(facultyNotes),
+            _facultyNoteWidget(ref, facultyNotes),
             SizedBox(height: 8.h),
             _addNoteButton(context, ref),
             Gap(20.h),
@@ -150,7 +161,7 @@ class TeacherStudentDetailsScreen extends ConsumerWidget {
               ),
               SizedBox(height: 4.h),
               Text(
-                '${ref.watchTr(AppStrings.bachillerato1)} • ${ref.watchTr(AppStrings.groupA)} • Pupitre 04',
+                '${ref.watchTr(AppStrings.bachillerato1)} • ${ref.watchTr(AppStrings.groupA)} • ${ref.watchTr(AppStrings.deskPrefix)} 04',
                 style: TxtStyle.bodyMedium(
                   color: AppColors.subtitleTextColor,
                   fontSize: 14.5.sp,
@@ -283,17 +294,14 @@ class TeacherStudentDetailsScreen extends ConsumerWidget {
           ),
           children: [
             TextSpan(
-              text: 'Demostración en pizarra: ',
+              text: '${ref.watchTr(AppStrings.boardDemonstrationTitle)} ',
               style: TxtStyle.bodyMedium(
                 color: AppColors.primaryDark,
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w700,
               ),
             ),
-            const TextSpan(
-              text:
-                  'Gran esfuerzo. Dominó la regla de la cadena en la pizarra con excelente actitud.',
-            ),
+            TextSpan(text: ref.watchTr(AppStrings.boardDemonstrationDesc)),
           ],
         ),
       ),
@@ -318,7 +326,12 @@ class TeacherStudentDetailsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _homeworkCard(WidgetRef ref) {
+  Widget _homeworkCard(WidgetRef ref, String langCode) {
+    final dueDate = DateFormat(
+      'd MMM',
+      langCode,
+    ).format(DateTime.now().add(const Duration(days: 5)));
+
     return Container(
       padding: EdgeInsets.all(11.w),
       decoration: BoxDecoration(
@@ -330,7 +343,7 @@ class TeacherStudentDetailsScreen extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Relación de ejercicios 4: Derivación implícita',
+            ref.watchTr(AppStrings.homeworkDemoTitle),
             style: TxtStyle.titleLarge(
               color: AppColors.text,
               fontSize: 16.5.sp,
@@ -339,7 +352,7 @@ class TeacherStudentDetailsScreen extends ConsumerWidget {
           ),
           SizedBox(height: 4.h),
           Text(
-            'Ejercicios 12–25 • Entrega en cuaderno',
+            ref.watchTr(AppStrings.homeworkDemoSubtitle),
             style: TxtStyle.bodyMedium(
               color: AppColors.subtitleTextColor,
               fontSize: 16.sp,
@@ -358,7 +371,7 @@ class TeacherStudentDetailsScreen extends ConsumerWidget {
                   ),
                   SizedBox(width: 4.w),
                   Text(
-                    'Entrega: 29 Oct',
+                    '${ref.watchTr(AppStrings.duePrefix)} $dueDate',
                     style: TxtStyle.bodyMedium(
                       color: AppColors.subtitleTextColor,
                       fontSize: 15.5.sp,
@@ -369,7 +382,7 @@ class TeacherStudentDetailsScreen extends ConsumerWidget {
               Gap(10.w),
               Flexible(
                 child: Text(
-                  'Copia en mano',
+                  ref.watchTr(AppStrings.physicalCopy),
                   style: TxtStyle.bodyMedium(
                     color: AppColors.primaryDark,
                     fontSize: 15.5.sp,
@@ -384,11 +397,8 @@ class TeacherStudentDetailsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _facultyNoteWidget(List<String> facultyNotes) {
-    const defaultNote =
-        'Demuestra un sólido entendimiento conceptual en los ejercicios de pizarra. '
-        'Ayuda activamente a sus compañeros del Grupo A.';
-
+  Widget _facultyNoteWidget(WidgetRef ref, List<String> facultyNotes) {
+    final defaultNote = ref.watchTr(AppStrings.facultyDefaultNote);
     final notes = [defaultNote, ...facultyNotes];
 
     return Column(

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/errors/app_error_resolver.dart';
 import '../../../../core/storage/storage_provider.dart';
 import '../../../../utils/enum/app_enum.dart';
 import '../../../nav/user_role/user_role_provider.dart';
@@ -43,7 +44,7 @@ class AuthController extends Notifier<AuthState> {
 
   /// Checks the active session with the backend. Used during splash/startup.
   Future<bool> checkSession() async {
-    state = state.copyWith(isLoading: true, errorMessage: null);
+    state = state.copyWith(isLoading: true, errorMessage: null, userMessage: null);
     try {
       final user = await ref.read(checkSessionUseCaseProvider).call();
       if (user != null) {
@@ -68,9 +69,11 @@ class AuthController extends Notifier<AuthState> {
         return false;
       }
     } catch (e) {
+      final userMsg = AppErrorResolver.resolve(e);
       state = state.copyWith(
         status: AuthStatus.unauthenticated,
-        errorMessage: e.toString(),
+        errorMessage: userMsg.displayMessage,
+        userMessage: userMsg,
         isLoading: false,
       );
       ref.read(userRoleProvider.notifier).clearRole();
@@ -85,7 +88,7 @@ class AuthController extends Notifier<AuthState> {
     required UserRole role,
     bool rememberMe = false,
   }) async {
-    state = state.copyWith(isLoading: true, errorMessage: null);
+    state = state.copyWith(isLoading: true, errorMessage: null, userMessage: null);
     try {
       final storageService = ref.read(storageServiceProvider);
       final deviceIdentifier = await storageService
@@ -115,9 +118,11 @@ class AuthController extends Notifier<AuthState> {
       );
       return true;
     } catch (e) {
+      final userMsg = AppErrorResolver.resolve(e);
       state = state.copyWith(
         status: AuthStatus.error,
-        errorMessage: e.toString(),
+        errorMessage: userMsg.displayMessage,
+        userMessage: userMsg,
         isLoading: false,
       );
       return false;
@@ -132,7 +137,7 @@ class AuthController extends Notifier<AuthState> {
     required String password,
     required UserRole role,
   }) async {
-    state = state.copyWith(isLoading: true, errorMessage: null);
+    state = state.copyWith(isLoading: true, errorMessage: null, userMessage: null);
     try {
       final otpPageToken = await ref
           .read(signupUseCaseProvider)
@@ -154,9 +159,11 @@ class AuthController extends Notifier<AuthState> {
       );
       return true;
     } catch (e) {
+      final userMsg = AppErrorResolver.resolve(e);
       state = state.copyWith(
         status: AuthStatus.error,
-        errorMessage: e.toString(),
+        errorMessage: userMsg.displayMessage,
+        userMessage: userMsg,
         isLoading: false,
       );
       return false;
@@ -165,7 +172,7 @@ class AuthController extends Notifier<AuthState> {
 
   /// Verify signup OTP.
   Future<bool> verifyOtp({required String otp}) async {
-    state = state.copyWith(isLoading: true, errorMessage: null);
+    state = state.copyWith(isLoading: true, errorMessage: null, userMessage: null);
     try {
       final storageService = ref.read(storageServiceProvider);
       final deviceIdentifier = await storageService
@@ -188,9 +195,11 @@ class AuthController extends Notifier<AuthState> {
       );
       return true;
     } catch (e) {
+      final userMsg = AppErrorResolver.resolve(e);
       state = state.copyWith(
         status: AuthStatus.error,
-        errorMessage: e.toString(),
+        errorMessage: userMsg.displayMessage,
+        userMessage: userMsg,
         isLoading: false,
       );
       return false;
@@ -203,7 +212,11 @@ class AuthController extends Notifier<AuthState> {
       await ref.read(resendOtpUseCaseProvider).call();
       return true;
     } catch (e) {
-      state = state.copyWith(errorMessage: e.toString());
+      final userMsg = AppErrorResolver.resolve(e);
+      state = state.copyWith(
+        errorMessage: userMsg.displayMessage,
+        userMessage: userMsg,
+      );
       return false;
     }
   }
@@ -216,7 +229,7 @@ class AuthController extends Notifier<AuthState> {
     String? occupation,
     String? relationWithChild,
   }) async {
-    state = state.copyWith(isLoading: true, errorMessage: null);
+    state = state.copyWith(isLoading: true, errorMessage: null, userMessage: null);
     try {
       String? avatarUrl;
       if (avatarFile != null) {
@@ -249,9 +262,11 @@ class AuthController extends Notifier<AuthState> {
       );
       return true;
     } catch (e) {
+      final userMsg = AppErrorResolver.resolve(e);
       state = state.copyWith(
         status: AuthStatus.error,
-        errorMessage: e.toString(),
+        errorMessage: userMsg.displayMessage,
+        userMessage: userMsg,
         isLoading: false,
       );
       return false;
@@ -266,7 +281,7 @@ class AuthController extends Notifier<AuthState> {
     String? designation,
     String? bio,
   }) async {
-    state = state.copyWith(isLoading: true, errorMessage: null);
+    state = state.copyWith(isLoading: true, errorMessage: null, userMessage: null);
     try {
       String? avatarUrl;
       if (avatarFile != null) {
@@ -299,9 +314,11 @@ class AuthController extends Notifier<AuthState> {
       );
       return true;
     } catch (e) {
+      final userMsg = AppErrorResolver.resolve(e);
       state = state.copyWith(
         status: AuthStatus.error,
-        errorMessage: e.toString(),
+        errorMessage: userMsg.displayMessage,
+        userMessage: userMsg,
         isLoading: false,
       );
       return false;

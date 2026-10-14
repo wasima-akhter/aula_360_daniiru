@@ -55,6 +55,13 @@ class _ForgetPasswordScreenState extends ConsumerState<ForgetPasswordScreen> {
           role: widget.args.role,
         ),
       );
+    } else {
+      final recoveryState = ref.read(passwordRecoveryControllerProvider);
+      if (recoveryState.userMessage != null) {
+        ApiSnackbar.showUserMessage(recoveryState.userMessage!);
+      } else if (recoveryState.error != null) {
+        ApiSnackbar.show(recoveryState.error!);
+      }
     }
   }
 
@@ -126,7 +133,8 @@ class _ForgetPasswordScreenState extends ConsumerState<ForgetPasswordScreen> {
 
               AulaPrimaryButton(
                 text: ref.watchTr(AppStrings.btnSendVerification),
-                onTap: recoveryState.isLoading ? () {} : _continue,
+                isLoading: recoveryState.isLoading,
+                onTap: _continue,
               ),
             ],
           ),

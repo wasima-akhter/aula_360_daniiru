@@ -129,6 +129,7 @@ class StudentModel {
 
 class ReportModel {
   final String dateLabel;
+  final DateTime? date;
   final String subject;
   final String teacher;
   final String time;
@@ -139,6 +140,7 @@ class ReportModel {
 
   const ReportModel({
     required this.dateLabel,
+    this.date,
     required this.subject,
     required this.teacher,
     required this.time,

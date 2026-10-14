@@ -18,10 +18,7 @@ class ScheduleScreen extends ConsumerWidget {
       final dayLabel = rawDay.isNotEmpty
           ? rawDay[0].toUpperCase() + rawDay.substring(1).replaceAll('.', '')
           : rawDay;
-      return {
-        'day': dayLabel,
-        'date': d.day.toString(),
-      };
+      return {'day': dayLabel, 'date': d.day.toString()};
     });
   }
 
@@ -56,11 +53,14 @@ class ScheduleScreen extends ConsumerWidget {
     final selectedDayDate = monday.add(
       Duration(days: scheduleState.selectedDayIndex.clamp(0, 4)),
     );
-    final isSelectedDayToday = selectedDayDate.day == now.day &&
+    final isSelectedDayToday =
+        selectedDayDate.day == now.day &&
         selectedDayDate.month == now.month &&
         selectedDayDate.year == now.year;
-    final selectedDayTitle =
-        DateFormat('EEEE, d MMM', langCode).format(selectedDayDate);
+    final selectedDayTitle = DateFormat(
+      'EEEE, d MMM',
+      langCode,
+    ).format(selectedDayDate);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),

@@ -580,5 +580,29 @@
   "mock_teacher_dept": "Head of Mathematics & Science Department",
   "mock_teacher_academy_id": "Aula 360 Academy • #FAC-4092",
   "mock_message_prompt": "Send a fast inquiry about your child's progress, homework, or attendance.",
-  "mock_office_hours_notice": "In-person or phone inquiries by prior appointment."
+  "mock_office_hours_notice": "In-person or phone inquiries by prior appointment.",
+
+  "subject_math_advanced": "Advanced Mathematics",
+  "subject_calculus_algebra": "Calculus & Algebra",
+  "session_in_progress": "Session in progress",
+  "floor_1": "1st Floor",
+  "session_number_prefix": "Session",
+  "session_prefix": "Session",
+  "board_demonstration_title": "Board demonstration:",
+  "board_demonstration_desc": "Great effort. Mastered the chain rule on the board with an excellent attitude.",
+  "homework_demo_title": "Problem Set 4: Implicit Differentiation",
+  "homework_demo_subtitle": "Exercises 12–25 • Notebook submission",
+  "due_prefix": "Due:",
+  "physical_copy": "In-hand copy",
+  "faculty_default_note": "Demonstrates a solid conceptual understanding during board exercises. Actively helps classmates in Group A.",
+  "group": "Group",
+  "of_count": "of",
+  "yesterday": "Yesterday",
+  "subject_physical_education": "Physical Education",
+  "subject_visual_arts": "Visual & Plastic Arts",
+  "homework_submitted_success": "Successfully submitted on October 22.",
+  "starts_in_hours": "Starts in 3h",
+  "no_attendance_data": "No attendance records available",
+  "otp_resend_success": "Verification code resent to your email."
 }
+

@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 import '../../share/export/screen_export.dart';
 import '../helper/parent_home_helper.dart';
 
@@ -49,6 +51,31 @@ class _ReportDetailsScreenState extends ConsumerState<ReportDetailsScreen> {
         ),
       ),
     );
+  }
+
+  String _formatReportDate(ReportModel report, WidgetRef ref) {
+    final langCode =
+        ref.watch(languageProvider).valueOrNull?.language.code ?? 'en';
+    if (report.date != null) {
+      return DateFormat('EEEE, d MMM', langCode).format(report.date!);
+    }
+    final upper = report.dateLabel.toUpperCase();
+    final today = DateFormat('EEEE, d MMM', langCode).format(DateTime.now());
+    final yesterday = DateFormat(
+      'EEEE, d MMM',
+      langCode,
+    ).format(DateTime.now().subtract(const Duration(days: 1)));
+
+    if (upper.contains('HOY') || upper.contains('TODAY')) {
+      return today;
+    } else if (upper.contains('AYER') || upper.contains('YESTERDAY')) {
+      return yesterday;
+    }
+    return report.dateLabel
+        .replaceAll('HOY — ', '')
+        .replaceAll('AYER — ', '')
+        .replaceAll('TODAY — ', '')
+        .replaceAll('YESTERDAY — ', '');
   }
 
   Widget _header(ReportModel report) {
@@ -105,9 +132,7 @@ class _ReportDetailsScreenState extends ConsumerState<ReportDetailsScreen> {
                     SizedBox(width: 7.w),
                     Flexible(
                       child: Text(
-                        report.dateLabel
-                            .replaceAll('HOY — ', '')
-                            .replaceAll('AYER — ', ''),
+                        _formatReportDate(report, ref),
                         style: TxtStyle.titleLarge(
                           color: AppColors.secondaryText,
                           fontSize: 13.5.sp,
@@ -161,7 +186,7 @@ class _ReportDetailsScreenState extends ConsumerState<ReportDetailsScreen> {
           ),
           SizedBox(height: 5.h),
           Text(
-            '${ref.watchTr(AppStrings.deadlinePrefix)} ${report.dateLabel}',
+            '${ref.watchTr(AppStrings.duePrefix)} ${_formatReportDate(report, ref)}',
             style: TxtStyle.titleLarge(
               color: const Color(0xFFE68A27),
               fontSize: 14.sp,

@@ -80,10 +80,10 @@ class ChooseRoleScreen extends ConsumerWidget {
                     ? '${tr(AppStrings.roleContinueAsParent)} →'
                     : '${tr(AppStrings.roleContinueAsTeacher)} →',
                 onTap: () {
-                  if (selectedRole == UserRole.parent) {
-                    context.go(RoutePath.loginScreen);
-                  } else {
+                  if (selectedRole == UserRole.teacher) {
                     context.go(RoutePath.teacherLoginScreen);
+                  } else {
+                    context.go(RoutePath.loginScreen);
                   }
                 },
               ),

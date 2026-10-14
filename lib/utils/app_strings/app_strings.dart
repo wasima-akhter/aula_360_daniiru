@@ -165,6 +165,7 @@ class AppStrings {
   static const String otpVerifyReset = 'otp_verify_reset';
   static const String otpRequiredTitle = 'otp_required_title';
   static const String otpRequiredMessage = 'otp_required_message';
+  static const String otpResendSuccess = 'otp_resend_success';
 
   // ── Settings (Teacher & Parent) ───────────────────────────────────────────
   static const String settingsTitle = 'settings_title';
@@ -664,4 +665,27 @@ class AppStrings {
   static const String mockTeacherAcademyId = 'mock_teacher_academy_id';
   static const String mockMessagePrompt = 'mock_message_prompt';
   static const String mockOfficeHoursNotice = 'mock_office_hours_notice';
+
+  // ── Additional Academic & Attendance Strings ──────────────────────────────
+  static const String subjectMathAdvanced = 'subject_math_advanced';
+  static const String subjectCalculusAlgebra = 'subject_calculus_algebra';
+  static const String sessionInProgress = 'session_in_progress';
+  static const String floor1 = 'floor_1';
+  static const String sessionNumberPrefix = 'session_number_prefix';
+  static const String sessionPrefix = 'session_prefix';
+  static const String boardDemonstrationTitle = 'board_demonstration_title';
+  static const String boardDemonstrationDesc = 'board_demonstration_desc';
+  static const String homeworkDemoTitle = 'homework_demo_title';
+  static const String homeworkDemoSubtitle = 'homework_demo_subtitle';
+  static const String duePrefix = 'due_prefix';
+  static const String physicalCopy = 'physical_copy';
+  static const String facultyDefaultNote = 'faculty_default_note';
+  static const String group = 'group';
+  static const String ofCount = 'of_count';
+  static const String yesterday = 'yesterday';
+  static const String subjectPhysicalEducation = 'subject_physical_education';
+  static const String subjectVisualArts = 'subject_visual_arts';
+  static const String homeworkSubmittedSuccess = 'homework_submitted_success';
+  static const String startsInHours = 'starts_in_hours';
+  static const String noAttendanceData = 'no_attendance_data';
 }

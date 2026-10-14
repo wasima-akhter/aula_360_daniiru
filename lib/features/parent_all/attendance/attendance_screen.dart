@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 import '../../share/export/screen_export.dart';
 import '../domain/models/parent_models.dart';
 import '../helper/parent_widgets.dart';
@@ -187,10 +189,17 @@ class AttendanceScreen extends ConsumerWidget {
   }
 
   Widget _monthHeader(WidgetRef ref, int sessionsCount) {
+    final langCode =
+        ref.watch(languageProvider).valueOrNull?.language.code ?? 'en';
+    final monthStr = DateFormat(
+      'MMMM yyyy',
+      langCode,
+    ).format(DateTime.now()).toUpperCase();
+
     return Row(
       children: [
         Text(
-          'OCTUBRE 2024',
+          monthStr,
           style: TxtStyle.titleLarge(
             color: AppColors.subtitleTextColor,
             fontSize: 14.sp,
@@ -212,6 +221,51 @@ class AttendanceScreen extends ConsumerWidget {
   }
 
   Widget _attendanceCard(WidgetRef ref, List<AttendanceRecord> records) {
+    final langCode =
+        ref.watch(languageProvider).valueOrNull?.language.code ?? 'en';
+
+    if (records.isNotEmpty) {
+      return Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(9.r),
+          border: Border.all(color: AppColors.border),
+        ),
+        child: Column(
+          children: [
+            for (int i = 0; i < records.length; i++) ...[
+              if (i > 0) _divider(),
+              _attendanceRow(
+                ref: ref,
+                subject: records[i].dayName,
+                date: '${records[i].date} • ${records[i].checkInTime}',
+                status: records[i].status,
+                detail: records[i].note,
+              ),
+            ],
+          ],
+        ),
+      );
+    }
+
+    final today = ref.watchTr(AppStrings.today);
+    final yesterday = ref.watchTr(AppStrings.yesterday);
+    final now = DateTime.now();
+    final todayDate = DateFormat('d MMM', langCode).format(now);
+    final yesterdayDate = DateFormat(
+      'd MMM',
+      langCode,
+    ).format(now.subtract(const Duration(days: 1)));
+    final d2Date = DateFormat(
+      'E, d MMM',
+      langCode,
+    ).format(now.subtract(const Duration(days: 2)));
+    final d3Date = DateFormat(
+      'E, d MMM',
+      langCode,
+    ).format(now.subtract(const Duration(days: 3)));
+
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -223,44 +277,44 @@ class AttendanceScreen extends ConsumerWidget {
         children: [
           _attendanceRow(
             ref: ref,
-            subject: 'Matemáticas Avanzadas',
-            date: 'Hoy, 24 Oct • 1ª Hora (09:00)',
+            subject: ref.watchTr(AppStrings.subjectMathAdvanced),
+            date: '$today, $todayDate • 09:00',
             status: AttendanceStatus.present,
           ),
           _divider(),
           _attendanceRow(
             ref: ref,
-            subject: 'Lengua Castellana y Literatura',
-            date: 'Hoy, 24 Oct • 2ª Hora (10:30)',
+            subject: ref.watchTr(AppStrings.subjectSpanishLanguage),
+            date: '$today, $todayDate • 10:30',
             status: AttendanceStatus.late,
             detail: '10 min',
           ),
           _divider(),
           _attendanceRow(
             ref: ref,
-            subject: 'Biología y Geología',
-            date: 'Ayer, 23 Oct • 4ª Hora (13:15)',
+            subject: ref.watchTr(AppStrings.subjectBiology),
+            date: '$yesterday, $yesterdayDate • 13:15',
             status: AttendanceStatus.present,
           ),
           _divider(),
           _attendanceRow(
             ref: ref,
-            subject: 'Historia y Geografía',
-            date: 'Ayer, 23 Oct • 5ª Hora (14:45)',
+            subject: ref.watchTr(AppStrings.subjectHistory),
+            date: '$yesterday, $yesterdayDate • 14:45',
             status: AttendanceStatus.present,
           ),
           _divider(),
           _attendanceRow(
             ref: ref,
-            subject: 'Educación Física',
-            date: 'Mar, 22 Oct • Pista 2 (08:30)',
+            subject: ref.watchTr(AppStrings.subjectPhysicalEducation),
+            date: '$d2Date • 08:30',
             status: AttendanceStatus.excused,
           ),
           _divider(),
           _attendanceRow(
             ref: ref,
-            subject: 'Educación Plástica y Visual',
-            date: 'Lun, 21 Oct • Taller 4 (13:15)',
+            subject: ref.watchTr(AppStrings.subjectVisualArts),
+            date: '$d3Date • 13:15',
             status: AttendanceStatus.present,
           ),
         ],

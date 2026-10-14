@@ -1,6 +1,6 @@
 import 'package:intl/intl.dart';
 
-import '../../auth/presentation/providers/auth_provider.dart';
+import '../../auth/presentation/controllers/auth_controller.dart';
 import '../../share/export/screen_export.dart';
 import '../../share/widgets/button/app_logo.dart';
 import '../helper/parent_home_helper.dart';
@@ -40,9 +40,10 @@ class HomeScreen extends ConsumerWidget {
 
     final langCode =
         ref.watch(languageProvider).valueOrNull?.language.code ?? 'en';
-    final formattedDate = DateFormat('EEEE, d MMM', langCode)
-        .format(DateTime.now())
-        .toUpperCase();
+    final formattedDate = DateFormat(
+      'EEEE, d MMM',
+      langCode,
+    ).format(DateTime.now()).toUpperCase();
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),

@@ -97,26 +97,18 @@ class LogoutBtn extends ConsumerWidget {
                 SizedBox(
                   width: double.infinity,
                   height: 48.h,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(dialogContext).pop();
-                      context.go(RoutePath.loginScreen);
+                  child: AulaPrimaryButton(
+                    text: ref.watchTr(AppStrings.logout),
+                    backgroundColor: AppColors.error,
+                    trailing: const SizedBox.shrink(),
+                    actionKey: 'logout_btn',
+                    onTapAsync: () async {
+                      await ref.read(authControllerProvider.notifier).logout();
+                      if (context.mounted) {
+                        Navigator.of(dialogContext).pop();
+                        context.go(RoutePath.loginScreen);
+                      }
                     },
-                    style: ElevatedButton.styleFrom(
-                      elevation: 0,
-                      backgroundColor: AppColors.error,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(9.r),
-                      ),
-                    ),
-                    child: Text(
-                      ref.watchTr(AppStrings.logout),
-                      style: TxtStyle.titleLarge(
-                        color: Colors.white,
-                        fontSize: 15.sp,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
                   ),
                 ),
                 SizedBox(height: 10.h),

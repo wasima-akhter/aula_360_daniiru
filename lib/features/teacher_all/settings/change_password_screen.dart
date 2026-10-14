@@ -1,4 +1,3 @@
-import '../../../../core/helper/snackbar/api_snackbar.dart';
 import '../../../core/utils/validators.dart';
 import '../../share/export/screen_export.dart';
 import '../../share/widgets/button/app_logo.dart';
@@ -171,9 +170,8 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
               const SizedBox(height: 24),
               AulaPrimaryButton(
                 text: ref.watchTr(AppStrings.changePasswordTitle),
-                onTap: settingsState.isChangingPassword
-                    ? () {}
-                    : _changePassword,
+                isLoading: settingsState.isChangingPassword,
+                onTap: _changePassword,
               ),
             ],
           ),

@@ -584,5 +584,29 @@
   "mock_teacher_dept": "Jefe del Dpto. de Matemáticas y Ciencias",
   "mock_teacher_academy_id": "Academia Aula 360 • #FAC-4092",
   "mock_message_prompt": "Envía una consulta rápida sobre el progreso, deberes o asistencia de tu hijo/a.",
-  "mock_office_hours_notice": "Atención presencial o telefónica con cita previa."
+  "mock_office_hours_notice": "Atención presencial o telefónica con cita previa.",
+
+  "subject_math_advanced": "Matemáticas Avanzadas",
+  "subject_calculus_algebra": "Cálculo y Álgebra",
+  "session_in_progress": "Sesión en curso",
+  "floor_1": "Planta 1",
+  "session_number_prefix": "Sesión",
+  "session_prefix": "Sesión",
+  "board_demonstration_title": "Demostración en pizarra:",
+  "board_demonstration_desc": "Gran esfuerzo. Dominó la regla de la cadena en la pizarra con excelente actitud.",
+  "homework_demo_title": "Relación de ejercicios 4: Derivación implícita",
+  "homework_demo_subtitle": "Ejercicios 12–25 • Entrega en cuaderno",
+  "due_prefix": "Entrega:",
+  "physical_copy": "Copia en mano",
+  "faculty_default_note": "Demuestra un sólido entendimiento conceptual en los ejercicios de pizarra. Ayuda activamente a sus compañeros del Grupo A.",
+  "group": "Grupo",
+  "of_count": "de",
+  "yesterday": "Ayer",
+  "subject_physical_education": "Educación Física",
+  "subject_visual_arts": "Educación Plástica y Visual",
+  "homework_submitted_success": "Entregada correctamente el 22 de Octubre.",
+  "starts_in_hours": "Comienza en 3h",
+  "no_attendance_data": "No hay registros de asistencia disponibles",
+  "otp_resend_success": "Código de verificación reenviado a tu correo electrónico."
 }
+

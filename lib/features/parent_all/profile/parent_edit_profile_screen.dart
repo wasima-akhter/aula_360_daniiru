@@ -436,84 +436,54 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   Widget _saveButton(ParentProfileState state) {
     return SizedBox(
       width: double.infinity,
-      child: ElevatedButton(
-        onPressed: state.isSaving
-            ? null
-            : () async {
-                if (!_formKey.currentState!.validate()) {
-                  return;
-                }
+      child: AulaPrimaryButton(
+        text: ref.watchTr(AppStrings.btnSaveChanges),
+        isLoading: state.isSaving,
+        backgroundColor: AppColors.primaryDark,
+        leading: Icon(Icons.check, size: 15.sp, color: Colors.white),
+        trailing: const SizedBox.shrink(),
+        onTapAsync: () async {
+          if (!_formKey.currentState!.validate()) {
+            return;
+          }
 
-                final success = await ref
-                    .read(parentProfileControllerProvider.notifier)
-                    .updateProfile(
-                      name: nameController.text.trim(),
-                      phone: phoneController.text.trim(),
-                      email: emailController.text.trim(),
-                      address: addressController.text.trim(),
-                      language: language,
-                      avatarUrl: _profileImage?.path,
-                    );
+          final success = await ref
+              .read(parentProfileControllerProvider.notifier)
+              .updateProfile(
+                name: nameController.text.trim(),
+                phone: phoneController.text.trim(),
+                email: emailController.text.trim(),
+                address: addressController.text.trim(),
+                language: language,
+                avatarUrl: _profileImage?.path,
+              );
 
-                if (language == 'English') {
-                  ref
-                      .read(languageProvider.notifier)
-                      .changeLanguage(AppLanguage.english);
-                } else if (language == 'Español') {
-                  ref
-                      .read(languageProvider.notifier)
-                      .changeLanguage(AppLanguage.spanish);
-                }
+          if (language == 'English') {
+            ref
+                .read(languageProvider.notifier)
+                .changeLanguage(AppLanguage.english);
+          } else if (language == 'Español') {
+            ref
+                .read(languageProvider.notifier)
+                .changeLanguage(AppLanguage.spanish);
+          }
 
-                if (success && mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        ref.watchTr(AppStrings.profileUpdatedSuccess),
-                        style: TxtStyle.titleLarge(
-                          fontSize: 14.sp,
-                          color: Colors.white,
-                        ),
-                      ),
-                      behavior: SnackBarBehavior.floating,
-                    ),
-                  );
-                  context.pop();
-                }
-              },
-        style: ElevatedButton.styleFrom(
-          elevation: 0,
-          backgroundColor: AppColors.primaryDark,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(7.r),
-          ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (state.isSaving)
-              SizedBox(
-                width: 16.w,
-                height: 16.w,
-                child: const CircularProgressIndicator(
-                  color: Colors.white,
-                  strokeWidth: 2,
+          if (success && mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  ref.watchTr(AppStrings.profileUpdatedSuccess),
+                  style: TxtStyle.titleLarge(
+                    fontSize: 14.sp,
+                    color: Colors.white,
+                  ),
                 ),
-              )
-            else ...[
-              Icon(Icons.check, size: 15.sp, color: Colors.white),
-              SizedBox(width: 5.w),
-              Text(
-                ref.watchTr(AppStrings.btnSaveChanges),
-                style: TxtStyle.titleLarge(
-                  color: Colors.white,
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w800,
-                ),
+                behavior: SnackBarBehavior.floating,
               ),
-            ],
-          ],
-        ),
+            );
+            context.pop();
+          }
+        },
       ),
     );
   }

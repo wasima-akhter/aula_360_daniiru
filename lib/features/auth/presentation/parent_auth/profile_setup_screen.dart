@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import '../../../../core/helper/snackbar/api_snackbar.dart';
 import '../../../nav/user_role/user_role_provider.dart';
 import '../../../share/export/screen_export.dart';
 import '../../../share/widgets/custom_image/app_image_picker.dart';
@@ -147,10 +146,18 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
       ref.read(userRoleProvider.notifier).loginAsParent();
       context.go(RoutePath.navigationPages);
     } else {
-      final error =
-          ref.read(authControllerProvider).errorMessage ??
-          'Error al completar el perfil';
-      ApiSnackbar.show(error, type: SnackbarType.error);
+      final authState = ref.read(authControllerProvider);
+      if (authState.userMessage != null) {
+        ApiSnackbar.showUserMessage(authState.userMessage!);
+      } else {
+        final langCode =
+            ref.read(languageProvider).valueOrNull?.languageCode ?? 'en';
+        final resolved = AppErrorResolver.resolve(
+          authState.errorMessage,
+          languageCode: langCode,
+        );
+        ApiSnackbar.showUserMessage(resolved);
+      }
     }
   }
 
@@ -323,7 +330,8 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
                     const SizedBox(height: 22),
                     AulaPrimaryButton(
                       text: ref.watchTr(AppStrings.btnCompleteProfile),
-                      onTap: authState.isLoading ? () {} : _completeProfile,
+                      isLoading: authState.isLoading,
+                      onTap: _completeProfile,
                     ),
                     const SizedBox(height: 8),
                     Center(

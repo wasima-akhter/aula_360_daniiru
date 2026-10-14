@@ -20,7 +20,7 @@ class _AddChildScreenState extends ConsumerState<AddChildScreen> {
   final dobController = TextEditingController();
   final studentIdController = TextEditingController();
 
-  String grade = '2º Primaria';
+  String gradeKey = AppStrings.primaria2;
   String genderKey = 'male';
 
   @override
@@ -331,18 +331,18 @@ class _AddChildScreenState extends ConsumerState<AddChildScreen> {
 
   Widget _gradeDropdown() {
     const gradesList = [
-      '1º Primaria',
-      '2º Primaria',
-      '3º Primaria',
-      '4º Primaria',
-      '5º Primaria',
-      '6º Primaria',
-      '1º ESO',
-      '2º ESO',
-      '3º ESO',
-      '4º ESO',
-      '1º Bachillerato',
-      '2º Bachillerato',
+      AppStrings.primaria1,
+      AppStrings.primaria2,
+      AppStrings.primaria3,
+      AppStrings.primaria4,
+      AppStrings.primaria5,
+      AppStrings.primaria6,
+      AppStrings.eso1,
+      AppStrings.eso2,
+      AppStrings.eso3,
+      AppStrings.eso4,
+      AppStrings.bachillerato1,
+      AppStrings.bachillerato2,
     ];
 
     return Padding(
@@ -353,14 +353,19 @@ class _AddChildScreenState extends ConsumerState<AddChildScreen> {
           _label(ref.watchTr(AppStrings.gradeLevel), requiredField: true),
           SizedBox(height: 5.h),
           DropdownButtonFormField<String>(
-            initialValue: grade,
+            initialValue: gradeKey,
             decoration: _inputDecoration(Icons.school_outlined),
             items: gradesList
-                .map((g) => DropdownMenuItem(value: g, child: Text(g)))
+                .map(
+                  (key) => DropdownMenuItem(
+                    value: key,
+                    child: Text(ref.watchTr(key)),
+                  ),
+                )
                 .toList(),
             onChanged: (value) {
               if (value != null) {
-                setState(() => grade = value);
+                setState(() => gradeKey = value);
               }
             },
             style: TxtStyle.titleLarge(color: AppColors.text, fontSize: 15.sp),
@@ -493,32 +498,16 @@ class _AddChildScreenState extends ConsumerState<AddChildScreen> {
   }
 
   Widget _saveChildButton() {
+    final isSaving = ref.watch(parentChildrenControllerProvider).isLoading;
     return SizedBox(
       width: double.infinity,
-      child: ElevatedButton(
-        onPressed: _saveChild,
-        style: ElevatedButton.styleFrom(
-          elevation: 0,
-          backgroundColor: AppColors.primaryDark,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(7.r),
-          ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.check, color: Colors.white, size: 20.sp),
-            SizedBox(width: 5.w),
-            Text(
-              ref.watchTr(AppStrings.saveChild),
-              style: TxtStyle.titleLarge(
-                color: Colors.white,
-                fontSize: 17.sp,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-          ],
-        ),
+      child: AulaPrimaryButton(
+        text: ref.watchTr(AppStrings.saveChild),
+        isLoading: isSaving,
+        leading: Icon(Icons.check, color: Colors.white, size: 20.sp),
+        trailing: const SizedBox.shrink(),
+        backgroundColor: AppColors.primaryDark,
+        onTap: _saveChild,
       ),
     );
   }
@@ -534,11 +523,14 @@ class _AddChildScreenState extends ConsumerState<AddChildScreen> {
             .valueOrNull
             ?.tr(AppStrings.assignedAfterEnrollment) ??
         'Asignado tras matrícula';
+    final selectedGrade =
+        ref.read(languageProvider).valueOrNull?.tr(gradeKey) ??
+        ref.watchTr(gradeKey);
     await ref
         .read(parentChildrenControllerProvider.notifier)
         .addChild(
           name: fullNameController.text.trim(),
-          grade: grade,
+          grade: selectedGrade,
           room: 'Aula 2A',
           parentTeacher: parentTeacher,
         );

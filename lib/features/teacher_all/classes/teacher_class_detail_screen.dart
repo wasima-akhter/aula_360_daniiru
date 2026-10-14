@@ -209,7 +209,7 @@ class TeacherClassDetailScreen extends ConsumerWidget {
           SizedBox(width: 8.w),
           Expanded(
             child: Text(
-              '${ref.watchTr(AppStrings.aula2)} • Planta 1',
+              '${ref.watchTr(AppStrings.aula2)} • ${ref.watchTr(AppStrings.floor1)}',
               style: TxtStyle.bodyMedium(
                 color: AppColors.subtitleTextColor,
                 fontSize: 15.sp,
