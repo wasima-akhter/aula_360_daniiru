@@ -6,6 +6,20 @@ import 'package:flutter/material.dart';
 class ImageViewerService {
   const ImageViewerService();
 
+  static void open(
+    BuildContext context, {
+    String? imageUrl,
+    File? imageFile,
+    String? title,
+  }) {
+    const ImageViewerService().showImageViewer(
+      context,
+      imageUrl: imageUrl,
+      imageFile: imageFile,
+      title: title,
+    );
+  }
+
   /// Opens a full-screen image viewer dialog or screen with pinch-to-zoom.
   void showImageViewer(
     BuildContext context, {

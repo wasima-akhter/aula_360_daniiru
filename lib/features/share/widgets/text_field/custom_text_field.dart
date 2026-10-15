@@ -242,6 +242,7 @@ class AppTextField extends StatelessWidget {
         Text(
           label,
           style: context.titleMedium.copyWith(
+            fontSize: 16.sp,
             color: AppColors.text,
             fontWeight: FontWeight.w600,
           ),
@@ -267,6 +268,13 @@ class AppTextField extends StatelessWidget {
               onChanged: (phone) {
                 onPhoneChanged?.call(phone.completeNumber);
               },
+              onCountryChanged: (country) {
+                if (controller.text.isNotEmpty) {
+                  onPhoneChanged?.call(
+                    '+${country.dialCode}${controller.text}',
+                  );
+                }
+              },
               validator: (phone) {
                 if (phone == null || phone.number.trim().isEmpty) {
                   return isEs
@@ -283,6 +291,7 @@ class AppTextField extends StatelessWidget {
               decoration: InputDecoration(
                 hintText: hint,
                 hintStyle: context.bodyMedium.copyWith(
+                  fontSize: 16.sp,
                   color: const Color(0xFFADB5C2),
                 ),
                 prefixIcon: Icon(
@@ -320,12 +329,17 @@ class AppTextField extends StatelessWidget {
             obscureText: obscureText,
             keyboardType: keyboardType,
             readOnly: readOnly,
+            canRequestFocus: !readOnly,
             onTap: onTap,
             inputFormatters: effectiveFormatters,
-            style: context.titleMedium.copyWith(color: AppColors.text),
+            style: context.titleMedium.copyWith(
+              fontSize: 16.sp,
+              color: AppColors.text,
+            ),
             decoration: InputDecoration(
               hintText: hint,
               hintStyle: context.bodyMedium.copyWith(
+                fontSize: 16.sp,
                 color: const Color(0xFFADB5C2),
               ),
               helperText: helperText,

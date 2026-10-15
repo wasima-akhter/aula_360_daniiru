@@ -13,6 +13,7 @@ abstract class ParentRepository {
   Future<void> payInvoice(String invoiceId, String paymentMethod);
   Future<List<ParentNotificationModel>> getNotifications();
   Future<void> markNotificationAsRead(String id);
+  Future<void> markAllNotificationsAsRead();
   Future<List<ChatMessageModel>> getMessages(String teacherId);
   Future<void> sendMessage(String teacherId, String message);
 }

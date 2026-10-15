@@ -1,14 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import '../../../../core/network/network_providers.dart';
 import '../../domain/models/parent_models.dart';
 import '../../domain/repositories/parent_repository.dart';
+import '../datasources/notification_remote_data_source.dart';
+
+final notificationRemoteDataSourceProvider =
+    Provider<NotificationRemoteDataSource>((ref) {
+  final client = ref.watch(apiClientProvider);
+  return NotificationRemoteDataSourceImpl(client);
+});
 
 final parentRepositoryProvider = Provider<ParentRepository>((ref) {
-  return ParentRepositoryImpl();
+  final remoteDataSource = ref.watch(notificationRemoteDataSourceProvider);
+  return ParentRepositoryImpl(remoteDataSource);
 });
 
 class ParentRepositoryImpl implements ParentRepository {
+  final NotificationRemoteDataSource? _remoteDataSource;
+
+  ParentRepositoryImpl([this._remoteDataSource]);
   List<ChildModel> _children = [
     const ChildModel(
       id: '#STU-4821',
@@ -345,6 +357,17 @@ class ParentRepositoryImpl implements ParentRepository {
 
   @override
   Future<List<ParentNotificationModel>> getNotifications() async {
+    if (_remoteDataSource != null) {
+      try {
+        final dtos = await _remoteDataSource.getAllNotifications();
+        if (dtos.isNotEmpty) {
+          _notifications = dtos.map((d) => d.toModel()).toList();
+          return _notifications;
+        }
+      } catch (_) {
+        // Fall back to cached notifications on error
+      }
+    }
     await Future.delayed(const Duration(milliseconds: 150));
     return _notifications;
   }
@@ -357,6 +380,24 @@ class ParentRepositoryImpl implements ParentRepository {
       }
       return n;
     }).toList();
+
+    if (_remoteDataSource != null) {
+      try {
+        await _remoteDataSource.markAsRead(id);
+      } catch (_) {}
+    }
+  }
+
+  @override
+  Future<void> markAllNotificationsAsRead() async {
+    _notifications =
+        _notifications.map((n) => n.copyWith(isRead: true)).toList();
+
+    if (_remoteDataSource != null) {
+      try {
+        await _remoteDataSource.markAllAsRead();
+      } catch (_) {}
+    }
   }
 
   @override

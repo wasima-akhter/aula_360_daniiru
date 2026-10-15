@@ -1,10 +1,12 @@
 import 'package:intl/intl.dart';
 
 import '../../auth/presentation/controllers/auth_controller.dart';
+import '../../nav/presentation/screens/navigation_provider.dart';
 import '../../share/export/screen_export.dart';
 import '../../share/widgets/button/app_logo.dart';
 import '../helper/parent_home_helper.dart';
 import '../presentation/controllers/parent_home_controller.dart';
+import '../presentation/controllers/parent_notifications_controller.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -54,16 +56,35 @@ class HomeScreen extends ConsumerWidget {
           child: AulaLogo(width: 105),
         ),
         actions: [
-          IconButton(
-            onPressed: () {
-              context.go(RoutePath.navigationPages, extra: 3);
+          Consumer(
+            builder: (context, ref, _) {
+              final unreadCount = ref.watch(
+                parentNotificationsControllerProvider.select((s) => s.unreadCount),
+              );
+              return IconButton(
+                onPressed: () {
+                  ref.read(navigationProvider.notifier).goToParentNotifications();
+                },
+                splashRadius: 22,
+                icon: Badge(
+                  isLabelVisible: unreadCount > 0,
+                  label: Text(
+                    unreadCount > 9 ? '9+' : '$unreadCount',
+                    style: TextStyle(
+                      fontSize: 10.sp,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                  ),
+                  backgroundColor: AppColors.primary,
+                  child: Icon(
+                    Icons.notifications_none_rounded,
+                    color: AppColors.text,
+                    size: 25.sp,
+                  ),
+                ),
+              );
             },
-            splashRadius: 22,
-            icon: Icon(
-              Icons.notifications_none_rounded,
-              color: AppColors.text,
-              size: 25.sp,
-            ),
           ),
           Padding(
             padding: EdgeInsets.only(left: 2.w, right: 15.w),

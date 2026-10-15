@@ -2,7 +2,6 @@ import 'dart:io';
 
 import '../../../nav/user_role/user_role_provider.dart';
 import '../../../share/export/screen_export.dart';
-import '../../../share/widgets/custom_image/app_image_picker.dart';
 import '../../../share/widgets/dropdown/custom_dropdown_field.dart';
 import '../../../share/widgets/text_field/custom_text_field.dart';
 import '../../../share/widgets/text_field/description_text_field.dart';
@@ -115,73 +114,27 @@ class _TeacherProfileSetupScreenState
     super.dispose();
   }
 
+  void _previewProfilePhoto() {
+    if (_profileImage == null) return;
+    ImageViewerService.open(
+      context,
+      imageFile: _profileImage,
+      title: nameController.text.isNotEmpty
+          ? nameController.text
+          : ref.tr(AppStrings.chooseProfilePhoto),
+    );
+  }
+
   Future<void> _showImagePicker() async {
-    final source = await showModalBottomSheet<ImagePickerSource>(
-      context: context,
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (bottomSheetContext) {
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: AppColors.border,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                const SizedBox(height: 18),
-                Text(
-                  ref.watchTr(AppStrings.chooseProfilePhoto),
-                  style: context.titleMedium.copyWith(
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.text,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  ref.watchTr(AppStrings.selectOptionProfilePhoto),
-                  textAlign: TextAlign.center,
-                  style: context.bodySmall.copyWith(
-                    color: AppColors.secondaryText,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                ImagePickerOption(
-                  icon: Icons.photo_library_outlined,
-                  title: ref.watchTr(AppStrings.chooseFromGallery),
-                  onTap: () {
-                    Navigator.pop(
-                      bottomSheetContext,
-                      ImagePickerSource.gallery,
-                    );
-                  },
-                ),
-                const SizedBox(height: 10),
-                ImagePickerOption(
-                  icon: Icons.camera_alt_outlined,
-                  title: ref.watchTr(AppStrings.takeAPhoto),
-                  onTap: () {
-                    Navigator.pop(bottomSheetContext, ImagePickerSource.camera);
-                  },
-                ),
-              ],
-            ),
-          ),
-        );
-      },
+    final image = await AppImagePicker.showImagePickerBottomSheet(
+      context,
+      ref: ref,
+      showPreviewOption: _profileImage != null,
+      onPreviewPhoto: _previewProfilePhoto,
+      showRemoveOption: _profileImage != null,
+      onRemovePhoto: () => setState(() => _profileImage = null),
     );
 
-    if (source == null) return;
-
-    final image = await AppImagePicker.pickImage(source: source);
     if (image == null || !mounted) return;
 
     setState(() => _profileImage = image);
@@ -452,30 +405,36 @@ class _TeacherProfileSetupScreenState
                       child: Stack(
                         clipBehavior: Clip.none,
                         children: [
-                          Container(
-                            width: 104,
-                            height: 104,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: AppColors.border,
-                                width: 2.5,
+                          GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: _profileImage != null
+                                ? _previewProfilePhoto
+                                : _showImagePicker,
+                            child: Container(
+                              width: 104,
+                              height: 104,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: AppColors.border,
+                                  width: 2.5,
+                                ),
                               ),
-                            ),
-                            child: ClipOval(
-                              child: _profileImage != null
-                                  ? Image.file(
-                                      _profileImage!,
-                                      fit: BoxFit.cover,
-                                    )
-                                  : Container(
-                                      color: const Color(0xFFF0F4F8),
-                                      child: const Icon(
-                                        Icons.person_rounded,
-                                        size: 56,
-                                        color: AppColors.secondaryText,
+                              child: ClipOval(
+                                child: _profileImage != null
+                                    ? Image.file(
+                                        _profileImage!,
+                                        fit: BoxFit.cover,
+                                      )
+                                    : Container(
+                                        color: const Color(0xFFF0F4F8),
+                                        child: const Icon(
+                                          Icons.person_rounded,
+                                          size: 56,
+                                          color: AppColors.secondaryText,
+                                        ),
                                       ),
-                                    ),
+                              ),
                             ),
                           ),
                           Positioned(

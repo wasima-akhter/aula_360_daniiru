@@ -1,8 +1,11 @@
 import 'dart:io';
 
-import 'package:image_picker/image_picker.dart';
-
+import '../../../core/storage/storage_provider.dart';
+import '../../../core/utils/formatters/app_input_formatters.dart';
+import '../../../core/utils/validators.dart';
+import '../../auth/presentation/controllers/auth_controller.dart';
 import '../../share/export/screen_export.dart';
+import '../../share/widgets/text_field/custom_text_field.dart';
 import '../helper/teacher_models.dart';
 import '../presentation/controllers/teacher_profile_controller.dart';
 
@@ -23,6 +26,8 @@ class EditTeacherProfileScreen extends ConsumerStatefulWidget {
 class _EditTeacherProfileScreenState
     extends ConsumerState<EditTeacherProfileScreen> {
   final _formKey = GlobalKey<FormState>();
+  final _phoneFormKey = GlobalKey<FormState>();
+  String _completePhoneNumber = '';
 
   late final TextEditingController nameController;
   late final TextEditingController emailController;
@@ -30,8 +35,6 @@ class _EditTeacherProfileScreenState
   late final TextEditingController departmentController;
   late final TextEditingController officeController;
   late final TextEditingController bioController;
-
-  final ImagePicker _imagePicker = ImagePicker();
 
   File? _profileImage;
   String language = 'Español';
@@ -42,8 +45,26 @@ class _EditTeacherProfileScreenState
     final profile = ref.read(teacherProfileControllerProvider).profile;
 
     nameController = TextEditingController(text: profile.name);
-    emailController = TextEditingController(text: profile.email);
-    phoneController = TextEditingController(text: profile.phone);
+
+    final storage = ref.read(storageServiceProvider);
+    final storedEmail = storage.getUserEmail();
+    final authUser = ref.read(authControllerProvider).user;
+    final effectiveEmail = (profile.email.isNotEmpty)
+        ? profile.email
+        : ((authUser?.email != null && authUser!.email.isNotEmpty)
+            ? authUser.email
+            : (storedEmail ?? ''));
+    emailController = TextEditingController(text: effectiveEmail);
+
+    final rawPhone = profile.phone;
+    _completePhoneNumber = rawPhone;
+    if (rawPhone.startsWith('+34')) {
+      phoneController =
+          TextEditingController(text: rawPhone.substring(3).trim());
+    } else {
+      phoneController = TextEditingController(text: rawPhone);
+    }
+
     departmentController = TextEditingController(text: profile.department);
     officeController = TextEditingController(text: profile.office);
     bioController = TextEditingController(text: profile.bio);
@@ -124,21 +145,40 @@ class _EditTeacherProfileScreenState
                   icon: Icons.person_outline,
                   requiredField: true,
                 ),
-                _field(
-                  label: ref.watchTr(AppStrings.emailAddressTitle),
+                AppTextField(
                   controller: emailController,
+                  label: ref.watchTr(AppStrings.emailAddressTitle),
+                  hint: ref.watchTr(AppStrings.fieldEmailAddressHint),
                   icon: Icons.mail_outline,
                   keyboardType: TextInputType.emailAddress,
-                  requiredField: true,
-                  validator: _validateEmail,
+                  readOnly: true,
+                  inputFormatters: AppInputFormatters.email,
                 ),
-                _field(
-                  label: ref.watchTr(AppStrings.primaryMobileNumber),
+                SizedBox(height: 10.h),
+                AppTextField(
                   controller: phoneController,
+                  label: ref.watchTr(AppStrings.primaryMobileNumber),
+                  hint: ref.watchTr(AppStrings.enterMobileNumber),
                   icon: Icons.phone_outlined,
                   keyboardType: TextInputType.phone,
-                  requiredField: true,
+                  isPhoneField: true,
+                  initialCountryCode: 'ES',
+                  phoneFormKey: _phoneFormKey,
+                  languageCode:
+                      ref.watch(languageProvider).valueOrNull?.languageCode,
+                  onPhoneChanged: (completeNumber) {
+                    _completePhoneNumber = completeNumber;
+                  },
+                  phoneValidator: (value) {
+                    final langCode =
+                        ref.read(languageProvider).valueOrNull?.languageCode;
+                    return AulaValidation.validatePhone(
+                      value,
+                      languageCode: langCode,
+                    );
+                  },
                 ),
+                SizedBox(height: 10.h),
                 _field(
                   label: ref.watchTr(AppStrings.deptSubjectLabel),
                   controller: departmentController,
@@ -182,32 +222,37 @@ class _EditTeacherProfileScreenState
           Stack(
             clipBehavior: Clip.none,
             children: [
-              Container(
-                width: 86.w,
-                height: 86.w,
-                padding: EdgeInsets.all(3.w),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white,
-                  border: Border.all(color: AppColors.blueSoft, width: 2),
-                ),
-                child: ClipOval(
-                  child: _profileImage != null
-                      ? Image.file(_profileImage!, fit: BoxFit.cover)
-                      : Image.network(
-                          'https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=500',
-                          fit: BoxFit.cover,
-                          errorBuilder: (_, _, _) {
-                            return Container(
+              GestureDetector(
+                onTap: _previewProfilePhoto,
+                child: Container(
+                  width: 86.w,
+                  height: 86.w,
+                  padding: EdgeInsets.all(3.w),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white,
+                    border: Border.all(color: AppColors.blueSoft, width: 2),
+                  ),
+                  child: ClipOval(
+                    child: _profileImage != null
+                        ? Image.file(_profileImage!, fit: BoxFit.cover)
+                        : CustomNetworkImage(
+                            imageUrl:
+                                'https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=500',
+                            width: 80.w,
+                            height: 80.w,
+                            boxShape: BoxShape.circle,
+                            fit: BoxFit.cover,
+                            errorWidget: Container(
                               color: AppColors.softBackground,
                               child: Icon(
                                 Icons.person,
                                 size: 38.sp,
                                 color: AppColors.subtitleTextColor,
                               ),
-                            );
-                          },
-                        ),
+                            ),
+                          ),
+                  ),
                 ),
               ),
               Positioned(
@@ -271,78 +316,43 @@ class _EditTeacherProfileScreenState
     );
   }
 
-  Future<void> _showImageSource() async {
-    await showModalBottomSheet<void>(
-      context: context,
-      backgroundColor: Colors.white,
-      showDragHandle: true,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(18.r)),
-      ),
-      builder: (sheetContext) {
-        return SafeArea(
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(16.w, 5.h, 16.w, 20.h),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ListTile(
-                  leading: const Icon(Icons.camera_alt_outlined),
-                  title: Text(ref.watchTr(AppStrings.takeAPhoto)),
-                  onTap: () {
-                    Navigator.pop(sheetContext);
-                    _pickImage(ImageSource.camera);
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.photo_library_outlined),
-                  title: Text(ref.watchTr(AppStrings.chooseFromGallery)),
-                  onTap: () {
-                    Navigator.pop(sheetContext);
-                    _pickImage(ImageSource.gallery);
-                  },
-                ),
-                if (_profileImage != null)
-                  ListTile(
-                    leading: Icon(Icons.delete_outline, color: AppColors.error),
-                    title: Text(
-                      ref.watchTr(AppStrings.removePhoto),
-                      style: TxtStyle.titleLarge(color: AppColors.error),
-                    ),
-                    onTap: () {
-                      Navigator.pop(sheetContext);
-                      setState(() {
-                        _profileImage = null;
-                      });
-                    },
-                  ),
-              ],
-            ),
-          ),
-        );
-      },
+  void _previewProfilePhoto() {
+    ImageViewerService.open(
+      context,
+      imageFile: _profileImage,
+      imageUrl: _profileImage == null
+          ? 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=500'
+          : null,
+      title: nameController.text.isNotEmpty
+          ? nameController.text
+          : 'Teacher Profile',
     );
   }
 
-  Future<void> _pickImage(ImageSource source) async {
-    try {
-      final XFile? picked = await _imagePicker.pickImage(
-        source: source,
-        imageQuality: 85,
-        maxWidth: 1200,
-        maxHeight: 1200,
-      );
+  Future<void> _showImageSource() async {
+    final file = await AppImagePicker.showImagePickerBottomSheet(
+      context,
+      ref: ref,
+      showPreviewOption: true,
+      onPreviewPhoto: _previewProfilePhoto,
+      showRemoveOption: _profileImage != null,
+      onRemovePhoto: () {
+        setState(() {
+          _profileImage = null;
+        });
+      },
+    );
 
-      if (picked == null) return;
-
-      final file = File(picked.path);
+    if (file != null && mounted) {
       final size = await file.length();
-
-      // 5 MB limit
       if (size > 5 * 1024 * 1024) {
         if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(ref.watchTr(AppStrings.imageSizeLimitError))),
+        ApiSnackbar.showUserMessage(
+          UserFriendlyMessage(
+            title: ref.tr(AppStrings.validationError),
+            message: ref.tr(AppStrings.imageSizeLimitError),
+          ),
+          type: SnackbarType.error,
         );
         return;
       }
@@ -350,11 +360,6 @@ class _EditTeacherProfileScreenState
       setState(() {
         _profileImage = file;
       });
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(ref.watchTr(AppStrings.imageSelectError))),
-      );
     }
   }
 
@@ -383,9 +388,14 @@ class _EditTeacherProfileScreenState
             validator:
                 validator ??
                 (value) {
-                  if (requiredField &&
-                      (value == null || value.trim().isEmpty)) {
-                    return '$label ${ref.watchTr(AppStrings.fieldIsRequiredSuffix)}';
+                  if (requiredField) {
+                    final langCode =
+                        ref.read(languageProvider).valueOrNull?.languageCode;
+                    return AulaValidation.validateRequired(
+                      value,
+                      fieldName: label,
+                      languageCode: langCode,
+                    );
                   }
                   return null;
                 },
@@ -529,14 +539,39 @@ class _EditTeacherProfileScreenState
   }
 
   Future<void> _save() async {
+    final langCode =
+        ref.read(languageProvider).valueOrNull?.languageCode ?? 'en';
+
     if (!_formKey.currentState!.validate()) {
       return;
     }
 
+    if (!AulaValidation.required(
+      value: nameController.text,
+      fieldName: ref.tr(AppStrings.parentFullName),
+      languageCode: langCode,
+    )) {
+      return;
+    }
+
+    var phoneToValidate = _completePhoneNumber.isNotEmpty
+        ? _completePhoneNumber
+        : phoneController.text.trim();
+
+    if (phoneToValidate.isNotEmpty && !phoneToValidate.startsWith('+')) {
+      phoneToValidate = '+34$phoneToValidate';
+    }
+
+    if (!AulaValidation.phone(phoneToValidate, languageCode: langCode)) {
+      return;
+    }
+
+    final sanitizedPhone = AulaValidation.sanitizePhone(phoneToValidate);
+
     final updatedProfile = TeacherProfileData(
       name: nameController.text.trim(),
       email: emailController.text.trim(),
-      phone: phoneController.text.trim(),
+      phone: sanitizedPhone,
       department: departmentController.text.trim(),
       office: officeController.text.trim(),
       bio: bioController.text.trim(),
@@ -560,6 +595,7 @@ class _EditTeacherProfileScreenState
       ApiSnackbar.show(
         ref.tr(AppStrings.profileUpdatedSuccess),
         type: SnackbarType.success,
+        languageCode: langCode,
       );
       context.pop();
     } else {
@@ -569,21 +605,10 @@ class _EditTeacherProfileScreenState
           userMsg.displayMessage,
           title: userMsg.title,
           type: SnackbarType.error,
+          languageCode: langCode,
         );
       }
     }
-  }
-
-  String? _validateEmail(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return ref.watchTr(AppStrings.emailRequired);
-    }
-
-    final emailRegex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
-    if (!emailRegex.hasMatch(value.trim())) {
-      return ref.watchTr(AppStrings.validEmailAddress);
-    }
-    return null;
   }
 
   Widget _sectionLabel(String text) {

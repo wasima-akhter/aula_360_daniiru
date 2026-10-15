@@ -1,22 +1,16 @@
 import '../../share/export/screen_export.dart';
-import '../domain/models/parent_models.dart';
 import '../presentation/controllers/parent_notifications_controller.dart';
-
-/// ===============================================================
-/// 1. NOTIFICATIONS SCREEN / NOTIFICACIONES
-/// ===============================================================
+import 'widgets/notification_tile.dart';
 
 class NotificationsScreen extends ConsumerWidget {
   const NotificationsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final notifState = ref.watch(parentNotificationsControllerProvider);
-    final notifController = ref.read(
-      parentNotificationsControllerProvider.notifier,
-    );
-    final notifications = notifState.notifications;
-    final unreadCount = notifState.unreadCount;
+    final state = ref.watch(parentNotificationsControllerProvider);
+    final controller = ref.read(parentNotificationsControllerProvider.notifier);
+    final notifications = state.notifications;
+    final unreadCount = state.unreadCount;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
@@ -34,53 +28,67 @@ class NotificationsScreen extends ConsumerWidget {
         ),
         centerTitle: true,
         actions: [
-          IconButton(
-            onPressed: () {
-              for (final n in notifications) {
-                notifController.markAsRead(n.id);
-              }
-            },
-            icon: Icon(
-              Icons.done_all,
-              color: AppColors.primaryDark,
-              size: 18.sp,
+          if (unreadCount > 0)
+            IconButton(
+              tooltip: ref.watchTr(AppStrings.markAllRead),
+              onPressed: controller.markAllAsRead,
+              icon: Icon(
+                Icons.done_all_rounded,
+                color: AppColors.primary,
+                size: 20.sp,
+              ),
             ),
-          ),
-          SizedBox(width: 3.w),
+          SizedBox(width: 4.w),
         ],
       ),
       body: SafeArea(
-        child: Column(
-          children: [
-            _updatesHeader(ref, unreadCount),
-            Expanded(
-              child: ListView.separated(
-                physics: const BouncingScrollPhysics(),
-                padding: EdgeInsets.fromLTRB(10.w, 8.h, 10.w, 25.h),
-                itemCount: notifications.length + 1,
-                separatorBuilder: (_, _) => SizedBox(height: 8.h),
-                itemBuilder: (context, index) {
-                  if (index == notifications.length) {
-                    return _allCaughtUp(ref);
-                  }
-
-                  return _notificationCard(
-                    notifications[index],
-                    () => notifController.markAsRead(notifications[index].id),
-                  );
-                },
-              ),
+        child: RefreshIndicator(
+          color: AppColors.primary,
+          onRefresh: controller.refresh,
+          child: CustomScrollView(
+            physics: const AlwaysScrollableScrollPhysics(
+              parent: BouncingScrollPhysics(),
             ),
-          ],
+            slivers: [
+              SliverToBoxAdapter(
+                child: _buildHeader(context, ref, unreadCount),
+              ),
+              if (state.isLoading && notifications.isEmpty)
+                const SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Center(child: CircularProgressIndicator()),
+                )
+              else if (notifications.isEmpty)
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: _buildEmptyState(context, ref),
+                )
+              else
+                SliverPadding(
+                  padding: EdgeInsets.fromLTRB(14.w, 12.h, 14.w, 24.h),
+                  sliver: SliverList.separated(
+                    itemCount: notifications.length,
+                    separatorBuilder: (_, _) => SizedBox(height: 10.h),
+                    itemBuilder: (context, index) {
+                      final item = notifications[index];
+                      return NotificationTile(
+                        item: item,
+                        onTap: () => controller.markAsRead(item.id),
+                      );
+                    },
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _updatesHeader(WidgetRef ref, int unreadCount) {
+  Widget _buildHeader(BuildContext context, WidgetRef ref, int unreadCount) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.fromLTRB(13.w, 10.h, 13.w, 10.h),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
       color: const Color(0xFFF4F1FB),
       child: Row(
         children: [
@@ -92,7 +100,7 @@ class NotificationsScreen extends ConsumerWidget {
                   ref.watchTr(AppStrings.academyUpdates),
                   style: TxtStyle.titleLarge(
                     color: AppColors.text,
-                    fontSize: 15.5.sp,
+                    fontSize: 15.sp,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
@@ -101,7 +109,7 @@ class NotificationsScreen extends ConsumerWidget {
                   ref.watchTr(AppStrings.stayUpdatedSubtitle),
                   style: TxtStyle.titleLarge(
                     color: AppColors.subtitleTextColor,
-                    fontSize: 13.5.sp,
+                    fontSize: 13.sp,
                   ),
                 ),
               ],
@@ -109,7 +117,7 @@ class NotificationsScreen extends ConsumerWidget {
           ),
           if (unreadCount > 0)
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 9.w, vertical: 5.h),
+              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
               decoration: BoxDecoration(
                 color: const Color(0xFFDDE5FF),
                 borderRadius: BorderRadius.circular(12.r),
@@ -118,7 +126,7 @@ class NotificationsScreen extends ConsumerWidget {
                 '$unreadCount ${ref.watchTr(AppStrings.unreadBadge)}',
                 style: TxtStyle.titleLarge(
                   color: AppColors.primaryDark,
-                  fontSize: 13.sp,
+                  fontSize: 12.5.sp,
                   fontWeight: FontWeight.w800,
                 ),
               ),
@@ -128,133 +136,42 @@ class NotificationsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _notificationCard(ParentNotificationModel item, VoidCallback onTap) {
-    final unread = !item.isRead;
-
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(9.r),
-      child: Container(
-        padding: EdgeInsets.fromLTRB(10.w, 10.h, 10.w, 9.h),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(9.r),
-          border: Border.all(
-            color: unread ? const Color(0xFFBFCBFF) : AppColors.border,
-          ),
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _notificationIcon(item),
-            SizedBox(width: 9.w),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          item.title,
-                          style: TxtStyle.titleLarge(
-                            color: AppColors.text,
-                            fontSize: 15.5.sp,
-                            fontWeight: FontWeight.w700,
-                            height: 1.25,
-                          ),
-                        ),
-                      ),
-                      if (unread)
-                        Container(
-                          margin: EdgeInsets.only(left: 5.w, top: 3.h),
-                          width: 5.w,
-                          height: 5.w,
-                          decoration: const BoxDecoration(
-                            color: AppColors.primaryDark,
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                    ],
-                  ),
-                  SizedBox(height: 4.h),
-                  Text(
-                    item.message,
-                    style: TxtStyle.bodyMedium(
-                      color: AppColors.subtitleTextColor,
-                      fontSize: 13.5.sp,
-                      height: 1.35,
-                    ),
-                  ),
-                  SizedBox(height: 7.h),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.access_time_outlined,
-                        color: AppColors.subtitleTextColor,
-                        size: 12.sp,
-                      ),
-                      SizedBox(width: 3.w),
-                      Text(
-                        item.timeAgo,
-                        style: TxtStyle.titleLarge(
-                          color: AppColors.subtitleTextColor,
-                          fontSize: 13.sp,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _notificationIcon(ParentNotificationModel item) {
-    final unread = !item.isRead;
-    final IconData icon = switch (item.type) {
-      'report' => Icons.description_outlined,
-      'attendance' => Icons.fact_check_outlined,
-      'homework' => Icons.assignment_outlined,
-      _ => Icons.notifications_none,
-    };
-
-    return Container(
-      width: 29.w,
-      height: 29.w,
-      decoration: BoxDecoration(
-        color: unread ? const Color(0xFFE8EDFF) : const Color(0xFFF0F2F7),
-        borderRadius: BorderRadius.circular(6.r),
-      ),
-      child: Icon(
-        icon,
-        color: unread ? AppColors.primaryDark : const Color(0xFF718096),
-        size: 15.sp,
-      ),
-    );
-  }
-
-  Widget _allCaughtUp(WidgetRef ref) {
+  Widget _buildEmptyState(BuildContext context, WidgetRef ref) {
     return Padding(
-      padding: EdgeInsets.only(top: 5.h),
-      child: Row(
+      padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 48.h),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Expanded(child: Container(height: 1, color: const Color(0xFFE7E4ED))),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 9.w),
-            child: Text(
-              ref.watchTr(AppStrings.allCaughtUp),
-              style: TxtStyle.titleLarge(
-                color: AppColors.subtitleTextColor,
-                fontSize: 13.5.sp,
-              ),
+          Container(
+            padding: EdgeInsets.all(20.r),
+            decoration: const BoxDecoration(
+              color: Color(0xFFEFF2FB),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.notifications_off_outlined,
+              size: 42.sp,
+              color: AppColors.primary,
             ),
           ),
-          Expanded(child: Container(height: 1, color: const Color(0xFFE7E4ED))),
+          SizedBox(height: 16.h),
+          Text(
+            ref.watchTr(AppStrings.noNotifications),
+            style: TxtStyle.titleLarge(
+              color: AppColors.text,
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          SizedBox(height: 6.h),
+          Text(
+            ref.watchTr(AppStrings.noNotificationsDesc),
+            textAlign: TextAlign.center,
+            style: TxtStyle.bodyMedium(
+              color: AppColors.subtitleTextColor,
+              fontSize: 13.5.sp,
+            ),
+          ),
         ],
       ),
     );

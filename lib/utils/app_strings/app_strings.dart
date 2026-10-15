@@ -276,6 +276,9 @@ class AppStrings {
   static const String chooseFromGallery = 'choose_from_gallery';
   static const String takeAPhoto = 'take_a_photo';
   static const String removePhoto = 'remove_photo';
+  static const String viewProfilePhoto = 'view_profile_photo';
+  static const String cameraPermissionRequired = 'camera_permission_required';
+  static const String photosPermissionRequired = 'photos_permission_required';
   static const String parentFullName = 'parent_full_name';
   static const String enterYourFullName = 'enter_your_full_name';
   static const String primaryMobileNumber = 'primary_mobile_number';
@@ -397,6 +400,9 @@ class AppStrings {
   static const String stayUpdatedSubtitle = 'stay_updated_subtitle';
   static const String unreadBadge = 'unread_badge';
   static const String allCaughtUp = 'all_caught_up';
+  static const String noNotifications = 'no_notifications';
+  static const String noNotificationsDesc = 'no_notifications_desc';
+  static const String markAllRead = 'mark_all_read';
 
   // ── Payment & Invoicing (Fixed UI) ────────────────────────────────────────
   static const String tuitionPaymentTitle = 'tuition_payment_title';

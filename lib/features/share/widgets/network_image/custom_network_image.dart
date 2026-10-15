@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../../../../core/files/image_viewer_service.dart';
 import '../../../../utils/api_urls/api_urls.dart';
 
 class CustomNetworkImage extends StatelessWidget {
@@ -17,6 +18,9 @@ class CustomNetworkImage extends StatelessWidget {
   final Widget? errorWidget;
   final ColorFilter? colorFilter;
   final BoxFit? fit;
+  final bool enablePreviewOnTap;
+  final String? previewTitle;
+  final VoidCallback? onTap;
 
   const CustomNetworkImage({
     super.key,
@@ -31,12 +35,40 @@ class CustomNetworkImage extends StatelessWidget {
     this.borderRadius,
     this.fit,
     this.boxShape = BoxShape.rectangle,
+    this.enablePreviewOnTap = false,
+    this.previewTitle,
+    this.onTap,
   });
 
   bool get isSvg => imageUrl.toLowerCase().endsWith(".svg");
 
   @override
   Widget build(BuildContext context) {
+    final Widget content = _buildImageWidget(context);
+
+    if (onTap != null || (enablePreviewOnTap && imageUrl.isNotEmpty)) {
+      return GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          if (onTap != null) {
+            onTap!();
+          } else if (enablePreviewOnTap && imageUrl.isNotEmpty) {
+            final resolvedUrl = getImageUrl(imageUrl, ApiUrls.base);
+            ImageViewerService.open(
+              context,
+              imageUrl: resolvedUrl,
+              title: previewTitle,
+            );
+          }
+        },
+        child: content,
+      );
+    }
+
+    return content;
+  }
+
+  Widget _buildImageWidget(BuildContext context) {
     if (imageUrl.isEmpty) {
       return Container(
         height: height,
@@ -66,7 +98,7 @@ class CustomNetworkImage extends StatelessWidget {
           imageUrl,
           fit: fit ?? BoxFit.cover,
           colorFilter: colorFilter,
-          placeholderBuilder: (context) => CircularProgressIndicator(),
+          placeholderBuilder: (context) => const CircularProgressIndicator(),
           height: height,
           width: width,
         ),
@@ -74,7 +106,6 @@ class CustomNetworkImage extends StatelessWidget {
     }
 
     return CachedNetworkImage(
-      // fake one:      "https://images.unsplash.com/photo-1606041008023-472dfb5e530f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Zmxvd2VyfGVufDB8fDB8fHww" ??
       imageUrl: getImageUrl(imageUrl, ApiUrls.base),
       fit: fit,
       imageBuilder: (context, imageProvider) => Container(

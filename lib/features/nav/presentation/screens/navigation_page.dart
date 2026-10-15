@@ -8,6 +8,7 @@ import 'package:aula360/features/teacher_all/reports/teacher_reports_screen.dart
 import 'package:aula360/features/teacher_all/students/teacher_students_screen.dart';
 
 import '../../../../utils/enum/app_enum.dart';
+import '../../../parent_all/presentation/controllers/parent_notifications_controller.dart';
 import '../../../parent_all/profile/parent_profile_screen.dart';
 import '../../../share/export/screen_export.dart';
 import '../../../teacher_all/profile/teacher_profile_screen.dart';
@@ -31,6 +32,16 @@ class _NavigationPageState extends ConsumerState<NavigationPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(navigationProvider.notifier).changeTab(widget.index.clamp(0, 4));
     });
+  }
+
+  @override
+  void didUpdateWidget(covariant NavigationPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.index != widget.index) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref.read(navigationProvider.notifier).changeTab(widget.index.clamp(0, 4));
+      });
+    }
   }
 
   // ------------------------------------------------------------
@@ -138,6 +149,7 @@ class _NavigationPageState extends ConsumerState<NavigationPage> {
         icons: icons,
         labels: labels,
         selectedIndex: safeIndex,
+        role: role,
       ),
     );
   }
@@ -150,6 +162,7 @@ class _NavigationPageState extends ConsumerState<NavigationPage> {
     required List<IconData> icons,
     required List<String> labels,
     required int selectedIndex,
+    required UserRole role,
   }) {
     return Container(
       padding: const EdgeInsets.only(top: 14, bottom: 4),
@@ -176,6 +189,7 @@ class _NavigationPageState extends ConsumerState<NavigationPage> {
                 icon: icons[index],
                 label: labels[index],
                 selectedIndex: selectedIndex,
+                role: role,
               ),
             ),
           ),
@@ -193,6 +207,7 @@ class _NavigationPageState extends ConsumerState<NavigationPage> {
     required IconData icon,
     required String label,
     required int selectedIndex,
+    required UserRole role,
   }) {
     final isSelected = selectedIndex == index;
 
@@ -203,7 +218,7 @@ class _NavigationPageState extends ConsumerState<NavigationPage> {
     return Expanded(
       child: Container(
         // color: Colors.amber,
-        margin: EdgeInsets.only(right: 1),
+        margin: const EdgeInsets.only(right: 1),
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: () {
@@ -213,7 +228,24 @@ class _NavigationPageState extends ConsumerState<NavigationPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, color: color, size: 24),
+              if (index == 3 && role == UserRole.parent)
+                Consumer(
+                  builder: (context, ref, _) {
+                    final hasUnread = ref.watch(
+                      parentNotificationsControllerProvider.select(
+                        (s) => s.hasUnread,
+                      ),
+                    );
+                    return Badge(
+                      isLabelVisible: hasUnread,
+                      smallSize: 7,
+                      backgroundColor: AppColors.primary,
+                      child: Icon(icon, color: color, size: 24),
+                    );
+                  },
+                )
+              else
+                Icon(icon, color: color, size: 24),
               const SizedBox(height: 4),
               Text(
                 label,

@@ -1,6 +1,11 @@
 import 'dart:io';
-import 'package:image_picker/image_picker.dart';
+
+import '../../../core/storage/storage_provider.dart';
+import '../../../core/utils/formatters/app_input_formatters.dart';
+import '../../../core/utils/validators.dart';
+import '../../auth/presentation/controllers/auth_controller.dart';
 import '../../share/export/screen_export.dart';
+import '../../share/widgets/text_field/custom_text_field.dart';
 import '../helper/parent_widgets.dart';
 import '../presentation/controllers/parent_profile_controller.dart';
 
@@ -17,6 +22,8 @@ class EditProfileScreen extends ConsumerStatefulWidget {
 
 class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   final _formKey = GlobalKey<FormState>();
+  final _phoneFormKey = GlobalKey<FormState>();
+  String _completePhoneNumber = '';
 
   late final TextEditingController nameController;
   late final TextEditingController emailController;
@@ -24,7 +31,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   late final TextEditingController addressController;
 
   String language = 'Español';
-  final ImagePicker _imagePicker = ImagePicker();
   File? _profileImage;
 
   @override
@@ -32,8 +38,26 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     super.initState();
     final profile = ref.read(parentProfileControllerProvider);
     nameController = TextEditingController(text: profile.name);
-    emailController = TextEditingController(text: profile.email);
-    phoneController = TextEditingController(text: profile.phone);
+
+    final storage = ref.read(storageServiceProvider);
+    final storedEmail = storage.getUserEmail();
+    final authUser = ref.read(authControllerProvider).user;
+    final effectiveEmail = profile.email.isNotEmpty
+        ? profile.email
+        : ((authUser?.email != null && authUser!.email.isNotEmpty)
+              ? authUser.email
+              : (storedEmail ?? ''));
+    emailController = TextEditingController(text: effectiveEmail);
+
+    final rawPhone = profile.phone;
+    _completePhoneNumber = rawPhone;
+    if (rawPhone.startsWith('+34')) {
+      phoneController = TextEditingController(
+        text: rawPhone.substring(3).trim(),
+      );
+    } else {
+      phoneController = TextEditingController(text: rawPhone);
+    }
     addressController = TextEditingController(text: profile.address);
     final activeLang = ref.read(languageProvider).valueOrNull?.language;
     language = activeLang == AppLanguage.spanish ? 'Español' : 'English';
@@ -48,19 +72,36 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     super.dispose();
   }
 
-  Future<void> _pickProfileImage() async {
-    final XFile? pickedImage = await _imagePicker.pickImage(
-      source: ImageSource.gallery,
-      imageQuality: 85,
-      maxWidth: 1200,
-      maxHeight: 1200,
+  void _previewProfilePhoto(ParentProfileState profile) {
+    ImageViewerService.open(
+      context,
+      imageFile: _profileImage,
+      imageUrl: _profileImage == null
+          ? (profile.avatarUrl ?? 'https://i.pravatar.cc/300?img=47')
+          : null,
+      title: profile.name,
+    );
+  }
+
+  Future<void> _pickProfileImage(ParentProfileState profile) async {
+    final file = await AppImagePicker.showImagePickerBottomSheet(
+      context,
+      ref: ref,
+      showPreviewOption: true,
+      onPreviewPhoto: () => _previewProfilePhoto(profile),
+      showRemoveOption: _profileImage != null,
+      onRemovePhoto: () {
+        setState(() {
+          _profileImage = null;
+        });
+      },
     );
 
-    if (pickedImage == null) return;
-
-    setState(() {
-      _profileImage = File(pickedImage.path);
-    });
+    if (file != null && mounted) {
+      setState(() {
+        _profileImage = file;
+      });
+    }
   }
 
   @override
@@ -83,27 +124,54 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 SizedBox(height: 20.h),
                 _sectionLabel(ref.watchTr(AppStrings.parentContactDetails)),
                 SizedBox(height: 9.h),
-                _field(
-                  label: ref.watchTr(AppStrings.fieldFullName),
+
+                AppTextField(
                   controller: nameController,
-                  icon: Icons.person_outline,
-                  requiredField: true,
+                  label: ref.watchTr(AppStrings.fieldFullName),
+                  hint: ref.watchTr(AppStrings.fieldFullNameHint),
+                  icon: Icons.person_outline_rounded,
+                  keyboardType: TextInputType.name,
+                  inputFormatters: AppInputFormatters.name,
                 ),
+                const SizedBox(height: 5),
+
                 _fieldHint(''),
-                _field(
-                  label: ref.watchTr(AppStrings.fieldEmailAddress),
+                AppTextField(
                   controller: emailController,
-                  icon: Icons.mail_outline,
+                  label: ref.watchTr(AppStrings.fieldEmailAddress),
+                  hint: ref.watchTr(AppStrings.fieldEmailAddressHint),
+                  icon: Icons.email_outlined,
                   keyboardType: TextInputType.emailAddress,
-                  requiredField: true,
+                  readOnly: true,
+                  inputFormatters: AppInputFormatters.email,
                 ),
                 _fieldHint(ref.watchTr(AppStrings.emailNotificationNotice)),
-                _field(
-                  label: ref.watchTr(AppStrings.fieldMobileNumber),
+                AppTextField(
                   controller: phoneController,
+                  label: ref.watchTr(AppStrings.fieldMobileNumber),
+                  hint: ref.watchTr(AppStrings.fieldMobileNumberHint),
                   icon: Icons.phone_outlined,
                   keyboardType: TextInputType.phone,
-                  requiredField: true,
+                  isPhoneField: true,
+                  initialCountryCode: 'ES',
+                  phoneFormKey: _phoneFormKey,
+                  languageCode: ref
+                      .watch(languageProvider)
+                      .valueOrNull
+                      ?.languageCode,
+                  onPhoneChanged: (completeNumber) {
+                    _completePhoneNumber = completeNumber;
+                  },
+                  phoneValidator: (value) {
+                    final langCode = ref
+                        .read(languageProvider)
+                        .valueOrNull
+                        ?.languageCode;
+                    return AulaValidation.validatePhone(
+                      value,
+                      languageCode: langCode,
+                    );
+                  },
                 ),
                 _fieldHint(ref.watchTr(AppStrings.phoneUrgentNotice)),
                 _field(
@@ -152,40 +220,42 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
             child: Stack(
               clipBehavior: Clip.none,
               children: [
-                Container(
-                  width: 86.w,
-                  height: 86.w,
-                  padding: EdgeInsets.all(3.w),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: AppColors.white,
-                    border: Border.all(color: AppColors.blueSoft, width: 2),
-                  ),
-                  child: ClipOval(
-                    child: _profileImage != null
-                        ? Image.file(
-                            _profileImage!,
-                            width: 80.w,
-                            height: 80.w,
-                            fit: BoxFit.cover,
-                          )
-                        : Image.network(
-                            profile.avatarUrl ??
-                                'https://i.pravatar.cc/300?img=47',
-                            width: 80.w,
-                            height: 80.w,
-                            fit: BoxFit.cover,
-                            errorBuilder: (_, _, _) {
-                              return Container(
+                GestureDetector(
+                  onTap: () => _previewProfilePhoto(profile),
+                  child: Container(
+                    width: 86.w,
+                    height: 86.w,
+                    padding: EdgeInsets.all(3.w),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: AppColors.white,
+                      border: Border.all(color: AppColors.blueSoft, width: 2),
+                    ),
+                    child: ClipOval(
+                      child: _profileImage != null
+                          ? Image.file(
+                              _profileImage!,
+                              width: 80.w,
+                              height: 80.w,
+                              fit: BoxFit.cover,
+                            )
+                          : CustomNetworkImage(
+                              imageUrl: profile.avatarUrl ??
+                                  'https://i.pravatar.cc/300?img=47',
+                              width: 80.w,
+                              height: 80.w,
+                              boxShape: BoxShape.circle,
+                              fit: BoxFit.cover,
+                              errorWidget: Container(
                                 color: AppColors.softBackground,
                                 child: Icon(
                                   Icons.person,
                                   size: 38.sp,
                                   color: AppColors.subtitleTextColor,
                                 ),
-                              );
-                            },
-                          ),
+                              ),
+                            ),
+                    ),
                   ),
                 ),
 
@@ -193,7 +263,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   right: -2.w,
                   bottom: 0,
                   child: GestureDetector(
-                    onTap: _pickProfileImage,
+                    onTap: () => _pickProfileImage(profile),
                     child: Container(
                       width: 30.w,
                       height: 30.w,
@@ -261,10 +331,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           SizedBox(height: 9.h),
           Text(
             ref.watchTr(AppStrings.uploadPhotoHint),
-            style: TxtStyle.titleLarge(
-              color: AppColors.subtitleTextColor,
-              fontSize: 14.sp,
-            ),
+            style: TxtStyle.titleSmall(color: AppColors.subtitleTextColor),
           ),
         ],
       ),
@@ -320,8 +387,16 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
             controller: controller,
             keyboardType: keyboardType,
             validator: (value) {
-              if (requiredField && (value == null || value.trim().isEmpty)) {
-                return '$label ${ref.watchTr(AppStrings.fieldRequired)}';
+              if (requiredField) {
+                final langCode = ref
+                    .read(languageProvider)
+                    .valueOrNull
+                    ?.languageCode;
+                return AulaValidation.validateRequired(
+                  value,
+                  fieldName: label,
+                  languageCode: langCode,
+                );
               }
               return null;
             },
@@ -443,15 +518,40 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         leading: Icon(Icons.check, size: 15.sp, color: Colors.white),
         trailing: const SizedBox.shrink(),
         onTapAsync: () async {
+          final langCode =
+              ref.read(languageProvider).valueOrNull?.languageCode ?? 'en';
+
           if (!_formKey.currentState!.validate()) {
             return;
           }
+
+          if (!AulaValidation.required(
+            value: nameController.text,
+            fieldName: ref.tr(AppStrings.fieldFullName),
+            languageCode: langCode,
+          )) {
+            return;
+          }
+
+          var phoneToValidate = _completePhoneNumber.isNotEmpty
+              ? _completePhoneNumber
+              : phoneController.text.trim();
+
+          if (phoneToValidate.isNotEmpty && !phoneToValidate.startsWith('+')) {
+            phoneToValidate = '+34$phoneToValidate';
+          }
+
+          if (!AulaValidation.phone(phoneToValidate, languageCode: langCode)) {
+            return;
+          }
+
+          final sanitizedPhone = AulaValidation.sanitizePhone(phoneToValidate);
 
           final success = await ref
               .read(parentProfileControllerProvider.notifier)
               .updateProfile(
                 name: nameController.text.trim(),
-                phone: phoneController.text.trim(),
+                phone: sanitizedPhone,
                 address: addressController.text.trim(),
                 language: language,
                 avatarFile: _profileImage,
@@ -473,16 +573,19 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
             ApiSnackbar.show(
               ref.tr(AppStrings.profileUpdatedSuccess),
               type: SnackbarType.success,
+              languageCode: langCode,
             );
             context.pop();
           } else {
-            final errorMsg =
-                ref.read(parentProfileControllerProvider).userMessage;
+            final errorMsg = ref
+                .read(parentProfileControllerProvider)
+                .userMessage;
             if (errorMsg != null) {
               ApiSnackbar.show(
                 errorMsg.displayMessage,
                 title: errorMsg.title,
                 type: SnackbarType.error,
+                languageCode: langCode,
               );
             }
           }
