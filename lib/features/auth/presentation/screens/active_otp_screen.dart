@@ -1,3 +1,4 @@
+import 'package:aula360/core/storage/storage_provider.dart';
 import '../../../share/export/screen_export.dart';
 import '../../../share/widgets/button/app_logo.dart';
 import '../../../share/widgets/button/custom_back_button.dart';
@@ -85,12 +86,15 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
           context.go(RoutePath.navigationPages);
           return;
         }
+        final userEmail = email ??
+            authState.user?.email ??
+            ref.read(storageServiceProvider).getUserEmail();
         switch (role) {
           case OtpRole.parent:
-            context.go(RoutePath.profileSetup);
+            context.go(RoutePath.profileSetup, extra: userEmail);
             break;
           case OtpRole.teacher:
-            context.go(RoutePath.teacherProfileSetup);
+            context.go(RoutePath.teacherProfileSetup, extra: userEmail);
             break;
         }
         break;
@@ -114,7 +118,7 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
     ref.read(otpControllerProvider.notifier).updateOtp(enteredOtp);
     final success = await ref
         .read(otpControllerProvider.notifier)
-        .verifyOtp(purpose);
+        .verifyOtp(purpose, email: email);
 
     if (!mounted) return;
 
@@ -264,8 +268,8 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
                           child: TextButton(
                             onPressed:
                                 (otpState.canResend && !otpState.isResending)
-                                    ? _resendCode
-                                    : null,
+                                ? _resendCode
+                                : null,
                             style: TextButton.styleFrom(
                               padding: EdgeInsets.zero,
                               minimumSize: Size.zero,
@@ -289,9 +293,9 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
                                     style: TxtStyle.labelLarge(
                                       color:
                                           (otpState.canResend &&
-                                                  !otpState.isResending)
-                                              ? AppColors.primary
-                                              : AppColors.secondaryText,
+                                              !otpState.isResending)
+                                          ? AppColors.primary
+                                          : AppColors.secondaryText,
                                     ),
                                   ),
                           ),

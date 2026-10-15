@@ -1,4 +1,8 @@
+import 'package:aula360/core/storage/storage_provider.dart';
+import 'package:aula360/core/utils/jwt_helper.dart';
 import 'package:aula360/features/auth/presentation/controllers/auth_controller.dart';
+import 'package:aula360/features/auth/presentation/screens/active_otp_screen.dart';
+import 'package:aula360/features/nav/user_role/user_role_provider.dart';
 import 'package:aula360/features/share/export/screen_export.dart';
 import 'package:aula360/utils/enum/app_enum.dart';
 
@@ -32,33 +36,105 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
     if (!mounted) return;
 
-    // Validate or restore session
-    final authNotifier = ref.read(authControllerProvider.notifier);
-    final isAuthenticated = await authNotifier.checkSession();
+    // Check if token exists and is valid
+    final storageService = ref.read(storageServiceProvider);
+    final hasValidToken = await storageService.hasValidAccessToken();
+
+    if (hasValidToken) {
+      // Decode access token to retrieve and persist email
+      final accessToken = await storageService.getAccessToken();
+      final emailFromToken = JwtHelper.extractEmail(accessToken);
+
+      debugPrint("emailFromToken: $emailFromToken");
+      if (emailFromToken != null && emailFromToken.isNotEmpty) {
+        await storageService.saveUserEmail(emailFromToken);
+      }
+
+      // Validate session with backend /api/v1/auth/check
+      final authNotifier = ref.read(authControllerProvider.notifier);
+      final isAuthenticated = await authNotifier.checkSession();
+
+      if (!mounted) return;
+
+      if (isAuthenticated) {
+        final authState = ref.read(authControllerProvider);
+        var user = authState.user;
+        final role = authState.role ?? user?.role;
+
+        final effectiveEmail = (user?.email != null && user!.email.isNotEmpty)
+            ? user.email
+            : (emailFromToken ?? storageService.getUserEmail() ?? '');
+
+        if (user != null && effectiveEmail.isNotEmpty && user.email.isEmpty) {
+          user = user.copyWith(email: effectiveEmail);
+          ref.read(authControllerProvider.notifier).updateUser(user);
+        }
+
+        // Set role & language to the app properly
+        if (user != null) {
+          if (user.language != null && user.language!.isNotEmpty) {
+            final appLang = AppLanguage.fromCode(user.language!);
+            await ref.read(languageProvider.notifier).changeLanguage(appLang);
+          }
+          if (role == UserRole.teacher) {
+            ref.read(userRoleProvider.notifier).loginAsTeacher();
+          } else {
+            ref.read(userRoleProvider.notifier).loginAsParent();
+          }
+        }
+
+        if (!mounted) return;
+
+        // If 'status' is active and 'isProfileSetup' is true -> navigate to nav page acc to the 'role'
+        if (user != null && user.isActive && user.isProfileSetup) {
+          context.pushReplacement(RoutePath.navigationPages);
+          return;
+        }
+
+        // If 'status' is active and 'isProfileSetup' is false -> navigate to profile setup screen
+        if (user != null && user.isActive && !user.isProfileSetup) {
+          if (role == UserRole.teacher) {
+            context.pushReplacement(
+              RoutePath.teacherProfileSetup,
+              extra: effectiveEmail,
+            );
+          } else {
+            context.pushReplacement(
+              RoutePath.profileSetup,
+              extra: effectiveEmail,
+            );
+          }
+          return;
+        }
+
+        // If 'status' is inactive -> route to active OTP screen
+        if (user != null && user.isInactive) {
+          await ref
+              .read(authControllerProvider.notifier)
+              .resendOtp(email: effectiveEmail);
+          if (!mounted) return;
+          context.pushReplacement(
+            RoutePath.activeOtpScreen,
+            extra: OtpArgs(
+              email: effectiveEmail,
+              purpose: OtpPurpose.signup,
+              role: role == UserRole.teacher ? OtpRole.teacher : OtpRole.parent,
+            ),
+          );
+          return;
+        }
+      }
+    } else {
+      // Clear any invalid or expired tokens
+      final hasToken = await storageService.hasAccessToken();
+      if (hasToken) {
+        await storageService.clearAuthentication();
+      }
+    }
 
     if (!mounted) return;
 
-    if (isAuthenticated) {
-      final authState = ref.read(authControllerProvider);
-      final user = authState.user;
-      final role = authState.role ?? user?.role;
-
-      // Check profile completion status
-      if (user != null && !user.isProfileSetup) {
-        if (role == UserRole.teacher) {
-          context.pushReplacement(RoutePath.teacherProfileSetup);
-        } else {
-          context.pushReplacement(RoutePath.profileSetup);
-        }
-        return;
-      }
-
-      // Fully authenticated with completed profile
-      context.pushReplacement(RoutePath.navigationPages);
-      return;
-    }
-
-    // Check if the user has already chosen a language.
+    // Existing fallback logic: Check if the user has already chosen a language.
     final hasChosen = await ref
         .read(languageProvider.notifier)
         .hasLanguageBeenChosen();
@@ -66,7 +142,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     if (!mounted) return;
 
     if (hasChosen) {
-      context.pushReplacement(RoutePath.chooseRoleScreen);
+      // context.pushReplacement(RoutePath.chooseRoleScreen);
+      context.pushReplacement(RoutePath.chooseLanguageScreen);
     } else {
       context.pushReplacement(RoutePath.chooseLanguageScreen);
     }

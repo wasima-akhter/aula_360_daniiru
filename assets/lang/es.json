@@ -1,10 +1,8 @@
 {
   "__COMMENT_SECTION_1__": "==================== FIXED APP UI STRINGS ====================",
-
   "app_name": "Aula 360",
   "app_tagline": "Empoderando Academias Modernas &\nAprendizaje Conectado",
   "app_initializing": "Iniciando sesión segura...",
-
   "language_select_title": "Elige Tu Idioma",
   "language_select_subtitle": "Selecciona un idioma para continuar con Aula 360",
   "language_english": "Inglés",
@@ -14,7 +12,6 @@
   "language_picker_title": "Seleccionar Idioma",
   "language_english_us": "Inglés (US)",
   "language_spanish_label": "Español",
-
   "onboarding_skip": "Omitir",
   "onboarding_next": "Siguiente",
   "onboarding_continue": "Continuar",
@@ -31,7 +28,6 @@
   "onboarding_tag_class_schedules": "Horarios de Clases",
   "onboarding_title_3": "Comunicación Directa y\nCrecimiento",
   "onboarding_desc_3": "Mensajería instantánea bidireccional con educadores, transmisiones urgentes de la academia, insignias de hitos y análisis de rendimiento completo a tu alcance.",
-
   "role_select_title": "Selecciona tu rol",
   "role_select_subtitle": "Elige cómo accederás a tu portal académico.",
   "role_parent_title": "Padre /",
@@ -42,7 +38,6 @@
   "role_continue_as_parent": "Continuar como Padre/Tutor",
   "role_continue_as_teacher": "Continuar como Profesor",
   "role_continue": "Continuar",
-
   "nav_home": "Inicio",
   "nav_classes": "Clases",
   "nav_students": "Alumnos",
@@ -50,7 +45,6 @@
   "nav_reports": "Informes",
   "nav_notifications": "Avisos",
   "nav_profile": "Perfil",
-
   "parent_login_title": "Acceso de Padres",
   "teacher_login_title": "Acceso de Profesores",
   "welcome_back": "Bienvenido de nuevo",
@@ -86,7 +80,7 @@
   "field_academy_email": "Correo de Academia / ID",
   "field_academy_email_hint": "ej. c.garcia@academia.es",
   "field_password_create_hint": "Crea una contraseña segura",
-  "password_hint_text": "Al menos 8 caracteres con números y letras",
+  "password_hint_text": "Al menos 8 caracteres con mayúscula, minúscula y un carácter especial",
   "btn_create_account": "Crear Cuenta",
   "already_have_account": "¿Ya tienes una cuenta? ",
   "log_in": "Iniciar Sesión",
@@ -95,7 +89,8 @@
   "terms_and": " y la ",
   "privacy_policy": "Política de Privacidad",
   "teacher_terms_required": "Por favor acepta los Términos y Condiciones.",
-
+  "profile_image_required": "Por favor, selecciona una foto de perfil.",
+  "validation_error": "Error de validación",
   "forgot_password_header": "Recuperar Contraseña",
   "forgot_password_title": "¿Olvidaste tu contraseña?",
   "forgot_password_subtitle": "Introduce el correo electrónico asociado a tu cuenta\ny te enviaremos un código de verificación.",
@@ -123,7 +118,6 @@
   "invalid_password": "Contraseña Inválida",
   "password_different_msg": "La nueva contraseña debe ser diferente de la contraseña actual.",
   "password_updated_msg": "Tu contraseña ha sido actualizada exitosamente.",
-
   "otp_header": "Verificación",
   "otp_verify_account": "Verifica tu cuenta",
   "otp_verify_identity": "Verifica tu identidad",
@@ -137,7 +131,6 @@
   "otp_verify_reset": "Verificar y Restablecer",
   "otp_required_title": "Código Requerido",
   "otp_required_message": "Por favor completa los 6 dígitos del código de verificación.",
-
   "settings_title": "Configuración",
   "settings_profile_breadcrumb": "Perfil",
   "settings_section_language": "IDIOMA",
@@ -178,7 +171,6 @@
   "settings_post_class_disabled": "Informes post-clase desactivados",
   "settings_lang_changed": "Idioma cambiado a",
   "settings_sessions_signedout": "Se han cerrado las otras sesiones correctamente",
-
   "add_child_title": "Añadir Hijo/a",
   "student_info_title": "Información del Alumno",
   "student_info_desc": "Introduce los datos básicos para vincular a tu hijo/a a tu cuenta de la academia.",
@@ -205,7 +197,6 @@
   "attendance": "Asistencia",
   "child_profile": "Perfil del Alumno",
   "academic_activity": "ACTIVIDAD ACADÉMICA",
-
   "profile_setup_title": "Configuración de Perfil",
   "edit_profile_title": "Editar Perfil",
   "edit_profile_desc": "Información personal y de contacto",
@@ -271,7 +262,6 @@
   "email_notification_notice": "Utilizado para avisos de la academia, asistencia e informes.",
   "phone_urgent_notice": "Para avisos urgentes y verificación en 2 pasos por SMS.",
   "profile_updated_success": "Perfil actualizado correctamente.",
-
   "class_details_title": "Detalles de la Clase",
   "schedule_and_timing": "HORARIO Y PLANIFICACIÓN",
   "date": "Fecha",
@@ -294,7 +284,6 @@
   "tomorrow": "Mañana",
   "class_report_action": "Informe de clase →",
   "completed_present": "Completada • Presente",
-
   "report_detail_title": "Detalle del Informe",
   "all_reports": "Todos los Informes",
   "present": "Presente",
@@ -324,15 +313,12 @@
   "attachments_title": "ADJUNTOS Y MATERIAL",
   "submission_status_title": "Estado de Entrega",
   "submission_pending": "Pendiente de Entrega",
-
   "current_quarter": "Trimestre Actual",
   "sessions_count": "Sesiones",
-
   "academy_updates": "Actualizaciones de la Academia",
   "stay_updated_subtitle": "Mantente al día del progreso escolar",
   "unread_badge": "sin leer",
   "all_caught_up": "Todo al día",
-
   "tuition_payment_title": "Pago de Cuotas",
   "payment_method_title": "Método de Pago",
   "processed_by_stripe": "Procesado por Stripe",
@@ -356,11 +342,9 @@
   "student_label": "Alumno",
   "invoice_label": "Factura",
   "method_label": "Método",
-
   "chat_tutoring_tab": "Tutoría",
   "chat_administration_tab": "Secretaría",
   "type_message_hint": "Escribe un mensaje...",
-
   "assigned_classes_title": "Clases Asignadas",
   "students_count": "estudiantes",
   "date_time": "Fecha y Hora",
@@ -456,13 +440,17 @@
   "preferred_language": "Idioma Preferido",
   "write_note_hint": "Escribe una nota sobre este alumno...",
   "field_is_required_suffix": "es obligatorio",
-
   "email_required": "El correo electrónico es obligatorio",
   "valid_email_address": "Introduce un correo electrónico válido",
   "password_required": "La contraseña es obligatoria",
   "password_min_8": "La contraseña debe tener al menos 8 caracteres",
   "uppercase_required": "Debe incluir al menos una letra mayúscula",
+  "lowercase_required": "La contraseña debe contener al menos una letra minúscula",
+  "special_char_required": "La contraseña debe contener al menos un carácter especial",
   "number_required": "Debe incluir al menos un número",
+  "invalid_phone_number": "Número de teléfono no válido",
+  "validation_error_title": "Error de validación",
+  "validation_error_directive": "Por favor corrige los campos señalados e intenta de nuevo.",
   "confirm_password_required": "Por favor confirma tu contraseña",
   "enter_password_first": "Introduce la contraseña primero",
   "passwords_do_not_match": "Las contraseñas no coinciden",
@@ -498,7 +486,6 @@
   "invalid_date_of_birth": "Fecha no válida",
   "gender_required": "El género es obligatorio",
   "valid_gender": "Selecciona un género válido",
-
   "dialer_not_supported": "El dispositivo no soporta llamadas directas",
   "could_not_launch_dialer": "No se pudo abrir el marcador telefónico",
   "whatsapp_cannot_be_opened": "No se pudo abrir WhatsApp",
@@ -517,14 +504,11 @@
   "offline_message": "Estás sin conexión actualmente",
   "unable_to_play_video": "No se puede reproducir el vídeo",
   "video_unavailable_or_connection_failed": "El vídeo no está disponible o la conexión ha fallado.",
-
   "good_morning": "Buenos días",
   "good_afternoon": "Buenas tardes",
   "good_evening": "Buenas tardes",
   "good_night": "Buenas noches",
-
   "__COMMENT_SECTION_2__": "==================== SAMPLE / STATIC MOCK DATA STRINGS ====================",
-
   "aula_1": "Aula 1",
   "aula_2": "Aula 2",
   "aula_3": "Aula 3",
@@ -532,7 +516,6 @@
   "aula_magna": "Aula Magna",
   "lab_1": "Laboratorio 1",
   "lab_2": "Laboratorio 2",
-
   "primaria_1": "1º Primaria",
   "primaria_2": "2º Primaria",
   "primaria_3": "3º Primaria",
@@ -545,7 +528,6 @@
   "eso_4": "4º ESO",
   "bachillerato_1": "1º Bachillerato",
   "bachillerato_2": "2º Bachillerato",
-
   "subject_math": "Matemáticas",
   "subject_physics_chemistry": "Física y Química",
   "subject_spanish_language": "Lengua Castellana y Literatura",
@@ -554,7 +536,6 @@
   "subject_history": "Geografía e Historia",
   "subject_statistics": "Estadística y Probabilidad",
   "subject_algebra": "Álgebra y Geometría",
-
   "home_greeting": "Buenos días",
   "home_schedule": "Horario",
   "home_in_person": "Presencial",
@@ -571,7 +552,6 @@
   "home_campus_open": "Academia Abierta",
   "home_next_up": "PRÓXIMA CLASE",
   "home_starts": "Comienza",
-
   "mock_main_building": "Edificio Principal",
   "mock_building_floor": "Edificio Principal • 2ª Planta, Aula 3B",
   "mock_floor_plan_of": "Plano de",
@@ -585,7 +565,6 @@
   "mock_teacher_academy_id": "Academia Aula 360 • #FAC-4092",
   "mock_message_prompt": "Envía una consulta rápida sobre el progreso, deberes o asistencia de tu hijo/a.",
   "mock_office_hours_notice": "Atención presencial o telefónica con cita previa.",
-
   "subject_math_advanced": "Matemáticas Avanzadas",
   "subject_calculus_algebra": "Cálculo y Álgebra",
   "session_in_progress": "Sesión en curso",
@@ -609,4 +588,3 @@
   "no_attendance_data": "No hay registros de asistencia disponibles",
   "otp_resend_success": "Código de verificación reenviado a tu correo electrónico."
 }
-

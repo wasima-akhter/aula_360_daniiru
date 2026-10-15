@@ -1,3 +1,4 @@
+import '../../auth/presentation/controllers/auth_controller.dart';
 import '../export/screen_export.dart';
 
 class LogoutBtn extends ConsumerWidget {

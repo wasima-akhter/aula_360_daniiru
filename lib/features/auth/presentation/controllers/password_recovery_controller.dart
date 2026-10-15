@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/errors/app_error_resolver.dart';
+import '../../../../core/service/language/language_provider.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../providers/auth_providers.dart';
 
@@ -46,6 +47,12 @@ class PasswordRecoveryController extends Notifier<PasswordRecoveryState> {
     return const PasswordRecoveryState();
   }
 
+  UserFriendlyMessage _resolveError(Object error) {
+    final langCode =
+        ref.read(languageProvider).valueOrNull?.languageCode ?? 'en';
+    return AppErrorResolver.resolve(error, languageCode: langCode);
+  }
+
   Future<bool> sendRecoveryEmail(String email) async {
     state = state.copyWith(isLoading: true, error: null, userMessage: null);
     try {
@@ -53,7 +60,7 @@ class PasswordRecoveryController extends Notifier<PasswordRecoveryState> {
       state = state.copyWith(isLoading: false, isSuccess: true);
       return true;
     } catch (e) {
-      final userMsg = AppErrorResolver.resolve(e);
+      final userMsg = _resolveError(e);
       state = state.copyWith(
         isLoading: false,
         error: userMsg.displayMessage,
@@ -69,14 +76,11 @@ class PasswordRecoveryController extends Notifier<PasswordRecoveryState> {
   }) async {
     state = state.copyWith(isLoading: true, error: null, userMessage: null);
     try {
-      await _repository.resetPassword(
-        email: email,
-        newPassword: newPassword,
-      );
+      await _repository.resetPassword(email: email, newPassword: newPassword);
       state = state.copyWith(isLoading: false, isSuccess: true);
       return true;
     } catch (e) {
-      final userMsg = AppErrorResolver.resolve(e);
+      final userMsg = _resolveError(e);
       state = state.copyWith(
         isLoading: false,
         error: userMsg.displayMessage,
@@ -86,3 +90,4 @@ class PasswordRecoveryController extends Notifier<PasswordRecoveryState> {
     }
   }
 }
+

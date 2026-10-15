@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-enum AppTextFieldType { text, name, phone, email, description, password }
+enum AppSearchTextFieldType { text, name, phone, email, description, password }
 
-class AppTextField extends StatefulWidget {
+class AppSearchTextField extends StatefulWidget {
   final TextEditingController? controller;
-  final AppTextFieldType type;
+  final AppSearchTextFieldType type;
 
   final String? label;
   final String? hint;
@@ -53,10 +53,10 @@ class AppTextField extends StatefulWidget {
 
   final bool filled;
 
-  const AppTextField({
+  const AppSearchTextField({
     super.key,
     this.controller,
-    this.type = AppTextFieldType.text,
+    this.type = AppSearchTextFieldType.text,
     this.label,
     this.hint,
     this.validator,
@@ -89,13 +89,13 @@ class AppTextField extends StatefulWidget {
   });
 
   @override
-  State<AppTextField> createState() => _AppTextFieldState();
+  State<AppSearchTextField> createState() => _AppSearchTextFieldState();
 }
 
-class _AppTextFieldState extends State<AppTextField> {
+class _AppSearchTextFieldState extends State<AppSearchTextField> {
   bool _obscureText = false;
 
-  bool get _isPassword => widget.type == AppTextFieldType.password;
+  bool get _isPassword => widget.type == AppSearchTextFieldType.password;
 
   @override
   void initState() {
@@ -104,7 +104,7 @@ class _AppTextFieldState extends State<AppTextField> {
   }
 
   @override
-  void didUpdateWidget(covariant AppTextField oldWidget) {
+  void didUpdateWidget(covariant AppSearchTextField oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     if (oldWidget.type != widget.type) {
@@ -114,20 +114,20 @@ class _AppTextFieldState extends State<AppTextField> {
 
   TextInputType get _keyboardType {
     switch (widget.type) {
-      case AppTextFieldType.phone:
+      case AppSearchTextFieldType.phone:
         return TextInputType.phone;
 
-      case AppTextFieldType.email:
+      case AppSearchTextFieldType.email:
         return TextInputType.emailAddress;
 
-      case AppTextFieldType.description:
+      case AppSearchTextFieldType.description:
         return TextInputType.multiline;
 
-      case AppTextFieldType.password:
+      case AppSearchTextFieldType.password:
         return TextInputType.visiblePassword;
 
-      case AppTextFieldType.name:
-      case AppTextFieldType.text:
+      case AppSearchTextFieldType.name:
+      case AppSearchTextFieldType.text:
         return TextInputType.text;
     }
   }
@@ -137,7 +137,7 @@ class _AppTextFieldState extends State<AppTextField> {
       return widget.textInputAction!;
     }
 
-    if (widget.type == AppTextFieldType.description) {
+    if (widget.type == AppSearchTextFieldType.description) {
       return TextInputAction.newline;
     }
 
@@ -149,7 +149,7 @@ class _AppTextFieldState extends State<AppTextField> {
       return widget.maxLines!;
     }
 
-    if (widget.type == AppTextFieldType.description) {
+    if (widget.type == AppSearchTextFieldType.description) {
       return 5;
     }
 
@@ -162,10 +162,10 @@ class _AppTextFieldState extends State<AppTextField> {
     }
 
     switch (widget.type) {
-      case AppTextFieldType.name:
+      case AppSearchTextFieldType.name:
         return TextCapitalization.words;
 
-      case AppTextFieldType.description:
+      case AppSearchTextFieldType.description:
         return TextCapitalization.sentences;
 
       default:
@@ -179,10 +179,10 @@ class _AppTextFieldState extends State<AppTextField> {
     }
 
     switch (widget.type) {
-      case AppTextFieldType.phone:
+      case AppSearchTextFieldType.phone:
         return [FilteringTextInputFormatter.allow(RegExp(r'[0-9+\-\s()]'))];
 
-      case AppTextFieldType.name:
+      case AppSearchTextFieldType.name:
         return [FilteringTextInputFormatter.allow(RegExp(r"[a-zA-ZÀ-ÿ\s'-]"))];
 
       default:

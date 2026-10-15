@@ -83,6 +83,20 @@ void main() {
       expect(msg.directive, contains('administration'));
     });
 
+    test('Resolves ACCOUNT_INACTIVE with activation guidance', () {
+      final backendResponse = {
+        'success': false,
+        'errorType': 'ACCOUNT_INACTIVE',
+        'message': 'Your account is not active. Please verify your email or contact support.',
+      };
+
+      final msg = AppErrorResolver.resolve(backendResponse, languageCode: 'en');
+
+      expect(msg.title, equals('Account Inactive'));
+      expect(msg.errorType, equals(ApiErrorType.accountInactive));
+      expect(msg.directive, contains('activate'));
+    });
+
     test('Resolves INVALID_OTP with resend guidance', () {
       final backendResponse = {
         'success': false,
@@ -171,5 +185,122 @@ void main() {
         expect(msg.displayMessage, isNot(contains('Exception:')));
       },
     );
+
+    test('Customizes and translates validation error response in English', () {
+      final backendResponse = {
+        'success': false,
+        'message': 'Request body validation failed',
+        'errors': [
+          {'field': 'phone', 'message': 'Invalid phone number'},
+          {
+            'field': 'password',
+            'message': 'Password must contain at least one uppercase letter',
+          },
+          {
+            'field': 'password',
+            'message': 'Password must contain at least one lowercase letter',
+          },
+          {
+            'field': 'password',
+            'message': 'Password must contain at least one special character',
+          },
+        ],
+        'traceId': '04215f08-2d1a-4a76-b26c-d8145b3cbaf6',
+      };
+
+      final msg = AppErrorResolver.resolve(backendResponse, languageCode: 'en');
+
+      expect(msg.title, equals('Validation Error'));
+      expect(msg.errorType, equals(ApiErrorType.validationError));
+      expect(msg.errors, hasLength(4));
+      expect(msg.message, contains('• Invalid phone number'));
+      expect(
+        msg.message,
+        contains('• Password must contain at least one uppercase letter'),
+      );
+      expect(
+        msg.message,
+        contains('• Password must contain at least one lowercase letter'),
+      );
+      expect(
+        msg.message,
+        contains('• Password must contain at least one special character'),
+      );
+      expect(msg.directive, contains('Please correct the indicated fields'));
+    });
+
+    test('Customizes and translates validation error response in Spanish', () {
+      final backendResponse = {
+        'success': false,
+        'message': 'Request body validation failed',
+        'errors': [
+          {'field': 'phone', 'message': 'Invalid phone number'},
+          {
+            'field': 'password',
+            'message': 'Password must contain at least one uppercase letter',
+          },
+          {
+            'field': 'password',
+            'message': 'Password must contain at least one lowercase letter',
+          },
+          {
+            'field': 'password',
+            'message': 'Password must contain at least one special character',
+          },
+        ],
+        'traceId': '04215f08-2d1a-4a76-b26c-d8145b3cbaf6',
+      };
+
+      final msg = AppErrorResolver.resolve(backendResponse, languageCode: 'es');
+
+      expect(msg.title, equals('Error de validación'));
+      expect(msg.errorType, equals(ApiErrorType.validationError));
+      expect(msg.errors, hasLength(4));
+      expect(msg.message, contains('• Número de teléfono no válido'));
+      expect(
+        msg.message,
+        contains('• La contraseña debe contener al menos una letra mayúscula'),
+      );
+      expect(
+        msg.message,
+        contains('• La contraseña debe contener al menos una letra minúscula'),
+      );
+      expect(
+        msg.message,
+        contains('• La contraseña debe contener al menos un carácter especial'),
+      );
+      expect(msg.directive, contains('Por favor corrige los campos señalados'));
+    });
+
+    test('Re-translates UserFriendlyMessage when language code changes', () {
+      final backendResponse = {
+        'success': false,
+        'message': 'Request body validation failed',
+        'errors': [
+          {'field': 'phone', 'message': 'Invalid phone number'},
+          {
+            'field': 'password',
+            'message': 'Password must contain at least one uppercase letter',
+          },
+        ],
+      };
+
+      final englishMsg = AppErrorResolver.resolve(
+        backendResponse,
+        languageCode: 'en',
+      );
+      expect(englishMsg.title, equals('Validation Error'));
+
+      final spanishMsg = AppErrorResolver.resolve(
+        englishMsg,
+        languageCode: 'es',
+      );
+      expect(spanishMsg.title, equals('Error de validación'));
+      expect(spanishMsg.message, contains('Número de teléfono no válido'));
+      expect(
+        spanishMsg.message,
+        contains('La contraseña debe contener al menos una letra mayúscula'),
+      );
+    });
   });
 }

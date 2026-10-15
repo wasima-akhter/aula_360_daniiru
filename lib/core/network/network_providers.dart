@@ -6,11 +6,17 @@ import '../storage/storage_provider.dart';
 import 'api_client.dart';
 import 'dio_client.dart';
 import 'interceptors/auth_interceptor.dart';
+import 'interceptors/in_flight_request_interceptor.dart';
 import 'interceptors/logging_interceptor.dart';
 
 /// App configuration.
 final appConfigProvider = Provider<AppConfig>((ref) {
   return AppConfig.current;
+});
+
+/// In-flight request deduplication interceptor.
+final inFlightRequestInterceptorProvider = Provider<InFlightRequestInterceptor>((ref) {
+  return InFlightRequestInterceptor();
 });
 
 /// Authentication interceptor.
@@ -28,6 +34,7 @@ final dioClientProvider = Provider<DioClient>((ref) {
   return DioClient(
     config: ref.watch(appConfigProvider),
     interceptors: [
+      ref.watch(inFlightRequestInterceptorProvider),
       ref.watch(authInterceptorProvider),
       ref.watch(apiLogInterceptorProvider),
     ],

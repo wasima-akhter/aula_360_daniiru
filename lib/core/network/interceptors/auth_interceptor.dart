@@ -25,6 +25,11 @@ class AuthInterceptor extends Interceptor {
       final otpToken = await _storageService.getOtpPageToken();
       if (otpToken != null && otpToken.isNotEmpty) {
         options.headers['Authorization'] = 'Bearer $otpToken';
+      } else {
+        final accessToken = await _storageService.getAccessToken();
+        if (accessToken != null && accessToken.isNotEmpty) {
+          options.headers['Authorization'] = 'Bearer $accessToken';
+        }
       }
       handler.next(options);
       return;

@@ -1,6 +1,10 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
+
+import '../../../../core/network/api_exception.dart';
 import '../../../../core/storage/storage_service.dart';
+import '../../../../core/utils/jwt_helper.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../datasources/auth_remote_data_source.dart';
 
@@ -50,6 +54,7 @@ class AuthRepositoryImpl implements AuthRepository {
     final otpPageToken = await _remoteDataSource.signup(request);
     await _storageService.saveOtpPageToken(otpPageToken);
     await _storageService.saveUserRole(role.isTeacher ? 'TEACHER' : 'PARENT');
+    await _storageService.saveUserEmail(email);
     return otpPageToken;
   }
 
@@ -66,10 +71,24 @@ class AuthRepositoryImpl implements AuthRepository {
       fcmToken: fcmToken,
     );
 
-    final session = await _remoteDataSource.verifyOtp(
+    var session = await _remoteDataSource.verifyOtp(
       request: request,
       otpPageToken: otpPageToken,
     );
+
+    // Decode email from accessToken if user.email is empty
+    final emailFromToken = JwtHelper.extractEmail(session.accessToken);
+    final storedEmail = _storageService.getUserEmail();
+    final effectiveEmail = (emailFromToken != null && emailFromToken.isNotEmpty)
+        ? emailFromToken
+        : (session.user.email.isNotEmpty ? session.user.email : storedEmail);
+
+    if (effectiveEmail != null && effectiveEmail.isNotEmpty) {
+      session = session.copyWith(
+        user: session.user.copyWith(email: effectiveEmail),
+      );
+      await _storageService.saveUserEmail(effectiveEmail);
+    }
 
     await _storageService.saveAccessToken(session.accessToken);
     await _storageService.saveCurrentUserJson(
@@ -85,9 +104,15 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<void> resendOtp() async {
+  Future<void> resendOtp({String? email}) async {
     final otpPageToken = await _storageService.getOtpPageToken();
-    await _remoteDataSource.resendOtp(otpPageToken: otpPageToken);
+    final newToken = await _remoteDataSource.resendOtp(
+      otpPageToken: otpPageToken,
+      email: email,
+    );
+    if (newToken != null && newToken.isNotEmpty) {
+      await _storageService.saveOtpPageToken(newToken);
+    }
   }
 
   @override
@@ -108,7 +133,18 @@ class AuthRepositoryImpl implements AuthRepository {
       fcmToken: fcmToken,
     );
 
-    final session = await _remoteDataSource.login(request);
+    var session = await _remoteDataSource.login(request);
+
+    // Decode email from accessToken if user.email is empty
+    final emailFromToken = JwtHelper.extractEmail(session.accessToken);
+    final effectiveEmail = (emailFromToken != null && emailFromToken.isNotEmpty)
+        ? emailFromToken
+        : (session.user.email.isNotEmpty ? session.user.email : email);
+
+    session = session.copyWith(
+      user: session.user.copyWith(email: effectiveEmail),
+    );
+    await _storageService.saveUserEmail(effectiveEmail);
 
     await _storageService.saveAccessToken(session.accessToken);
     await _storageService.saveCurrentUserJson(
@@ -119,8 +155,12 @@ class AuthRepositoryImpl implements AuthRepository {
     );
     await _storageService.setRememberMe(rememberMe);
 
+    if (session.user.isInactive && session.accessToken.isNotEmpty) {
+      await _storageService.saveOtpPageToken(session.accessToken);
+    }
+
     if (rememberMe) {
-      await _storageService.setRememberedEmail(email);
+      await _storageService.setRememberedEmail(effectiveEmail);
     }
 
     _currentUser = session.user;
@@ -129,15 +169,40 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<AuthUser?> checkSession({String? fcmToken}) async {
-    final token = await _storageService.getAccessToken();
-    if (token == null || token.isEmpty) {
+    final isValid = await _storageService.hasValidAccessToken();
+    if (!isValid) {
+      final hasToken = await _storageService.hasAccessToken();
+      if (hasToken) {
+        await _storageService.clearAuthentication();
+      }
+      _currentUser = null;
       return null;
     }
 
+    // Decode email from the existing access token
+    final token = await _storageService.getAccessToken();
+    final emailFromToken = JwtHelper.extractEmail(token);
+    if (emailFromToken != null && emailFromToken.isNotEmpty) {
+      await _storageService.saveUserEmail(emailFromToken);
+    }
+
     try {
-      final user = await _remoteDataSource.checkSession(
+      var user = await _remoteDataSource.checkSession(
         request: CheckSessionRequestDto(fcmToken: fcmToken),
       );
+
+      // Populate email from token or local storage if check response omitted email
+      final storedEmail = _storageService.getUserEmail();
+      final effectiveEmail = user.email.isNotEmpty
+          ? user.email
+          : ((emailFromToken != null && emailFromToken.isNotEmpty)
+              ? emailFromToken
+              : (storedEmail ?? ''));
+
+      if (effectiveEmail.isNotEmpty) {
+        user = user.copyWith(email: effectiveEmail);
+        await _storageService.saveUserEmail(effectiveEmail);
+      }
 
       await _storageService.saveCurrentUserJson(jsonEncode(user.toJson()));
       await _storageService.saveUserRole(
@@ -147,10 +212,25 @@ class AuthRepositoryImpl implements AuthRepository {
       return user;
     } catch (e) {
       // If error indicates unauthorized / invalid session, clear it
+      final isAuthError = (e is ApiException &&
+              (e.statusCode == 401 ||
+                  e.statusCode == 403 ||
+                  e.errorType == 'TOKEN_EXPIRED' ||
+                  e.errorType == 'TOKEN_BLACKLISTED' ||
+                  e.errorType == 'UNAUTHORIZED' ||
+                  e.errorType == 'NEW_LOGIN_SUPERSEDED')) ||
+          (e is DioException &&
+              (e.response?.statusCode == 401 ||
+                  e.response?.statusCode == 403));
+
       final errStr = e.toString().toLowerCase();
-      if (errStr.contains('401') ||
+      if (isAuthError ||
+          errStr.contains('401') ||
+          errStr.contains('403') ||
           errStr.contains('unauthorized') ||
-          errStr.contains('jwt')) {
+          errStr.contains('jwt') ||
+          errStr.contains('token_expired') ||
+          errStr.contains('session_expired')) {
         await _storageService.clearAuthentication();
         _currentUser = null;
         return null;
@@ -191,7 +271,7 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<void> requestPasswordReset({required String email}) async {
-    // Optional endpoint support
+    await resendOtp(email: email);
   }
 
   @override
@@ -199,6 +279,9 @@ class AuthRepositoryImpl implements AuthRepository {
     required String email,
     required String newPassword,
   }) async {
-    // Optional endpoint support
+    await _remoteDataSource.resetPassword(
+      email: email,
+      newPassword: newPassword,
+    );
   }
 }

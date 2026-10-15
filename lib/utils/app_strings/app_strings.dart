@@ -119,6 +119,9 @@ class AppStrings {
   static const String privacyPolicy = 'privacy_policy';
   static const String teacherTermsRequired = 'teacher_terms_required';
 
+  static const String profileImageRequired = 'profile_image_required';
+  static const String validationError = 'validation_error';
+
   // ── Forgot & Reset Password ───────────────────────────────────────────────
   static const String forgotPasswordHeader = 'forgot_password_header';
   static const String forgotPasswordTitle = 'forgot_password_title';
@@ -193,6 +196,8 @@ class AppStrings {
       'settings_notif_post_class_sub';
   static const String settingsNotifPush = 'settings_notif_push';
   static const String settingsNotifPushSub = 'settings_notif_push_sub';
+  static const String settingsNotifEmail = 'settings_notif_email';
+  static const String settingsNotifEmailSub = 'settings_notif_email_sub';
   static const String settingsNotifAttendanceAlerts =
       'settings_notif_attendance_alerts';
   static const String settingsNotifAttendanceAlertsSub =
@@ -532,7 +537,12 @@ class AppStrings {
   static const String passwordRequired = 'password_required';
   static const String passwordMin8 = 'password_min_8';
   static const String uppercaseRequired = 'uppercase_required';
+  static const String lowercaseRequired = 'lowercase_required';
+  static const String specialCharRequired = 'special_char_required';
   static const String numberRequired = 'number_required';
+  static const String invalidPhoneNumber = 'invalid_phone_number';
+  static const String validationErrorTitle = 'validation_error_title';
+  static const String validationErrorDirective = 'validation_error_directive';
   static const String confirmPasswordRequired = 'confirm_password_required';
   static const String enterPasswordFirst = 'enter_password_first';
   static const String passwordsDoNotMatch = 'passwords_do_not_match';

@@ -7,36 +7,54 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 /// Enables any button in the app to maintain its active loading state via Riverpod,
 /// prevent multiple submissions, and show polished progress indicators.
 
-class ButtonActionLoadingNotifier extends FamilyNotifier<bool, String> {
+class ButtonActionLoadingNotifier extends Notifier<Map<String, bool>> {
   @override
-  bool build(String arg) => false;
+  Map<String, bool> build() => const {};
+
+  /// Returns whether a specific action key is loading.
+  bool isLoading(String actionKey) => state[actionKey] ?? false;
 
   /// Starts loading for this action key.
-  void start() => state = true;
+  void start(String actionKey) {
+    state = {...state, actionKey: true};
+  }
 
   /// Stops loading for this action key.
-  void stop() => state = false;
+  void stop(String actionKey) {
+    state = {...state, actionKey: false};
+  }
 
-  /// Sets loading state explicitly.
-  void setLoading(bool loading) => state = loading;
+  /// Sets loading state explicitly for an action key.
+  void setLoading(String actionKey, bool loading) {
+    state = {...state, actionKey: loading};
+  }
 
   /// Executes an asynchronous API or UI action while maintaining loading state.
   /// Guarantees that loading is reset to false even if an error is thrown.
-  Future<T> execute<T>(Future<T> Function() action) async {
-    state = true;
+  Future<T> execute<T>(String actionKey, Future<T> Function() action) async {
+    start(actionKey);
     try {
       return await action();
     } finally {
-      state = false;
+      stop(actionKey);
     }
   }
 }
 
+/// Riverpod notifier provider that holds all active button loading states.
+final buttonActionLoadingNotifierProvider =
+    NotifierProvider<ButtonActionLoadingNotifier, Map<String, bool>>(
+      ButtonActionLoadingNotifier.new,
+    );
+
 /// Riverpod family provider tracking loading state per button action key.
-final buttonActionLoadingProvider =
-    NotifierProvider.family<ButtonActionLoadingNotifier, bool, String>(
-  ButtonActionLoadingNotifier.new,
-);
+final buttonActionLoadingProvider = Provider.family<bool, String>((
+  ref,
+  actionKey,
+) {
+  final map = ref.watch(buttonActionLoadingNotifierProvider);
+  return map[actionKey] ?? false;
+});
 
 /// Convenience extensions for accessing button action loading from [WidgetRef].
 extension ButtonLoadingWidgetRefX on WidgetRef {
@@ -50,7 +68,9 @@ extension ButtonLoadingWidgetRefX on WidgetRef {
     String actionKey,
     Future<T> Function() action,
   ) {
-    return read(buttonActionLoadingProvider(actionKey).notifier).execute(action);
+    return read(
+      buttonActionLoadingNotifierProvider.notifier,
+    ).execute(actionKey, action);
   }
 }
 
@@ -66,6 +86,8 @@ extension ButtonLoadingRefX on Ref {
     String actionKey,
     Future<T> Function() action,
   ) {
-    return read(buttonActionLoadingProvider(actionKey).notifier).execute(action);
+    return read(
+      buttonActionLoadingNotifierProvider.notifier,
+    ).execute(actionKey, action);
   }
 }

@@ -2,7 +2,8 @@ import 'package:dio/dio.dart';
 
 import '../../../../core/constants/api_constants.dart';
 import '../../../../core/network/dio_client.dart';
-import '../../../../core/service/datasource/remote/api_exception.dart';
+import '../../../../core/network/api_exception.dart';
+import '../../../../core/utils/jwt_helper.dart';
 import '../../domain/entities/auth_session.dart';
 import '../../domain/entities/auth_user.dart';
 import '../dtos/auth_request_dtos.dart';
@@ -16,7 +17,12 @@ abstract class AuthRemoteDataSource {
     String? otpPageToken,
   });
 
-  Future<void> resendOtp({String? otpPageToken});
+  Future<String?> resendOtp({String? otpPageToken, String? email});
+
+  Future<void> resetPassword({
+    required String email,
+    required String newPassword,
+  });
 
   Future<AuthSession> login(LoginRequestDto request);
 
@@ -83,7 +89,13 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
             '';
         final userMap =
             nestedData['user'] as Map<String, dynamic>? ?? nestedData;
-        final user = AuthUser.fromJson(userMap);
+        var user = AuthUser.fromJson(userMap);
+
+        // Decode the accessToken in verify to extract email
+        final emailFromToken = JwtHelper.extractEmail(accessToken);
+        if (emailFromToken != null && emailFromToken.isNotEmpty) {
+          user = user.copyWith(email: emailFromToken);
+        }
 
         return AuthSession(accessToken: accessToken, user: user);
       }
@@ -94,16 +106,51 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<void> resendOtp({String? otpPageToken}) async {
+  Future<String?> resendOtp({String? otpPageToken, String? email}) async {
     try {
       final options = Options();
       if (otpPageToken != null && otpPageToken.isNotEmpty) {
         options.headers = {'Authorization': 'Bearer $otpPageToken'};
       }
 
-      await _client.dio.post(ApiConstants.resend, data: {}, options: options);
+      final data = <String, dynamic>{};
+      if (email != null && email.trim().isNotEmpty) {
+        data['email'] = email.trim();
+      }
+
+      final response = await _client.dio.post(
+        ApiConstants.resend,
+        data: data,
+        options: options,
+      );
+
+      final respData = response.data;
+      if (respData is Map<String, dynamic>) {
+        final nestedData = respData['data'];
+        if (nestedData is Map<String, dynamic>) {
+          return nestedData['token'] as String? ??
+              nestedData['otpToken'] as String? ??
+              nestedData['accessToken'] as String?;
+        }
+      }
+      return null;
     } catch (e) {
       _handleError(e, 'Failed to resend code');
+    }
+  }
+
+  @override
+  Future<void> resetPassword({
+    required String email,
+    required String newPassword,
+  }) async {
+    try {
+      await _client.dio.post(
+        ApiConstants.resetPassword,
+        data: {'email': email.trim(), 'newPassword': newPassword.trim()},
+      );
+    } catch (e) {
+      _handleError(e, 'Failed to reset password');
     }
   }
 
@@ -124,7 +171,14 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
             '';
         final userMap =
             nestedData['user'] as Map<String, dynamic>? ?? nestedData;
-        final user = AuthUser.fromJson(userMap);
+        var user = AuthUser.fromJson(userMap);
+
+        // Decode the accessToken in login to extract email
+        final emailFromToken = JwtHelper.extractEmail(accessToken);
+        final effectiveEmail = (emailFromToken != null && emailFromToken.isNotEmpty)
+            ? emailFromToken
+            : (user.email.isNotEmpty ? user.email : request.email);
+        user = user.copyWith(email: effectiveEmail);
 
         return AuthSession(accessToken: accessToken, user: user);
       }
@@ -221,10 +275,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     if (error is ApiException) {
       throw error;
     }
-    throw ApiException(
-      message: error.toString(),
-      statusCode: 500,
-    );
+    throw ApiException(message: error.toString(), statusCode: 500);
   }
 
   Never _handleResponseError(dynamic data, String fallback) {

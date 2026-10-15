@@ -1,8 +1,9 @@
 import '../../share/export/screen_export.dart';
+import '../../settings/presentation/providers/settings_providers.dart';
 
 /// Bottom-sheet language picker.
 /// Shows only English (US) and Spanish (no English UK).
-/// Selecting a language immediately updates the central [languageProvider].
+/// Selecting a language immediately updates the central [languageProvider] and backend settings.
 class LanguagePicker extends ConsumerWidget {
   const LanguagePicker({super.key, required this.selectedLanguage});
 
@@ -61,6 +62,13 @@ class LanguagePicker extends ConsumerWidget {
                   await ref
                       .read(languageProvider.notifier)
                       .changeLanguage(lang);
+                  try {
+                    final backendLang =
+                        lang == AppLanguage.spanish ? 'ES' : 'EN';
+                    await ref
+                        .read(updateLanguageUseCaseProvider)
+                        .call(backendLang);
+                  } catch (_) {}
                   if (context.mounted) Navigator.pop(context);
                 },
                 child: Padding(

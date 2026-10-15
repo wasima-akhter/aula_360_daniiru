@@ -26,8 +26,8 @@ abstract class AuthRepository {
     String? fcmToken,
   });
 
-  /// Resends the verification email for the active `otpPageToken`.
-  Future<void> resendOtp();
+  /// Resends the verification email for the active `otpPageToken` or email.
+  Future<void> resendOtp({String? email});
 
   /// Logs in a user with email, password, and persistent deviceIdentifier. Returns `AuthSession`.
   Future<AuthSession> login({

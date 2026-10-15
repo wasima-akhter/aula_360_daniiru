@@ -6,11 +6,16 @@ import '../../../share/widgets/custom_image/app_image_picker.dart';
 import '../../../share/widgets/dropdown/custom_dropdown_field.dart';
 import '../../../share/widgets/text_field/custom_text_field.dart';
 import '../../../share/widgets/text_field/description_text_field.dart';
+import '../../../../core/storage/storage_provider.dart';
+import '../../../../core/utils/formatters/app_input_formatters.dart';
+import '../../../../core/utils/jwt_helper.dart';
 import '../../../../core/utils/validators.dart';
 import '../controllers/auth_controller.dart';
 
 class TeacherProfileSetupScreen extends ConsumerStatefulWidget {
-  const TeacherProfileSetupScreen({super.key});
+  const TeacherProfileSetupScreen({super.key, this.initialEmail});
+
+  final String? initialEmail;
 
   @override
   ConsumerState<TeacherProfileSetupScreen> createState() =>
@@ -27,33 +32,75 @@ class _TeacherProfileSetupScreenState
   late final TextEditingController roomController;
   late final TextEditingController bioController;
 
-  String? _selectedCampus = 'Centro Principal — Aula 1';
-  File? _profileImage;
-  List<String> _subjects = ['Matemáticas', 'Física y Química'];
+  static const Map<String, String> _campusLabelsEs = {
+    'campus_1': 'Centro Principal — Aula 1',
+    'campus_2': 'Centro Principal — Aula 2',
+    'campus_3': 'Centro Anexo — Laboratorio 1',
+  };
+  static const Map<String, String> _campusLabelsEn = {
+    'campus_1': 'Main Campus — Room 1',
+    'campus_2': 'Main Campus — Room 2',
+    'campus_3': 'Annex Center — Lab 1',
+  };
 
-  final List<String> availableSubjects = [
-    'Matemáticas',
-    'Física y Química',
-    'Lengua Castellana',
-    'Biología y Geología',
-    'Inglés',
-    'Historia',
-    'Geografía',
-    'Economía',
-    'Informática',
-    'Filosofía',
+  String _selectedCampusKey = 'campus_1';
+  File? _profileImage;
+  List<String> _subjects = ['subject_math', 'subject_physics_chemistry'];
+  final _phoneFormKey = GlobalKey<FormState>();
+  String _completePhoneNumber = '';
+
+  static const List<String> availableSubjectKeys = [
+    'subject_math',
+    'subject_physics_chemistry',
+    'subject_spanish_language',
+    'subject_english',
+    'subject_biology',
+    'subject_history',
+    'subject_statistics',
+    'subject_algebra',
+    'subject_physical_education',
+    'subject_visual_arts',
   ];
 
   @override
   void initState() {
     super.initState();
-    nameController = TextEditingController(text: 'Dr. Marcos Vance');
-    phoneController = TextEditingController(text: '+34 612 987 654');
-    emailController = TextEditingController(text: 'marcos.vance@example.com');
-    addressController = TextEditingController();
-    titleController = TextEditingController();
-    roomController = TextEditingController();
-    bioController = TextEditingController();
+    final user = ref.read(authControllerProvider).user;
+    nameController = TextEditingController(text: user?.fullName ?? '');
+    final rawPhone = user?.phone ?? '';
+    _completePhoneNumber = rawPhone;
+    if (rawPhone.startsWith('+34')) {
+      phoneController = TextEditingController(text: rawPhone.substring(3).trim());
+    } else {
+      phoneController = TextEditingController(text: rawPhone);
+    }
+    final storage = ref.read(storageServiceProvider);
+    final storedEmail = storage.getUserEmail();
+    final effectiveEmail = widget.initialEmail?.trim().isNotEmpty == true
+        ? widget.initialEmail!.trim()
+        : ((user?.email != null && user!.email.trim().isNotEmpty)
+            ? user.email.trim()
+            : (storedEmail ?? ''));
+    emailController = TextEditingController(text: effectiveEmail);
+
+    if (effectiveEmail.isEmpty) {
+      storage.getAccessToken().then((token) {
+        if (!mounted || token == null) return;
+        final tokenEmail = JwtHelper.extractEmail(token);
+        if (tokenEmail != null &&
+            tokenEmail.isNotEmpty &&
+            emailController.text.trim().isEmpty) {
+          setState(() {
+            emailController.text = tokenEmail;
+          });
+          storage.saveUserEmail(tokenEmail);
+        }
+      });
+    }
+    addressController = TextEditingController(text: user?.address ?? '');
+    titleController = TextEditingController(text: user?.designation ?? '');
+    roomController = TextEditingController(text: user?.department ?? '');
+    bioController = TextEditingController(text: user?.bio ?? '');
   }
 
   @override
@@ -147,19 +194,27 @@ class _TeacherProfileSetupScreenState
   }
 
   Future<void> _addSubject() async {
-    final remainingSubjects = availableSubjects
+    final remainingSubjectKeys = availableSubjectKeys
         .where((s) => !_subjects.contains(s))
         .toList();
 
-    if (remainingSubjects.isEmpty) {
+    final langCode =
+        ref.read(languageProvider).valueOrNull?.languageCode ??
+        AulaValidation.activeLanguageCode;
+
+    if (remainingSubjectKeys.isEmpty) {
+      final isEs = langCode.startsWith('es');
       ApiSnackbar.show(
-        'Todos las asignaturas ya han sido añadidas.',
+        isEs
+            ? 'Todas las asignaturas ya han sido añadidas.'
+            : 'All subjects have already been added.',
         type: SnackbarType.warning,
+        languageCode: langCode,
       );
       return;
     }
 
-    final selectedSubject = await showModalBottomSheet<String>(
+    final selectedSubjectKey = await showModalBottomSheet<String>(
       context: context,
       backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
@@ -204,11 +259,12 @@ class _TeacherProfileSetupScreenState
                 Flexible(
                   child: ListView.separated(
                     shrinkWrap: true,
-                    itemCount: remainingSubjects.length,
+                    itemCount: remainingSubjectKeys.length,
                     separatorBuilder: (context, index) =>
                         Divider(height: 1, color: AppColors.border),
                     itemBuilder: (ctx, i) {
-                      final subject = remainingSubjects[i];
+                      final key = remainingSubjectKeys[i];
+                      final subject = ref.watchTr(key);
                       return ListTile(
                         contentPadding: EdgeInsets.zero,
                         leading: Container(
@@ -237,7 +293,7 @@ class _TeacherProfileSetupScreenState
                           color: AppColors.primary,
                           size: 20,
                         ),
-                        onTap: () => Navigator.of(ctx).pop(subject),
+                        onTap: () => Navigator.of(ctx).pop(key),
                       );
                     },
                   ),
@@ -248,38 +304,59 @@ class _TeacherProfileSetupScreenState
         );
       },
     );
-    if (selectedSubject == null || !mounted) return;
+    if (selectedSubjectKey == null || !mounted) return;
     setState(() {
-      _subjects = [..._subjects, selectedSubject];
+      _subjects = [..._subjects, selectedSubjectKey];
     });
   }
 
   Future<void> _completeProfile() async {
+    final langCode =
+        ref.read(languageProvider).valueOrNull?.languageCode ??
+        AulaValidation.activeLanguageCode;
+
     if (!AulaValidation.required(
       value: nameController.text,
-      fieldName: ref.tr(AppStrings.parentFullName),
+      fieldName: ref.tr(AppStrings.fullLegalName),
+      languageCode: langCode,
     )) {
       return;
     }
 
-    if (!AulaValidation.phone(phoneController.text)) {
+    var phoneToValidate = _completePhoneNumber.isNotEmpty
+        ? _completePhoneNumber
+        : phoneController.text.trim();
+
+    if (phoneToValidate.isNotEmpty && !phoneToValidate.startsWith('+')) {
+      phoneToValidate = '+34$phoneToValidate';
+    }
+
+    if (!AulaValidation.phone(phoneToValidate, languageCode: langCode)) {
       return;
     }
 
-    if (!AulaValidation.email(emailController.text)) {
+    if (!AulaValidation.email(emailController.text, languageCode: langCode)) {
       return;
     }
+
+    final selectedCampusLabel = (langCode.startsWith('es')
+        ? _campusLabelsEs[_selectedCampusKey]
+        : _campusLabelsEn[_selectedCampusKey]) ?? _selectedCampusKey;
+
+    final departmentStr = _subjects.isNotEmpty
+        ? _subjects.map((k) => ref.read(languageProvider).valueOrNull?.tr(k) ?? k).join(', ')
+        : selectedCampusLabel;
+
+    final defaultDesignation = langCode.startsWith('es') ? 'Profesor' : 'Teacher';
 
     final success = await ref
         .read(authControllerProvider.notifier)
         .setupTeacherProfile(
           avatarFile: _profileImage,
-          department: _subjects.isNotEmpty
-              ? _subjects.join(', ')
-              : _selectedCampus,
+          department: departmentStr,
           designation: roomController.text.trim().isNotEmpty
               ? roomController.text.trim()
-              : 'Profesor',
+              : defaultDesignation,
           bio: bioController.text.trim().isNotEmpty
               ? bioController.text.trim()
               : null,
@@ -295,8 +372,6 @@ class _TeacherProfileSetupScreenState
       if (authState.userMessage != null) {
         ApiSnackbar.showUserMessage(authState.userMessage!);
       } else {
-        final langCode =
-            ref.read(languageProvider).valueOrNull?.languageCode ?? 'en';
         final resolved = AppErrorResolver.resolve(
           authState.errorMessage,
           languageCode: langCode,
@@ -310,6 +385,9 @@ class _TeacherProfileSetupScreenState
   Widget build(BuildContext context) {
     final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
     final authState = ref.watch(authControllerProvider);
+    final langCode =
+        ref.watch(languageProvider).valueOrNull?.languageCode ??
+        AulaValidation.activeLanguageCode;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -431,6 +509,7 @@ class _TeacherProfileSetupScreenState
                       label: ref.watchTr(AppStrings.fullLegalName),
                       hint: ref.watchTr(AppStrings.enterYourFullName),
                       icon: Icons.person_outline_rounded,
+                      inputFormatters: AppInputFormatters.name,
                     ),
                     const SizedBox(height: 15),
                     AppTextField(
@@ -438,6 +517,16 @@ class _TeacherProfileSetupScreenState
                       label: ref.watchTr(AppStrings.primaryMobileNumber),
                       hint: ref.watchTr(AppStrings.enterMobileNumber),
                       icon: Icons.phone_outlined,
+                      keyboardType: TextInputType.phone,
+                      isPhoneField: true,
+                      initialCountryCode: 'ES',
+                      phoneFormKey: _phoneFormKey,
+                      languageCode: langCode,
+                      onPhoneChanged: (completeNumber) {
+                        _completePhoneNumber = completeNumber;
+                      },
+                      phoneValidator: (value) =>
+                          AulaValidation.validatePhone(value, languageCode: langCode),
                     ),
                     const SizedBox(height: 15),
                     AppTextField(
@@ -445,6 +534,9 @@ class _TeacherProfileSetupScreenState
                       label: ref.watchTr(AppStrings.fieldAcademyEmail),
                       hint: ref.watchTr(AppStrings.fieldAcademyEmailHint),
                       icon: Icons.email_outlined,
+                      keyboardType: TextInputType.emailAddress,
+                      readOnly: true,
+                      inputFormatters: AppInputFormatters.email,
                     ),
                     const SizedBox(height: 24),
                     _sectionTitle(ref.watchTr(AppStrings.subjectsDisciplines)),
@@ -498,15 +590,17 @@ class _TeacherProfileSetupScreenState
                     const SizedBox(height: 7),
                     CustomDropdownField<String>(
                       hintText: ref.watchTr(AppStrings.assignedCampusBuilding),
-                      items: const [
-                        'Centro Principal — Aula 1',
-                        'Centro Principal — Aula 2',
-                        'Centro Anexo — Laboratorio 1',
-                      ],
-                      value: _selectedCampus,
+                      items: const ['campus_1', 'campus_2', 'campus_3'],
+                      value: _selectedCampusKey,
+                      labelBuilder: (key) {
+                        final isEs = (ref.watch(languageProvider).valueOrNull?.languageCode ??
+                                AulaValidation.activeLanguageCode)
+                            .startsWith('es');
+                        return isEs ? _campusLabelsEs[key]! : _campusLabelsEn[key]!;
+                      },
                       onChanged: (value) {
                         if (value == null) return;
-                        setState(() => _selectedCampus = value);
+                        setState(() => _selectedCampusKey = value);
                       },
                     ),
                     const SizedBox(height: 15),
@@ -605,7 +699,7 @@ class _TeacherProfileSetupScreenState
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            subject,
+            ref.watchTr(subject),
             style: TxtStyle.bodySmall(
               color: AppColors.primaryDark,
               fontSize: 12.5.sp,

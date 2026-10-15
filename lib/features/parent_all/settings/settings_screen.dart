@@ -213,6 +213,14 @@ class SettingsScreen extends ConsumerWidget {
           ),
           _settingsDivider(),
           _notificationRow(
+            icon: Icons.email_outlined,
+            title: tr(AppStrings.settingsNotifEmail),
+            subtitle: tr(AppStrings.settingsNotifEmailSub),
+            value: settings.emailNotifications,
+            onChanged: (value) => controller.toggleEmail(value),
+          ),
+          _settingsDivider(),
+          _notificationRow(
             icon: Icons.fact_check_outlined,
             title: tr(AppStrings.settingsNotifAttendanceAlerts),
             subtitle: tr(AppStrings.settingsNotifAttendanceAlertsSub),

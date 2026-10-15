@@ -45,8 +45,8 @@ class ResendOtpUseCase {
   final AuthRepository _repository;
   const ResendOtpUseCase(this._repository);
 
-  Future<void> call() {
-    return _repository.resendOtp();
+  Future<void> call({String? email}) {
+    return _repository.resendOtp(email: email);
   }
 }
 

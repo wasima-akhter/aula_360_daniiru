@@ -36,7 +36,10 @@ class _ForgetPasswordScreenState extends ConsumerState<ForgetPasswordScreen> {
   }
 
   Future<void> _continue() async {
-    if (!AulaValidation.email(emailController.text)) {
+    final langCode =
+        ref.read(languageProvider).valueOrNull?.languageCode ?? 'en';
+
+    if (!AulaValidation.email(emailController.text, languageCode: langCode)) {
       return;
     }
 
@@ -47,6 +50,12 @@ class _ForgetPasswordScreenState extends ConsumerState<ForgetPasswordScreen> {
     if (!mounted) return;
 
     if (success) {
+      final tr = ref.readTr;
+      ApiSnackbar.show(
+        tr(AppStrings.otpResendSuccess),
+        type: SnackbarType.success,
+      );
+
       context.push(
         RoutePath.activeOtpScreen,
         extra: OtpArgs(
@@ -57,11 +66,13 @@ class _ForgetPasswordScreenState extends ConsumerState<ForgetPasswordScreen> {
       );
     } else {
       final recoveryState = ref.read(passwordRecoveryControllerProvider);
-      if (recoveryState.userMessage != null) {
-        ApiSnackbar.showUserMessage(recoveryState.userMessage!);
-      } else if (recoveryState.error != null) {
-        ApiSnackbar.show(recoveryState.error!);
-      }
+      final currentLangCode =
+          ref.read(languageProvider).valueOrNull?.languageCode ?? 'en';
+      final resolved = AppErrorResolver.resolve(
+        recoveryState.userMessage ?? recoveryState.error,
+        languageCode: currentLangCode,
+      );
+      ApiSnackbar.showUserMessage(resolved);
     }
   }
 

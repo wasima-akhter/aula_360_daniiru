@@ -546,24 +546,31 @@ class _EditTeacherProfileScreenState
 
     final success = await ref
         .read(teacherProfileControllerProvider.notifier)
-        .updateProfile(updatedProfile);
-
-    if (language.contains('English')) {
-      ref.read(languageProvider.notifier).changeLanguage(AppLanguage.english);
-    } else if (language.contains('Español')) {
-      ref.read(languageProvider.notifier).changeLanguage(AppLanguage.spanish);
-    }
+        .updateProfile(updatedProfile, avatarFile: _profileImage);
 
     if (!mounted) return;
 
     if (success) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(ref.watchTr(AppStrings.profileUpdatedSuccess)),
-          behavior: SnackBarBehavior.floating,
-        ),
+      if (language.contains('English')) {
+        ref.read(languageProvider.notifier).changeLanguage(AppLanguage.english);
+      } else if (language.contains('Español')) {
+        ref.read(languageProvider.notifier).changeLanguage(AppLanguage.spanish);
+      }
+
+      ApiSnackbar.show(
+        ref.tr(AppStrings.profileUpdatedSuccess),
+        type: SnackbarType.success,
       );
       context.pop();
+    } else {
+      final userMsg = ref.read(teacherProfileControllerProvider).userMessage;
+      if (userMsg != null) {
+        ApiSnackbar.show(
+          userMsg.displayMessage,
+          title: userMsg.title,
+          type: SnackbarType.error,
+        );
+      }
     }
   }
 

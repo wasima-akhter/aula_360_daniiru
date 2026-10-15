@@ -9,7 +9,20 @@ enum AuthStatus {
   otpPending,
   profileSetupPending,
   authenticated,
+  suspended,
   error,
+}
+
+enum LoginOutcome {
+  authenticated,
+  profileSetupRequired,
+  otpVerificationRequired,
+  suspended,
+  error;
+
+  bool get isSuccess =>
+      this == LoginOutcome.authenticated ||
+      this == LoginOutcome.profileSetupRequired;
 }
 
 enum OtpPurpose { signup, forgotPassword }
@@ -22,6 +35,7 @@ class AuthState {
   final UserRole? role;
   final String? errorMessage;
   final UserFriendlyMessage? userMessage;
+  final Object? rawError;
   final bool isLoading;
   final bool rememberMe;
 
@@ -33,6 +47,7 @@ class AuthState {
     this.role,
     this.errorMessage,
     this.userMessage,
+    this.rawError,
     this.isLoading = false,
     this.rememberMe = false,
   });
@@ -54,6 +69,7 @@ class AuthState {
     UserRole? role,
     String? errorMessage,
     UserFriendlyMessage? userMessage,
+    Object? rawError,
     bool? isLoading,
     bool? rememberMe,
   }) {
@@ -65,6 +81,7 @@ class AuthState {
       role: role ?? this.role,
       errorMessage: errorMessage,
       userMessage: userMessage,
+      rawError: rawError,
       isLoading: isLoading ?? this.isLoading,
       rememberMe: rememberMe ?? this.rememberMe,
     );

@@ -1,15 +1,20 @@
 import 'dart:io';
 
+import '../../../../core/storage/storage_provider.dart';
+import '../../../../core/utils/formatters/app_input_formatters.dart';
+import '../../../../core/utils/jwt_helper.dart';
+import '../../../../core/utils/validators.dart';
 import '../../../nav/user_role/user_role_provider.dart';
 import '../../../share/export/screen_export.dart';
 import '../../../share/widgets/custom_image/app_image_picker.dart';
 import '../../../share/widgets/dropdown/custom_dropdown_field.dart';
 import '../../../share/widgets/text_field/custom_text_field.dart';
-import '../../../../core/utils/validators.dart';
 import '../controllers/auth_controller.dart';
 
 class ProfileSetupScreen extends ConsumerStatefulWidget {
-  const ProfileSetupScreen({super.key});
+  const ProfileSetupScreen({super.key, this.initialEmail});
+
+  final String? initialEmail;
 
   @override
   ConsumerState<ProfileSetupScreen> createState() => _ProfileSetupScreenState();
@@ -20,16 +25,69 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
   late final TextEditingController phoneController;
   late final TextEditingController emailController;
   late final TextEditingController addressController;
-  String _relationship = 'Madre';
+  static const List<String> _relationshipKeys = [
+    AppStrings.relationshipMother,
+    AppStrings.relationshipFather,
+    AppStrings.relationshipGuardian,
+    // AppStrings.relationshipGuardian,
+    // AppStrings.relationshipGuardian,
+    // AppStrings.relationshipGuardian,
+    // AppStrings.relationshipGuardian,
+  ];
+  String _selectedRelationshipKey = AppStrings.relationshipMother;
   File? _profileImage;
+  final _phoneFormKey = GlobalKey<FormState>();
+  String _completePhoneNumber = '';
 
   @override
   void initState() {
     super.initState();
-    nameController = TextEditingController(text: 'Elena Vance');
-    phoneController = TextEditingController(text: '+34 612 345 678');
-    emailController = TextEditingController(text: 'elena.vance@example.com');
-    addressController = TextEditingController();
+    final user = ref.read(authControllerProvider).user;
+    nameController = TextEditingController(text: user?.fullName ?? '');
+    final rawPhone = user?.phone ?? '';
+    _completePhoneNumber = rawPhone;
+    if (rawPhone.startsWith('+34')) {
+      phoneController = TextEditingController(
+        text: rawPhone.substring(3).trim(),
+      );
+    } else {
+      phoneController = TextEditingController(text: rawPhone);
+    }
+    final storage = ref.read(storageServiceProvider);
+    final storedEmail = storage.getUserEmail();
+    final effectiveEmail = widget.initialEmail?.trim().isNotEmpty == true
+        ? widget.initialEmail!.trim()
+        : ((user?.email != null && user!.email.trim().isNotEmpty)
+            ? user.email.trim()
+            : (storedEmail ?? ''));
+    emailController = TextEditingController(text: effectiveEmail);
+
+    if (effectiveEmail.isEmpty) {
+      storage.getAccessToken().then((token) {
+        if (!mounted || token == null) return;
+        final tokenEmail = JwtHelper.extractEmail(token);
+        if (tokenEmail != null &&
+            tokenEmail.isNotEmpty &&
+            emailController.text.trim().isEmpty) {
+          setState(() {
+            emailController.text = tokenEmail;
+          });
+          storage.saveUserEmail(tokenEmail);
+        }
+      });
+    }
+    addressController = TextEditingController(text: user?.address ?? '');
+    if (user?.relationWithChild != null &&
+        user!.relationWithChild!.trim().isNotEmpty) {
+      final rawRel = user.relationWithChild!.trim().toLowerCase();
+      if (rawRel.contains('fath') || rawRel.contains('padr')) {
+        _selectedRelationshipKey = AppStrings.relationshipFather;
+      } else if (rawRel.contains('guard') || rawRel.contains('tutor')) {
+        _selectedRelationshipKey = AppStrings.relationshipGuardian;
+      } else {
+        _selectedRelationshipKey = AppStrings.relationshipMother;
+      }
+    }
   }
 
   @override
@@ -114,20 +172,48 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
   }
 
   Future<void> _completeProfile() async {
+    final langCode =
+        ref.read(languageProvider).valueOrNull?.languageCode ??
+        AulaValidation.activeLanguageCode;
+
+    if (_profileImage == null) {
+      ApiSnackbar.showUserMessage(
+        UserFriendlyMessage(
+          title: ref.tr(AppStrings.validationError),
+          message: ref.tr(AppStrings.profileImageRequired),
+        ),
+        type: SnackbarType.error,
+      );
+      return;
+    }
+
     if (!AulaValidation.required(
       value: nameController.text,
       fieldName: ref.tr(AppStrings.parentFullName),
+      languageCode: langCode,
     )) {
       return;
     }
 
-    if (!AulaValidation.phone(phoneController.text)) {
+    var phoneToValidate = _completePhoneNumber.isNotEmpty
+        ? _completePhoneNumber
+        : phoneController.text.trim();
+
+    if (phoneToValidate.isNotEmpty && !phoneToValidate.startsWith('+')) {
+      phoneToValidate = '+34$phoneToValidate';
+    }
+
+    if (!AulaValidation.phone(phoneToValidate, languageCode: langCode)) {
       return;
     }
 
-    if (!AulaValidation.email(emailController.text)) {
+    if (!AulaValidation.email(emailController.text, languageCode: langCode)) {
       return;
     }
+
+    final relationshipLabel =
+        ref.read(languageProvider).valueOrNull?.tr(_selectedRelationshipKey) ??
+        _selectedRelationshipKey;
 
     final success = await ref
         .read(authControllerProvider.notifier)
@@ -137,7 +223,7 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
               ? addressController.text.trim()
               : null,
           occupation: nameController.text.trim(),
-          relationWithChild: _relationship,
+          relationWithChild: relationshipLabel,
         );
 
     if (!mounted) return;
@@ -150,8 +236,6 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
       if (authState.userMessage != null) {
         ApiSnackbar.showUserMessage(authState.userMessage!);
       } else {
-        final langCode =
-            ref.read(languageProvider).valueOrNull?.languageCode ?? 'en';
         final resolved = AppErrorResolver.resolve(
           authState.errorMessage,
           languageCode: langCode,
@@ -165,37 +249,40 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
   Widget build(BuildContext context) {
     final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
     final authState = ref.watch(authControllerProvider);
+    final langCode =
+        ref.watch(languageProvider).valueOrNull?.languageCode ??
+        AulaValidation.activeLanguageCode;
 
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-              child: Row(
-                children: [
-                  GestureDetector(
-                    onTap: () => context.pop(),
-                    child: Container(
-                      width: 40.w,
-                      height: 40.w,
-                      alignment: Alignment.center,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        Icons.arrow_back_ios_new_rounded,
-                        size: 15.sp,
-                        color: AppColors.text,
-                      ),
-                    ),
-                  ),
-                  const Spacer(),
-                ],
-              ),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+            //   child: Row(
+            //     children: [
+            //       GestureDetector(
+            //         onTap: () => context.pop(),
+            //         child: Container(
+            //           width: 40.w,
+            //           height: 40.w,
+            //           alignment: Alignment.center,
+            //           decoration: const BoxDecoration(
+            //             color: Colors.white,
+            //             shape: BoxShape.circle,
+            //           ),
+            //           child: Icon(
+            //             Icons.arrow_back_ios_new_rounded,
+            //             size: 15.sp,
+            //             color: AppColors.text,
+            //           ),
+            //         ),
+            //       ),
+            //       const Spacer(),
+            //     ],
+            //   ),
+            // ),
             Expanded(
               child: SingleChildScrollView(
                 padding: EdgeInsets.fromLTRB(22, 14, 22, 25 + bottomInset),
@@ -283,6 +370,7 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
                       label: ref.watchTr(AppStrings.parentFullName),
                       hint: ref.watchTr(AppStrings.enterYourFullName),
                       icon: Icons.person_outline_rounded,
+                      inputFormatters: AppInputFormatters.name,
                     ),
                     const SizedBox(height: 15),
                     AppTextField(
@@ -290,6 +378,18 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
                       label: ref.watchTr(AppStrings.primaryMobileNumber),
                       hint: ref.watchTr(AppStrings.enterMobileNumber),
                       icon: Icons.phone_outlined,
+                      keyboardType: TextInputType.phone,
+                      isPhoneField: true,
+                      initialCountryCode: 'ES',
+                      phoneFormKey: _phoneFormKey,
+                      languageCode: langCode,
+                      onPhoneChanged: (completeNumber) {
+                        _completePhoneNumber = completeNumber;
+                      },
+                      phoneValidator: (value) => AulaValidation.validatePhone(
+                        value,
+                        languageCode: langCode,
+                      ),
                     ),
                     const SizedBox(height: 15),
                     AppTextField(
@@ -297,6 +397,9 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
                       label: ref.watchTr(AppStrings.fieldEmailAddress),
                       hint: ref.watchTr(AppStrings.fieldEmailHint),
                       icon: Icons.email_outlined,
+                      keyboardType: TextInputType.emailAddress,
+                      readOnly: true,
+                      inputFormatters: AppInputFormatters.email,
                     ),
                     const SizedBox(height: 15),
                     Text(
@@ -309,15 +412,12 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
                     const SizedBox(height: 7),
                     CustomDropdownField<String>(
                       hintText: ref.watchTr(AppStrings.selectRelationship),
-                      items: [
-                        ref.watchTr(AppStrings.relationshipMother),
-                        ref.watchTr(AppStrings.relationshipFather),
-                        ref.watchTr(AppStrings.relationshipGuardian),
-                      ],
-                      value: _relationship,
+                      items: _relationshipKeys,
+                      value: _selectedRelationshipKey,
+                      labelBuilder: (key) => ref.watchTr(key),
                       onChanged: (value) {
                         if (value == null) return;
-                        setState(() => _relationship = value);
+                        setState(() => _selectedRelationshipKey = value);
                       },
                     ),
                     const SizedBox(height: 15),

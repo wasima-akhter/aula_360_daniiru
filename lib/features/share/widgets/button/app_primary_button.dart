@@ -1,4 +1,3 @@
-import 'package:aula360/core/providers/button_loading_provider.dart';
 import 'package:aula360/features/share/widgets/loading/loading_widget.dart';
 
 import '../../export/screen_export.dart';
@@ -11,7 +10,7 @@ class CustomButton extends ConsumerWidget {
   final VoidCallback? onTap;
   final Future<void> Function()? onTapAsync;
   final bool isLoading;
-  final ProviderListenable<bool>? loadingProvider;
+  final bool Function(WidgetRef ref)? loadingSelector;
   final String? actionKey;
   final IconData? icon;
 
@@ -30,7 +29,7 @@ class CustomButton extends ConsumerWidget {
     this.onTap,
     this.onTapAsync,
     this.isLoading = false,
-    this.loadingProvider,
+    this.loadingSelector,
     this.actionKey,
     this.icon,
     this.isOutlined = false,
@@ -50,10 +49,10 @@ class CustomButton extends ConsumerWidget {
     final isActionLoading = actionKey != null
         ? ref.watch(buttonActionLoadingProvider(actionKey!))
         : false;
-    final isProviderLoading = loadingProvider != null
-        ? ref.watch(loadingProvider!)
+    final isSelectorLoading = loadingSelector != null
+        ? loadingSelector!(ref)
         : false;
-    final effectiveLoading = isLoading || isActionLoading || isProviderLoading;
+    final effectiveLoading = isLoading || isActionLoading || isSelectorLoading;
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
@@ -81,7 +80,9 @@ class CustomButton extends ConsumerWidget {
         : () {
             if (onTapAsync != null) {
               final key = actionKey ?? text;
-              ref.read(buttonActionLoadingProvider(key).notifier).execute(onTapAsync!);
+              ref
+                  .read(buttonActionLoadingNotifierProvider.notifier)
+                  .execute(key, onTapAsync!);
             } else if (onTap != null) {
               onTap!();
             }
@@ -133,7 +134,7 @@ class AulaPrimaryButton extends ConsumerWidget {
   final VoidCallback? onTap;
   final Future<void> Function()? onTapAsync;
   final bool isLoading;
-  final ProviderListenable<bool>? loadingProvider;
+  final bool Function(WidgetRef ref)? loadingSelector;
   final String? actionKey;
   final Widget? trailing;
   final Widget? leading;
@@ -152,7 +153,7 @@ class AulaPrimaryButton extends ConsumerWidget {
     this.onTap,
     this.onTapAsync,
     this.isLoading = false,
-    this.loadingProvider,
+    this.loadingSelector,
     this.actionKey,
     this.trailing,
     this.leading,
@@ -171,10 +172,10 @@ class AulaPrimaryButton extends ConsumerWidget {
     final isActionLoading = actionKey != null
         ? ref.watch(buttonActionLoadingProvider(actionKey!))
         : false;
-    final isProviderLoading = loadingProvider != null
-        ? ref.watch(loadingProvider!)
+    final isSelectorLoading = loadingSelector != null
+        ? loadingSelector!(ref)
         : false;
-    final effectiveLoading = isLoading || isActionLoading || isProviderLoading;
+    final effectiveLoading = isLoading || isActionLoading || isSelectorLoading;
 
     final effectiveBgColor = backgroundColor ?? AppColors.primary;
     final effectiveTextColor = textColor ?? Colors.white;
@@ -184,7 +185,9 @@ class AulaPrimaryButton extends ConsumerWidget {
         : () {
             if (onTapAsync != null) {
               final key = actionKey ?? text;
-              ref.read(buttonActionLoadingProvider(key).notifier).execute(onTapAsync!);
+              ref
+                  .read(buttonActionLoadingNotifierProvider.notifier)
+                  .execute(key, onTapAsync!);
             } else if (onTap != null) {
               onTap!();
             }
@@ -207,22 +210,21 @@ class AulaPrimaryButton extends ConsumerWidget {
         ),
         child: effectiveLoading
             ? (loadingWidget ??
-                SizedBox(
-                  height: 20.r,
-                  width: 20.r,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2.2,
-                    valueColor: AlwaysStoppedAnimation<Color>(effectiveTextColor),
-                  ),
-                ))
+                  SizedBox(
+                    height: 20.r,
+                    width: 20.r,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2.2,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        effectiveTextColor,
+                      ),
+                    ),
+                  ))
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (leading != null) ...[
-                    leading!,
-                    SizedBox(width: 6.w),
-                  ],
+                  if (leading != null) ...[leading!, SizedBox(width: 6.w)],
                   Flexible(
                     child: Text(
                       text,

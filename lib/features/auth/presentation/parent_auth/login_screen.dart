@@ -33,6 +33,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final remembered = storage.rememberedEmail;
     emailController = TextEditingController(text: remembered ?? '');
     passwordController = TextEditingController();
+
+    if (kDebugMode) {
+      emailController.text = "abc@yopmail.com";
+      passwordController.text = "123456abC!";
+    }
   }
 
   @override
@@ -43,15 +48,22 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   Future<void> _login() async {
-    if (!AulaValidation.email(emailController.text)) {
+    final langCode =
+        ref.read(languageProvider).valueOrNull?.languageCode ??
+        AulaValidation.activeLanguageCode;
+
+    if (!AulaValidation.email(emailController.text, languageCode: langCode)) {
       return;
     }
 
-    if (!AulaValidation.password(passwordController.text)) {
+    if (!AulaValidation.password(
+      passwordController.text,
+      languageCode: langCode,
+    )) {
       return;
     }
 
-    final success = await ref
+    final outcome = await ref
         .read(authControllerProvider.notifier)
         .login(
           email: emailController.text.trim(),
@@ -62,26 +74,45 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     if (!mounted) return;
 
-    if (success) {
-      final authState = ref.read(authControllerProvider);
-      if (authState.user?.isProfileSetup == false) {
-        context.go(RoutePath.profileSetup);
-      } else {
+    switch (outcome) {
+      case LoginOutcome.authenticated:
         context.go(RoutePath.navigationPages);
-      }
-    } else {
-      final authState = ref.read(authControllerProvider);
-      if (authState.userMessage != null) {
-        ApiSnackbar.showUserMessage(authState.userMessage!);
-      } else {
-        final langCode =
-            ref.read(languageProvider).valueOrNull?.languageCode ?? 'en';
-        final resolved = AppErrorResolver.resolve(
-          authState.errorMessage,
-          languageCode: langCode,
+        break;
+
+      case LoginOutcome.profileSetupRequired:
+        context.go(RoutePath.profileSetup, extra: emailController.text.trim());
+        break;
+
+      case LoginOutcome.otpVerificationRequired:
+        ApiSnackbar.show(
+          ref.tr(AppStrings.otpResendSuccess),
+          type: SnackbarType.success,
         );
-        ApiSnackbar.showUserMessage(resolved);
-      }
+        context.go(
+          RoutePath.activeOtpScreen,
+          extra: OtpArgs(
+            email: emailController.text.trim(),
+            purpose: OtpPurpose.signup,
+            role: OtpRole.parent,
+          ),
+        );
+        break;
+
+      case LoginOutcome.suspended:
+      case LoginOutcome.error:
+        final authState = ref.read(authControllerProvider);
+        if (authState.userMessage != null) {
+          ApiSnackbar.showUserMessage(authState.userMessage!);
+        } else {
+          final langCode =
+              ref.read(languageProvider).valueOrNull?.languageCode ?? 'en';
+          final resolved = AppErrorResolver.resolve(
+            authState.errorMessage,
+            languageCode: langCode,
+          );
+          ApiSnackbar.showUserMessage(resolved);
+        }
+        break;
     }
   }
 
@@ -184,19 +215,23 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ),
                     ],
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      context.push(
-                        RoutePath.forgetPasswordScreen,
-                        extra: const ForgotPasswordArgs(role: OtpRole.parent),
-                      );
-                    },
-                    child: Text(
-                      tr(AppStrings.forgotPassword),
-                      style: context.bodySmall.copyWith(
-                        color: AppColors.primary,
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w700,
+                  Gap(12.w),
+                  Flexible(
+                    child: GestureDetector(
+                      onTap: () {
+                        context.push(
+                          RoutePath.forgetPasswordScreen,
+                          extra: const ForgotPasswordArgs(role: OtpRole.parent),
+                        );
+                      },
+                      child: Text(
+                        tr(AppStrings.forgotPassword),
+                        textAlign: TextAlign.end,
+                        style: context.bodySmall.copyWith(
+                          color: AppColors.primary,
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ),
                   ),

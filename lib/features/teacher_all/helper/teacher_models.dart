@@ -10,6 +10,7 @@ class TeacherProfileData {
   final String email;
   final String phone;
   final String department;
+  final String designation;
   final String office;
   final String bio;
   final String language;
@@ -20,6 +21,7 @@ class TeacherProfileData {
     required this.email,
     required this.phone,
     this.department = 'Matemáticas y Física',
+    this.designation = 'Faculty',
     this.office = 'Aula 2 / Despacho 4',
     this.bio =
         'Docente titular de matemáticas especializado en bachillerato, álgebra y preparación académica.',
@@ -32,6 +34,7 @@ class TeacherProfileData {
     String? email,
     String? phone,
     String? department,
+    String? designation,
     String? office,
     String? bio,
     String? language,
@@ -42,6 +45,7 @@ class TeacherProfileData {
       email: email ?? this.email,
       phone: phone ?? this.phone,
       department: department ?? this.department,
+      designation: designation ?? this.designation,
       office: office ?? this.office,
       bio: bio ?? this.bio,
       language: language ?? this.language,

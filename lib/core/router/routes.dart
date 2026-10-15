@@ -145,10 +145,12 @@ class AppRouter {
           return _buildPageWithAnimation(
             state: state,
             child: ActiveOtpScreen(
-              args: OtpArgs(
-                purpose: extra?.purpose ?? OtpPurpose.forgotPassword,
-                role: extra?.role ?? OtpRole.parent,
-              ),
+              args:
+                  extra ??
+                  const OtpArgs(
+                    purpose: OtpPurpose.forgotPassword,
+                    role: OtpRole.parent,
+                  ),
             ),
           );
         },
@@ -187,9 +189,10 @@ class AppRouter {
         name: RoutePath.profileSetup,
         path: RoutePath.profileSetup.addBasePath,
         pageBuilder: (context, state) {
+          final email = state.extra as String?;
           return _buildPageWithAnimation(
             state: state,
-            child: ProfileSetupScreen(),
+            child: ProfileSetupScreen(initialEmail: email),
           );
         },
       ),
@@ -197,9 +200,10 @@ class AppRouter {
         name: RoutePath.teacherProfileSetup,
         path: RoutePath.teacherProfileSetup.addBasePath,
         pageBuilder: (context, state) {
+          final email = state.extra as String?;
           return _buildPageWithAnimation(
             state: state,
-            child: TeacherProfileSetupScreen(),
+            child: TeacherProfileSetupScreen(initialEmail: email),
           );
         },
       ),

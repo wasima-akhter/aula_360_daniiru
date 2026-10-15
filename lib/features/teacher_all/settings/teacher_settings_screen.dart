@@ -182,6 +182,22 @@ class TeacherSettingsScreen extends ConsumerWidget {
         children: [
           _switchRow(
             icon: Icons.notifications_none,
+            title: tr(AppStrings.settingsNotifPush),
+            subtitle: tr(AppStrings.settingsNotifPushSub),
+            value: state.pushNotifications,
+            onChanged: (value) => controller.togglePush(value),
+          ),
+          _divider(),
+          _switchRow(
+            icon: Icons.email_outlined,
+            title: tr(AppStrings.settingsNotifEmail),
+            subtitle: tr(AppStrings.settingsNotifEmailSub),
+            value: state.emailNotifications,
+            onChanged: (value) => controller.toggleEmail(value),
+          ),
+          _divider(),
+          _switchRow(
+            icon: Icons.notifications_active_outlined,
             title: tr(AppStrings.settingsNotifClassReminders),
             subtitle: tr(AppStrings.settingsNotifClassRemindersSub),
             value: state.classReminders,
@@ -192,22 +208,6 @@ class TeacherSettingsScreen extends ConsumerWidget {
                 value
                     ? tr(AppStrings.settingsClassRemindersEnabled)
                     : tr(AppStrings.settingsClassRemindersDisabled),
-              );
-            },
-          ),
-          _divider(),
-          _switchRow(
-            icon: Icons.chat_bubble_outline,
-            title: tr(AppStrings.settingsNotifParentMessages),
-            subtitle: tr(AppStrings.settingsNotifParentMessagesSub),
-            value: state.pushNotifications,
-            onChanged: (value) {
-              controller.togglePush(value);
-              _showMessage(
-                context,
-                value
-                    ? tr(AppStrings.settingsParentMessagesEnabled)
-                    : tr(AppStrings.settingsParentMessagesDisabled),
               );
             },
           ),
@@ -249,9 +249,8 @@ class TeacherSettingsScreen extends ConsumerWidget {
             icon: Icons.fingerprint,
             title: tr(AppStrings.settingsSecurityBiometric),
             subtitle: tr(AppStrings.settingsSecurityBiometricSub),
-            value: state.emailNotifications,
+            value: false,
             onChanged: (val) {
-              controller.toggleEmail(val);
               _showMessage(
                 context,
                 val

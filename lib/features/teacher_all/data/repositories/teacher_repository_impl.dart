@@ -1,13 +1,28 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../profile/data/dtos/teacher_profile_dto.dart';
+import '../../../profile/domain/repositories/profile_repository.dart';
+import '../../../profile/presentation/providers/profile_providers.dart';
+import '../../../settings/domain/repositories/settings_repository.dart';
+import '../../../settings/presentation/providers/settings_providers.dart';
 import '../../domain/repositories/teacher_repository.dart';
 import '../../helper/teacher_enums.dart';
 import '../../helper/teacher_models.dart';
 
 final teacherRepositoryProvider = Provider<TeacherRepository>((ref) {
-  return TeacherRepositoryImpl();
+  return TeacherRepositoryImpl(
+    profileRepository: ref.watch(profileRepositoryProvider),
+    settingsRepository: ref.watch(settingsRepositoryProvider),
+  );
 });
 
 class TeacherRepositoryImpl implements TeacherRepository {
+  final ProfileRepository? profileRepository;
+  final SettingsRepository? settingsRepository;
+
+  TeacherRepositoryImpl({
+    this.profileRepository,
+    this.settingsRepository,
+  });
   final List<AttendanceStudent> _attendanceStudents = [
     AttendanceStudent(
       name: 'Lucas Rivera',
@@ -115,12 +130,54 @@ class TeacherRepositoryImpl implements TeacherRepository {
 
   @override
   Future<TeacherProfileData> getProfile() async {
+    final repo = profileRepository;
+    if (repo != null) {
+      try {
+        final entity = await repo.getTeacherProfile();
+        _profile = TeacherProfileData(
+          name: entity.fullName,
+          email: entity.email,
+          phone: entity.phone,
+          department: entity.department ?? _profile.department,
+          designation: entity.designation ?? _profile.designation,
+          bio: entity.bio ?? _profile.bio,
+          language: entity.language,
+          profileImagePath: entity.avatarUrl ?? _profile.profileImagePath,
+        );
+        return _profile;
+      } catch (_) {}
+    }
     await Future.delayed(const Duration(milliseconds: 150));
     return _profile;
   }
 
   @override
   Future<void> updateProfile(TeacherProfileData profile) async {
+    final repo = profileRepository;
+    if (repo != null) {
+      try {
+        final dto = UpdateTeacherProfileDto(
+          fullName: profile.name,
+          phone: profile.phone,
+          avatarUrl: profile.profileImagePath,
+          department: profile.department,
+          designation: profile.designation,
+          bio: profile.bio,
+        );
+        final entity = await repo.updateTeacherProfile(dto);
+        _profile = profile.copyWith(
+          name: entity.fullName,
+          email: entity.email,
+          phone: entity.phone,
+          department: entity.department,
+          designation: entity.designation,
+          bio: entity.bio,
+          language: entity.language,
+          profileImagePath: entity.avatarUrl,
+        );
+        return;
+      } catch (_) {}
+    }
     await Future.delayed(const Duration(milliseconds: 300));
     _profile = profile;
   }
@@ -130,6 +187,14 @@ class TeacherRepositoryImpl implements TeacherRepository {
     required String currentPassword,
     required String newPassword,
   }) async {
+    final repo = settingsRepository;
+    if (repo != null) {
+      await repo.changePassword(
+        currentPassword: currentPassword,
+        newPassword: newPassword,
+      );
+      return;
+    }
     await Future.delayed(const Duration(milliseconds: 300));
   }
 }

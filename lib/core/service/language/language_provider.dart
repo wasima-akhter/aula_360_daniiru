@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../utils/validators.dart';
+
 // ─────────────────────────────────────────────
 // Supported Languages
 // ─────────────────────────────────────────────
@@ -20,8 +22,12 @@ enum AppLanguage {
   final String displayLabel;
 
   static AppLanguage fromCode(String code) {
+    final normalized = code.trim().toLowerCase();
     return AppLanguage.values.firstWhere(
-      (l) => l.code == code,
+      (l) =>
+          l.code.toLowerCase() == normalized ||
+          l.label.toLowerCase() == normalized ||
+          normalized.startsWith(l.code.toLowerCase()),
       orElse: () => AppLanguage.english,
     );
   }
@@ -67,6 +73,7 @@ class LanguageState {
 
 class LanguageNotifier extends AsyncNotifier<LanguageState> {
   static const _prefKey = 'app_language';
+  static String activeLanguageCode = 'en';
 
   @override
   Future<LanguageState> build() async {
@@ -76,10 +83,14 @@ class LanguageNotifier extends AsyncNotifier<LanguageState> {
       final lang = saved != null
           ? AppLanguage.fromCode(saved)
           : AppLanguage.english;
+      activeLanguageCode = lang.code;
+      AulaValidation.activeLanguageCode = lang.code;
       final strings = await _loadStrings(lang.code);
       return LanguageState(language: lang, strings: strings);
     } catch (e, stack) {
       debugPrint('LanguageNotifier build error: $e\n$stack');
+      activeLanguageCode = 'en';
+      AulaValidation.activeLanguageCode = 'en';
       return LanguageState(
         language: AppLanguage.english,
         strings: _fallbackStrings('en'),
@@ -89,6 +100,8 @@ class LanguageNotifier extends AsyncNotifier<LanguageState> {
 
   /// Change the app language and persist the choice.
   Future<void> changeLanguage(AppLanguage lang) async {
+    activeLanguageCode = lang.code;
+    AulaValidation.activeLanguageCode = lang.code;
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(_prefKey, lang.code);
@@ -226,7 +239,7 @@ const Map<String, String> _englishFallback = {
   "field_academy_email": "Academy Email/Faculty ID",
   "field_academy_email_hint": "e.g. m.vance@institution.com",
   "field_password_create_hint": "Create a secure password",
-  "password_hint_text": "At least 8 characters with numbers and letters",
+  "password_hint_text": "At least 8 characters with uppercase, lowercase, and a special character",
   "btn_create_account": "Create Account",
   "already_have_account": "Already have an account? ",
   "log_in": "Log In",
@@ -306,6 +319,8 @@ const Map<String, String> _englishFallback = {
       "Receive reminders to complete class reports",
   "settings_notif_push": "Push Notifications",
   "settings_notif_push_sub": "Receive class updates & reports",
+  "settings_notif_email": "Email Notifications",
+  "settings_notif_email_sub": "Receive reports and announcements via email",
   "settings_notif_attendance_alerts": "Attendance Alerts",
   "settings_notif_attendance_alerts_sub": "Instant check-in & absence notices",
   "settings_security_biometric": "Biometric Access",
@@ -350,7 +365,12 @@ const Map<String, String> _englishFallback = {
   "password_required": "Password is required",
   "password_min_8": "Password must be at least 8 characters",
   "uppercase_required": "Password must contain at least one uppercase letter",
+  "lowercase_required": "Password must contain at least one lowercase letter",
+  "special_char_required": "Password must contain at least one special character",
   "number_required": "Password must contain at least one number",
+  "invalid_phone_number": "Invalid phone number",
+  "validation_error_title": "Validation Error",
+  "validation_error_directive": "Please correct the indicated fields and try again.",
   "confirm_password_required": "Please confirm your password",
   "enter_password_first": "Please enter password first",
   "passwords_do_not_match": "Passwords do not match",
@@ -508,7 +528,7 @@ const Map<String, String> _spanishFallback = {
   "field_academy_email": "Correo de Academia/ID de Facultad",
   "field_academy_email_hint": "ej. m.vance@institucion.com",
   "field_password_create_hint": "Crea una contraseña segura",
-  "password_hint_text": "Al menos 8 caracteres con números y letras",
+  "password_hint_text": "Al menos 8 caracteres con mayúscula, minúscula y un carácter especial",
   "btn_create_account": "Crear Cuenta",
   "already_have_account": "¿Ya tienes una cuenta? ",
   "log_in": "Iniciar Sesión",
@@ -590,6 +610,8 @@ const Map<String, String> _spanishFallback = {
       "Recibe recordatorios para completar informes de clase",
   "settings_notif_push": "Notificaciones Push",
   "settings_notif_push_sub": "Recibe actualizaciones de clase e informes",
+  "settings_notif_email": "Notificaciones por Correo",
+  "settings_notif_email_sub": "Recibe informes y anuncios por correo electrónico",
   "settings_notif_attendance_alerts": "Alertas de Asistencia",
   "settings_notif_attendance_alerts_sub":
       "Avisos instantáneos de check-in y ausencia",
@@ -637,7 +659,15 @@ const Map<String, String> _spanishFallback = {
   "password_min_8": "La contraseña debe tener al menos 8 caracteres",
   "uppercase_required":
       "La contraseña debe contener al menos una letra mayúscula",
+  "lowercase_required":
+      "La contraseña debe contener al menos una letra minúscula",
+  "special_char_required":
+      "La contraseña debe contener al menos un carácter especial",
   "number_required": "La contraseña debe contener al menos un número",
+  "invalid_phone_number": "Número de teléfono no válido",
+  "validation_error_title": "Error de validación",
+  "validation_error_directive":
+      "Por favor corrige los campos señalados e intenta de nuevo.",
   "confirm_password_required": "Por favor confirma tu contraseña",
   "enter_password_first": "Por favor ingresa la contraseña primero",
   "passwords_do_not_match": "Las contraseñas no coinciden",

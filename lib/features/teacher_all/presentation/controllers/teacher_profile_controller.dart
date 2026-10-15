@@ -1,9 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/errors/app_error_resolver.dart';
 import '../../../../core/service/language/language_provider.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
-import '../../data/repositories/teacher_repository_impl.dart';
-import '../../domain/repositories/teacher_repository.dart';
+import '../../../auth/presentation/providers/auth_providers.dart';
+import '../../../profile/data/dtos/teacher_profile_dto.dart';
+import '../../../profile/domain/entities/teacher_profile_entity.dart';
+import '../../../profile/presentation/providers/profile_providers.dart';
 import '../../helper/teacher_models.dart';
 
 class TeacherProfileState {
@@ -11,6 +16,7 @@ class TeacherProfileState {
   final bool isSaving;
   final bool isLoading;
   final String? error;
+  final UserFriendlyMessage? userMessage;
 
   const TeacherProfileState({
     this.profile = const TeacherProfileData(
@@ -21,6 +27,7 @@ class TeacherProfileState {
     this.isSaving = false,
     this.isLoading = false,
     this.error,
+    this.userMessage,
   });
 
   TeacherProfileState copyWith({
@@ -28,12 +35,14 @@ class TeacherProfileState {
     bool? isSaving,
     bool? isLoading,
     String? error,
+    UserFriendlyMessage? userMessage,
   }) {
     return TeacherProfileState(
       profile: profile ?? this.profile,
       isSaving: isSaving ?? this.isSaving,
       isLoading: isLoading ?? this.isLoading,
       error: error,
+      userMessage: userMessage,
     );
   }
 }
@@ -44,12 +53,13 @@ final teacherProfileControllerProvider =
     );
 
 class TeacherProfileController extends Notifier<TeacherProfileState> {
-  late final TeacherRepository _repository;
+  bool _isFetching = false;
+  bool _hasFetched = false;
 
   @override
   TeacherProfileState build() {
-    _repository = ref.watch(teacherRepositoryProvider);
-    final authUser = ref.watch(authControllerProvider).user;
+    // Read the user once for initial seeding so we do NOT create an invalidation loop with authControllerProvider
+    final authUser = ref.read(authControllerProvider).user;
     final currentLang =
         ref.watch(languageProvider).valueOrNull?.language.label ?? 'English';
 
@@ -60,33 +70,130 @@ class TeacherProfileController extends Notifier<TeacherProfileState> {
       email: authUser?.email.isNotEmpty == true ? authUser!.email : '',
       phone: authUser?.phone ?? '',
       department: authUser?.department ?? 'Academics',
+      designation: authUser?.designation ?? 'Faculty',
       bio: authUser?.bio ?? '',
       language: currentLang,
       profileImagePath: authUser?.avatarUrl,
     );
 
-    Future.microtask(() => loadProfile());
+    if (!_hasFetched && !_isFetching) {
+      Future.microtask(() => loadProfile());
+    }
     return TeacherProfileState(profile: initialProfile, isLoading: false);
   }
 
-  Future<void> loadProfile() async {
+  UserFriendlyMessage _resolveError(Object error) {
+    final langCode =
+        ref.read(languageProvider).valueOrNull?.languageCode ?? 'en';
+    return AppErrorResolver.resolve(error, languageCode: langCode);
+  }
+
+  /// Fetches the authenticated teacher profile from GET /api/v1/profile/teacher.
+  Future<void> loadProfile({bool force = false}) async {
+    if (_isFetching && !force) return;
+    _isFetching = true;
+    _hasFetched = true;
+    state = state.copyWith(isLoading: true, error: null, userMessage: null);
     try {
-      final p = await _repository.getProfile();
-      state = state.copyWith(profile: p, isLoading: false);
+      final p = await ref.read(getTeacherProfileUseCaseProvider).call();
+      _applyProfile(p);
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: e.toString());
+      final msg = _resolveError(e);
+      state = state.copyWith(
+        isLoading: false,
+        error: msg.displayMessage,
+        userMessage: msg,
+      );
+    } finally {
+      _isFetching = false;
     }
   }
 
-  Future<bool> updateProfile(TeacherProfileData newProfile) async {
-    state = state.copyWith(isSaving: true, error: null);
+  /// Updates authenticated teacher profile via POST /api/v1/profile/teacher.
+  Future<bool> updateProfile(
+    TeacherProfileData newProfile, {
+    File? avatarFile,
+  }) async {
+    state = state.copyWith(isSaving: true, error: null, userMessage: null);
     try {
-      await _repository.updateProfile(newProfile);
-      state = state.copyWith(profile: newProfile, isSaving: false);
+      String? avatarUrl = newProfile.profileImagePath;
+
+      // If user selected a new local file, upload it first to S3/CDN
+      if (avatarFile != null) {
+        final uploadedUrls = await ref
+            .read(uploadMediaUseCaseProvider)
+            .call(files: [avatarFile]);
+        if (uploadedUrls.isNotEmpty) {
+          avatarUrl = uploadedUrls.first;
+        }
+      }
+
+      final dto = UpdateTeacherProfileDto(
+        fullName: newProfile.name,
+        avatarUrl: avatarUrl,
+        phone: newProfile.phone,
+        department: newProfile.department,
+        designation: newProfile.designation.isNotEmpty
+            ? newProfile.designation
+            : 'Faculty',
+        bio: newProfile.bio,
+      );
+
+      final updated =
+          await ref.read(updateTeacherProfileUseCaseProvider).call(dto);
+
+      _applyProfile(updated);
       return true;
     } catch (e) {
-      state = state.copyWith(isSaving: false, error: e.toString());
+      final msg = _resolveError(e);
+      state = state.copyWith(
+        isSaving: false,
+        error: msg.displayMessage,
+        userMessage: msg,
+      );
       return false;
+    }
+  }
+
+  void _applyProfile(TeacherProfileEntity entity) {
+    final updatedData = state.profile.copyWith(
+      name: entity.fullName,
+      email: entity.email,
+      phone: entity.phone,
+      department: entity.department ?? state.profile.department,
+      designation: entity.designation ?? state.profile.designation,
+      bio: entity.bio ?? state.profile.bio,
+      language: entity.language,
+      profileImagePath: entity.avatarUrl ?? state.profile.profileImagePath,
+    );
+
+    state = state.copyWith(
+      profile: updatedData,
+      isLoading: false,
+      isSaving: false,
+      error: null,
+      userMessage: null,
+    );
+
+    // Sync with AuthController only if data changed
+    final currentUser = ref.read(authControllerProvider).user;
+    if (currentUser != null) {
+      final updatedAuthUser = currentUser.copyWith(
+        fullName: entity.fullName,
+        phone: entity.phone,
+        avatarUrl: entity.avatarUrl,
+        department: entity.department,
+        designation: entity.designation,
+        bio: entity.bio,
+      );
+      if (updatedAuthUser.fullName != currentUser.fullName ||
+          updatedAuthUser.phone != currentUser.phone ||
+          updatedAuthUser.avatarUrl != currentUser.avatarUrl ||
+          updatedAuthUser.department != currentUser.department ||
+          updatedAuthUser.designation != currentUser.designation ||
+          updatedAuthUser.bio != currentUser.bio) {
+        ref.read(authControllerProvider.notifier).updateUser(updatedAuthUser);
+      }
     }
   }
 

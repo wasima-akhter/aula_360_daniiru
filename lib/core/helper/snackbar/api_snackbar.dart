@@ -12,6 +12,7 @@ class ApiSnackbar {
     String message, {
     String? title,
     String? directive,
+    String? languageCode,
     SnackbarType type = SnackbarType.error,
   }) {
     final messenger = AppKeys.scaffoldMessengerKey.currentState;
@@ -28,6 +29,7 @@ class ApiSnackbar {
     if (type == SnackbarType.error) {
       final resolved = AppErrorResolver.resolve(
         message,
+        languageCode: languageCode,
         fallbackDirective: directive,
       );
       if (displayTitle.isEmpty) {
@@ -81,7 +83,11 @@ class ApiSnackbar {
           behavior: SnackBarBehavior.floating,
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-          duration: Duration(seconds: directive != null ? 5 : 3),
+          duration: Duration(
+            seconds: message.contains('\n')
+                ? 7
+                : (directive != null ? 5 : 3),
+          ),
           backgroundColor: _color(type),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),

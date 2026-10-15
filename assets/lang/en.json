@@ -1,10 +1,8 @@
 {
   "__COMMENT_SECTION_1__": "==================== FIXED APP UI STRINGS ====================",
-
   "app_name": "Aula 360",
   "app_tagline": "Empowering Modern Academies &\nConnected Learning",
   "app_initializing": "Initializing secure session...",
-
   "language_select_title": "Choose Your Language",
   "language_select_subtitle": "Select a language to continue with Aula 360",
   "language_english": "English",
@@ -14,7 +12,6 @@
   "language_picker_title": "Select Language",
   "language_english_us": "English (US)",
   "language_spanish_label": "Spanish",
-
   "onboarding_skip": "Skip",
   "onboarding_next": "Next",
   "onboarding_continue": "Continue",
@@ -31,7 +28,6 @@
   "onboarding_tag_class_schedules": "Class Schedules",
   "onboarding_title_3": "Direct Communication &\nGrowth",
   "onboarding_desc_3": "Instant two-way messaging with educators, urgent academy broadcasts, milestone badges, and comprehensive performance analytics at your fingertips.",
-
   "role_select_title": "Select your role",
   "role_select_subtitle": "Choose how you'll be accessing your academy portal.",
   "role_parent_title": "Parent /",
@@ -42,7 +38,6 @@
   "role_continue_as_parent": "Continue as Parent Login",
   "role_continue_as_teacher": "Continue as Teacher Login",
   "role_continue": "Continue",
-
   "nav_home": "Home",
   "nav_classes": "Classes",
   "nav_students": "Students",
@@ -50,7 +45,6 @@
   "nav_reports": "Reports",
   "nav_notifications": "Notifications",
   "nav_profile": "Profile",
-
   "parent_login_title": "Parent Login",
   "teacher_login_title": "Teacher Login",
   "welcome_back": "Welcome back",
@@ -84,7 +78,7 @@
   "field_academy_email": "Academy Email/Faculty ID",
   "field_academy_email_hint": "e.g. m.vance@institution.com",
   "field_password_create_hint": "Create a secure password",
-  "password_hint_text": "At least 8 characters with numbers and letters",
+  "password_hint_text": "At least 8 characters with uppercase, lowercase, and a special character",
   "btn_create_account": "Create Account",
   "already_have_account": "Already have an account? ",
   "log_in": "Log In",
@@ -93,7 +87,8 @@
   "terms_and": " and ",
   "privacy_policy": "Privacy Policy",
   "teacher_terms_required": "Please agree to the Terms and Conditions.",
-
+  "profile_image_required": "Please select a profile photo.",
+  "validation_error": "Validation Error",
   "forgot_password_header": "Forgot Password",
   "forgot_password_title": "Forgot your password?",
   "forgot_password_subtitle": "Enter the email address associated with your\naccount and we'll send you a verification code.",
@@ -121,7 +116,6 @@
   "invalid_password": "Invalid Password",
   "password_different_msg": "Your new password must be different from your current password.",
   "password_updated_msg": "Your password has been changed successfully.",
-
   "otp_header": "Verification",
   "otp_verify_account": "Verify your account",
   "otp_verify_identity": "Verify your identity",
@@ -135,7 +129,6 @@
   "otp_verify_reset": "Verify & Reset Password",
   "otp_required_title": "Verification Code Required",
   "otp_required_message": "Please enter all 6 digits of the verification code.",
-
   "settings_title": "Settings",
   "settings_profile_breadcrumb": "Profile",
   "settings_section_language": "LANGUAGE",
@@ -176,7 +169,6 @@
   "settings_post_class_disabled": "Post-class reports disabled",
   "settings_lang_changed": "Language changed to",
   "settings_sessions_signedout": "Other sessions have been signed out",
-
   "add_child_title": "Add Child",
   "student_info_title": "Student Information",
   "student_info_desc": "Enter basic details to connect your child to your academy parent account.",
@@ -203,7 +195,6 @@
   "attendance": "Attendance",
   "child_profile": "Child Profile",
   "academic_activity": "ACADEMIC ACTIVITY",
-
   "profile_setup_title": "Profile Setup",
   "edit_profile_title": "Edit Profile",
   "parent_contact_details": "PARENT CONTACT DETAILS",
@@ -267,7 +258,6 @@
   "email_notification_notice": "Used for academy notices, attendance, and reports.",
   "phone_urgent_notice": "For urgent notifications and two-step SMS verification.",
   "profile_updated_success": "Profile updated successfully.",
-
   "class_details_title": "Class Details",
   "schedule_and_timing": "SCHEDULE & TIMING",
   "date": "Date",
@@ -290,7 +280,6 @@
   "tomorrow": "Tomorrow",
   "class_report_action": "Class report →",
   "completed_present": "Completed • Present",
-
   "report_detail_title": "Report Details",
   "all_reports": "All Reports",
   "present": "Present",
@@ -320,15 +309,12 @@
   "attachments_title": "ATTACHMENTS & MATERIAL",
   "submission_status_title": "Submission Status",
   "submission_pending": "Pending Submission",
-
   "current_quarter": "Current Quarter",
   "sessions_count": "Sessions",
-
   "academy_updates": "Academy Updates",
   "stay_updated_subtitle": "Stay up to date with school progress",
   "unread_badge": "unread",
   "all_caught_up": "All caught up",
-
   "tuition_payment_title": "Tuition Payment",
   "payment_method_title": "Payment Method",
   "processed_by_stripe": "Processed by Stripe",
@@ -352,11 +338,9 @@
   "student_label": "Student",
   "invoice_label": "Invoice",
   "method_label": "Method",
-
   "chat_tutoring_tab": "Tutoring",
   "chat_administration_tab": "Administration",
   "type_message_hint": "Type a message...",
-
   "assigned_classes_title": "Assigned Classes",
   "students_count": "students",
   "date_time": "Date & Time",
@@ -452,13 +436,17 @@
   "preferred_language": "Preferred Language",
   "write_note_hint": "Write a note about this student...",
   "field_is_required_suffix": "is required",
-
   "email_required": "Email is required",
   "valid_email_address": "Please enter a valid email address",
   "password_required": "Password is required",
   "password_min_8": "Password must be at least 8 characters",
   "uppercase_required": "Password must contain at least one uppercase letter",
+  "lowercase_required": "Password must contain at least one lowercase letter",
+  "special_char_required": "Password must contain at least one special character",
   "number_required": "Password must contain at least one number",
+  "invalid_phone_number": "Invalid phone number",
+  "validation_error_title": "Validation Error",
+  "validation_error_directive": "Please correct the indicated fields and try again.",
   "confirm_password_required": "Please confirm your password",
   "enter_password_first": "Please enter password first",
   "passwords_do_not_match": "Passwords do not match",
@@ -494,7 +482,6 @@
   "invalid_date_of_birth": "Invalid date of birth",
   "gender_required": "Gender is required",
   "valid_gender": "Please select a valid gender",
-
   "dialer_not_supported": "Dialer is not supported on this device",
   "could_not_launch_dialer": "Could not launch dialer",
   "whatsapp_cannot_be_opened": "WhatsApp cannot be opened",
@@ -513,14 +500,11 @@
   "offline_message": "You are currently offline",
   "unable_to_play_video": "Unable to play video",
   "video_unavailable_or_connection_failed": "The video is unavailable or your connection failed.",
-
   "good_morning": "Good morning",
   "good_afternoon": "Good afternoon",
   "good_evening": "Good evening",
   "good_night": "Good night",
-
   "__COMMENT_SECTION_2__": "==================== SAMPLE / STATIC MOCK DATA STRINGS ====================",
-
   "aula_1": "Room 1 (Aula 1)",
   "aula_2": "Room 2 (Aula 2)",
   "aula_3": "Room 3 (Aula 3)",
@@ -528,7 +512,6 @@
   "aula_magna": "Main Hall (Aula Magna)",
   "lab_1": "Lab 1",
   "lab_2": "Lab 2",
-
   "primaria_1": "1st Grade Primary",
   "primaria_2": "2nd Grade Primary",
   "primaria_3": "3rd Grade Primary",
@@ -541,7 +524,6 @@
   "eso_4": "4th ESO (Secondary)",
   "bachillerato_1": "1st Baccalaureate",
   "bachillerato_2": "2nd Baccalaureate",
-
   "subject_math": "Mathematics",
   "subject_physics_chemistry": "Physics & Chemistry",
   "subject_spanish_language": "Spanish Language & Literature",
@@ -550,7 +532,6 @@
   "subject_history": "History & Geography",
   "subject_statistics": "Statistics & Probability",
   "subject_algebra": "Linear Algebra",
-
   "home_greeting": "Good morning",
   "home_schedule": "Schedule",
   "home_in_person": "In-Person",
@@ -567,7 +548,6 @@
   "home_campus_open": "Campus Open",
   "home_next_up": "NEXT UP",
   "home_starts": "Starts",
-
   "mock_main_building": "Main Academy Building",
   "mock_building_floor": "Main Academy Building • 2nd Floor, Room 3B",
   "mock_floor_plan_of": "Floor Plan of",
@@ -581,7 +561,6 @@
   "mock_teacher_academy_id": "Aula 360 Academy • #FAC-4092",
   "mock_message_prompt": "Send a fast inquiry about your child's progress, homework, or attendance.",
   "mock_office_hours_notice": "In-person or phone inquiries by prior appointment.",
-
   "subject_math_advanced": "Advanced Mathematics",
   "subject_calculus_algebra": "Calculus & Algebra",
   "session_in_progress": "Session in progress",
@@ -605,4 +584,3 @@
   "no_attendance_data": "No attendance records available",
   "otp_resend_success": "Verification code resent to your email."
 }
-

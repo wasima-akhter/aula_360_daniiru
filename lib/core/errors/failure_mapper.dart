@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 
 import '../enums/backend_enums.dart';
-import '../service/datasource/remote/api_exception.dart';
+import '../network/api_exception.dart';
 import 'app_error_resolver.dart';
 import 'app_exception.dart';
 import 'app_failure.dart';
@@ -30,6 +30,7 @@ abstract final class FailureMapper {
       case ApiErrorType.invalidCredentials:
       case ApiErrorType.userNotFound:
       case ApiErrorType.userInactive:
+      case ApiErrorType.accountInactive:
       case ApiErrorType.userSuspended:
       case ApiErrorType.userWithdrawn:
       case ApiErrorType.invalidOtp:

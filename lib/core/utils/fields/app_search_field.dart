@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'app_text_field.dart';
+import 'app_search_text_field.dart';
 
 class AppSearchField extends StatelessWidget {
   final TextEditingController? controller;
@@ -58,9 +58,9 @@ class AppSearchField extends StatelessWidget {
       builder: (context, value, _) {
         final hasText = value.text.isNotEmpty;
 
-        return AppTextField(
+        return AppSearchTextField(
           controller: controller,
-          type: AppTextFieldType.text,
+          type: AppSearchTextFieldType.text,
           hint: hint,
           onChanged: onChanged,
           onTap: onTap,

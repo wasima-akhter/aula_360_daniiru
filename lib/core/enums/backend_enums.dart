@@ -592,6 +592,7 @@ enum ApiErrorType {
   invalidCredentials('INVALID_CREDENTIALS'),
   userNotFound('USER_NOT_FOUND'),
   userInactive('USER_INACTIVE'),
+  accountInactive('ACCOUNT_INACTIVE'),
   userSuspended('USER_SUSPENDED'),
   userWithdrawn('USER_WITHDRAWN'),
   invalidOtp('INVALID_OTP'),
@@ -624,18 +625,27 @@ enum ApiErrorType {
       (e) =>
           e.serializedName == normalized || e.name.toUpperCase() == normalized,
       orElse: () {
-        // Fallback checks for common backend variations
-        if (normalized.contains('CREDENTIAL'))
+        if (normalized == 'ACCOUNT_INACTIVE' || normalized.contains('INACTIVE')) {
+          return ApiErrorType.accountInactive;
+        }
+        if (normalized.contains('CREDENTIAL')) {
           return ApiErrorType.invalidCredentials;
-        if (normalized.contains('USER') && normalized.contains('NOT_FOUND'))
+        }
+        if (normalized.contains('USER') && normalized.contains('NOT_FOUND')) {
           return ApiErrorType.userNotFound;
-        if (normalized.contains('OTP') && normalized.contains('EXPIRED'))
+        }
+        if (normalized.contains('OTP') && normalized.contains('EXPIRED')) {
           return ApiErrorType.otpExpired;
-        if (normalized.contains('OTP')) return ApiErrorType.invalidOtp;
-        if (normalized.contains('TOKEN') || normalized.contains('SESSION'))
+        }
+        if (normalized.contains('OTP')) {
+          return ApiErrorType.invalidOtp;
+        }
+        if (normalized.contains('TOKEN') || normalized.contains('SESSION')) {
           return ApiErrorType.sessionExpired;
-        if (normalized.contains('AUTH') || normalized.contains('UNAUTHORIZED'))
+        }
+        if (normalized.contains('AUTH') || normalized.contains('UNAUTHORIZED')) {
           return ApiErrorType.unauthorized;
+        }
         return fallback;
       },
     );

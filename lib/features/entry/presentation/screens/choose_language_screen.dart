@@ -1,49 +1,36 @@
 import '../../../share/export/screen_export.dart';
 import '../../../share/widgets/button/app_logo.dart';
 
-class ChooseLanguageScreen extends ConsumerWidget {
+class ChooseLanguageScreen extends ConsumerStatefulWidget {
   const ChooseLanguageScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final langAsync = ref.watch(languageProvider);
-
-    // If data is ready, use it; otherwise fallback to default English state while loading.
-    final langState =
-        langAsync.valueOrNull ??
-        const LanguageState(language: AppLanguage.english, strings: {});
-
-    return _ChooseLanguageBody(langState: langState);
-  }
+  ConsumerState<ChooseLanguageScreen> createState() =>
+      _ChooseLanguageScreenState();
 }
 
-class _ChooseLanguageBody extends ConsumerStatefulWidget {
-  const _ChooseLanguageBody({required this.langState});
+class _ChooseLanguageScreenState extends ConsumerState<ChooseLanguageScreen> {
+  AppLanguage? _selected;
 
-  final LanguageState langState;
-
-  @override
-  ConsumerState<_ChooseLanguageBody> createState() =>
-      _ChooseLanguageBodyState();
-}
-
-class _ChooseLanguageBodyState extends ConsumerState<_ChooseLanguageBody> {
-  late AppLanguage _selected;
-
-  @override
-  void initState() {
-    super.initState();
-    _selected = widget.langState.language;
+  void _onSelectLanguage(AppLanguage language) {
+    setState(() => _selected = language);
+    ref.read(languageProvider.notifier).changeLanguage(language);
   }
 
   void _onContinue() async {
-    await ref.read(languageProvider.notifier).changeLanguage(_selected);
+    final langState = ref.read(languageProvider).valueOrNull;
+    final activeLanguage =
+        _selected ?? langState?.language ?? AppLanguage.english;
+    await ref.read(languageProvider.notifier).changeLanguage(activeLanguage);
     if (!mounted) return;
     context.go(RoutePath.onboardingScreen);
   }
 
   @override
   Widget build(BuildContext context) {
+    final langState = ref.watch(languageProvider).valueOrNull;
+    final currentLanguage =
+        _selected ?? langState?.language ?? AppLanguage.english;
     final tr = ref.watchTr;
 
     return Scaffold(
@@ -92,8 +79,8 @@ class _ChooseLanguageBodyState extends ConsumerState<_ChooseLanguageBody> {
                 language: AppLanguage.english,
                 label: tr(AppStrings.languageEnglish),
                 flagEmoji: '🇺🇸',
-                selected: _selected == AppLanguage.english,
-                onTap: () => setState(() => _selected = AppLanguage.english),
+                selected: currentLanguage == AppLanguage.english,
+                onTap: () => _onSelectLanguage(AppLanguage.english),
               ),
 
               const SizedBox(height: 14),
@@ -102,8 +89,8 @@ class _ChooseLanguageBodyState extends ConsumerState<_ChooseLanguageBody> {
                 language: AppLanguage.spanish,
                 label: tr(AppStrings.languageSpanish),
                 flagEmoji: '🇪🇸',
-                selected: _selected == AppLanguage.spanish,
-                onTap: () => setState(() => _selected = AppLanguage.spanish),
+                selected: currentLanguage == AppLanguage.spanish,
+                onTap: () => _onSelectLanguage(AppLanguage.spanish),
               ),
 
               const Spacer(),

@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:jwt_decode/jwt_decode.dart';
+
 import '../constants/storage_keys.dart';
 import 'local_storage.dart';
 import 'secure_storage.dart';
@@ -20,6 +22,21 @@ class StorageService {
 
   Future<String?> getAccessToken() async {
     return _secureStorage.read(key: StorageKeys.accessToken);
+  }
+
+  Future<bool> hasAccessToken() async {
+    final token = await getAccessToken();
+    return token != null && token.trim().isNotEmpty;
+  }
+
+  Future<bool> hasValidAccessToken() async {
+    final token = await getAccessToken();
+    if (token == null || token.trim().isEmpty) return false;
+    try {
+      return !Jwt.isExpired(token);
+    } catch (_) {
+      return false;
+    }
   }
 
   Future<void> saveOtpPageToken(String token) async {
@@ -68,6 +85,16 @@ class StorageService {
 
   String? getUserRole() {
     return _localStorage.getString(StorageKeys.userRole);
+  }
+
+  Future<void> saveUserEmail(String email) async {
+    if (email.trim().isNotEmpty) {
+      await _localStorage.setString(StorageKeys.userEmail, email.trim());
+    }
+  }
+
+  String? getUserEmail() {
+    return _localStorage.getString(StorageKeys.userEmail);
   }
 
   // ==============================

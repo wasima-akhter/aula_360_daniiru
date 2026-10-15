@@ -36,13 +36,21 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
   }
 
   Future<void> _resetPassword() async {
-    if (!AulaValidation.password(passwordController.text)) {
+    final langCode =
+        ref.read(languageProvider).valueOrNull?.languageCode ??
+        AulaValidation.activeLanguageCode;
+
+    if (!AulaValidation.password(
+      passwordController.text,
+      languageCode: langCode,
+    )) {
       return;
     }
 
     if (!AulaValidation.required(
       value: confirmPasswordController.text,
       fieldName: ref.tr(AppStrings.fieldConfirmPassword),
+      languageCode: langCode,
     )) {
       return;
     }
@@ -52,6 +60,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
         ref.tr(AppStrings.passwordMismatchMessage),
         title: ref.tr(AppStrings.passwordMismatchTitle),
         type: SnackbarType.error,
+        languageCode: langCode,
       );
       return;
     }

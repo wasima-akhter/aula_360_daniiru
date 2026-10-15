@@ -76,16 +76,21 @@ class ChooseRoleScreen extends ConsumerWidget {
 
               // Continue button
               AulaPrimaryButton(
+                backgroundColor: selectedRole == null
+                    ? AppColors.grayTertiaryTextColor
+                    : null,
                 text: selectedRole == UserRole.parent
-                    ? '${tr(AppStrings.roleContinueAsParent)} →'
-                    : '${tr(AppStrings.roleContinueAsTeacher)} →',
-                onTap: () {
-                  if (selectedRole == UserRole.teacher) {
-                    context.go(RoutePath.teacherLoginScreen);
-                  } else {
-                    context.go(RoutePath.loginScreen);
-                  }
-                },
+                    ? tr(AppStrings.roleContinueAsParent)
+                    : tr(AppStrings.roleContinueAsTeacher),
+                onTap: selectedRole == null
+                    ? null
+                    : () {
+                        if (selectedRole == UserRole.teacher) {
+                          context.go(RoutePath.teacherLoginScreen);
+                        } else {
+                          context.go(RoutePath.loginScreen);
+                        }
+                      },
               ),
 
               const SizedBox(height: 12),

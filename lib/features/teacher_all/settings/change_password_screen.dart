@@ -38,20 +38,29 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
   }
 
   Future<void> _changePassword() async {
+    final langCode =
+        ref.read(languageProvider).valueOrNull?.languageCode ??
+        AulaValidation.activeLanguageCode;
+
     if (!AulaValidation.required(
       value: currentPasswordController.text,
       fieldName: ref.tr(AppStrings.currentPassword),
+      languageCode: langCode,
     )) {
       return;
     }
 
-    if (!AulaValidation.password(newPasswordController.text)) {
+    if (!AulaValidation.password(
+      newPasswordController.text,
+      languageCode: langCode,
+    )) {
       return;
     }
 
     if (!AulaValidation.required(
       value: confirmPasswordController.text,
       fieldName: ref.tr(AppStrings.fieldConfirmPassword),
+      languageCode: langCode,
     )) {
       return;
     }
@@ -61,6 +70,7 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
         ref.tr(AppStrings.passwordMismatchMessage),
         title: ref.tr(AppStrings.passwordMismatchTitle),
         type: SnackbarType.error,
+        languageCode: langCode,
       );
       return;
     }
@@ -70,6 +80,7 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
         ref.tr(AppStrings.passwordDifferentMsg),
         title: ref.tr(AppStrings.invalidPassword),
         type: SnackbarType.error,
+        languageCode: langCode,
       );
       return;
     }
@@ -90,6 +101,15 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
         type: SnackbarType.success,
       );
       context.pop();
+    } else {
+      final userMsg = ref.read(teacherSettingsControllerProvider).userMessage;
+      if (userMsg != null) {
+        ApiSnackbar.show(
+          userMsg.displayMessage,
+          title: userMsg.title,
+          type: SnackbarType.error,
+        );
+      }
     }
   }
 

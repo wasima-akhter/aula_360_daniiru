@@ -1,11 +1,13 @@
 import 'package:aula360/features/auth/presentation/screens/active_otp_screen.dart';
+import 'package:flutter/foundation.dart';
 
+import '../../../../core/utils/formatters/app_input_formatters.dart';
+import '../../../../core/utils/validators.dart';
 import '../../../../utils/enum/app_enum.dart';
 import '../../../share/export/screen_export.dart';
 import '../../../share/widgets/button/app_logo.dart';
 import '../../../share/widgets/button/custom_back_button.dart';
 import '../../../share/widgets/text_field/custom_text_field.dart';
-import '../../../../core/utils/validators.dart';
 import '../controllers/auth_controller.dart';
 
 class SignUpScreen extends ConsumerStatefulWidget {
@@ -22,6 +24,10 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   late final TextEditingController passwordController;
   bool _obscurePassword = true;
 
+  final _phoneFormKey = GlobalKey<FormState>();
+
+  String _completePhoneNumber = '';
+
   @override
   void initState() {
     super.initState();
@@ -29,6 +35,15 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     mobileController = TextEditingController();
     emailController = TextEditingController();
     passwordController = TextEditingController();
+
+    if (kDebugMode) {
+      emailController.text = "abc@yopmail.com";
+      passwordController.text = "123456abC!";
+      //
+      fullNameController.text = "abc parent";
+      mobileController.text = "13137802";
+      _completePhoneNumber = "+3413137802";
+    }
   }
 
   @override
@@ -41,31 +56,48 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   }
 
   Future<void> _createAccount() async {
+    final langCode =
+        ref.read(languageProvider).valueOrNull?.languageCode ?? 'en';
+
     if (!AulaValidation.required(
       value: fullNameController.text,
       fieldName: ref.tr(AppStrings.fieldFullName),
+      languageCode: langCode,
     )) {
       return;
     }
 
-    if (!AulaValidation.phone(mobileController.text)) {
+    var phoneToValidate = _completePhoneNumber.isNotEmpty
+        ? _completePhoneNumber
+        : mobileController.text.trim();
+
+    if (phoneToValidate.isNotEmpty && !phoneToValidate.startsWith('+')) {
+      phoneToValidate = '+34$phoneToValidate';
+    }
+
+    if (!AulaValidation.phone(phoneToValidate, languageCode: langCode)) {
       return;
     }
 
-    if (!AulaValidation.email(emailController.text)) {
+    if (!AulaValidation.email(emailController.text, languageCode: langCode)) {
       return;
     }
 
-    if (!AulaValidation.password(passwordController.text)) {
+    if (!AulaValidation.password(
+      passwordController.text,
+      languageCode: langCode,
+    )) {
       return;
     }
+
+    final sanitizedPhone = AulaValidation.sanitizePhone(phoneToValidate);
 
     final success = await ref
         .read(authControllerProvider.notifier)
         .signUp(
           fullName: fullNameController.text.trim(),
           email: emailController.text.trim(),
-          phone: mobileController.text.trim(),
+          phone: sanitizedPhone,
           password: passwordController.text.trim(),
           role: UserRole.parent,
         );
@@ -83,17 +115,13 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       );
     } else {
       final authState = ref.read(authControllerProvider);
-      if (authState.userMessage != null) {
-        ApiSnackbar.showUserMessage(authState.userMessage!);
-      } else {
-        final langCode =
-            ref.read(languageProvider).valueOrNull?.languageCode ?? 'en';
-        final resolved = AppErrorResolver.resolve(
-          authState.errorMessage,
-          languageCode: langCode,
-        );
-        ApiSnackbar.showUserMessage(resolved);
-      }
+      final currentLangCode =
+          ref.read(languageProvider).valueOrNull?.languageCode ?? 'en';
+      final resolved = AppErrorResolver.resolve(
+        authState.rawError ?? authState.userMessage ?? authState.errorMessage,
+        languageCode: currentLangCode,
+      );
+      ApiSnackbar.showUserMessage(resolved);
     }
   }
 
@@ -121,7 +149,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
               Center(
                 child: Text(
                   tr(AppStrings.createYourAccount),
-                  style: TxtStyle.titleLarge(
+                  style: TxtStyle.titleMedium(
                     color: AppColors.text,
                     fontSize: 29.5.sp,
                     fontWeight: FontWeight.w800,
@@ -135,7 +163,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                 child: Text(
                   tr(AppStrings.parentSignupSubtitle),
                   textAlign: TextAlign.center,
-                  style: TxtStyle.titleLarge(
+                  style: TxtStyle.titleMedium(
                     color: AppColors.secondaryText,
                     height: 1.5,
                   ),
@@ -149,6 +177,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                 label: tr(AppStrings.fieldFullName),
                 hint: tr(AppStrings.fieldFullNameHint),
                 icon: Icons.person_outline_rounded,
+                inputFormatters: AppInputFormatters.name,
               ),
 
               const SizedBox(height: 16),
@@ -159,6 +188,17 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                 hint: tr(AppStrings.fieldMobileNumberHint),
                 icon: Icons.phone_outlined,
                 keyboardType: TextInputType.phone,
+                isPhoneField: true,
+                initialCountryCode: 'ES',
+                phoneFormKey: _phoneFormKey,
+                languageCode: ref.watch(languageProvider).valueOrNull?.languageCode,
+                onPhoneChanged: (completeNumber) {
+                  _completePhoneNumber = completeNumber;
+                },
+                phoneValidator: (value) {
+                  final langCode = ref.read(languageProvider).valueOrNull?.languageCode;
+                  return AulaValidation.validatePhone(value, languageCode: langCode);
+                },
               ),
 
               const SizedBox(height: 16),
@@ -176,9 +216,10 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
               AppTextField(
                 controller: passwordController,
                 label: tr(AppStrings.fieldPassword),
-                hint: tr(AppStrings.fieldPasswordHint),
+                hint: tr(AppStrings.fieldPasswordCreateHint),
                 icon: Icons.lock_outline_rounded,
                 obscureText: _obscurePassword,
+                helperText: tr(AppStrings.passwordHintText),
                 onTogglePassword: () {
                   setState(() => _obscurePassword = !_obscurePassword);
                 },
@@ -202,14 +243,14 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                   child: Text.rich(
                     TextSpan(
                       text: '${tr(AppStrings.alreadyHaveAccount)} ',
-                      style: TxtStyle.titleLarge(
+                      style: TxtStyle.titleMedium(
                         color: AppColors.secondaryText,
                         fontSize: 15.sp,
                       ),
                       children: [
                         TextSpan(
                           text: tr(AppStrings.logIn),
-                          style: TxtStyle.titleLarge(
+                          style: TxtStyle.titleMedium(
                             color: AppColors.primary,
                             fontSize: 15.sp,
                             fontWeight: FontWeight.w700,

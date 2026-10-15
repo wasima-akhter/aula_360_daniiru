@@ -1,3 +1,4 @@
+import 'package:aula360/core/service/language/language_provider.dart';
 import 'package:aula360/features/auth/data/dtos/media_dtos.dart';
 import 'package:aula360/features/auth/domain/entities/auth_user.dart';
 import 'package:aula360/utils/enum/app_enum.dart';
@@ -109,5 +110,81 @@ void main() {
         'https://alua-bucket.s3.amazonaws.com/attachments/nested.png',
       );
     });
+
+    test(
+      'AuthUser parses /api/v1/auth/check response payload from auth.md exactly',
+      () {
+        final payload = {
+          "userId": "123e4567-e89b-12d3-a456-426614174000",
+          "fullName": "John Doe",
+          "email": "john.doe@example.com",
+          "phone": "+1234567890",
+          "avatarUrl": "https://example.com/avatar.jpg",
+          "role": "PARENT",
+          "status": "ACTIVE",
+          "isProfileSetup": true,
+          "profileCompletedAt": "2026-10-14T09:50:00.000Z",
+          "language": "EN",
+        };
+
+        final user = AuthUser.fromJson(payload);
+        expect(user.id, '123e4567-e89b-12d3-a456-426614174000');
+        expect(user.fullName, 'John Doe');
+        expect(user.name, 'John Doe');
+        expect(user.email, 'john.doe@example.com');
+        expect(user.phone, '+1234567890');
+        expect(user.avatarUrl, 'https://example.com/avatar.jpg');
+        expect(user.role, UserRole.parent);
+        expect(user.role.isParent, isTrue);
+        expect(user.status, UserStatus.active);
+        expect(user.isActive, isTrue);
+        expect(user.isInactive, isFalse);
+        expect(user.isProfileSetup, isTrue);
+        expect(user.profileCompletedAt, '2026-10-14T09:50:00.000Z');
+        expect(user.language, 'EN');
+      },
+    );
+
+    test('AuthUser parses teacher /api/v1/auth/check payload correctly', () {
+      final payload = {
+        "userId": "teach-456-abc",
+        "fullName": "Sarah Connor",
+        "email": "sarah@school.edu",
+        "phone": "+34600000000",
+        "role": "TEACHER",
+        "status": "ACTIVE",
+        "isProfileSetup": true,
+        "language": "ES",
+      };
+
+      final user = AuthUser.fromJson(payload);
+      expect(user.id, 'teach-456-abc');
+      expect(user.role, UserRole.teacher);
+      expect(user.role.isTeacher, isTrue);
+      expect(user.isActive, isTrue);
+      expect(user.isProfileSetup, isTrue);
+      expect(user.language, 'ES');
+    });
+
+    test(
+      'AppLanguage.fromCode resolves casing, prefixes, and full names reliably',
+      () {
+        expect(AppLanguage.fromCode('EN'), AppLanguage.english);
+        expect(AppLanguage.fromCode('en'), AppLanguage.english);
+        expect(AppLanguage.fromCode('en_US'), AppLanguage.english);
+        expect(AppLanguage.fromCode('English'), AppLanguage.english);
+
+        expect(AppLanguage.fromCode('ES'), AppLanguage.spanish);
+        expect(AppLanguage.fromCode('es'), AppLanguage.spanish);
+        expect(AppLanguage.fromCode('es-ES'), AppLanguage.spanish);
+        expect(AppLanguage.fromCode('Spanish'), AppLanguage.spanish);
+        expect(AppLanguage.fromCode('Español'), AppLanguage.spanish);
+
+        // Fallback for unknown
+        expect(AppLanguage.fromCode('xyz'), AppLanguage.english);
+        expect(AppLanguage.fromCode(''), AppLanguage.english);
+      },
+    );
   });
 }
+

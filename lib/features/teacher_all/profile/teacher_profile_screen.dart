@@ -92,7 +92,8 @@ class TeacherProfileScreen extends ConsumerWidget {
                 ),
                 child: ClipOval(
                   child: Image.network(
-                    'https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=500',
+                    profile.profileImagePath ??
+                        'https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=500',
                     fit: BoxFit.cover,
                     errorBuilder: (_, _, _) {
                       return Container(

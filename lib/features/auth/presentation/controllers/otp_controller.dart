@@ -50,25 +50,34 @@ class OtpController extends Notifier<OtpState> {
 
   @override
   OtpState build() {
-    _startTimer();
     ref.onDispose(() {
       _timer?.cancel();
+      _timer = null;
     });
-    return const OtpState();
+
+    _startCountdownTimer();
+
+    return const OtpState(timerSeconds: 59, canResend: false);
   }
 
-  void _startTimer() {
+  void _startCountdownTimer() {
     _timer?.cancel();
-    state = state.copyWith(timerSeconds: 59, canResend: false);
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (state.timerSeconds > 1) {
         state = state.copyWith(timerSeconds: state.timerSeconds - 1);
       } else {
-        _timer?.cancel();
+        timer.cancel();
         state = state.copyWith(timerSeconds: 0, canResend: true);
       }
     });
   }
+
+  void _startTimer() {
+    state = state.copyWith(timerSeconds: 59, canResend: false);
+    _startCountdownTimer();
+  }
+
+  void resetTimer() => _startTimer();
 
   void updateOtp(String code) {
     state = state.copyWith(otp: code, error: null);
@@ -78,16 +87,16 @@ class OtpController extends Notifier<OtpState> {
     if (!state.canResend || state.isResending) return;
     state = state.copyWith(isResending: true);
     try {
-      if (purpose == OtpPurpose.signup) {
-        await ref.read(authControllerProvider.notifier).resendOtp();
-      }
+      await ref
+          .read(authControllerProvider.notifier)
+          .resendOtp(email: target);
       _startTimer();
     } finally {
       state = state.copyWith(isResending: false);
     }
   }
 
-  Future<bool> verifyOtp(OtpPurpose purpose) async {
+  Future<bool> verifyOtp(OtpPurpose purpose, {String? email}) async {
     if (state.otp.trim().isEmpty) {
       state = state.copyWith(error: 'otp_required');
       return false;
@@ -97,7 +106,7 @@ class OtpController extends Notifier<OtpState> {
       if (purpose == OtpPurpose.signup) {
         final success = await ref
             .read(authControllerProvider.notifier)
-            .verifyOtp(otp: state.otp.trim());
+            .verifyOtp(otp: state.otp.trim(), email: email);
         state = state.copyWith(isVerifying: false);
         return success;
       } else {

@@ -20,6 +20,20 @@ abstract final class ApiConstants {
   static const String setupTeacherProfile = '/profile/setup/teacher';
 
   // ==============================
+  // Profile Endpoints
+  // ==============================
+  static const String parentProfile = '/profile/parent';
+  static const String teacherProfile = '/profile/teacher';
+
+  // ==============================
+  // Settings Endpoints
+  // ==============================
+  static const String settings = '/settings';
+  static const String changePassword = '/settings/password';
+  static const String updateLanguage = '/settings/language';
+  static const String updateNotification = '/settings/notification';
+
+  // ==============================
   // Media Endpoints
   // ==============================
   static const String media = '/media';

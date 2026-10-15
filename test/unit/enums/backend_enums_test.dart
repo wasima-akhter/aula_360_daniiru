@@ -347,6 +347,14 @@ void main() {
         equals(ApiErrorType.userSuspended),
       );
       expect(
+        ApiErrorType.fromString('ACCOUNT_INACTIVE'),
+        equals(ApiErrorType.accountInactive),
+      );
+      expect(
+        ApiErrorType.fromString('USER_INACTIVE'),
+        equals(ApiErrorType.userInactive),
+      );
+      expect(
         ApiErrorType.fromString('INVALID_OTP'),
         equals(ApiErrorType.invalidOtp),
       );

@@ -67,5 +67,48 @@ void main() {
       expect(state.otpPageToken, 'token_123');
       expect(state.isLoading, isFalse);
     });
+
+    test('LoginOutcome evaluates isSuccess correctly', () {
+      expect(LoginOutcome.authenticated.isSuccess, isTrue);
+      expect(LoginOutcome.profileSetupRequired.isSuccess, isTrue);
+      expect(LoginOutcome.otpVerificationRequired.isSuccess, isFalse);
+      expect(LoginOutcome.suspended.isSuccess, isFalse);
+      expect(LoginOutcome.error.isSuccess, isFalse);
+    });
+
+    test('AuthUser correctly reflects UserStatus', () {
+      const activeUser = AuthUser(
+        id: '1',
+        fullName: 'Active User',
+        email: 'active@test.com',
+        role: UserRole.parent,
+        status: UserStatus.active,
+      );
+      expect(activeUser.isActive, isTrue);
+      expect(activeUser.isInactive, isFalse);
+      expect(activeUser.isSuspended, isFalse);
+
+      const inactiveUser = AuthUser(
+        id: '2',
+        fullName: 'Inactive User',
+        email: 'inactive@test.com',
+        role: UserRole.parent,
+        status: UserStatus.inactive,
+      );
+      expect(inactiveUser.isActive, isFalse);
+      expect(inactiveUser.isInactive, isTrue);
+      expect(inactiveUser.isSuspended, isFalse);
+
+      const suspendedUser = AuthUser(
+        id: '3',
+        fullName: 'Suspended User',
+        email: 'suspended@test.com',
+        role: UserRole.teacher,
+        status: UserStatus.suspended,
+      );
+      expect(suspendedUser.isActive, isFalse);
+      expect(suspendedUser.isInactive, isFalse);
+      expect(suspendedUser.isSuspended, isTrue);
+    });
   });
 }

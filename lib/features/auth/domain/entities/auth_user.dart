@@ -6,6 +6,7 @@ class AuthUser {
   final String email;
   final String? phone;
   final UserRole role;
+  final UserStatus status;
   final bool isProfileSetup;
   final String? avatarUrl;
   final String? address;
@@ -14,6 +15,8 @@ class AuthUser {
   final String? department;
   final String? designation;
   final String? bio;
+  final String? language;
+  final String? profileCompletedAt;
 
   const AuthUser({
     required this.id,
@@ -21,6 +24,7 @@ class AuthUser {
     required this.email,
     this.phone,
     required this.role,
+    this.status = UserStatus.active,
     this.isProfileSetup = false,
     this.avatarUrl,
     this.address,
@@ -29,10 +33,16 @@ class AuthUser {
     this.department,
     this.designation,
     this.bio,
+    this.language,
+    this.profileCompletedAt,
   });
 
   // Backward compatibility alias for name
   String get name => fullName;
+
+  bool get isInactive => status == UserStatus.inactive;
+  bool get isSuspended => status == UserStatus.suspended;
+  bool get isActive => status == UserStatus.active;
 
   AuthUser copyWith({
     String? id,
@@ -40,6 +50,7 @@ class AuthUser {
     String? email,
     String? phone,
     UserRole? role,
+    UserStatus? status,
     bool? isProfileSetup,
     String? avatarUrl,
     String? address,
@@ -48,6 +59,8 @@ class AuthUser {
     String? department,
     String? designation,
     String? bio,
+    String? language,
+    String? profileCompletedAt,
   }) {
     return AuthUser(
       id: id ?? this.id,
@@ -55,6 +68,7 @@ class AuthUser {
       email: email ?? this.email,
       phone: phone ?? this.phone,
       role: role ?? this.role,
+      status: status ?? this.status,
       isProfileSetup: isProfileSetup ?? this.isProfileSetup,
       avatarUrl: avatarUrl ?? this.avatarUrl,
       address: address ?? this.address,
@@ -63,6 +77,8 @@ class AuthUser {
       department: department ?? this.department,
       designation: designation ?? this.designation,
       bio: bio ?? this.bio,
+      language: language ?? this.language,
+      profileCompletedAt: profileCompletedAt ?? this.profileCompletedAt,
     );
   }
 
@@ -73,6 +89,7 @@ class AuthUser {
       'email': email,
       'phone': phone,
       'role': role.isTeacher ? 'TEACHER' : 'PARENT',
+      'status': status.serializedName,
       'isProfileSetup': isProfileSetup,
       'avatarUrl': avatarUrl,
       'address': address,
@@ -81,19 +98,25 @@ class AuthUser {
       'department': department,
       'designation': designation,
       'bio': bio,
+      'language': language,
+      'profileCompletedAt': profileCompletedAt,
     };
   }
 
   factory AuthUser.fromJson(Map<String, dynamic> json) {
     final roleStr = (json['role'] as String? ?? '').toUpperCase();
     final role = roleStr == 'TEACHER' ? UserRole.teacher : UserRole.parent;
+    final statusStr = json['status'] as String?;
+    final status =
+        UserStatus.fromString(statusStr, fallback: UserStatus.active);
 
     return AuthUser(
-      id: json['id'] as String? ?? '',
+      id: json['id'] as String? ?? json['userId'] as String? ?? '',
       fullName: json['fullName'] as String? ?? json['name'] as String? ?? '',
       email: json['email'] as String? ?? '',
       phone: json['phone'] as String?,
       role: role,
+      status: status,
       isProfileSetup: json['isProfileSetup'] as bool? ?? false,
       avatarUrl: json['avatarUrl'] as String?,
       address: json['address'] as String?,
@@ -102,6 +125,8 @@ class AuthUser {
       department: json['department'] as String?,
       designation: json['designation'] as String?,
       bio: json['bio'] as String?,
+      language: json['language'] as String?,
+      profileCompletedAt: json['profileCompletedAt'] as String?,
     );
   }
 }

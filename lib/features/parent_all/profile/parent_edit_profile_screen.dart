@@ -452,36 +452,39 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
               .updateProfile(
                 name: nameController.text.trim(),
                 phone: phoneController.text.trim(),
-                email: emailController.text.trim(),
                 address: addressController.text.trim(),
                 language: language,
-                avatarUrl: _profileImage?.path,
+                avatarFile: _profileImage,
               );
 
-          if (language == 'English') {
-            ref
-                .read(languageProvider.notifier)
-                .changeLanguage(AppLanguage.english);
-          } else if (language == 'Español') {
-            ref
-                .read(languageProvider.notifier)
-                .changeLanguage(AppLanguage.spanish);
-          }
+          if (!mounted) return;
 
-          if (success && mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  ref.watchTr(AppStrings.profileUpdatedSuccess),
-                  style: TxtStyle.titleLarge(
-                    fontSize: 14.sp,
-                    color: Colors.white,
-                  ),
-                ),
-                behavior: SnackBarBehavior.floating,
-              ),
+          if (success) {
+            if (language == 'English') {
+              ref
+                  .read(languageProvider.notifier)
+                  .changeLanguage(AppLanguage.english);
+            } else if (language == 'Español') {
+              ref
+                  .read(languageProvider.notifier)
+                  .changeLanguage(AppLanguage.spanish);
+            }
+
+            ApiSnackbar.show(
+              ref.tr(AppStrings.profileUpdatedSuccess),
+              type: SnackbarType.success,
             );
             context.pop();
+          } else {
+            final errorMsg =
+                ref.read(parentProfileControllerProvider).userMessage;
+            if (errorMsg != null) {
+              ApiSnackbar.show(
+                errorMsg.displayMessage,
+                title: errorMsg.title,
+                type: SnackbarType.error,
+              );
+            }
           }
         },
       ),

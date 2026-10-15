@@ -10,4 +10,17 @@ class AuthSession {
     required this.user,
     this.otpPageToken,
   });
+
+  AuthSession copyWith({
+    String? accessToken,
+    AuthUser? user,
+    String? otpPageToken,
+  }) {
+    return AuthSession(
+      accessToken: accessToken ?? this.accessToken,
+      user: user ?? this.user,
+      otpPageToken: otpPageToken ?? this.otpPageToken,
+    );
+  }
 }
+

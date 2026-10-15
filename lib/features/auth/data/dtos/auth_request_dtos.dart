@@ -1,4 +1,3 @@
-
 import '../../../../utils/enum/app_enum.dart';
 
 class SignupRequestDto {

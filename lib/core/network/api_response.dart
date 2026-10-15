@@ -50,3 +50,12 @@ class ApiResponse<T> {
     };
   }
 }
+
+extension ApiResponseExtension<T> on ApiResponse<T> {
+  T get requireData {
+    if (!success || data == null) {
+      throw Exception(message);
+    }
+    return data!;
+  }
+}

@@ -1,8 +1,11 @@
+import 'package:flutter/foundation.dart';
+
 import '../../../../utils/enum/app_enum.dart';
 import '../../../share/export/screen_export.dart';
 import '../../../share/widgets/button/app_logo.dart';
 import '../../../share/widgets/button/custom_back_button.dart';
 import '../../../share/widgets/text_field/custom_text_field.dart';
+import '../../../../core/utils/formatters/app_input_formatters.dart';
 import '../../../../core/utils/validators.dart';
 import '../controllers/auth_controller.dart';
 import '../screens/active_otp_screen.dart';
@@ -23,6 +26,10 @@ class _TeacherSignUpScreenState extends ConsumerState<TeacherSignUpScreen> {
   bool _agreedToTerms = false;
   bool _obscurePassword = true;
 
+  final _phoneFormKey = GlobalKey<FormState>();
+
+  String _completePhoneNumber = '';
+
   @override
   void initState() {
     super.initState();
@@ -30,6 +37,14 @@ class _TeacherSignUpScreenState extends ConsumerState<TeacherSignUpScreen> {
     mobileController = TextEditingController();
     emailController = TextEditingController();
     passwordController = TextEditingController();
+
+    if (kDebugMode) {
+      emailController.text = "abc@yopmail.com";
+      passwordController.text = "123456abC!";
+      fullNameController.text = "abc teacher";
+      mobileController.text = "13137802";
+      _completePhoneNumber = "+3413137802";
+    }
   }
 
   @override
@@ -42,22 +57,43 @@ class _TeacherSignUpScreenState extends ConsumerState<TeacherSignUpScreen> {
   }
 
   Future<void> _createAccount() async {
+    final langCode =
+        ref.read(languageProvider).valueOrNull?.languageCode ?? 'en';
+
     if (!AulaValidation.required(
       value: fullNameController.text,
       fieldName: ref.tr(AppStrings.fieldFullName),
+      languageCode: langCode,
     )) {
       return;
     }
 
-    if (!AulaValidation.phone(mobileController.text)) {
+    var phoneToValidate = _completePhoneNumber.isNotEmpty
+        ? _completePhoneNumber
+        : mobileController.text.trim();
+
+    if (phoneToValidate.isNotEmpty && !phoneToValidate.startsWith('+')) {
+      phoneToValidate = '+34$phoneToValidate';
+    }
+
+    if (!AulaValidation.phone(
+      phoneToValidate,
+      languageCode: langCode,
+    )) {
       return;
     }
 
-    if (!AulaValidation.email(emailController.text)) {
+    if (!AulaValidation.email(
+      emailController.text,
+      languageCode: langCode,
+    )) {
       return;
     }
 
-    if (!AulaValidation.password(passwordController.text)) {
+    if (!AulaValidation.password(
+      passwordController.text,
+      languageCode: langCode,
+    )) {
       return;
     }
 
@@ -66,16 +102,19 @@ class _TeacherSignUpScreenState extends ConsumerState<TeacherSignUpScreen> {
         ref.tr(AppStrings.teacherTermsRequired),
         title: ref.tr(AppStrings.termsAndConditions),
         type: SnackbarType.error,
+        languageCode: langCode,
       );
       return;
     }
+
+    final sanitizedPhone = AulaValidation.sanitizePhone(phoneToValidate);
 
     final success = await ref
         .read(authControllerProvider.notifier)
         .signUp(
           fullName: fullNameController.text.trim(),
           email: emailController.text.trim(),
-          phone: mobileController.text.trim(),
+          phone: sanitizedPhone,
           password: passwordController.text.trim(),
           role: UserRole.teacher,
         );
@@ -93,17 +132,13 @@ class _TeacherSignUpScreenState extends ConsumerState<TeacherSignUpScreen> {
       );
     } else {
       final authState = ref.read(authControllerProvider);
-      if (authState.userMessage != null) {
-        ApiSnackbar.showUserMessage(authState.userMessage!);
-      } else {
-        final langCode =
-            ref.read(languageProvider).valueOrNull?.languageCode ?? 'en';
-        final resolved = AppErrorResolver.resolve(
-          authState.errorMessage,
-          languageCode: langCode,
-        );
-        ApiSnackbar.showUserMessage(resolved);
-      }
+      final currentLangCode =
+          ref.read(languageProvider).valueOrNull?.languageCode ?? 'en';
+      final resolved = AppErrorResolver.resolve(
+        authState.rawError ?? authState.userMessage ?? authState.errorMessage,
+        languageCode: currentLangCode,
+      );
+      ApiSnackbar.showUserMessage(resolved);
     }
   }
 
@@ -159,6 +194,7 @@ class _TeacherSignUpScreenState extends ConsumerState<TeacherSignUpScreen> {
                 label: tr(AppStrings.fieldFullName),
                 hint: tr(AppStrings.fieldFullNameHint),
                 icon: Icons.person_outline_rounded,
+                inputFormatters: AppInputFormatters.name,
               ),
 
               const SizedBox(height: 16),
@@ -169,6 +205,17 @@ class _TeacherSignUpScreenState extends ConsumerState<TeacherSignUpScreen> {
                 hint: tr(AppStrings.fieldMobileNumberHint),
                 icon: Icons.phone_outlined,
                 keyboardType: TextInputType.phone,
+                isPhoneField: true,
+                initialCountryCode: 'ES',
+                phoneFormKey: _phoneFormKey,
+                languageCode: ref.watch(languageProvider).valueOrNull?.languageCode,
+                onPhoneChanged: (completeNumber) {
+                  _completePhoneNumber = completeNumber;
+                },
+                phoneValidator: (value) {
+                  final langCode = ref.read(languageProvider).valueOrNull?.languageCode;
+                  return AulaValidation.validatePhone(value, languageCode: langCode);
+                },
               ),
 
               const SizedBox(height: 16),
@@ -186,9 +233,10 @@ class _TeacherSignUpScreenState extends ConsumerState<TeacherSignUpScreen> {
               AppTextField(
                 controller: passwordController,
                 label: tr(AppStrings.fieldPassword),
-                hint: tr(AppStrings.fieldPasswordHint),
+                hint: tr(AppStrings.fieldPasswordCreateHint),
                 icon: Icons.lock_outline_rounded,
                 obscureText: _obscurePassword,
+                helperText: tr(AppStrings.passwordHintText),
                 onTogglePassword: () {
                   setState(() => _obscurePassword = !_obscurePassword);
                 },

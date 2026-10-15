@@ -1,6 +1,10 @@
 import 'package:aula360/features/share/export/screen_export.dart';
 import 'package:aula360/features/share/widgets/align/custom_align_text.dart';
 import 'package:flutter/services.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
+
+import '../../../../core/utils/formatters/app_input_formatters.dart';
+import '../../../../core/utils/validators.dart';
 
 class CustomTextField extends StatefulWidget {
   const CustomTextField({
@@ -104,9 +108,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
               CustomAlignText(
                 text: widget.title ?? "",
                 maxLine: 1,
-                style: context.titleMedium.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+                style: context.titleLarge.copyWith(fontWeight: FontWeight.w600),
               ),
             TextFormField(
               onTap: widget.onTap,
@@ -186,6 +188,15 @@ class AppTextField extends StatelessWidget {
   final VoidCallback? onTogglePassword;
   final bool readOnly;
   final VoidCallback? onTap;
+  final String? helperText;
+  final List<TextInputFormatter>? inputFormatters;
+
+  final bool isPhoneField;
+  final String initialCountryCode;
+  final ValueChanged<String>? onPhoneChanged;
+  final String? Function(String?)? phoneValidator;
+  final GlobalKey<FormState>? phoneFormKey;
+  final String? languageCode;
 
   const AppTextField({
     super.key,
@@ -198,10 +209,33 @@ class AppTextField extends StatelessWidget {
     this.onTogglePassword,
     this.readOnly = false,
     this.onTap,
+    this.helperText,
+    this.inputFormatters,
+
+    this.isPhoneField = false,
+    this.initialCountryCode = 'ES',
+    this.onPhoneChanged,
+    this.phoneValidator,
+    this.phoneFormKey,
+    this.languageCode,
   });
 
   @override
   Widget build(BuildContext context) {
+    final effectiveLangCode = languageCode ?? AulaValidation.activeLanguageCode;
+    final isEs = effectiveLangCode.toLowerCase().startsWith('es');
+
+    List<TextInputFormatter>? effectiveFormatters = inputFormatters;
+    if (effectiveFormatters == null) {
+      if (keyboardType == TextInputType.emailAddress) {
+        effectiveFormatters = AppInputFormatters.email;
+      } else if (keyboardType == TextInputType.phone || isPhoneField) {
+        effectiveFormatters = AppInputFormatters.phone;
+      } else if (obscureText || onTogglePassword != null) {
+        effectiveFormatters = AppInputFormatters.password;
+      }
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -213,19 +247,150 @@ class AppTextField extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 7),
+
+        if (isPhoneField)
+          Form(
+            key: phoneFormKey,
+            child: IntlPhoneField(
+              controller: controller,
+              initialCountryCode: initialCountryCode,
+              languageCode: isEs ? 'es' : 'en',
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              keyboardType: TextInputType.phone,
+              textInputAction: TextInputAction.next,
+              inputFormatters: effectiveFormatters,
+              cursorColor: AppColors.primary,
+              style: context.titleMedium.copyWith(color: AppColors.text),
+              dropdownTextStyle: context.titleMedium.copyWith(
+                color: AppColors.text,
+              ),
+              onChanged: (phone) {
+                onPhoneChanged?.call(phone.completeNumber);
+              },
+              validator: (phone) {
+                if (phone == null || phone.number.trim().isEmpty) {
+                  return isEs
+                      ? 'Por favor, introduce tu número de teléfono.'
+                      : 'Please enter your phone number.';
+                }
+
+                if (phoneValidator != null) {
+                  return phoneValidator!(phone.completeNumber);
+                }
+
+                return null;
+              },
+              decoration: InputDecoration(
+                hintText: hint,
+                hintStyle: context.bodyMedium.copyWith(
+                  color: const Color(0xFFADB5C2),
+                ),
+                prefixIcon: Icon(
+                  icon,
+                  size: 17,
+                  color: const Color(0xFF718096),
+                ),
+                filled: true,
+                fillColor: Colors.white,
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 14,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(7),
+                  borderSide: const BorderSide(color: AppColors.border),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(7),
+                  borderSide: const BorderSide(color: AppColors.border),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(7),
+                  borderSide: const BorderSide(
+                    color: AppColors.primary,
+                    width: 1.2,
+                  ),
+                ),
+              ),
+            ),
+          )
+        else
+          TextField(
+            controller: controller,
+            obscureText: obscureText,
+            keyboardType: keyboardType,
+            readOnly: readOnly,
+            onTap: onTap,
+            inputFormatters: effectiveFormatters,
+            style: context.titleMedium.copyWith(color: AppColors.text),
+            decoration: InputDecoration(
+              hintText: hint,
+              hintStyle: context.bodyMedium.copyWith(
+                color: const Color(0xFFADB5C2),
+              ),
+              helperText: helperText,
+              helperMaxLines: 2,
+              helperStyle: context.bodySmall.copyWith(
+                color: AppColors.secondaryText,
+                fontSize: 11.5,
+              ),
+              prefixIcon: Icon(icon, size: 17, color: const Color(0xFF718096)),
+              suffixIcon: onTogglePassword == null
+                  ? null
+                  : IconButton(
+                      onPressed: onTogglePassword,
+                      icon: Icon(
+                        obscureText
+                            ? Icons.visibility_outlined
+                            : Icons.visibility_off_outlined,
+                        size: 18,
+                      ),
+                    ),
+              filled: true,
+              fillColor: readOnly ? const Color(0xFFF7F8FA) : Colors.white,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 14,
+                vertical: 14,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(7),
+                borderSide: const BorderSide(color: AppColors.border),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(7),
+                borderSide: const BorderSide(color: AppColors.border),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(7),
+                borderSide: const BorderSide(
+                  color: AppColors.primary,
+                  width: 1.2,
+                ),
+              ),
+            ),
+          ),
+
+        /*
         TextField(
           controller: controller,
           obscureText: obscureText,
           keyboardType: keyboardType,
           readOnly: readOnly,
           onTap: onTap,
-          style: context.titleMedium.copyWith(
+          inputFormatters: inputFormatters,
+          style: context.titleLarge.copyWith(
             fontSize: 14.5,
             color: AppColors.text,
           ),
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: context.bodyMedium.copyWith(color: Color(0xFFADB5C2)),
+            helperText: helperText,
+            helperMaxLines: 2,
+            helperStyle: context.bodySmall.copyWith(
+              color: AppColors.secondaryText,
+              fontSize: 11.5,
+            ),
             prefixIcon: Icon(icon, size: 17, color: const Color(0xFF718096)),
             suffixIcon: onTogglePassword == null
                 ? null
@@ -261,6 +426,7 @@ class AppTextField extends StatelessWidget {
             ),
           ),
         ),
+    */
       ],
     );
   }

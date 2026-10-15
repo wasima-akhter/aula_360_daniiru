@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 
 import '../enums/backend_enums.dart';
-import '../service/datasource/remote/api_exception.dart';
+import '../network/api_exception.dart';
 import 'app_failure.dart';
 
 /// ============================================================================
@@ -16,6 +16,8 @@ class UserFriendlyMessage {
   directive; // Directional / guidance message telling user what to do
   final ApiErrorType errorType;
   final String? traceId;
+  final List<String>? errors;
+  final dynamic rawSource;
 
   const UserFriendlyMessage({
     required this.title,
@@ -23,13 +25,15 @@ class UserFriendlyMessage {
     this.directive,
     this.errorType = ApiErrorType.unknown,
     this.traceId,
+    this.errors,
+    this.rawSource,
   });
 
   /// Single formatted message string with directive, ideal for Snackbars and alerts.
   String get displayMessage {
-    if (directive != null && directive!.isNotEmpty) {
-      return '$message $directive';
-    }
+    // if (directive != null && directive!.isNotEmpty) {
+    //   return '$message $directive';
+    // }
     return message;
   }
 
@@ -51,23 +55,39 @@ class AppErrorResolver {
     String? languageCode,
     String? fallbackDirective,
   }) {
+    final isSpanish = _isSpanish(languageCode);
+
     if (error == null) {
       return _buildMessage(
         type: ApiErrorType.unknown,
-        isSpanish: _isSpanish(languageCode),
+        isSpanish: isSpanish,
         customDirective: fallbackDirective,
       );
     }
 
     if (error is UserFriendlyMessage) {
+      if (languageCode != null) {
+        if (error.rawSource != null) {
+          return resolve(
+            error.rawSource,
+            languageCode: languageCode,
+            fallbackDirective: fallbackDirective ?? error.directive,
+          );
+        }
+        return _retranslateMessage(
+          error,
+          isSpanish: isSpanish,
+          customDirective: fallbackDirective,
+        );
+      }
       return error;
     }
 
     // 1. Backend response map or JSON-like structure
-    if (error is Map<String, dynamic>) {
+    if (error is Map) {
       return _fromBackendMap(
-        error,
-        isSpanish: _isSpanish(languageCode),
+        Map<String, dynamic>.from(error),
+        isSpanish: isSpanish,
         customDirective: fallbackDirective,
       );
     }
@@ -76,7 +96,7 @@ class AppErrorResolver {
     if (error is DioException) {
       return _fromDioException(
         error,
-        isSpanish: _isSpanish(languageCode),
+        isSpanish: isSpanish,
         customDirective: fallbackDirective,
       );
     }
@@ -85,7 +105,7 @@ class AppErrorResolver {
     if (error is ApiException) {
       return _fromApiException(
         error,
-        isSpanish: _isSpanish(languageCode),
+        isSpanish: isSpanish,
         customDirective: fallbackDirective,
       );
     }
@@ -94,7 +114,7 @@ class AppErrorResolver {
     if (error is AppFailure) {
       return _fromAppFailure(
         error,
-        isSpanish: _isSpanish(languageCode),
+        isSpanish: isSpanish,
         customDirective: fallbackDirective,
       );
     }
@@ -102,7 +122,7 @@ class AppErrorResolver {
     // 5. Raw string or general Exception
     return _fromString(
       error.toString(),
-      isSpanish: _isSpanish(languageCode),
+      isSpanish: isSpanish,
       customDirective: fallbackDirective,
     );
   }
@@ -120,6 +140,62 @@ class AppErrorResolver {
     final rawErrorType = data['errorType']?.toString();
     final rawMessage = data['message']?.toString();
     final traceId = data['traceId']?.toString();
+    final rawErrors = data['errors'];
+
+    // 1. Check if backend provided structured validation errors list or map
+    if (rawErrors != null) {
+      final parsedErrors = _parseRawErrors(rawErrors, isSpanish: isSpanish);
+      if (parsedErrors.isNotEmpty) {
+        final title = isSpanish ? 'Error de validación' : 'Validation Error';
+        final directive =
+            customDirective ??
+            (isSpanish
+                ? (parsedErrors.length > 1
+                      ? 'Por favor corrige los campos señalados e intenta de nuevo.'
+                      : 'Por favor corrige el campo señalado e intenta de nuevo.')
+                : (parsedErrors.length > 1
+                      ? 'Please correct the indicated fields and try again.'
+                      : 'Please correct the indicated field and try again.'));
+
+        final message = parsedErrors.length == 1
+            ? parsedErrors.first
+            : parsedErrors.map((e) => '• $e').join('\n');
+
+        return UserFriendlyMessage(
+          title: title,
+          message: message,
+          directive: directive,
+          errorType: ApiErrorType.validationError,
+          traceId: traceId,
+          errors: parsedErrors,
+          rawSource: data,
+        );
+      }
+    }
+
+    // 2. Check if message itself indicates request validation failure
+    if (rawMessage != null &&
+        (rawMessage.toLowerCase().contains('validation failed') ||
+            rawMessage.toLowerCase().contains('validation error'))) {
+      final title = isSpanish ? 'Error de validación' : 'Validation Error';
+      final message = isSpanish
+          ? 'Algunos campos obligatorios contienen datos inválidos o incompletos.'
+          : 'Some required fields are missing or contain invalid information.';
+      final directive =
+          customDirective ??
+          (isSpanish
+              ? 'Por favor revisa los campos señalados e intenta de nuevo.'
+              : 'Please review the highlighted fields and try again.');
+
+      return UserFriendlyMessage(
+        title: title,
+        message: message,
+        directive: directive,
+        errorType: ApiErrorType.validationError,
+        traceId: traceId,
+        rawSource: data,
+      );
+    }
 
     final errorType = ApiErrorType.fromString(rawErrorType);
 
@@ -130,12 +206,21 @@ class AppErrorResolver {
         ? _sanitizeMessage(rawMessage)
         : null;
 
-    return _buildMessage(
+    final msg = _buildMessage(
       type: errorType,
       isSpanish: isSpanish,
       customMessage: cleanMessage,
       customDirective: customDirective,
       traceId: traceId,
+    );
+
+    return UserFriendlyMessage(
+      title: msg.title,
+      message: msg.message,
+      directive: msg.directive,
+      errorType: msg.errorType,
+      traceId: msg.traceId,
+      rawSource: data,
     );
   }
 
@@ -145,9 +230,9 @@ class AppErrorResolver {
     String? customDirective,
   }) {
     final response = dioError.response;
-    if (response != null && response.data is Map<String, dynamic>) {
+    if (response != null && response.data is Map) {
       return _fromBackendMap(
-        response.data as Map<String, dynamic>,
+        Map<String, dynamic>.from(response.data as Map),
         isSpanish: isSpanish,
         customDirective: customDirective,
       );
@@ -227,9 +312,9 @@ class AppErrorResolver {
     required bool isSpanish,
     String? customDirective,
   }) {
-    if (apiException.data is Map<String, dynamic>) {
+    if (apiException.data is Map) {
       return _fromBackendMap(
-        apiException.data as Map<String, dynamic>,
+        Map<String, dynamic>.from(apiException.data as Map),
         isSpanish: isSpanish,
         customDirective: customDirective,
       );
@@ -247,6 +332,38 @@ class AppErrorResolver {
     required bool isSpanish,
     String? customDirective,
   }) {
+    if (failure is ValidationFailure) {
+      if (failure.errors != null) {
+        final parsedErrors = _parseRawErrors(
+          failure.errors,
+          isSpanish: isSpanish,
+        );
+        if (parsedErrors.isNotEmpty) {
+          final title = isSpanish ? 'Error de validación' : 'Validation Error';
+          final message = parsedErrors.length == 1
+              ? parsedErrors.first
+              : parsedErrors.map((e) => '• $e').join('\n');
+          final directive =
+              customDirective ??
+              (isSpanish
+                  ? 'Por favor corrige los campos señalados e intenta de nuevo.'
+                  : 'Please correct the indicated fields and try again.');
+          return UserFriendlyMessage(
+            title: title,
+            message: message,
+            directive: directive,
+            errorType: ApiErrorType.validationError,
+            errors: parsedErrors,
+            rawSource: failure,
+          );
+        }
+      }
+      return _buildMessage(
+        type: ApiErrorType.validationError,
+        isSpanish: isSpanish,
+        customDirective: customDirective,
+      );
+    }
     if (failure is UnauthorizedFailure) {
       return _buildMessage(
         type: ApiErrorType.unauthorized,
@@ -295,6 +412,50 @@ class AppErrorResolver {
     required bool isSpanish,
     String? customDirective,
   }) {
+    // Check for stringified errors list: {field: phone, message: Invalid phone number} or {"field": "phone", "message": "..."}
+    final fieldMessageRegex = RegExp(
+      r"""\{["']?field["']?:\s*["']?(\w+)["']?,\s*["']?message["']?:\s*["']?([^}"']+)["']?\}""",
+      caseSensitive: false,
+    );
+    final matches = fieldMessageRegex.allMatches(raw);
+    if (matches.isNotEmpty) {
+      final parsedErrors = <String>[];
+      for (final m in matches) {
+        final field = m.group(1);
+        final msg = m.group(2);
+        if (msg != null && msg.trim().isNotEmpty) {
+          parsedErrors.add(
+            _translateValidationError(msg.trim(), field, isSpanish: isSpanish),
+          );
+        }
+      }
+      if (parsedErrors.isNotEmpty) {
+        final title = isSpanish ? 'Error de validación' : 'Validation Error';
+        final directive =
+            customDirective ??
+            (isSpanish
+                ? (parsedErrors.length > 1
+                      ? 'Por favor corrige los campos señalados e intenta de nuevo.'
+                      : 'Por favor corrige el campo señalado e intenta de nuevo.')
+                : (parsedErrors.length > 1
+                      ? 'Please correct the indicated fields and try again.'
+                      : 'Please correct the indicated field and try again.'));
+
+        final message = parsedErrors.length == 1
+            ? parsedErrors.first
+            : parsedErrors.map((e) => '• $e').join('\n');
+
+        return UserFriendlyMessage(
+          title: title,
+          message: message,
+          directive: directive,
+          errorType: ApiErrorType.validationError,
+          errors: parsedErrors,
+          rawSource: raw,
+        );
+      }
+    }
+
     final lower = raw.toLowerCase();
 
     if (lower.contains('invalid_credentials') ||
@@ -384,6 +545,305 @@ class AppErrorResolver {
     );
   }
 
+  static List<String> _parseRawErrors(
+    dynamic rawErrors, {
+    required bool isSpanish,
+  }) {
+    final result = <String>[];
+
+    if (rawErrors is List) {
+      for (final item in rawErrors) {
+        if (item is Map) {
+          final field =
+              item['field']?.toString() ??
+              item['param']?.toString() ??
+              item['path']?.toString() ??
+              item['name']?.toString() ??
+              item['key']?.toString();
+          final msg =
+              item['message']?.toString() ??
+              item['msg']?.toString() ??
+              item['error']?.toString();
+          if (msg != null && msg.trim().isNotEmpty) {
+            result.add(
+              _translateValidationError(
+                msg.trim(),
+                field,
+                isSpanish: isSpanish,
+              ),
+            );
+          }
+        } else if (item is String && item.trim().isNotEmpty) {
+          result.add(
+            _translateValidationError(item.trim(), null, isSpanish: isSpanish),
+          );
+        }
+      }
+    } else if (rawErrors is Map) {
+      rawErrors.forEach((key, value) {
+        final field = key.toString();
+        if (value is List) {
+          for (final v in value) {
+            if (v != null && v.toString().trim().isNotEmpty) {
+              result.add(
+                _translateValidationError(
+                  v.toString().trim(),
+                  field,
+                  isSpanish: isSpanish,
+                ),
+              );
+            }
+          }
+        } else if (value != null && value.toString().trim().isNotEmpty) {
+          result.add(
+            _translateValidationError(
+              value.toString().trim(),
+              field,
+              isSpanish: isSpanish,
+            ),
+          );
+        }
+      });
+    }
+
+    return result;
+  }
+
+  static String _translateValidationError(
+    String rawMsg,
+    String? field, {
+    required bool isSpanish,
+  }) {
+    final lower = rawMsg.toLowerCase().trim();
+    final lowerField = field?.toLowerCase().trim() ?? '';
+
+    // Password validations
+    if (lower.contains('uppercase') || lower.contains('mayúscula')) {
+      return isSpanish
+          ? 'La contraseña debe contener al menos una letra mayúscula'
+          : 'Password must contain at least one uppercase letter';
+    }
+    if (lower.contains('lowercase') || lower.contains('minúscula')) {
+      return isSpanish
+          ? 'La contraseña debe contener al menos una letra minúscula'
+          : 'Password must contain at least one lowercase letter';
+    }
+    if (lower.contains('special character') ||
+        lower.contains('carácter especial') ||
+        lower.contains('caracter especial') ||
+        lower.contains('special char')) {
+      return isSpanish
+          ? 'La contraseña debe contener al menos un carácter especial'
+          : 'Password must contain at least one special character';
+    }
+    if ((lower.contains('number') ||
+            lower.contains('digit') ||
+            lower.contains('número') ||
+            lower.contains('numero')) &&
+        (lower.contains('password') || lowerField.contains('password'))) {
+      return isSpanish
+          ? 'La contraseña debe contener al menos un número'
+          : 'Password must contain at least one number';
+    }
+    if ((lower.contains('8 character') ||
+            lower.contains('at least 8') ||
+            lower.contains('min 8') ||
+            lower.contains('8 caracteres')) &&
+        (lower.contains('password') || lowerField.contains('password'))) {
+      return isSpanish
+          ? 'La contraseña debe tener al menos 8 caracteres'
+          : 'Password must be at least 8 characters';
+    }
+    if ((lower.contains('required') || lower.contains('obligatori')) &&
+        (lower.contains('password') || lowerField.contains('password'))) {
+      return isSpanish
+          ? 'La contraseña es obligatoria'
+          : 'Password is required';
+    }
+
+    // Phone validations
+    if ((lower.contains('phone') ||
+            lowerField.contains('phone') ||
+            lowerField.contains('mobile')) &&
+        (lower.contains('invalid') ||
+            lower.contains('no válido') ||
+            lower.contains('not valid') ||
+            lower.contains('inválido'))) {
+      return isSpanish
+          ? 'Número de teléfono no válido'
+          : 'Invalid phone number';
+    }
+    if ((lower.contains('phone') ||
+            lowerField.contains('phone') ||
+            lowerField.contains('mobile')) &&
+        (lower.contains('already exists') ||
+            lower.contains('already in use') ||
+            lower.contains('ya registrado') ||
+            lower.contains('ya existe'))) {
+      return isSpanish
+          ? 'Este número de teléfono ya está registrado en otra cuenta'
+          : 'This phone number is already registered to another account';
+    }
+    if ((lower.contains('phone') ||
+            lowerField.contains('phone') ||
+            lowerField.contains('mobile')) &&
+        (lower.contains('required') ||
+            lower.contains('obligatori') ||
+            lower.contains('empty'))) {
+      return isSpanish
+          ? 'El número de teléfono es obligatorio'
+          : 'Phone number is required';
+    }
+
+    // Email validations
+    if ((lower.contains('email') ||
+            lowerField.contains('email') ||
+            lower.contains('correo')) &&
+        (lower.contains('already exists') ||
+            lower.contains('already in use') ||
+            lower.contains('ya registrado') ||
+            lower.contains('ya existe'))) {
+      return isSpanish
+          ? 'Ya existe una cuenta vinculada a este correo electrónico'
+          : 'An account is already registered with this email address';
+    }
+    if ((lower.contains('email') ||
+            lowerField.contains('email') ||
+            lower.contains('correo')) &&
+        (lower.contains('invalid') ||
+            lower.contains('valid') ||
+            lower.contains('no válido') ||
+            lower.contains('inválido'))) {
+      return isSpanish
+          ? 'Introduce un correo electrónico válido'
+          : 'Please enter a valid email address';
+    }
+    if ((lower.contains('email') ||
+            lowerField.contains('email') ||
+            lower.contains('correo')) &&
+        (lower.contains('required') ||
+            lower.contains('obligatori') ||
+            lower.contains('empty'))) {
+      return isSpanish
+          ? 'El correo electrónico es obligatorio'
+          : 'Email is required';
+    }
+
+    // Name validations
+    if ((lower.contains('name') ||
+            lowerField.contains('name') ||
+            lower.contains('nombre')) &&
+        (lower.contains('required') ||
+            lower.contains('obligatori') ||
+            lower.contains('empty'))) {
+      return isSpanish
+          ? 'El nombre completo es obligatorio'
+          : 'Full name is required';
+    }
+
+    // Terms validation
+    if (lower.contains('term') ||
+        lower.contains('término') ||
+        lowerField.contains('term')) {
+      return isSpanish
+          ? 'Por favor acepta los Términos y Condiciones'
+          : 'Please agree to the Terms and Conditions';
+    }
+
+    // Generic fallback for field + required/invalid
+    if (isSpanish) {
+      if (lower.contains('required') ||
+          lower.contains('is required') ||
+          lower.contains('must not be empty')) {
+        final fieldNameEs = _translateFieldName(lowerField, isSpanish: true);
+        return '$fieldNameEs es obligatorio';
+      }
+      if (lower.contains('invalid') || lower.contains('is not valid')) {
+        final fieldNameEs = _translateFieldName(lowerField, isSpanish: true);
+        return '$fieldNameEs no es válido';
+      }
+      return rawMsg;
+    } else {
+      if (rawMsg.isNotEmpty) {
+        return rawMsg[0].toUpperCase() + rawMsg.substring(1);
+      }
+      return rawMsg;
+    }
+  }
+
+  static String _translateFieldName(String field, {required bool isSpanish}) {
+    switch (field.toLowerCase()) {
+      case 'phone':
+      case 'phonenumber':
+      case 'phone_number':
+      case 'mobile':
+        return isSpanish ? 'El número de teléfono' : 'Phone number';
+      case 'password':
+        return isSpanish ? 'La contraseña' : 'Password';
+      case 'email':
+      case 'emailaddress':
+      case 'email_address':
+        return isSpanish ? 'El correo electrónico' : 'Email';
+      case 'fullname':
+      case 'full_name':
+      case 'name':
+        return isSpanish ? 'El nombre completo' : 'Full name';
+      case 'role':
+        return isSpanish ? 'El rol' : 'Role';
+      default:
+        if (field.isEmpty) return isSpanish ? 'Este campo' : 'This field';
+        return field;
+    }
+  }
+
+  static UserFriendlyMessage _retranslateMessage(
+    UserFriendlyMessage original, {
+    required bool isSpanish,
+    String? customDirective,
+  }) {
+    if (original.errorType == ApiErrorType.validationError &&
+        original.errors != null &&
+        original.errors!.isNotEmpty) {
+      final retranslated = original.errors!
+          .map((e) => _translateValidationError(e, null, isSpanish: isSpanish))
+          .toList();
+      final title = isSpanish ? 'Error de validación' : 'Validation Error';
+      final directive =
+          customDirective ??
+          (isSpanish
+              ? (retranslated.length > 1
+                    ? 'Por favor corrige los campos señalados e intenta de nuevo.'
+                    : 'Por favor corrige el campo señalado e intenta de nuevo.')
+              : (retranslated.length > 1
+                    ? 'Please correct the indicated fields and try again.'
+                    : 'Please correct the indicated field and try again.'));
+      final message = retranslated.length == 1
+          ? retranslated.first
+          : retranslated.map((e) => '• $e').join('\n');
+
+      return UserFriendlyMessage(
+        title: title,
+        message: message,
+        directive: directive,
+        errorType: ApiErrorType.validationError,
+        traceId: original.traceId,
+        errors: retranslated,
+        rawSource: original.rawSource,
+      );
+    }
+
+    if (original.errorType != ApiErrorType.unknown) {
+      return _buildMessage(
+        type: original.errorType,
+        isSpanish: isSpanish,
+        customDirective: customDirective ?? original.directive,
+        traceId: original.traceId,
+      );
+    }
+
+    return original;
+  }
+
   static String? _sanitizeMessage(String? raw) {
     if (raw == null || raw.trim().isEmpty) return null;
     var cleaned = raw.trim();
@@ -453,6 +913,7 @@ class AppErrorResolver {
         );
 
       case ApiErrorType.userInactive:
+      case ApiErrorType.accountInactive:
         return UserFriendlyMessage(
           title: isSpanish ? 'Cuenta inactiva' : 'Account Inactive',
           message:
@@ -740,11 +1201,12 @@ class AppErrorResolver {
               (isSpanish
                   ? 'Ocurrió un problema inesperado al procesar tu solicitud.'
                   : 'Something unexpected occurred while processing your request.'),
-          directive:
-              customDirective ??
-              (isSpanish
-                  ? 'Por favor intenta de nuevo o contacta con el soporte si el problema persiste.'
-                  : 'Please try again or contact academy support if this continues.'),
+          directive: customDirective,
+
+          //  ??
+          // (isSpanish
+          //     ? 'Por favor intenta de nuevo o contacta con el soporte si el problema persiste.'
+          //     : 'Please try again or contact academy support if this continues.'),
           errorType: type,
           traceId: traceId,
         );

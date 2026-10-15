@@ -23,7 +23,7 @@ class CustomButtonExtra extends ConsumerWidget {
     this.borderWidth,
     this.borderRadius,
     this.isLoading = false,
-    this.loadingProvider,
+    this.loadingSelector,
     this.actionKey,
     this.showIcon = false,
     this.iconSize = 20,
@@ -48,7 +48,7 @@ class CustomButtonExtra extends ConsumerWidget {
   final double? borderWidth;
   final double? borderRadius;
   final bool isLoading;
-  final ProviderListenable<bool>? loadingProvider;
+  final bool Function(WidgetRef ref)? loadingSelector;
   final String? actionKey;
   final bool showIcon;
   final double iconSize;
@@ -61,17 +61,19 @@ class CustomButtonExtra extends ConsumerWidget {
     final isActionLoading = actionKey != null
         ? ref.watch(buttonActionLoadingProvider(actionKey!))
         : false;
-    final isProviderLoading = loadingProvider != null
-        ? ref.watch(loadingProvider!)
+    final isSelectorLoading = loadingSelector != null
+        ? loadingSelector!(ref)
         : false;
-    final effectiveLoading = isLoading || isActionLoading || isProviderLoading;
+    final effectiveLoading = isLoading || isActionLoading || isSelectorLoading;
 
     final VoidCallback? effectiveOnTap = (effectiveLoading || !enabled)
         ? null
         : () {
             if (onTapAsync != null) {
               final key = actionKey ?? title;
-              ref.read(buttonActionLoadingProvider(key).notifier).execute(onTapAsync!);
+              ref
+                  .read(buttonActionLoadingNotifierProvider.notifier)
+                  .execute(key, onTapAsync!);
             } else if (onTap != null) {
               onTap!();
             }
