@@ -271,7 +271,7 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<void> requestPasswordReset({required String email}) async {
-    await resendOtp(email: email);
+    await findUserForRecovery(email: email);
   }
 
   @override
@@ -279,9 +279,69 @@ class AuthRepositoryImpl implements AuthRepository {
     required String email,
     required String newPassword,
   }) async {
-    await _remoteDataSource.resetPassword(
-      email: email,
-      newPassword: newPassword,
+    await resetPasswordWithRecoveryToken(
+      password: newPassword,
+      confirmPassword: newPassword,
     );
+  }
+
+  @override
+  Future<RecoverUserData> findUserForRecovery({required String email}) async {
+    final userData = await _remoteDataSource.findUserForRecovery(email);
+    if (userData.token.isNotEmpty) {
+      await _storageService.savePasswordResetToken(userData.token);
+    }
+    return userData;
+  }
+
+  @override
+  Future<String> resendRecoveryOtp({String? recoveryToken}) async {
+    final token = recoveryToken ?? await _storageService.getPasswordResetToken();
+    if (token == null || token.isEmpty) {
+      throw ApiException(
+        message: 'Recovery session expired, please request OTP again',
+        statusCode: 401,
+        errorType: 'TOKEN_EXPIRED',
+      );
+    }
+    return _remoteDataSource.resendRecoveryOtp(recoveryToken: token);
+  }
+
+  @override
+  Future<bool> verifyRecoveryOtp({
+    required String otp,
+    String? recoveryToken,
+  }) async {
+    final token = recoveryToken ?? await _storageService.getPasswordResetToken();
+    if (token == null || token.isEmpty) {
+      throw ApiException(
+        message: 'Recovery session expired, please request OTP again',
+        statusCode: 401,
+        errorType: 'TOKEN_EXPIRED',
+      );
+    }
+    return _remoteDataSource.verifyRecoveryOtp(otp: otp, recoveryToken: token);
+  }
+
+  @override
+  Future<void> resetPasswordWithRecoveryToken({
+    required String password,
+    required String confirmPassword,
+    String? recoveryToken,
+  }) async {
+    final token = recoveryToken ?? await _storageService.getPasswordResetToken();
+    if (token == null || token.isEmpty) {
+      throw ApiException(
+        message: 'Recovery session expired, please request OTP again',
+        statusCode: 401,
+        errorType: 'TOKEN_EXPIRED',
+      );
+    }
+    await _remoteDataSource.resetPasswordWithRecoveryToken(
+      password: password,
+      confirmPassword: confirmPassword,
+      recoveryToken: token,
+    );
+    await _storageService.clearPasswordResetToken();
   }
 }

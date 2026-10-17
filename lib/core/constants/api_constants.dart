@@ -14,6 +14,14 @@ abstract final class ApiConstants {
   static const String resetPassword = '/auth/reset-password';
 
   // ==============================
+  // Password Recovery Endpoints (reset_password.txt)
+  // ==============================
+  static const String recoverFind = '/recover/find';
+  static const String recoverResend = '/recover/resend';
+  static const String recoverVerify = '/recover/verify';
+  static const String recoverReset = '/recover/reset';
+
+  // ==============================
   // Profile Setup Endpoints
   // ==============================
   static const String setupParentProfile = '/profile/setup/parent';

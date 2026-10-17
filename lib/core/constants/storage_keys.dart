@@ -4,6 +4,7 @@ abstract final class StorageKeys {
   // ==============================
   static const String accessToken = 'access_token';
   static const String otpPageToken = 'otp_page_token';
+  static const String passwordResetToken = 'password_reset_token';
   static const String refreshToken = 'refresh_token';
 
   // ==============================

@@ -460,6 +460,7 @@ class _EditTeacherProfileScreenState
           style: TxtStyle.titleLarge(color: AppColors.text, fontSize: 15.sp),
           decoration: _inputDecoration(icon: Icons.notes_outlined).copyWith(
             alignLabelWithHint: true,
+
             counterStyle: TextStyle(
               color: AppColors.hintTextColor,
               fontSize: 13.sp,
@@ -472,7 +473,10 @@ class _EditTeacherProfileScreenState
 
   InputDecoration _inputDecoration({required IconData icon}) {
     return InputDecoration(
-      prefixIcon: Icon(icon, size: 17.sp, color: AppColors.subtitleTextColor),
+      prefix: Padding(
+        padding: EdgeInsets.only(right: 12.w),
+        child: Icon(icon, size: 17.sp, color: AppColors.subtitleTextColor),
+      ),
       filled: true,
       fillColor: Colors.white,
       contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 13.h),
@@ -503,10 +507,10 @@ class _EditTeacherProfileScreenState
     return RichText(
       text: TextSpan(
         text: text,
-        style: TxtStyle.titleLarge(
-          color: AppColors.labelTextColor,
-          fontSize: 15.5.sp,
-          fontWeight: FontWeight.w700,
+        style: context.titleMedium.copyWith(
+          fontSize: 16.sp,
+          color: AppColors.text,
+          fontWeight: FontWeight.w600,
         ),
         children: [
           if (requiredField)

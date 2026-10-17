@@ -8,6 +8,7 @@ import '../../domain/entities/auth_session.dart';
 import '../../domain/entities/auth_user.dart';
 import '../dtos/auth_request_dtos.dart';
 import '../dtos/profile_setup_dtos.dart';
+import '../dtos/recovery_dtos.dart';
 
 abstract class AuthRemoteDataSource {
   Future<String> signup(SignupRequestDto request);
@@ -22,6 +23,26 @@ abstract class AuthRemoteDataSource {
   Future<void> resetPassword({
     required String email,
     required String newPassword,
+  });
+
+  /// Step 1: Find user by email for password recovery and request OTP.
+  /// Returns [RecoverUserData] containing the reset password page token.
+  Future<RecoverUserData> findUserForRecovery(String email);
+
+  /// Step 2 (Optional): Resend password recovery OTP using the reset password page token.
+  Future<String> resendRecoveryOtp({required String recoveryToken});
+
+  /// Step 2: Verify the 6-digit OTP code sent for password recovery.
+  Future<bool> verifyRecoveryOtp({
+    required String otp,
+    required String recoveryToken,
+  });
+
+  /// Step 3: Reset password using the reset password page token.
+  Future<void> resetPasswordWithRecoveryToken({
+    required String password,
+    required String confirmPassword,
+    required String recoveryToken,
   });
 
   Future<AuthSession> login(LoginRequestDto request);
@@ -149,6 +170,101 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         ApiConstants.resetPassword,
         data: {'email': email.trim(), 'newPassword': newPassword.trim()},
       );
+    } catch (e) {
+      _handleError(e, 'Failed to reset password');
+    }
+  }
+
+  @override
+  Future<RecoverUserData> findUserForRecovery(String email) async {
+    try {
+      final response = await _client.dio.post(
+        ApiConstants.recoverFind,
+        data: {'email': email.trim().toLowerCase()},
+      );
+
+      final data = response.data;
+      if (data is Map<String, dynamic>) {
+        final nestedData = data['data'];
+        if (nestedData is Map<String, dynamic>) {
+          return RecoverUserData.fromJson(nestedData);
+        }
+      }
+      return _handleResponseError(data, 'User with this email was not found');
+    } catch (e) {
+      _handleError(e, 'Failed to find user for recovery');
+    }
+  }
+
+  @override
+  Future<String> resendRecoveryOtp({required String recoveryToken}) async {
+    try {
+      final response = await _client.dio.post(
+        ApiConstants.recoverResend,
+        options: Options(
+          headers: {'Authorization': 'Bearer $recoveryToken'},
+        ),
+      );
+
+      final data = response.data;
+      if (data is Map<String, dynamic>) {
+        return data['message'] as String? ?? 'Recover user otp resend successful!';
+      }
+      return _handleResponseError(data, 'Failed to resend recovery OTP');
+    } catch (e) {
+      _handleError(e, 'Failed to resend recovery OTP');
+    }
+  }
+
+  @override
+  Future<bool> verifyRecoveryOtp({
+    required String otp,
+    required String recoveryToken,
+  }) async {
+    try {
+      final response = await _client.dio.post(
+        ApiConstants.recoverVerify,
+        data: {'otp': otp.trim()},
+        options: Options(
+          headers: {'Authorization': 'Bearer $recoveryToken'},
+        ),
+      );
+
+      final data = response.data;
+      if (data is Map<String, dynamic>) {
+        if (data['success'] == true) {
+          return true;
+        }
+      }
+      return _handleResponseError(data, 'Failed to verify recovery OTP');
+    } catch (e) {
+      _handleError(e, 'Failed to verify recovery OTP');
+    }
+  }
+
+  @override
+  Future<void> resetPasswordWithRecoveryToken({
+    required String password,
+    required String confirmPassword,
+    required String recoveryToken,
+  }) async {
+    try {
+      final response = await _client.dio.post(
+        ApiConstants.recoverReset,
+        data: {
+          'password': password.trim(),
+          'confirmPassword': confirmPassword.trim(),
+        },
+        options: Options(
+          headers: {'Authorization': 'Bearer $recoveryToken'},
+        ),
+      );
+
+      final data = response.data;
+      if (data is Map<String, dynamic> && data['success'] == true) {
+        return;
+      }
+      _handleResponseError(data, 'Failed to reset password');
     } catch (e) {
       _handleError(e, 'Failed to reset password');
     }

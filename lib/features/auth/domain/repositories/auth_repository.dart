@@ -1,11 +1,13 @@
 import '../../../../utils/enum/app_enum.dart';
 import '../../data/dtos/profile_setup_dtos.dart';
+import '../../data/dtos/recovery_dtos.dart';
 import '../entities/auth_session.dart';
 import '../entities/auth_user.dart';
 
 export '../../../../utils/enum/app_enum.dart';
 export '../../data/dtos/auth_request_dtos.dart';
 export '../../data/dtos/profile_setup_dtos.dart';
+export '../../data/dtos/recovery_dtos.dart';
 export '../entities/auth_session.dart';
 export '../entities/auth_user.dart';
 
@@ -61,5 +63,24 @@ abstract class AuthRepository {
   Future<void> resetPassword({
     required String email,
     required String newPassword,
+  });
+
+  /// Step 1: Find user by email for password recovery, requests OTP, and returns [RecoverUserData].
+  Future<RecoverUserData> findUserForRecovery({required String email});
+
+  /// Step 2 (Optional): Resends recovery OTP using the reset password page token.
+  Future<String> resendRecoveryOtp({String? recoveryToken});
+
+  /// Step 2: Verifies 6-digit recovery OTP using the reset password page token.
+  Future<bool> verifyRecoveryOtp({
+    required String otp,
+    String? recoveryToken,
+  });
+
+  /// Step 3: Resets password using the reset password page token.
+  Future<void> resetPasswordWithRecoveryToken({
+    required String password,
+    required String confirmPassword,
+    String? recoveryToken,
   });
 }

@@ -7,6 +7,7 @@ import 'package:aula360/core/storage/storage_service.dart';
 import 'package:aula360/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:aula360/features/auth/data/dtos/auth_request_dtos.dart';
 import 'package:aula360/features/auth/data/dtos/profile_setup_dtos.dart';
+import 'package:aula360/features/auth/data/dtos/recovery_dtos.dart';
 import 'package:aula360/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:aula360/features/auth/domain/entities/auth_session.dart';
 import 'package:aula360/features/auth/domain/entities/auth_user.dart';
@@ -70,6 +71,23 @@ class FakeRemoteDataSource implements AuthRemoteDataSource {
 
   @override
   Future<void> resetPassword({required String email, required String newPassword}) => throw UnimplementedError();
+
+  @override
+  Future<RecoverUserData> findUserForRecovery(String email) => throw UnimplementedError();
+
+  @override
+  Future<String> resendRecoveryOtp({required String recoveryToken}) => throw UnimplementedError();
+
+  @override
+  Future<bool> verifyRecoveryOtp({required String otp, required String recoveryToken}) => throw UnimplementedError();
+
+  @override
+  Future<void> resetPasswordWithRecoveryToken({
+    required String password,
+    required String confirmPassword,
+    required String recoveryToken,
+  }) =>
+      throw UnimplementedError();
 
   @override
   Future<AuthUser> setupParentProfile(ParentProfileSetupDto dto) => throw UnimplementedError();

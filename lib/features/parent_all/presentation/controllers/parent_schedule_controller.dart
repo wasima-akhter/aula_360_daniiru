@@ -12,7 +12,7 @@ class ParentScheduleState {
 
   const ParentScheduleState({
     this.classes = const [],
-    this.selectedDayIndex = 0,
+    this.selectedDayIndex = 2,
     this.selectedChildIndex = 0,
     this.isLoading = false,
     this.error,
@@ -46,8 +46,8 @@ class ParentScheduleController extends Notifier<ParentScheduleState> {
   @override
   ParentScheduleState build() {
     _repository = ref.watch(parentRepositoryProvider);
-    Future.microtask(() => loadSchedule(0));
-    return const ParentScheduleState(isLoading: true);
+    Future.microtask(() => loadSchedule(2));
+    return const ParentScheduleState(isLoading: true, selectedDayIndex: 2);
   }
 
   Future<void> loadSchedule(int dayIndex) async {

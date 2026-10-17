@@ -169,6 +169,8 @@ class AppStrings {
   static const String otpRequiredTitle = 'otp_required_title';
   static const String otpRequiredMessage = 'otp_required_message';
   static const String otpResendSuccess = 'otp_resend_success';
+  static const String otpSentSuccess = 'otp_sent_success';
+  static const String recoverySessionExpired = 'recovery_session_expired';
 
   // ── Settings (Teacher & Parent) ───────────────────────────────────────────
   static const String settingsTitle = 'settings_title';
@@ -380,6 +382,14 @@ class AppStrings {
   static const String duration = 'duration';
   static const String participation = 'participation';
   static const String downloadReport = 'download_report';
+  static const String downloadingReport = 'downloading_report';
+  static const String previewReport = 'preview_report';
+  static const String reportDownloadedSuccess = 'report_downloaded_success';
+  static const String subjectLabel = 'subject_label';
+  static const String teacherLabel = 'teacher_label';
+  static const String searchReportsHint = 'search_reports_hint';
+  static const String noReportsMatchSearch = 'no_reports_match_search';
+  static const String shareReport = 'share_report';
   static const String homeworkTitle = 'homework_title';
   static const String allTab = 'all_tab';
   static const String pendingTab = 'pending_tab';
@@ -422,6 +432,10 @@ class AppStrings {
   static const String paidAndSettled = 'paid_and_settled';
   static const String paymentReceiptTitle = 'payment_receipt_title';
   static const String downloadReceiptPdf = 'download_receipt_pdf';
+  static const String downloadingReceipt = 'downloading_receipt';
+  static const String previewReceipt = 'preview_receipt';
+  static const String receiptDownloadedSuccess = 'receipt_downloaded_success';
+  static const String openPdf = 'open_pdf';
   static const String receiptEmailSentNotice = 'receipt_email_sent_notice';
   static const String finishBtn = 'finish_btn';
   static const String periodLabel = 'period_label';

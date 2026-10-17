@@ -7,6 +7,7 @@ import '../../helper/teacher_models.dart';
 class TeacherReportsState {
   final List<TeacherReport> reports;
   final ReportFilter selectedFilter;
+  final String searchQuery;
   final bool isSubmitting;
   final bool isLoading;
   final String? error;
@@ -14,33 +15,66 @@ class TeacherReportsState {
   const TeacherReportsState({
     this.reports = const [],
     this.selectedFilter = ReportFilter.all,
+    this.searchQuery = '',
     this.isSubmitting = false,
     this.isLoading = false,
     this.error,
   });
 
   List<TeacherReport> get filteredReports {
+    List<TeacherReport> baseList;
     switch (selectedFilter) {
       case ReportFilter.all:
-        return reports;
+        baseList = reports;
+        break;
       case ReportFilter.groupA:
-        return reports
+        baseList = reports
             .where((report) => report.group == StudentGroup.groupA)
             .toList();
+        break;
       case ReportFilter.groupB:
-        return reports
+        baseList = reports
             .where((report) => report.group == StudentGroup.groupB)
             .toList();
+        break;
       case ReportFilter.oneOnOne:
-        return reports
+        baseList = reports
             .where((report) => report.category == ReportCategory.studentReport)
             .toList();
+        break;
     }
+
+    final query = searchQuery.trim().toLowerCase();
+    if (query.isEmpty) {
+      return baseList;
+    }
+
+    return baseList.where((report) {
+      final titleMatch = report.title.toLowerCase().contains(query);
+      final subtitleMatch = report.subtitle.toLowerCase().contains(query);
+      final studentMatch =
+          report.studentName?.toLowerCase().contains(query) ?? false;
+      final studentIdMatch =
+          report.studentId?.toLowerCase().contains(query) ?? false;
+      final roomMatch = report.room?.toLowerCase().contains(query) ?? false;
+      final gradeMatch = report.grade?.toLowerCase().contains(query) ?? false;
+      final groupMatch = report.group.name.toLowerCase().contains(query);
+      final dateMatch = report.date.toLowerCase().contains(query);
+      return titleMatch ||
+          subtitleMatch ||
+          studentMatch ||
+          studentIdMatch ||
+          roomMatch ||
+          gradeMatch ||
+          groupMatch ||
+          dateMatch;
+    }).toList();
   }
 
   TeacherReportsState copyWith({
     List<TeacherReport>? reports,
     ReportFilter? selectedFilter,
+    String? searchQuery,
     bool? isSubmitting,
     bool? isLoading,
     String? error,
@@ -48,6 +82,7 @@ class TeacherReportsState {
     return TeacherReportsState(
       reports: reports ?? this.reports,
       selectedFilter: selectedFilter ?? this.selectedFilter,
+      searchQuery: searchQuery ?? this.searchQuery,
       isSubmitting: isSubmitting ?? this.isSubmitting,
       isLoading: isLoading ?? this.isLoading,
       error: error,
@@ -81,6 +116,14 @@ class TeacherReportsController extends Notifier<TeacherReportsState> {
 
   void selectFilter(ReportFilter filter) {
     state = state.copyWith(selectedFilter: filter);
+  }
+
+  void setSearchQuery(String query) {
+    state = state.copyWith(searchQuery: query);
+  }
+
+  void clearSearch() {
+    state = state.copyWith(searchQuery: '');
   }
 
   Future<bool> submitNewReport(TeacherReport report) async {

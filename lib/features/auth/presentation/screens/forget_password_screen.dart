@@ -43,16 +43,16 @@ class _ForgetPasswordScreenState extends ConsumerState<ForgetPasswordScreen> {
       return;
     }
 
-    final success = await ref
+    final userData = await ref
         .read(passwordRecoveryControllerProvider.notifier)
         .sendRecoveryEmail(emailController.text.trim());
 
     if (!mounted) return;
 
-    if (success) {
+    if (userData != null) {
       final tr = ref.readTr;
       ApiSnackbar.show(
-        tr(AppStrings.otpResendSuccess),
+        tr(AppStrings.otpSentSuccess),
         type: SnackbarType.success,
       );
 
@@ -62,6 +62,7 @@ class _ForgetPasswordScreenState extends ConsumerState<ForgetPasswordScreen> {
           email: emailController.text.trim(),
           purpose: OtpPurpose.forgotPassword,
           role: widget.args.role,
+          recoveryToken: userData.token,
         ),
       );
     } else {

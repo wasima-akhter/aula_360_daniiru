@@ -53,30 +53,42 @@ class _ClassDetailsScreenState extends ConsumerState<ClassDetailsScreen> {
                             children: [
                               Row(
                                 children: [
-                                  Text(
-                                    'Lucas Rivera',
-                                    style: TxtStyle.titleLarge(
-                                      color: AppColors.text,
-                                      fontSize: 18.sp,
-                                      fontWeight: FontWeight.w800,
+                                  Flexible(
+                                    child: Text(
+                                      'Lucas Rivera',
+
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TxtStyle.titleLarge(
+                                        color: AppColors.text,
+                                        fontSize: 18.sp,
+                                        fontWeight: FontWeight.w800,
+                                      ),
                                     ),
                                   ),
                                   SizedBox(width: 7.w),
-                                  Container(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 6.w,
-                                      vertical: 3.h,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFFE8EDFF),
-                                      borderRadius: BorderRadius.circular(5.r),
-                                    ),
-                                    child: Text(
-                                      ref.watchTr(AppStrings.eso2),
-                                      style: TxtStyle.titleLarge(
-                                        color: AppColors.primary,
-                                        fontSize: 13.5.sp,
-                                        fontWeight: FontWeight.w700,
+                                  Flexible(
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 6.w,
+                                        vertical: 3.h,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFFE8EDFF),
+                                        borderRadius: BorderRadius.circular(
+                                          5.r,
+                                        ),
+                                      ),
+                                      child: Text(
+                                        ref.watchTr(AppStrings.eso2),
+
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TxtStyle.titleLarge(
+                                          color: AppColors.primary,
+                                          fontSize: 13.5.sp,
+                                          fontWeight: FontWeight.w700,
+                                        ),
                                       ),
                                     ),
                                   ),

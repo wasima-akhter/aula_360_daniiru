@@ -57,16 +57,16 @@ class TeacherProfileScreen extends ConsumerWidget {
                         fontSize: 15.sp,
                       ),
                     ),
-                    if (hasId) ...[
-                      SizedBox(height: 4.h),
-                      Text(
-                        idText,
-                        style: TxtStyle.titleLarge(
-                          color: AppColors.hintTextColor,
-                          fontSize: 14.5.sp,
-                        ),
-                      ),
-                    ],
+                    // if (hasId) ...[
+                    //   SizedBox(height: 4.h),
+                    //   Text(
+                    //     idText,
+                    //     style: TxtStyle.titleLarge(
+                    //       color: AppColors.hintTextColor,
+                    //       fontSize: 14.5.sp,
+                    //     ),
+                    //   ),
+                    // ],
                   ],
                 ),
               ),

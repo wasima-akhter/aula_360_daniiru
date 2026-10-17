@@ -52,42 +52,52 @@ class TeacherInformationScreen extends ConsumerWidget {
   Widget _studentHeader(WidgetRef ref) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 2.w),
-      child: Row(
+      child: Column(
         children: [
-          Text(
-            'Lucas Rivera',
-            style: TxtStyle.titleLarge(
-              color: const Color(0xFF123579),
-              fontSize: 15.sp,
-              fontWeight: FontWeight.w700,
-            ),
+          Row(
+            children: [
+              Text(
+                'Lucas Rivera',
+                style: TxtStyle.titleLarge(
+                  color: const Color(0xFF123579),
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+
+              const Spacer(),
+              Container(
+                width: 6.w,
+                height: 6.w,
+                decoration: const BoxDecoration(
+                  color: Color(0xFF24B47E),
+                  shape: BoxShape.circle,
+                ),
+              ),
+              SizedBox(width: 5.w),
+              Text(
+                ref.watchTr(AppStrings.active),
+                style: TxtStyle.titleLarge(
+                  color: const Color(0xFF20A779),
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
           ),
-          _dot(),
-          Text(
-            '${ref.watchTr(AppStrings.eso2)}, ${ref.watchTr(AppStrings.aula3)}',
-            style: TxtStyle.titleLarge(
-              color: const Color(0xFF667085),
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const Spacer(),
-          Container(
-            width: 6.w,
-            height: 6.w,
-            decoration: const BoxDecoration(
-              color: Color(0xFF24B47E),
-              shape: BoxShape.circle,
-            ),
-          ),
-          SizedBox(width: 5.w),
-          Text(
-            ref.watchTr(AppStrings.active),
-            style: TxtStyle.titleLarge(
-              color: const Color(0xFF20A779),
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w700,
-            ),
+          Gap(12.h),
+          Row(
+            children: [
+              _dot(),
+              Text(
+                '${ref.watchTr(AppStrings.eso2)}, ${ref.watchTr(AppStrings.aula3)}',
+                style: TxtStyle.titleLarge(
+                  color: const Color(0xFF667085),
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
           ),
         ],
       ),

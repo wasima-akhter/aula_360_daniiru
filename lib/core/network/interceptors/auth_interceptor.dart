@@ -35,6 +35,18 @@ class AuthInterceptor extends Interceptor {
       return;
     }
 
+    // Password Recovery endpoints (resend, verify, reset)
+    if (options.path.contains(ApiConstants.recoverResend) ||
+        options.path.contains(ApiConstants.recoverVerify) ||
+        options.path.contains(ApiConstants.recoverReset)) {
+      final resetToken = await _storageService.getPasswordResetToken();
+      if (resetToken != null && resetToken.isNotEmpty) {
+        options.headers['Authorization'] = 'Bearer $resetToken';
+      }
+      handler.next(options);
+      return;
+    }
+
     // Public endpoints that don't need authentication
     if (_isPublicEndpoint(options.path)) {
       handler.next(options);
@@ -56,6 +68,7 @@ class AuthInterceptor extends Interceptor {
       ApiConstants.login,
       ApiConstants.forgotPassword,
       ApiConstants.resetPassword,
+      ApiConstants.recoverFind,
     };
 
     return publicEndpoints.any((endpoint) => path.endsWith(endpoint));

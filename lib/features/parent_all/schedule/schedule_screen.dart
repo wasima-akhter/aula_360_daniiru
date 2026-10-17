@@ -8,17 +8,23 @@ import '../presentation/controllers/parent_schedule_controller.dart';
 class ScheduleScreen extends ConsumerWidget {
   const ScheduleScreen({super.key});
 
-  static List<Map<String, String>> _getWeekDays(String langCode) {
+  static const int _centerDayIndex = 2;
+
+  static List<Map<String, String>> _getCenteredDays(String langCode) {
     final now = DateTime.now();
-    final monday = now.subtract(Duration(days: now.weekday - 1));
     final formatter = DateFormat.E(langCode);
     return List.generate(5, (index) {
-      final d = monday.add(Duration(days: index));
+      // index 2 is centered on today (offset 0)
+      final d = now.add(Duration(days: index - _centerDayIndex));
       final rawDay = formatter.format(d);
       final dayLabel = rawDay.isNotEmpty
           ? rawDay[0].toUpperCase() + rawDay.substring(1).replaceAll('.', '')
           : rawDay;
-      return {'day': dayLabel, 'date': d.day.toString()};
+      return {
+        'day': dayLabel,
+        'date': d.day.toString(),
+        'fullDate': d.toIso8601String(),
+      };
     });
   }
 
@@ -47,12 +53,11 @@ class ScheduleScreen extends ConsumerWidget {
 
     final langCode =
         ref.watch(languageProvider).valueOrNull?.language.code ?? 'en';
-    final days = _getWeekDays(langCode);
+    final days = _getCenteredDays(langCode);
     final now = DateTime.now();
-    final monday = now.subtract(Duration(days: now.weekday - 1));
-    final selectedDayDate = monday.add(
-      Duration(days: scheduleState.selectedDayIndex.clamp(0, 4)),
-    );
+    final selectedIndex =
+        scheduleState.selectedDayIndex.clamp(0, days.length - 1);
+    final selectedDayDate = DateTime.parse(days[selectedIndex]['fullDate']!);
     final isSelectedDayToday =
         selectedDayDate.day == now.day &&
         selectedDayDate.month == now.month &&
@@ -404,7 +409,7 @@ class ScheduleScreen extends ConsumerWidget {
                   size: 31,
                 ),
                 SizedBox(width: 8.w),
-                Expanded(
+                Flexible(
                   child: Text(
                     classData.teacher,
                     style: TxtStyle.titleLarge(
@@ -414,17 +419,42 @@ class ScheduleScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
-                Icon(
-                  Icons.location_on_outlined,
-                  size: 15.sp,
-                  color: AppColors.secondaryText,
-                ),
-                SizedBox(width: 3.w),
-                Text(
-                  '${classData.room} • ${classData.building}',
-                  style: TxtStyle.titleLarge(
-                    color: AppColors.secondaryText,
-                    fontSize: 13.5.sp,
+
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Icon(
+                            Icons.location_on_outlined,
+                            size: 15.sp,
+                            color: AppColors.secondaryText,
+                          ),
+                          SizedBox(width: 3.w),
+                          Flexible(
+                            child: Text(
+                              classData.room,
+                              textAlign: TextAlign.end,
+                              style: TxtStyle.titleLarge(
+                                color: AppColors.secondaryText,
+                                fontSize: 13.5.sp,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Text(
+                        classData.building,
+                        textAlign: TextAlign.end,
+                        style: TxtStyle.titleLarge(
+                          color: AppColors.secondaryText,
+                          fontSize: 13.5.sp,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -469,33 +499,46 @@ class ScheduleScreen extends ConsumerWidget {
           SizedBox(height: 12.h),
 
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Icon(
-                Icons.person_outline_rounded,
-                size: 16.sp,
-                color: AppColors.secondaryText,
-              ),
-              SizedBox(width: 5.w),
-              Text(
-                classData.teacher,
-                style: TxtStyle.titleLarge(
-                  color: AppColors.secondaryText,
-                  fontSize: 14.5.sp,
+              Flexible(
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.person_outline_rounded,
+                      size: 16.sp,
+                      color: AppColors.secondaryText,
+                    ),
+                    SizedBox(width: 5.w),
+                    Flexible(
+                      child: Text(
+                        classData.teacher,
+                        style: TxtStyle.titleLarge(
+                          color: AppColors.secondaryText,
+                          fontSize: 14.5.sp,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const Spacer(),
-              Icon(
-                Icons.location_on_outlined,
-                size: 15.sp,
-                color: AppColors.secondaryText,
-              ),
-              SizedBox(width: 4.w),
-              Text(
-                classData.room,
-                style: TxtStyle.titleLarge(
-                  color: AppColors.secondaryText,
-                  fontSize: 13.5.sp,
-                ),
+              Gap(12.w),
+              Row(
+                children: [
+                  Icon(
+                    Icons.location_on_outlined,
+                    size: 15.sp,
+                    color: AppColors.secondaryText,
+                  ),
+                  SizedBox(width: 4.w),
+                  Text(
+                    classData.room,
+                    style: TxtStyle.titleLarge(
+                      color: AppColors.secondaryText,
+                      fontSize: 13.5.sp,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -504,12 +547,18 @@ class ScheduleScreen extends ConsumerWidget {
 
           Align(
             alignment: Alignment.centerRight,
-            child: Text(
-              '${ref.watchTr(AppStrings.classReportAction)} →',
-              style: TxtStyle.titleLarge(
-                color: AppColors.primary,
-                fontSize: 14.5.sp,
-                fontWeight: FontWeight.w700,
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                ref.read(navigationProvider.notifier).goToParentReports();
+              },
+              child: Text(
+                ref.watchTr(AppStrings.classReportAction),
+                style: TxtStyle.titleLarge(
+                  color: AppColors.primary,
+                  fontSize: 14.5.sp,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
           ),

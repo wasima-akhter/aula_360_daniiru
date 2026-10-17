@@ -4,6 +4,12 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 
+import 'receipt_pdf_builder.dart';
+import 'report_pdf_builder.dart';
+import '../../features/parent_all/domain/models/parent_models.dart';
+import '../../features/teacher_all/helper/teacher_enums.dart';
+import '../../features/teacher_all/helper/teacher_models.dart';
+
 sealed class DownloadResult {
   const DownloadResult();
 }
@@ -32,26 +38,262 @@ class FileDownloadService {
 
   FileDownloadService(this._dio);
 
-  /// Returns the dedicated `aula` storage directory for the current platform.
-  Future<Directory> getAulaDirectory() async {
+  /// Returns the dedicated `Aula360` storage directory in phone memory for the current platform.
+  Future<Directory> getAulaDirectory({String folderName = 'Aula360'}) async {
     Directory baseDir;
     if (Platform.isAndroid) {
-      // Prefer application documents or app-specific external storage
+      // 1. Try public downloads folder first if accessible
+      try {
+        final publicDownload = Directory(
+          '/storage/emulated/0/Download/$folderName',
+        );
+        if (await publicDownload.exists()) {
+          return publicDownload;
+        }
+        await publicDownload.create(recursive: true);
+        if (await publicDownload.exists()) {
+          return publicDownload;
+        }
+      } catch (_) {}
+
+      // 2. Fall back to application external storage or documents
       final externalDir = await getExternalStorageDirectory();
       baseDir = externalDir ?? await getApplicationDocumentsDirectory();
     } else {
-      // iOS: Application documents directory
+      // iOS / other: Application documents directory in phone memory
       baseDir = await getApplicationDocumentsDirectory();
     }
 
-    final aulaDir = Directory('${baseDir.path}/aula');
+    final aulaDir = Directory('${baseDir.path}/$folderName');
     if (!await aulaDir.exists()) {
       await aulaDir.create(recursive: true);
     }
     return aulaDir;
   }
 
-  /// Downloads a file from [url] into the dedicated `aula` folder.
+  /// Alias for clarity
+  Future<Directory> getAula360Directory() => getAulaDirectory();
+
+  /// Downloads or generates an official receipt PDF into the dedicated `Aula360` folder.
+  /// Reports progress via [onProgress] (receivedBytes, totalBytes).
+  Future<DownloadResult> downloadReceipt({
+    String? url,
+    required String invoiceNumber,
+    required String studentName,
+    required String studentDetails,
+    required String period,
+    required String date,
+    required String paymentMethod,
+    required String amount,
+    required String status,
+    void Function(int received, int total)? onProgress,
+    CancelToken? cancelToken,
+  }) async {
+    // If a remote URL is provided, download directly via Dio
+    if (url != null && url.trim().isNotEmpty && url.startsWith('http')) {
+      final safeInvoice = _sanitizeFileName(invoiceNumber.replaceAll('#', ''));
+      return downloadFile(
+        url: url,
+        customFileName: 'Recibo_$safeInvoice.pdf',
+        onProgress: onProgress,
+        cancelToken: cancelToken,
+      );
+    }
+
+    // Otherwise, generate the authentic PDF document locally into the Aula360 folder
+    File? tempFile;
+    try {
+      final aulaDir = await getAulaDirectory();
+      final safeInvoice = _sanitizeFileName(invoiceNumber.replaceAll('#', ''));
+      final sanitizedName = 'Recibo_$safeInvoice.pdf';
+      final finalFilePath = _resolveNonDuplicatePath(
+        aulaDir.path,
+        sanitizedName,
+      );
+      final tempFilePath = '$finalFilePath.downloading';
+
+      tempFile = File(tempFilePath);
+      if (await tempFile.exists()) {
+        await tempFile.delete();
+      }
+
+      final bytes = ReceiptPdfBuilder.generate(
+        invoiceNumber: invoiceNumber,
+        studentName: studentName,
+        studentDetails: studentDetails,
+        period: period,
+        date: date,
+        paymentMethod: paymentMethod,
+        amount: amount,
+        status: status,
+      );
+
+      final totalBytes = bytes.length;
+      final sink = tempFile.openWrite();
+
+      // Write in chunks with incremental progress reporting
+      const chunkSize = 256;
+      int written = 0;
+      for (int i = 0; i < bytes.length; i += chunkSize) {
+        if (cancelToken?.isCancelled ?? false) {
+          await sink.close();
+          await _safeDelete(tempFile);
+          return const DownloadFailure(message: 'Download cancelled');
+        }
+        final end =
+            (i + chunkSize < bytes.length) ? i + chunkSize : bytes.length;
+        sink.add(bytes.sublist(i, end));
+        written = end;
+        onProgress?.call(written, totalBytes);
+        await Future<void>.delayed(const Duration(milliseconds: 35));
+      }
+
+      await sink.flush();
+      await sink.close();
+
+      final downloadedFile = await tempFile.rename(finalFilePath);
+      onProgress?.call(totalBytes, totalBytes);
+
+      return DownloadSuccess(
+        file: downloadedFile,
+        path: finalFilePath,
+        totalBytes: totalBytes,
+      );
+    } catch (e) {
+      if (tempFile != null) {
+        await _safeDelete(tempFile);
+      }
+      return DownloadFailure(
+        message: 'Download error: ${e.toString()}',
+        error: e,
+      );
+    }
+  }
+
+  /// Downloads or generates an official class report PDF into the dedicated `Aula360` folder.
+  /// Reports progress via [onProgress] (receivedBytes, totalBytes).
+  Future<DownloadResult> downloadReport({
+    String? url,
+    required ReportModel report,
+    String? studentName,
+    String? studentClass,
+    void Function(int received, int total)? onProgress,
+    CancelToken? cancelToken,
+  }) async {
+    // If a remote URL is provided, download directly via Dio
+    if (url != null && url.trim().isNotEmpty && url.startsWith('http')) {
+      final safeSubject = _sanitizeFileName(report.subject);
+      return downloadFile(
+        url: url,
+        customFileName:
+            'Informe_${safeSubject}_${DateTime.now().millisecondsSinceEpoch}.pdf',
+        onProgress: onProgress,
+        cancelToken: cancelToken,
+      );
+    }
+
+    // Otherwise, generate the authentic PDF document locally with Aula360 logo
+    File? tempFile;
+    try {
+      final aulaDir = await getAulaDirectory();
+      final safeSubject = _sanitizeFileName(report.subject);
+      final sanitizedName = 'Informe_$safeSubject.pdf';
+      final finalFilePath = _resolveNonDuplicatePath(
+        aulaDir.path,
+        sanitizedName,
+      );
+      final tempFilePath = '$finalFilePath.downloading';
+
+      tempFile = File(tempFilePath);
+      if (await tempFile.exists()) {
+        await tempFile.delete();
+      }
+
+      final bytes = await ReportPdfBuilder.generate(
+        report: report,
+        studentName: studentName,
+        studentClass: studentClass,
+      );
+
+      final totalBytes = bytes.length;
+      final sink = tempFile.openWrite();
+
+      // Write in chunks with incremental progress reporting
+      const chunkSize = 512;
+      int written = 0;
+      for (int i = 0; i < bytes.length; i += chunkSize) {
+        if (cancelToken?.isCancelled ?? false) {
+          await sink.close();
+          await _safeDelete(tempFile);
+          return const DownloadFailure(message: 'Download cancelled');
+        }
+        final end =
+            (i + chunkSize < bytes.length) ? i + chunkSize : bytes.length;
+        sink.add(bytes.sublist(i, end));
+        written = end;
+        onProgress?.call(written, totalBytes);
+        await Future<void>.delayed(const Duration(milliseconds: 30));
+      }
+
+      await sink.flush();
+      await sink.close();
+
+      final downloadedFile = await tempFile.rename(finalFilePath);
+      onProgress?.call(totalBytes, totalBytes);
+
+      return DownloadSuccess(
+        file: downloadedFile,
+        path: finalFilePath,
+        totalBytes: totalBytes,
+      );
+    } catch (e) {
+      if (tempFile != null) {
+        await _safeDelete(tempFile);
+      }
+      return DownloadFailure(
+        message: 'Download error: ${e.toString()}',
+        error: e,
+      );
+    }
+  }
+
+  /// Downloads or generates an official teacher academic session report PDF into the dedicated `Aula360` folder.
+  /// Reports progress via [onProgress] (receivedBytes, totalBytes).
+  Future<DownloadResult> downloadTeacherReport({
+    required TeacherReport report,
+    String? facultyName,
+    void Function(int received, int total)? onProgress,
+    CancelToken? cancelToken,
+  }) async {
+    final effectiveFaculty = facultyName ?? 'Docente Aula 360';
+    final reportModel = ReportModel(
+      dateLabel: report.date,
+      subject: report.title,
+      teacher: effectiveFaculty,
+      time: report.time,
+      category: report.grade ??
+          (report.category == ReportCategory.classReport
+              ? 'Informe de Clase'
+              : 'Informe Individual'),
+      status: report.status == ReportStatus.filed ? 'Archivado' : 'Entregado',
+      note: report.subtitle,
+      initials: effectiveFaculty.length >= 2
+          ? effectiveFaculty.substring(0, 2).toUpperCase()
+          : 'DC',
+    );
+    final groupClass =
+        '${report.group.name} • ${report.grade ?? ""} • ${report.room ?? "Aula"}';
+
+    return downloadReport(
+      report: reportModel,
+      studentName: report.studentName ?? 'Grupo General',
+      studentClass: groupClass,
+      onProgress: onProgress,
+      cancelToken: cancelToken,
+    );
+  }
+
+  /// Downloads a file from [url] into the dedicated `Aula360` folder.
   /// Reports progress via [onProgress] (receivedBytes, totalBytes).
   Future<DownloadResult> downloadFile({
     required String url,

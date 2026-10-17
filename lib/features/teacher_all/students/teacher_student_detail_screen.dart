@@ -178,6 +178,7 @@ class TeacherStudentDetailsScreen extends ConsumerWidget {
     return Row(
       children: [
         Expanded(
+          flex: 3,
           child: _metricCard(
             ref,
             label: ref.watchTr(AppStrings.attendance).toUpperCase(),
@@ -187,6 +188,7 @@ class TeacherStudentDetailsScreen extends ConsumerWidget {
         ),
         SizedBox(width: 8.w),
         Expanded(
+          flex: 2,
           child: _metricCard(
             ref,
             label: ref.watchTr(AppStrings.absent).toUpperCase(),
@@ -196,6 +198,7 @@ class TeacherStudentDetailsScreen extends ConsumerWidget {
         ),
         SizedBox(width: 8.w),
         Expanded(
+          flex: 2,
           child: _metricCard(
             ref,
             label: ref.watchTr(AppStrings.late).toUpperCase(),

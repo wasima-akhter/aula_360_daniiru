@@ -35,7 +35,7 @@ class _TeacherLoginScreenState extends ConsumerState<TeacherLoginScreen> {
     passwordController = TextEditingController();
 
     if (kDebugMode) {
-      emailController.text = "abc@yopmail.com";
+      emailController.text = "abc.teacher@yopmail.com";
       passwordController.text = "123456abC!";
     }
   }
@@ -80,7 +80,10 @@ class _TeacherLoginScreenState extends ConsumerState<TeacherLoginScreen> {
         break;
 
       case LoginOutcome.profileSetupRequired:
-        context.go(RoutePath.teacherProfileSetup, extra: emailController.text.trim());
+        context.go(
+          RoutePath.teacherProfileSetup,
+          extra: emailController.text.trim(),
+        );
         break;
 
       case LoginOutcome.otpVerificationRequired:

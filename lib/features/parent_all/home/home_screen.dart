@@ -1,7 +1,6 @@
 import 'package:intl/intl.dart';
 
 import '../../auth/presentation/controllers/auth_controller.dart';
-import '../../nav/presentation/screens/navigation_provider.dart';
 import '../../share/export/screen_export.dart';
 import '../../share/widgets/button/app_logo.dart';
 import '../helper/parent_home_helper.dart';
@@ -59,11 +58,15 @@ class HomeScreen extends ConsumerWidget {
           Consumer(
             builder: (context, ref, _) {
               final unreadCount = ref.watch(
-                parentNotificationsControllerProvider.select((s) => s.unreadCount),
+                parentNotificationsControllerProvider.select(
+                  (s) => s.unreadCount,
+                ),
               );
               return IconButton(
                 onPressed: () {
-                  ref.read(navigationProvider.notifier).goToParentNotifications();
+                  ref
+                      .read(navigationProvider.notifier)
+                      .goToParentNotifications(context);
                 },
                 splashRadius: 22,
                 icon: Badge(

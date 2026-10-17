@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/errors/app_error_resolver.dart';
 import 'auth_controller.dart';
+import 'password_recovery_controller.dart';
 
 class OtpState {
   final String otp;
@@ -83,20 +84,46 @@ class OtpController extends Notifier<OtpState> {
     state = state.copyWith(otp: code, error: null);
   }
 
-  Future<void> resendOtp(String target, OtpPurpose purpose) async {
-    if (!state.canResend || state.isResending) return;
+  Future<bool> resendOtp(
+    String target,
+    OtpPurpose purpose, {
+    String? recoveryToken,
+  }) async {
+    if (!state.canResend || state.isResending) return false;
     state = state.copyWith(isResending: true);
     try {
-      await ref
-          .read(authControllerProvider.notifier)
-          .resendOtp(email: target);
+      if (purpose == OtpPurpose.signup) {
+        await ref
+            .read(authControllerProvider.notifier)
+            .resendOtp(email: target);
+      } else {
+        final token = recoveryToken ??
+            ref.read(passwordRecoveryControllerProvider).token;
+        final success = await ref
+            .read(passwordRecoveryControllerProvider.notifier)
+            .resendRecoveryOtp(token: token);
+        if (!success) {
+          final recoveryState = ref.read(passwordRecoveryControllerProvider);
+          state = state.copyWith(error: recoveryState.error);
+          return false;
+        }
+      }
       _startTimer();
+      return true;
+    } catch (e) {
+      final userMsg = AppErrorResolver.resolve(e);
+      state = state.copyWith(error: userMsg.displayMessage);
+      return false;
     } finally {
       state = state.copyWith(isResending: false);
     }
   }
 
-  Future<bool> verifyOtp(OtpPurpose purpose, {String? email}) async {
+  Future<bool> verifyOtp(
+    OtpPurpose purpose, {
+    String? email,
+    String? recoveryToken,
+  }) async {
     if (state.otp.trim().isEmpty) {
       state = state.copyWith(error: 'otp_required');
       return false;
@@ -110,9 +137,13 @@ class OtpController extends Notifier<OtpState> {
         state = state.copyWith(isVerifying: false);
         return success;
       } else {
-        // forgot password flow simulation/placeholder until backend reset-otp endpoint is available
+        final token = recoveryToken ??
+            ref.read(passwordRecoveryControllerProvider).token;
+        final success = await ref
+            .read(passwordRecoveryControllerProvider.notifier)
+            .verifyRecoveryOtp(state.otp.trim(), token: token);
         state = state.copyWith(isVerifying: false);
-        return state.otp.trim().length == 6;
+        return success;
       }
     } catch (e) {
       final userMsg = AppErrorResolver.resolve(e);

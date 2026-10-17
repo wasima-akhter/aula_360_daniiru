@@ -1,13 +1,378 @@
 import '../../share/export/screen_export.dart';
 
-class PaymentReceiptScreen extends ConsumerWidget {
+class PaymentReceiptScreen extends ConsumerStatefulWidget {
   const PaymentReceiptScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<PaymentReceiptScreen> createState() =>
+      _PaymentReceiptScreenState();
+}
+
+class _PaymentReceiptScreenState extends ConsumerState<PaymentReceiptScreen> {
+  bool _isDownloading = false;
+  double _downloadProgress = 0.0;
+  int _percentage = 0;
+  String? _downloadedFilePath;
+  bool _downloadSuccess = false;
+
+  Future<void> _startDownload() async {
+    if (_isDownloading) return;
+
+    setState(() {
+      _isDownloading = true;
+      _downloadProgress = 0.0;
+      _percentage = 0;
+      _downloadSuccess = false;
+    });
+
+    final downloadService = ref.read(fileDownloadServiceProvider);
+    final result = await downloadService.downloadReceipt(
+      invoiceNumber: '#A360-8492',
+      studentName: 'Lucas Rivera',
+      studentDetails:
+          '${ref.readTr(AppStrings.eso2)} • ${ref.readTr(AppStrings.aula3)}',
+      period: ref.readTr(AppStrings.academicYearLabel),
+      date: '24 Oct 2024 • 12:14',
+      paymentMethod: 'VISA •••• 4242',
+      amount: '340,00 €',
+      status: ref.readTr(AppStrings.paidAndSettled),
+      onProgress: (received, total) {
+        if (!mounted || total <= 0) return;
+        setState(() {
+          _downloadProgress = (received / total).clamp(0.0, 1.0);
+          _percentage = ((received / total) * 100).toInt().clamp(0, 100);
+        });
+      },
+    );
+
+    if (!mounted) return;
+
+    if (result is DownloadSuccess) {
+      setState(() {
+        _isDownloading = false;
+        _downloadProgress = 1.0;
+        _percentage = 100;
+        _downloadSuccess = true;
+        _downloadedFilePath = result.path;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(
+                Icons.check_circle_outline,
+                color: Colors.white,
+                size: 20,
+              ),
+              SizedBox(width: 8.w),
+              Expanded(
+                child: Text(
+                  ref.readTr(AppStrings.receiptDownloadedSuccess),
+                  style: TextStyle(fontSize: 13.5.sp),
+                ),
+              ),
+            ],
+          ),
+          backgroundColor: AppColors.emeraldGreenColor,
+          duration: const Duration(seconds: 3),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.r),
+          ),
+        ),
+      );
+    } else if (result is DownloadFailure) {
+      setState(() {
+        _isDownloading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(result.message),
+          backgroundColor: Colors.redAccent,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
+
+  Future<void> _openPdfFile(String filePath, BuildContext context) async {
+    final pdfService = ref.read(pdfViewerServiceProvider);
+    final success = await pdfService.openLocalFile(filePath);
+
+    if (!success && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            '${ref.readTr(AppStrings.openPdf)}: $filePath',
+            style: TextStyle(fontSize: 12.5.sp),
+          ),
+          backgroundColor: AppColors.primaryDark,
+          behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 4),
+        ),
+      );
+    }
+  }
+
+  void _showReceiptPreviewModal(BuildContext context, String filePath) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (modalContext) {
+        return Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
+          ),
+          padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 24.h),
+          child: SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Center(
+                  child: Container(
+                    width: 38.w,
+                    height: 4.h,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFD1D5DB),
+                      borderRadius: BorderRadius.circular(2.r),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 14.h),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      ref.watchTr(AppStrings.previewReceipt),
+                      style: TxtStyle.titleLarge(
+                        color: AppColors.primaryDark,
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () => ref
+                          .read(navigationProvider.notifier)
+                          .goToTeacherHome(context),
+                      icon: Icon(
+                        Icons.close,
+                        color: AppColors.subtitleTextColor,
+                        size: 20.sp,
+                      ),
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 14.h),
+                Container(
+                  padding: EdgeInsets.all(14.w),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF9FAFB),
+                    borderRadius: BorderRadius.circular(12.r),
+                    border: Border.all(color: AppColors.border),
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'AULA 360',
+                            style: TxtStyle.titleLarge(
+                              color: AppColors.primaryDark,
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 8.w,
+                              vertical: 3.h,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFE7FAF2),
+                              borderRadius: BorderRadius.circular(10.r),
+                            ),
+                            child: Text(
+                              ref.watchTr(AppStrings.paidAndSettled),
+                              style: TxtStyle.titleLarge(
+                                color: AppColors.emeraldGreenColor,
+                                fontSize: 11.sp,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 12.h),
+                      const Divider(
+                        height: 1,
+                        color: AppColors.backgroundsLinesColor,
+                      ),
+                      SizedBox(height: 12.h),
+                      _previewRow(
+                        ref.watchTr(AppStrings.invoiceLabel),
+                        '#A360-8492',
+                      ),
+                      SizedBox(height: 6.h),
+                      _previewRow(
+                        ref.watchTr(AppStrings.studentLabel),
+                        'Lucas Rivera',
+                      ),
+                      SizedBox(height: 6.h),
+                      _previewRow(
+                        ref.watchTr(AppStrings.periodLabel),
+                        ref.watchTr(AppStrings.academicYearLabel),
+                      ),
+                      SizedBox(height: 6.h),
+                      _previewRow(
+                        ref.watchTr(AppStrings.date),
+                        '24 Oct 2024 • 12:14',
+                      ),
+                      SizedBox(height: 6.h),
+                      _previewRow(
+                        ref.watchTr(AppStrings.methodLabel),
+                        'VISA •••• 4242',
+                      ),
+                      SizedBox(height: 12.h),
+                      const Divider(
+                        height: 1,
+                        color: AppColors.backgroundsLinesColor,
+                      ),
+                      SizedBox(height: 10.h),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'TOTAL',
+                            style: TxtStyle.titleLarge(
+                              color: AppColors.text,
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          Text(
+                            '340,00 € EUR',
+                            style: TxtStyle.titleLarge(
+                              color: AppColors.primaryDark,
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 12.h),
+                      Container(
+                        width: double.infinity,
+                        padding: EdgeInsets.all(8.w),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(6.r),
+                          border: Border.all(
+                            color: AppColors.border.withValues(alpha: 0.6),
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.folder_outlined,
+                              color: AppColors.subtitleTextColor,
+                              size: 16.sp,
+                            ),
+                            SizedBox(width: 6.w),
+                            Expanded(
+                              child: Text(
+                                filePath,
+                                style: TxtStyle.titleLarge(
+                                  color: AppColors.subtitleTextColor,
+                                  fontSize: 11.5.sp,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 16.h),
+                ElevatedButton.icon(
+                  onPressed: () => _openPdfFile(filePath, modalContext),
+                  icon: Icon(
+                    Icons.picture_as_pdf_outlined,
+                    color: Colors.white,
+                    size: 18.sp,
+                  ),
+                  label: Text(
+                    ref.watchTr(AppStrings.openPdf),
+                    style: TxtStyle.titleLarge(
+                      color: Colors.white,
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primaryDark,
+                    elevation: 0,
+                    padding: EdgeInsets.symmetric(vertical: 12.h),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.r),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _previewRow(String label, String value) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          flex: 4,
+          child: Text(
+            label,
+            style: TxtStyle.titleLarge(
+              color: AppColors.subtitleTextColor,
+              fontSize: 13.sp,
+            ),
+          ),
+        ),
+        SizedBox(width: 8.w),
+        Expanded(
+          flex: 6,
+          child: Text(
+            value,
+            textAlign: TextAlign.end,
+            style: TxtStyle.titleLarge(
+              color: AppColors.text,
+              fontSize: 13.sp,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
-      appBar: _appBar(context, ref),
+      appBar: _appBar(context),
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
@@ -78,9 +443,9 @@ class PaymentReceiptScreen extends ConsumerWidget {
                 ),
               ),
               SizedBox(height: 22.h),
-              _receiptCard(ref),
+              _receiptCard(),
               SizedBox(height: 40.h),
-              _doneButton(context, ref),
+              _doneButton(context),
               SizedBox(height: 10.h),
               Text(
                 ref.watchTr(AppStrings.receiptEmailSentNotice),
@@ -97,13 +462,14 @@ class PaymentReceiptScreen extends ConsumerWidget {
     );
   }
 
-  PreferredSizeWidget _appBar(BuildContext context, WidgetRef ref) {
+  PreferredSizeWidget _appBar(BuildContext context) {
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
       centerTitle: true,
       leading: IconButton(
-        onPressed: () => context.pop(),
+        onPressed: () =>
+            ref.read(navigationProvider.notifier).goToTeacherHome(context),
         icon: Icon(
           Icons.close,
           color: AppColors.subtitleTextColor,
@@ -147,7 +513,7 @@ class PaymentReceiptScreen extends ConsumerWidget {
     );
   }
 
-  Widget _receiptCard(WidgetRef ref) {
+  Widget _receiptCard() {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.fromLTRB(13.w, 13.h, 13.w, 12.h),
@@ -180,29 +546,195 @@ class PaymentReceiptScreen extends ConsumerWidget {
           _receiptDivider(),
           _receiptRow(ref.watchTr(AppStrings.date), '24 Oct 2024 • 12:14'),
           SizedBox(height: 12.h),
-          GestureDetector(
-            onTap: () {},
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+          _receiptActions(),
+        ],
+      ),
+    );
+  }
+
+  Widget _receiptActions() {
+    if (_isDownloading) {
+      return Container(
+        padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF9FAFB),
+          borderRadius: BorderRadius.circular(8.r),
+          border: Border.all(color: AppColors.border.withValues(alpha: 0.6)),
+        ),
+        child: Column(
+          children: [
+            Row(
               children: [
-                Icon(
-                  Icons.download_outlined,
-                  color: AppColors.primaryDark,
-                  size: 15.sp,
+                SizedBox(
+                  width: 15.sp,
+                  height: 15.sp,
+                  child: const CircularProgressIndicator(
+                    strokeWidth: 2.2,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      AppColors.primaryDark,
+                    ),
+                  ),
                 ),
-                SizedBox(width: 4.w),
+                SizedBox(width: 8.w),
+                Expanded(
+                  child: Text(
+                    ref.watchTr(AppStrings.downloadingReceipt),
+                    style: TxtStyle.titleLarge(
+                      color: AppColors.text,
+                      fontSize: 13.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
                 Text(
-                  ref.watchTr(AppStrings.downloadReceiptPdf),
+                  '$_percentage%',
                   style: TxtStyle.titleLarge(
                     color: AppColors.primaryDark,
-                    fontSize: 15.sp,
-                    fontWeight: FontWeight.w700,
+                    fontSize: 13.5.sp,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 8.h),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(6.r),
+              child: LinearProgressIndicator(
+                value: _downloadProgress,
+                minHeight: 5.h,
+                backgroundColor: const Color(0xFFE5E7EB),
+                valueColor: const AlwaysStoppedAnimation<Color>(
+                  AppColors.primaryDark,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (_downloadSuccess && _downloadedFilePath != null) {
+      return Column(
+        children: [
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+            decoration: BoxDecoration(
+              color: const Color(0xFFE7FAF2),
+              borderRadius: BorderRadius.circular(6.r),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.check_circle,
+                  color: AppColors.emeraldGreenColor,
+                  size: 15.sp,
+                ),
+                SizedBox(width: 6.w),
+                Expanded(
+                  child: Text(
+                    ref.watchTr(AppStrings.receiptDownloadedSuccess),
+                    style: TxtStyle.titleLarge(
+                      color: AppColors.emeraldGreenColor,
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w700,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
             ),
           ),
+          SizedBox(height: 10.h),
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: _startDownload,
+                  icon: Icon(
+                    Icons.download_outlined,
+                    color: AppColors.primaryDark,
+                    size: 15.sp,
+                  ),
+                  label: Text(
+                    ref.watchTr(AppStrings.downloadReceiptPdf),
+                    style: TxtStyle.titleLarge(
+                      color: AppColors.primaryDark,
+                      fontSize: 12.5.sp,
+                      fontWeight: FontWeight.w700,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: AppColors.border),
+                    padding: EdgeInsets.symmetric(vertical: 9.h),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.r),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(width: 8.w),
+              Expanded(
+                child: ElevatedButton.icon(
+                  onPressed: () =>
+                      _showReceiptPreviewModal(context, _downloadedFilePath!),
+                  icon: Icon(
+                    Icons.visibility_outlined,
+                    color: Colors.white,
+                    size: 15.sp,
+                  ),
+                  label: Text(
+                    ref.watchTr(AppStrings.previewReceipt),
+                    style: TxtStyle.titleLarge(
+                      color: Colors.white,
+                      fontSize: 12.5.sp,
+                      fontWeight: FontWeight.w800,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primaryDark,
+                    elevation: 0,
+                    padding: EdgeInsets.symmetric(vertical: 9.h),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.r),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ],
+      );
+    }
+
+    return InkWell(
+      onTap: _startDownload,
+      borderRadius: BorderRadius.circular(6.r),
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 6.h),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.download_outlined,
+              color: AppColors.primaryDark,
+              size: 16.sp,
+            ),
+            SizedBox(width: 6.w),
+            Text(
+              ref.watchTr(AppStrings.downloadReceiptPdf),
+              style: TxtStyle.titleLarge(
+                color: AppColors.primaryDark,
+                fontSize: 15.sp,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -230,29 +762,32 @@ class PaymentReceiptScreen extends ConsumerWidget {
           ),
           const Spacer(),
           if (leading != null) ...[leading, SizedBox(width: 5.w)],
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                value,
-                textAlign: TextAlign.right,
-                style: TxtStyle.titleLarge(
-                  color: AppColors.text,
-                  fontSize: 14.5.sp,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              if (subValue != null) ...[
-                SizedBox(height: 2.h),
+          Flexible(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
                 Text(
-                  subValue,
+                  value,
+                  textAlign: TextAlign.right,
                   style: TxtStyle.titleLarge(
-                    color: AppColors.subtitleTextColor,
-                    fontSize: 13.5.sp,
+                    color: AppColors.text,
+                    fontSize: 14.5.sp,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
+                if (subValue != null) ...[
+                  SizedBox(height: 2.h),
+                  Text(
+                    subValue,
+                    textAlign: TextAlign.right,
+                    style: TxtStyle.titleLarge(
+                      color: AppColors.subtitleTextColor,
+                      fontSize: 13.5.sp,
+                    ),
+                  ),
+                ],
               ],
-            ],
+            ),
           ),
         ],
       ),
@@ -281,7 +816,7 @@ class PaymentReceiptScreen extends ConsumerWidget {
     );
   }
 
-  Widget _doneButton(BuildContext context, WidgetRef ref) {
+  Widget _doneButton(BuildContext context) {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(

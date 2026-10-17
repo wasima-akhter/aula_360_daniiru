@@ -51,6 +51,18 @@ class StorageService {
     await _secureStorage.delete(key: StorageKeys.otpPageToken);
   }
 
+  Future<void> savePasswordResetToken(String token) async {
+    await _secureStorage.write(key: StorageKeys.passwordResetToken, value: token);
+  }
+
+  Future<String?> getPasswordResetToken() async {
+    return _secureStorage.read(key: StorageKeys.passwordResetToken);
+  }
+
+  Future<void> clearPasswordResetToken() async {
+    await _secureStorage.delete(key: StorageKeys.passwordResetToken);
+  }
+
   Future<void> saveRefreshToken(String token) async {
     await _secureStorage.write(key: StorageKeys.refreshToken, value: token);
   }
@@ -62,6 +74,7 @@ class StorageService {
   Future<void> clearAuthentication() async {
     await _secureStorage.delete(key: StorageKeys.accessToken);
     await _secureStorage.delete(key: StorageKeys.otpPageToken);
+    await _secureStorage.delete(key: StorageKeys.passwordResetToken);
     await _secureStorage.delete(key: StorageKeys.refreshToken);
     await _localStorage.remove(StorageKeys.currentUser);
     await _localStorage.remove(StorageKeys.userRole);

@@ -57,8 +57,8 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
     final effectiveEmail = widget.initialEmail?.trim().isNotEmpty == true
         ? widget.initialEmail!.trim()
         : ((user?.email != null && user!.email.trim().isNotEmpty)
-            ? user.email.trim()
-            : (storedEmail ?? ''));
+              ? user.email.trim()
+              : (storedEmail ?? ''));
     emailController = TextEditingController(text: effectiveEmail);
 
     if (effectiveEmail.isEmpty) {
@@ -211,31 +211,6 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // Padding(
-            //   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-            //   child: Row(
-            //     children: [
-            //       GestureDetector(
-            //         onTap: () => context.pop(),
-            //         child: Container(
-            //           width: 40.w,
-            //           height: 40.w,
-            //           alignment: Alignment.center,
-            //           decoration: const BoxDecoration(
-            //             color: Colors.white,
-            //             shape: BoxShape.circle,
-            //           ),
-            //           child: Icon(
-            //             Icons.arrow_back_ios_new_rounded,
-            //             size: 15.sp,
-            //             color: AppColors.text,
-            //           ),
-            //         ),
-            //       ),
-            //       const Spacer(),
-            //     ],
-            //   ),
-            // ),
             Expanded(
               child: SingleChildScrollView(
                 padding: EdgeInsets.fromLTRB(22, 14, 22, 25 + bottomInset),

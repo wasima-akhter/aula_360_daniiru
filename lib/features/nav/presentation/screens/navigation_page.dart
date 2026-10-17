@@ -13,12 +13,11 @@ import '../../../parent_all/profile/parent_profile_screen.dart';
 import '../../../share/export/screen_export.dart';
 import '../../../teacher_all/profile/teacher_profile_screen.dart';
 import '../../user_role/user_role_provider.dart';
-import 'navigation_provider.dart';
 
 class NavigationPage extends ConsumerStatefulWidget {
-  const NavigationPage({super.key, this.index = 0});
+  const NavigationPage({super.key, this.index});
 
-  final int index;
+  final int? index;
 
   @override
   ConsumerState<NavigationPage> createState() => _NavigationPageState();
@@ -29,17 +28,23 @@ class _NavigationPageState extends ConsumerState<NavigationPage> {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(navigationProvider.notifier).changeTab(widget.index.clamp(0, 4));
-    });
+    if (widget.index != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref
+            .read(navigationProvider.notifier)
+            .changeTab(widget.index!.clamp(0, 4));
+      });
+    }
   }
 
   @override
   void didUpdateWidget(covariant NavigationPage oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.index != widget.index) {
+    if (widget.index != null && oldWidget.index != widget.index) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        ref.read(navigationProvider.notifier).changeTab(widget.index.clamp(0, 4));
+        ref
+            .read(navigationProvider.notifier)
+            .changeTab(widget.index!.clamp(0, 4));
       });
     }
   }

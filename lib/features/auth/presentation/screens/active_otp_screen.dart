@@ -4,8 +4,11 @@ import '../../../share/widgets/button/app_logo.dart';
 import '../../../share/widgets/button/custom_back_button.dart';
 import '../controllers/auth_controller.dart';
 import '../controllers/otp_controller.dart';
+import '../controllers/password_recovery_controller.dart';
+import '../../data/dtos/recovery_dtos.dart';
 
 export '../../domain/models/auth_state_model.dart';
+export '../../data/dtos/recovery_dtos.dart';
 
 enum OtpRole { parent, teacher }
 
@@ -13,7 +16,14 @@ class OtpArgs {
   final String? email;
   final OtpPurpose purpose;
   final OtpRole role;
-  const OtpArgs({this.email, required this.purpose, required this.role});
+  final String? recoveryToken;
+
+  const OtpArgs({
+    this.email,
+    required this.purpose,
+    required this.role,
+    this.recoveryToken,
+  });
 }
 
 class ActiveOtpScreen extends ConsumerStatefulWidget {
@@ -99,7 +109,15 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
         }
         break;
       case OtpPurpose.forgotPassword:
-        context.go(RoutePath.resetPasswordScreen, extra: email);
+        final recoveryToken = widget.args.recoveryToken ??
+            ref.read(passwordRecoveryControllerProvider).token;
+        context.go(
+          RoutePath.resetPasswordScreen,
+          extra: ResetPasswordArgs(
+            email: email,
+            token: recoveryToken,
+          ),
+        );
         break;
     }
   }
@@ -118,22 +136,37 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
     ref.read(otpControllerProvider.notifier).updateOtp(enteredOtp);
     final success = await ref
         .read(otpControllerProvider.notifier)
-        .verifyOtp(purpose, email: email);
+        .verifyOtp(
+          purpose,
+          email: email,
+          recoveryToken: widget.args.recoveryToken,
+        );
 
     if (!mounted) return;
 
     if (success) {
       _navigateAfterVerification();
     } else {
-      final authState = ref.read(authControllerProvider);
-      if (authState.userMessage != null) {
-        ApiSnackbar.showUserMessage(authState.userMessage!);
+      if (purpose == OtpPurpose.signup) {
+        final authState = ref.read(authControllerProvider);
+        if (authState.userMessage != null) {
+          ApiSnackbar.showUserMessage(authState.userMessage!);
+        } else {
+          final langCode =
+              ref.read(languageProvider).valueOrNull?.languageCode ?? 'en';
+          final resolved = AppErrorResolver.resolve(
+            authState.errorMessage ?? 'invalid_otp',
+            languageCode: langCode,
+          );
+          ApiSnackbar.showUserMessage(resolved);
+        }
       } else {
-        final langCode =
+        final recoveryState = ref.read(passwordRecoveryControllerProvider);
+        final currentLangCode =
             ref.read(languageProvider).valueOrNull?.languageCode ?? 'en';
         final resolved = AppErrorResolver.resolve(
-          authState.errorMessage ?? 'invalid_otp',
-          languageCode: langCode,
+          recoveryState.userMessage ?? recoveryState.error,
+          languageCode: currentLangCode,
         );
         ApiSnackbar.showUserMessage(resolved);
       }
@@ -141,15 +174,32 @@ class _ActiveOtpScreenState extends ConsumerState<ActiveOtpScreen> {
   }
 
   Future<void> _resendCode() async {
-    await ref
+    final success = await ref
         .read(otpControllerProvider.notifier)
-        .resendOtp(email ?? 'user@aula360.com', purpose);
+        .resendOtp(
+          email ?? 'user@aula360.com',
+          purpose,
+          recoveryToken: widget.args.recoveryToken,
+        );
     if (!mounted) return;
-    final tr = ref.readTr;
-    ApiSnackbar.show(
-      tr(AppStrings.otpResendSuccess),
-      type: SnackbarType.success,
-    );
+    if (success) {
+      final tr = ref.readTr;
+      ApiSnackbar.show(
+        tr(AppStrings.otpResendSuccess),
+        type: SnackbarType.success,
+      );
+    } else {
+      if (purpose == OtpPurpose.forgotPassword) {
+        final recoveryState = ref.read(passwordRecoveryControllerProvider);
+        final currentLangCode =
+            ref.read(languageProvider).valueOrNull?.languageCode ?? 'en';
+        final resolved = AppErrorResolver.resolve(
+          recoveryState.userMessage ?? recoveryState.error,
+          languageCode: currentLangCode,
+        );
+        ApiSnackbar.showUserMessage(resolved);
+      }
+    }
   }
 
   @override

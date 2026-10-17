@@ -17,6 +17,7 @@ import 'package:aula360/features/teacher_all/attendance/teacher_report_submit_co
 import 'package:aula360/features/teacher_all/attendance/teacher_submit_report_screen.dart';
 import 'package:aula360/features/teacher_all/reports/teacher_report_detail_screen.dart';
 import 'package:aula360/features/teacher_all/students/teacher_student_detail_screen.dart';
+import 'package:aula360/features/teacher_all/helper/teacher_models.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -174,11 +175,14 @@ class AppRouter {
         name: RoutePath.resetPasswordScreen,
         path: RoutePath.resetPasswordScreen.addBasePath,
         pageBuilder: (context, state) {
-          final email = state.extra as String?;
+          final extra = state.extra;
+          final args = extra is ResetPasswordArgs
+              ? extra
+              : ResetPasswordArgs(email: extra is String ? extra : null);
 
           return _buildPageWithAnimation(
             state: state,
-            child: ResetPasswordScreen(email: email),
+            child: ResetPasswordScreen(args: args),
           );
         },
       ),
@@ -212,7 +216,7 @@ class AppRouter {
         name: RoutePath.navigationPages,
         path: RoutePath.navigationPages.addBasePath,
         pageBuilder: (context, state) {
-          final index = state.extra as int? ?? 0;
+          final index = state.extra as int?;
 
           return _buildPageWithAnimation(
             state: state,
@@ -456,9 +460,11 @@ class AppRouter {
         name: RoutePath.teacherReportDetail,
         path: RoutePath.teacherReportDetail.addBasePath,
         pageBuilder: (context, state) {
+          final report =
+              state.extra is TeacherReport ? state.extra as TeacherReport : null;
           return _buildPageWithAnimation(
             state: state,
-            child: TeacherReportDetailsScreen(),
+            child: TeacherReportDetailsScreen(report: report),
           );
         },
       ),

@@ -3,12 +3,23 @@ import '../../../share/widgets/button/app_logo.dart';
 import '../../../share/widgets/button/custom_back_button.dart';
 import '../../../share/widgets/text_field/custom_text_field.dart';
 import '../../../../core/utils/validators.dart';
+import '../../data/dtos/recovery_dtos.dart';
 import '../controllers/password_recovery_controller.dart';
 
 class ResetPasswordScreen extends ConsumerStatefulWidget {
+  final ResetPasswordArgs? args;
   final String? email;
+  final String? token;
 
-  const ResetPasswordScreen({super.key, this.email});
+  const ResetPasswordScreen({
+    super.key,
+    this.args,
+    this.email,
+    this.token,
+  });
+
+  String? get effectiveEmail => email ?? args?.email;
+  String? get effectiveToken => token ?? args?.token;
 
   @override
   ConsumerState<ResetPasswordScreen> createState() =>
@@ -65,11 +76,15 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
       return;
     }
 
+    final recoveryToken = widget.effectiveToken ??
+        ref.read(passwordRecoveryControllerProvider).token;
+
     final success = await ref
         .read(passwordRecoveryControllerProvider.notifier)
         .resetPassword(
-          email: widget.email ?? 'user@aula360.com',
           newPassword: passwordController.text.trim(),
+          confirmPassword: confirmPasswordController.text.trim(),
+          token: recoveryToken,
         );
 
     if (!mounted) return;
@@ -83,11 +98,13 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
       context.go(RoutePath.loginScreen.addBasePath);
     } else {
       final recoveryState = ref.read(passwordRecoveryControllerProvider);
-      if (recoveryState.userMessage != null) {
-        ApiSnackbar.showUserMessage(recoveryState.userMessage!);
-      } else if (recoveryState.error != null) {
-        ApiSnackbar.show(recoveryState.error!);
-      }
+      final currentLangCode =
+          ref.read(languageProvider).valueOrNull?.languageCode ?? 'en';
+      final resolved = AppErrorResolver.resolve(
+        recoveryState.userMessage ?? recoveryState.error,
+        languageCode: currentLangCode,
+      );
+      ApiSnackbar.showUserMessage(resolved);
     }
   }
 
