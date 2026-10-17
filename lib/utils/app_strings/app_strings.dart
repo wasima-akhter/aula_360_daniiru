@@ -496,6 +496,7 @@ class AppStrings {
   static const String saveNoteBtn = 'save_note_btn';
   static const String academyNavigationTitle = 'academy_navigation_title';
   static const String teacherPortalBadge = 'teacher_portal_badge';
+  static const String teacherId = 'teacher_id';
   static const String teacherIdBadge = 'teacher_id_badge';
   static const String academyMessagesTitle = 'academy_messages_title';
   static const String academyMessagesSubtitle = 'academy_messages_subtitle';

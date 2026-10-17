@@ -52,15 +52,16 @@ class _EditTeacherProfileScreenState
     final effectiveEmail = (profile.email.isNotEmpty)
         ? profile.email
         : ((authUser?.email != null && authUser!.email.isNotEmpty)
-            ? authUser.email
-            : (storedEmail ?? ''));
+              ? authUser.email
+              : (storedEmail ?? ''));
     emailController = TextEditingController(text: effectiveEmail);
 
     final rawPhone = profile.phone;
     _completePhoneNumber = rawPhone;
     if (rawPhone.startsWith('+34')) {
-      phoneController =
-          TextEditingController(text: rawPhone.substring(3).trim());
+      phoneController = TextEditingController(
+        text: rawPhone.substring(3).trim(),
+      );
     } else {
       phoneController = TextEditingController(text: rawPhone);
     }
@@ -164,14 +165,18 @@ class _EditTeacherProfileScreenState
                   isPhoneField: true,
                   initialCountryCode: 'ES',
                   phoneFormKey: _phoneFormKey,
-                  languageCode:
-                      ref.watch(languageProvider).valueOrNull?.languageCode,
+                  languageCode: ref
+                      .watch(languageProvider)
+                      .valueOrNull
+                      ?.languageCode,
                   onPhoneChanged: (completeNumber) {
                     _completePhoneNumber = completeNumber;
                   },
                   phoneValidator: (value) {
-                    final langCode =
-                        ref.read(languageProvider).valueOrNull?.languageCode;
+                    final langCode = ref
+                        .read(languageProvider)
+                        .valueOrNull
+                        ?.languageCode;
                     return AulaValidation.validatePhone(
                       value,
                       languageCode: langCode,
@@ -209,6 +214,18 @@ class _EditTeacherProfileScreenState
   // ===============================================================
 
   Widget _profilePhotoCard() {
+    final profile = ref.watch(teacherProfileControllerProvider).profile;
+    final authUser = ref.watch(authControllerProvider).user;
+    final teacherId = profile.id.trim().isNotEmpty
+        ? profile.id.trim()
+        : (authUser?.id.trim() ?? '');
+    final hasId = teacherId.isNotEmpty;
+    final badgeText = ref.watchTr(AppStrings.verified);
+
+    // hasId
+    //     ? '${ref.watchTr(AppStrings.teacherId)}: ${teacherId.startsWith('#') ? teacherId : '#$teacherId'}'
+    //     : ref.watchTr(AppStrings.teacherId);
+
     return Container(
       width: double.infinity,
       padding: EdgeInsets.fromLTRB(15.w, 14.h, 15.w, 15.h),
@@ -294,13 +311,24 @@ class _EditTeacherProfileScreenState
               color: AppColors.blueSoft,
               borderRadius: BorderRadius.circular(12.r),
             ),
-            child: Text(
-              ref.watchTr(AppStrings.teacherIdBadge),
-              style: TxtStyle.titleLarge(
-                color: AppColors.primaryDark,
-                fontSize: 15.sp,
-                fontWeight: FontWeight.w700,
-              ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.verified_rounded,
+                  color: AppColors.primaryDark,
+                  size: 14.sp,
+                ),
+                SizedBox(width: 5.w),
+                Text(
+                  badgeText,
+                  style: TxtStyle.titleLarge(
+                    color: AppColors.primaryDark,
+                    fontSize: 14.5.sp,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
             ),
           ),
           SizedBox(height: 9.h),
@@ -389,8 +417,10 @@ class _EditTeacherProfileScreenState
                 validator ??
                 (value) {
                   if (requiredField) {
-                    final langCode =
-                        ref.read(languageProvider).valueOrNull?.languageCode;
+                    final langCode = ref
+                        .read(languageProvider)
+                        .valueOrNull
+                        ?.languageCode;
                     return AulaValidation.validateRequired(
                       value,
                       fieldName: label,
@@ -569,6 +599,7 @@ class _EditTeacherProfileScreenState
     final sanitizedPhone = AulaValidation.sanitizePhone(phoneToValidate);
 
     final updatedProfile = TeacherProfileData(
+      id: ref.read(teacherProfileControllerProvider).profile.id,
       name: nameController.text.trim(),
       email: emailController.text.trim(),
       phone: sanitizedPhone,

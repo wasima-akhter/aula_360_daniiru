@@ -25,7 +25,11 @@ class ParentProfileDto {
 
   factory ParentProfileDto.fromJson(Map<String, dynamic> json) {
     return ParentProfileDto(
-      userId: json['userId'] as String? ?? json['id'] as String? ?? '',
+      userId: json['userId'] as String? ??
+          json['id'] as String? ??
+          json['parentId'] as String? ??
+          json['code'] as String? ??
+          '',
       fullName: json['fullName'] as String? ?? json['name'] as String? ?? '',
       email: json['email'] as String? ?? '',
       phone: json['phone'] as String? ?? '',

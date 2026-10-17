@@ -135,6 +135,7 @@ class TeacherRepositoryImpl implements TeacherRepository {
       try {
         final entity = await repo.getTeacherProfile();
         _profile = TeacherProfileData(
+          id: entity.userId,
           name: entity.fullName,
           email: entity.email,
           phone: entity.phone,

@@ -6,6 +6,7 @@ library;
 import 'teacher_enums.dart';
 
 class TeacherProfileData {
+  final String id;
   final String name;
   final String email;
   final String phone;
@@ -17,6 +18,7 @@ class TeacherProfileData {
   final String? profileImagePath;
 
   const TeacherProfileData({
+    this.id = '',
     required this.name,
     required this.email,
     required this.phone,
@@ -30,6 +32,7 @@ class TeacherProfileData {
   });
 
   TeacherProfileData copyWith({
+    String? id,
     String? name,
     String? email,
     String? phone,
@@ -41,6 +44,7 @@ class TeacherProfileData {
     String? profileImagePath,
   }) {
     return TeacherProfileData(
+      id: id ?? this.id,
       name: name ?? this.name,
       email: email ?? this.email,
       phone: phone ?? this.phone,

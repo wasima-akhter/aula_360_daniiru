@@ -1,3 +1,4 @@
+import '../../auth/presentation/controllers/auth_controller.dart';
 import '../../share/component/logout_btn.dart';
 import '../../share/export/screen_export.dart';
 import '../helper/parent_widgets.dart';
@@ -64,6 +65,17 @@ class ParentProfileScreen extends ConsumerWidget {
     WidgetRef ref,
     ParentProfileState profile,
   ) {
+    final authUser = ref.watch(authControllerProvider).user;
+    final parentId = profile.userId.trim().isNotEmpty
+        ? profile.userId.trim()
+        : (authUser?.id.trim() ?? '');
+    final hasId = parentId.isNotEmpty;
+    final idText = ref.watchTr(AppStrings.verified);
+
+    // hasId
+    //     ? '${ref.watchTr(AppStrings.verified)}: ${parentId.startsWith('#') ? parentId : '#$parentId'}'
+    //     : ref.watchTr(AppStrings.verified);
+
     return Container(
       width: double.infinity,
       padding: EdgeInsets.only(top: 4.h),
@@ -169,7 +181,7 @@ class ParentProfileScreen extends ConsumerWidget {
                   ),
                   SizedBox(width: 5.w),
                   Text(
-                    '${ref.watchTr(AppStrings.verified)}: #PAR-8924',
+                    idText,
                     style: TxtStyle.titleLarge(
                       color: AppColors.primaryDark,
                       fontSize: 14.sp,

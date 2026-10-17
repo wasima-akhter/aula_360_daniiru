@@ -206,6 +206,16 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   }
 
   Widget _profilePhotoCard(ParentProfileState profile) {
+    final authUser = ref.watch(authControllerProvider).user;
+    final parentId = profile.userId.trim().isNotEmpty
+        ? profile.userId.trim()
+        : (authUser?.id.trim() ?? '');
+    final hasId = parentId.isNotEmpty;
+    final idText = ref.watchTr(AppStrings.verified);
+    // hasId
+    //     ? '${ref.watchTr(AppStrings.verified)}: ${parentId.startsWith('#') ? parentId : '#$parentId'}'
+    //     : ref.watchTr(AppStrings.verified);
+
     return Container(
       width: double.infinity,
       padding: EdgeInsets.fromLTRB(15.w, 13.h, 15.w, 15.h),
@@ -240,7 +250,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                               fit: BoxFit.cover,
                             )
                           : CustomNetworkImage(
-                              imageUrl: profile.avatarUrl ??
+                              imageUrl:
+                                  profile.avatarUrl ??
                                   'https://i.pravatar.cc/300?img=47',
                               width: 80.w,
                               height: 80.w,
@@ -317,7 +328,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 ),
                 SizedBox(width: 5.w),
                 Text(
-                  '${ref.watchTr(AppStrings.verified)}: #PAR-8924',
+                  idText,
                   style: TxtStyle.titleLarge(
                     color: AppColors.primaryDark,
                     fontSize: 14.sp,
@@ -365,10 +376,10 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           RichText(
             text: TextSpan(
               text: label,
-              style: TxtStyle.titleLarge(
-                color: AppColors.labelTextColor,
-                fontSize: 15.sp,
-                fontWeight: FontWeight.w700,
+              style: context.titleMedium.copyWith(
+                fontSize: 16.sp,
+                color: AppColors.text,
+                fontWeight: FontWeight.w600,
               ),
               children: [
                 if (requiredField)

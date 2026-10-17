@@ -111,7 +111,12 @@ class AuthUser {
         UserStatus.fromString(statusStr, fallback: UserStatus.active);
 
     return AuthUser(
-      id: json['id'] as String? ?? json['userId'] as String? ?? '',
+      id: json['id'] as String? ??
+          json['userId'] as String? ??
+          json['teacherId'] as String? ??
+          json['parentId'] as String? ??
+          json['code'] as String? ??
+          '',
       fullName: json['fullName'] as String? ?? json['name'] as String? ?? '',
       email: json['email'] as String? ?? '',
       phone: json['phone'] as String?,

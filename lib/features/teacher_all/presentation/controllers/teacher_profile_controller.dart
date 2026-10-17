@@ -64,6 +64,7 @@ class TeacherProfileController extends Notifier<TeacherProfileState> {
         ref.watch(languageProvider).valueOrNull?.language.label ?? 'English';
 
     final initialProfile = TeacherProfileData(
+      id: authUser?.id ?? '',
       name: authUser?.fullName.isNotEmpty == true
           ? authUser!.fullName
           : 'Educator',
@@ -157,6 +158,7 @@ class TeacherProfileController extends Notifier<TeacherProfileState> {
 
   void _applyProfile(TeacherProfileEntity entity) {
     final updatedData = state.profile.copyWith(
+      id: entity.userId,
       name: entity.fullName,
       email: entity.email,
       phone: entity.phone,

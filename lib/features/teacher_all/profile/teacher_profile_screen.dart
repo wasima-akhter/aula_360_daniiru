@@ -1,3 +1,4 @@
+import '../../auth/presentation/controllers/auth_controller.dart';
 import '../../parent_all/helper/parent_widgets.dart';
 import '../../share/component/logout_btn.dart';
 import '../../share/export/screen_export.dart';
@@ -14,6 +15,14 @@ class TeacherProfileScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(teacherProfileControllerProvider);
     final profile = state.profile;
+    final authUser = ref.watch(authControllerProvider).user;
+    final teacherId = profile.id.trim().isNotEmpty
+        ? profile.id.trim()
+        : (authUser?.id.trim() ?? '');
+    final hasId = teacherId.isNotEmpty;
+    final idText = hasId
+        ? '${ref.watchTr(AppStrings.teacherId)}: ${teacherId.startsWith('#') ? teacherId : '#$teacherId'}'
+        : ref.watchTr(AppStrings.teacherId);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
@@ -48,14 +57,16 @@ class TeacherProfileScreen extends ConsumerWidget {
                         fontSize: 15.sp,
                       ),
                     ),
-                    SizedBox(height: 4.h),
-                    Text(
-                      ref.watchTr(AppStrings.teacherIdBadge),
-                      style: TxtStyle.titleLarge(
-                        color: AppColors.hintTextColor,
-                        fontSize: 14.5.sp,
+                    if (hasId) ...[
+                      SizedBox(height: 4.h),
+                      Text(
+                        idText,
+                        style: TxtStyle.titleLarge(
+                          color: AppColors.hintTextColor,
+                          fontSize: 14.5.sp,
+                        ),
                       ),
-                    ),
+                    ],
                   ],
                 ),
               ),
@@ -68,6 +79,16 @@ class TeacherProfileScreen extends ConsumerWidget {
   // ===============================================================
 
   Widget _profileCard(WidgetRef ref, profile) {
+    final authUser = ref.watch(authControllerProvider).user;
+    final teacherId = ((profile.id ?? '') as String).trim().isNotEmpty
+        ? (profile.id as String).trim()
+        : (authUser?.id.trim() ?? '');
+    final hasId = teacherId.isNotEmpty;
+    final badgeText = ref.watchTr(AppStrings.verified);
+    // hasId
+    //     ? '${ref.watchTr(AppStrings.teacherId)}: ${teacherId.startsWith('#') ? teacherId : '#$teacherId'}'
+    //     : ref.watchTr(AppStrings.teacherId);
+
     return Container(
       width: double.infinity,
       padding: EdgeInsets.fromLTRB(15.w, 18.h, 15.w, 15.h),
@@ -159,7 +180,7 @@ class TeacherProfileScreen extends ConsumerWidget {
                 ),
                 SizedBox(width: 5.w),
                 Text(
-                  ref.watchTr(AppStrings.teacherIdBadge),
+                  badgeText,
                   style: TxtStyle.titleLarge(
                     color: AppColors.primaryDark,
                     fontSize: 14.5.sp,
