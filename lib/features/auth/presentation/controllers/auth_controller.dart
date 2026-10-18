@@ -7,6 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/errors/app_error_resolver.dart';
 import '../../../../core/network/api_exception.dart';
 import '../../../../core/service/language/language_provider.dart';
+import '../../../../core/services/notification/push_notification_service.dart';
+import '../../../../core/session/session_manager.dart';
 import '../../../../core/storage/storage_provider.dart';
 import '../../../../utils/enum/app_enum.dart';
 import '../../../nav/user_role/user_role_provider.dart';
@@ -26,6 +28,13 @@ class AuthController extends Notifier<AuthState> {
   AuthState build() {
     final repository = ref.watch(authRepositoryProvider);
     final storageService = ref.watch(storageServiceProvider);
+    final sessionManager = ref.watch(sessionManagerProvider);
+
+    sessionManager.registerAuthResetCallback(_onSessionExpired);
+    ref.onDispose(() {
+      sessionManager.unregisterAuthResetCallback(_onSessionExpired);
+    });
+
     final user = repository.getCurrentUser();
     final rememberMe = storageService.rememberMe;
 
@@ -47,6 +56,11 @@ class AuthController extends Notifier<AuthState> {
     );
   }
 
+  void _onSessionExpired() {
+    ref.read(userRoleProvider.notifier).clearRole();
+    state = const AuthState(status: AuthStatus.unauthenticated);
+  }
+
   UserFriendlyMessage _resolveError(Object error) {
     final langCode =
         ref.read(languageProvider).valueOrNull?.languageCode ?? 'en';
@@ -61,7 +75,11 @@ class AuthController extends Notifier<AuthState> {
       userMessage: null,
     );
     try {
-      final user = await ref.read(checkSessionUseCaseProvider).call();
+      final fcmToken = await ref
+          .read(pushNotificationServiceProvider)
+          .getCachedOrFetchToken();
+      final user =
+          await ref.read(checkSessionUseCaseProvider).call(fcmToken: fcmToken);
       if (user != null) {
         if (user.role == UserRole.teacher) {
           ref.read(userRoleProvider.notifier).loginAsTeacher();
@@ -125,6 +143,11 @@ class AuthController extends Notifier<AuthState> {
       final deviceIdentifier = await storageService
           .getOrCreateDeviceIdentifier();
 
+      // Retrieve FCM Push Token if already available without prompting prematurely before the soft primer
+      final fcmToken = await ref
+          .read(pushNotificationServiceProvider)
+          .getCachedOrFetchToken();
+
       final session = await ref
           .read(loginUseCaseProvider)
           .call(
@@ -133,6 +156,7 @@ class AuthController extends Notifier<AuthState> {
             role: role,
             deviceIdentifier: deviceIdentifier,
             rememberMe: rememberMe,
+            fcmToken: fcmToken,
           );
 
       ref.read(userRoleProvider.notifier).setRole(session.user.role);
@@ -355,9 +379,15 @@ class AuthController extends Notifier<AuthState> {
         await storageService.saveUserEmail(email.trim());
       }
 
-      final session = await ref
-          .read(verifyOtpUseCaseProvider)
-          .call(otp: otp, deviceIdentifier: deviceIdentifier);
+      final fcmToken = await ref
+          .read(pushNotificationServiceProvider)
+          .getCachedOrFetchToken();
+
+      final session = await ref.read(verifyOtpUseCaseProvider).call(
+            otp: otp,
+            deviceIdentifier: deviceIdentifier,
+            fcmToken: fcmToken,
+          );
 
       ref.read(userRoleProvider.notifier).setRole(session.user.role);
 

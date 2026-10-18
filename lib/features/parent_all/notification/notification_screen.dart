@@ -1,3 +1,4 @@
+import '../../../core/services/notification/widgets/notification_permission_banner.dart';
 import '../../share/export/screen_export.dart';
 import '../presentation/controllers/parent_notifications_controller.dart';
 import 'widgets/notification_tile.dart';
@@ -52,6 +53,9 @@ class NotificationsScreen extends ConsumerWidget {
             slivers: [
               SliverToBoxAdapter(
                 child: _buildHeader(context, ref, unreadCount),
+              ),
+              const SliverToBoxAdapter(
+                child: NotificationPermissionBanner(),
               ),
               if (state.isLoading && notifications.isEmpty)
                 const SliverFillRemaining(

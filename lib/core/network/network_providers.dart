@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../config/app_config.dart';
+import '../session/session_manager.dart';
 import '../storage/storage_provider.dart';
 import 'api_client.dart';
 import 'dio_client.dart';
@@ -21,7 +22,10 @@ final inFlightRequestInterceptorProvider = Provider<InFlightRequestInterceptor>(
 
 /// Authentication interceptor.
 final authInterceptorProvider = Provider<AuthInterceptor>((ref) {
-  return AuthInterceptor(storageService: ref.watch(storageServiceProvider));
+  return AuthInterceptor(
+    storageService: ref.watch(storageServiceProvider),
+    sessionManager: ref.watch(sessionManagerProvider),
+  );
 });
 
 /// API logging interceptor.

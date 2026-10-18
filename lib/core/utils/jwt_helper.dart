@@ -66,5 +66,16 @@ class JwtHelper {
     final id = payload['id'] ?? payload['userId'] ?? payload['sub'];
     return id is String ? id.trim() : null;
   }
+
+  /// Checks whether a JWT token is expired using its 'exp' claim.
+  static bool isExpired(String? token) {
+    final cleaned = cleanToken(token);
+    if (cleaned == null) return true;
+    try {
+      return Jwt.isExpired(cleaned);
+    } catch (_) {
+      return true;
+    }
+  }
 }
 

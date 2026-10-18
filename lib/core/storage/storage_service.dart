@@ -71,6 +71,47 @@ class StorageService {
     return _secureStorage.read(key: StorageKeys.refreshToken);
   }
 
+  Future<void> saveFcmToken(String token) async {
+    await _secureStorage.write(key: StorageKeys.fcmToken, value: token);
+  }
+
+  Future<String?> getFcmToken() async {
+    return _secureStorage.read(key: StorageKeys.fcmToken);
+  }
+
+  Future<void> clearFcmToken() async {
+    await _secureStorage.delete(key: StorageKeys.fcmToken);
+  }
+
+  // ==============================
+  // Notification Primer State
+  // ==============================
+
+  Future<void> setNotificationPrimerDismissed({bool dismissed = true}) async {
+    await _localStorage.setBool(StorageKeys.notificationPrimerDismissed, dismissed);
+    await _localStorage.setInt(
+      StorageKeys.notificationPrimerDismissedAt,
+      DateTime.now().millisecondsSinceEpoch,
+    );
+  }
+
+  bool isNotificationPrimerDismissedRecently({Duration cooldown = const Duration(days: 7)}) {
+    final isDismissed = _localStorage.getBool(StorageKeys.notificationPrimerDismissed) ?? false;
+    if (!isDismissed) return false;
+
+    final dismissedAtMs = _localStorage.getInt(StorageKeys.notificationPrimerDismissedAt);
+    if (dismissedAtMs == null) return isDismissed;
+
+    final dismissedAt = DateTime.fromMillisecondsSinceEpoch(dismissedAtMs);
+    final hasElapsed = DateTime.now().difference(dismissedAt) >= cooldown;
+    return !hasElapsed;
+  }
+
+  Future<void> resetNotificationPrimerDismissal() async {
+    await _localStorage.remove(StorageKeys.notificationPrimerDismissed);
+    await _localStorage.remove(StorageKeys.notificationPrimerDismissedAt);
+  }
+
   Future<void> clearAuthentication() async {
     await _secureStorage.delete(key: StorageKeys.accessToken);
     await _secureStorage.delete(key: StorageKeys.otpPageToken);

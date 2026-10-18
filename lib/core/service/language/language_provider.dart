@@ -448,6 +448,16 @@ const Map<String, String> _englishFallback = {
   "no_attendance_data": "No attendance records available",
   "today": "Today",
   "otp_resend_success": "Verification code resent to your email.",
+  "notification_primer_title": "Never Miss an Important Update",
+  "notification_primer_subtitle": "Get instant notifications for what matters most at Aula 360.",
+  "notification_primer_benefit_1": "Real-time attendance & schedule updates",
+  "notification_primer_benefit_2": "New report cards, grades & academic alerts",
+  "notification_primer_benefit_3": "Urgent school announcements & payment receipts",
+  "notification_primer_enable_btn": "Turn On Notifications",
+  "notification_primer_later_btn": "Maybe Later",
+  "notification_banner_title": "Push Notifications Are Off",
+  "notification_banner_subtitle": "Enable alerts to stay updated with child progress & school notices.",
+  "notification_banner_enable": "Enable",
 };
 
 const Map<String, String> _spanishFallback = {
@@ -747,4 +757,14 @@ const Map<String, String> _spanishFallback = {
   "no_attendance_data": "No hay registros de asistencia disponibles",
   "today": "Hoy",
   "otp_resend_success": "Código de verificación reenviado a tu correo electrónico.",
+  "notification_primer_title": "No te pierdas ninguna novedad",
+  "notification_primer_subtitle": "Recibe alertas al instante sobre lo más importante en Aula 360.",
+  "notification_primer_benefit_1": "Asistencia en tiempo real y cambios de horario",
+  "notification_primer_benefit_2": "Nuevos boletines de notas, calificaciones y alertas",
+  "notification_primer_benefit_3": "Avisos escolares urgentes y recibos de pago",
+  "notification_primer_enable_btn": "Activar notificaciones",
+  "notification_primer_later_btn": "Ahora no",
+  "notification_banner_title": "Notificaciones desactivadas",
+  "notification_banner_subtitle": "Activa las alertas para mantenerte informado del progreso escolar.",
+  "notification_banner_enable": "Activar",
 };

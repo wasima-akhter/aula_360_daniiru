@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../services/notification/push_notification_service.dart';
 import '../storage/storage_provider.dart';
 
 Future<void> bootstrap({required Widget app}) async {
@@ -31,6 +32,9 @@ Future<void> bootstrap({required Widget app}) async {
   final container = ProviderContainer(
     overrides: [sharedPreferencesProvider.overrideWithValue(sharedPreferences)],
   );
+
+  // Initialize PushNotificationService safely in background
+  container.read(pushNotificationServiceProvider).initialize();
 
   try {
     runApp(UncontrolledProviderScope(container: container, child: app));

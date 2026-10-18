@@ -7,6 +7,7 @@ import 'package:aula360/features/teacher_all/home/teacher_home_screen.dart';
 import 'package:aula360/features/teacher_all/reports/teacher_reports_screen.dart';
 import 'package:aula360/features/teacher_all/students/teacher_students_screen.dart';
 
+import '../../../../core/services/notification/widgets/notification_primer_sheet.dart';
 import '../../../../utils/enum/app_enum.dart';
 import '../../../parent_all/presentation/controllers/parent_notifications_controller.dart';
 import '../../../parent_all/profile/parent_profile_screen.dart';
@@ -35,6 +36,18 @@ class _NavigationPageState extends ConsumerState<NavigationPage> {
             .changeTab(widget.index!.clamp(0, 4));
       });
     }
+
+    // Check and show the Soft In-App Primer after dashboard renders
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkNotificationPrimer();
+    });
+  }
+
+  Future<void> _checkNotificationPrimer() async {
+    // Settle dashboard transition and give user a moment before displaying primer
+    await Future.delayed(const Duration(milliseconds: 700));
+    if (!mounted) return;
+    await NotificationPrimerSheet.showIfAppropriate(context, ref);
   }
 
   @override

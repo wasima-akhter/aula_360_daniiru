@@ -719,4 +719,16 @@ class AppStrings {
   static const String homeworkSubmittedSuccess = 'homework_submitted_success';
   static const String startsInHours = 'starts_in_hours';
   static const String noAttendanceData = 'no_attendance_data';
+
+  // ── Push Notification Primer & Banners ────────────────────────────────────
+  static const String notificationPrimerTitle = 'notification_primer_title';
+  static const String notificationPrimerSubtitle = 'notification_primer_subtitle';
+  static const String notificationPrimerBenefit1 = 'notification_primer_benefit_1';
+  static const String notificationPrimerBenefit2 = 'notification_primer_benefit_2';
+  static const String notificationPrimerBenefit3 = 'notification_primer_benefit_3';
+  static const String notificationPrimerEnableBtn = 'notification_primer_enable_btn';
+  static const String notificationPrimerLaterBtn = 'notification_primer_later_btn';
+  static const String notificationBannerTitle = 'notification_banner_title';
+  static const String notificationBannerSubtitle = 'notification_banner_subtitle';
+  static const String notificationBannerEnable = 'notification_banner_enable';
 }
