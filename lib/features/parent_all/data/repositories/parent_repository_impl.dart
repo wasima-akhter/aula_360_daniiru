@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+
 import '../../../../core/network/network_providers.dart';
 import '../../domain/models/parent_models.dart';
 import '../../domain/repositories/parent_repository.dart';
 import '../datasources/notification_remote_data_source.dart';
+import '../datasources/parent_remote_data_source.dart';
+import '../dtos/add_child_dto.dart';
+import '../dtos/announcement_dto.dart';
+import '../dtos/child_progress_dto.dart';
+import '../dtos/child_schedule_dto.dart';
+import '../dtos/child_teacher_dto.dart';
+import '../dtos/conversation_dto.dart';
+import '../dtos/parent_invoice_dto.dart';
 
 final notificationRemoteDataSourceProvider =
     Provider<NotificationRemoteDataSource>((ref) {
@@ -12,15 +21,29 @@ final notificationRemoteDataSourceProvider =
   return NotificationRemoteDataSourceImpl(client);
 });
 
+final parentRemoteDataSourceProvider = Provider<ParentRemoteDataSource>((ref) {
+  final client = ref.watch(apiClientProvider);
+  return ParentRemoteDataSourceImpl(client);
+});
+
 final parentRepositoryProvider = Provider<ParentRepository>((ref) {
-  final remoteDataSource = ref.watch(notificationRemoteDataSourceProvider);
-  return ParentRepositoryImpl(remoteDataSource);
+  final notificationRemote = ref.watch(notificationRemoteDataSourceProvider);
+  final parentRemote = ref.watch(parentRemoteDataSourceProvider);
+  return ParentRepositoryImpl(
+    notificationRemoteDataSource: notificationRemote,
+    parentRemoteDataSource: parentRemote,
+  );
 });
 
 class ParentRepositoryImpl implements ParentRepository {
-  final NotificationRemoteDataSource? _remoteDataSource;
+  final NotificationRemoteDataSource? notificationRemoteDataSource;
+  final ParentRemoteDataSource? parentRemoteDataSource;
 
-  ParentRepositoryImpl([this._remoteDataSource]);
+  ParentRepositoryImpl({
+    this.notificationRemoteDataSource,
+    this.parentRemoteDataSource,
+  });
+
   List<ChildModel> _children = [
     const ChildModel(
       id: '#STU-4821',
@@ -85,211 +108,239 @@ class ParentRepositoryImpl implements ParentRepository {
           'Lucas mostró excelente participación en la sesión de hoy y aportó reflexiones muy acertadas.',
       initials: 'SV',
     ),
-    ReportModel(
-      dateLabel: 'AYER — MARTES, 23 OCT',
-      subject: 'Matemáticas Avanzadas',
-      teacher: 'D. Roberto Hayes',
-      time: '10:30 – 12:00',
-      category: 'Matemáticas',
-      status: 'Presente',
-      note:
-          'Superó la prueba de factorización de polinomios con nota sobresaliente (98%). Tarea asignada del tema 4.',
-      initials: 'RH',
-    ),
-    ReportModel(
-      dateLabel: 'AYER — MARTES, 23 OCT',
-      subject: 'Física y Química',
-      teacher: 'Dra. Ángela Bennett',
-      time: '14:00 – 15:20',
-      category: 'Ciencias',
-      status: 'Presente',
-      note:
-          'Realizó con éxito la práctica de óptica y refracción en el laboratorio. Cuaderno revisado y firmado.',
-      initials: 'AB',
-    ),
-    ReportModel(
-      dateLabel: 'LUNES, 21 OCT',
-      subject: 'Geografía e Historia',
-      teacher: 'D. Marcos Brody',
-      time: '13:00 – 14:15',
-      category: 'Historia',
-      status: 'Presente',
-      note:
-          'Participación activa en el debate. Excelente preparación con las lecturas asignadas.',
-      initials: 'MB',
-    ),
   ];
 
-  final List<HomeworkModel> _homework = const [
-    HomeworkModel(
-      subject: 'Lengua Castellana y Literatura',
-      teacher: 'Dña. Sarah Vance',
-      period: '3ª Hora',
-      title: 'Borrador: Análisis literario del capítulo 3',
-      description:
-          'Escribe un borrador de 500 palabras evaluando el conflicto y los recursos expresivos.',
-      status: HomeworkStatus.pending,
-      deadline: 'Entrega: 26 Oct',
-      time: '17:00',
-    ),
-    HomeworkModel(
-      subject: 'Matemáticas Avanzadas',
-      teacher: 'D. Roberto Hayes',
-      period: '3ª Hora',
-      title: 'Relación de Problemas: Polinomios y Funciones',
-      description:
-          'Ejercicios 4.2 al 4.5 del libro de texto. Representación gráfica de funciones.',
-      status: HomeworkStatus.pending,
-      deadline: 'Lunes, 29 Oct',
-      time: '08:30',
-    ),
+  final List<HomeworkModel> _homeworkList = const [
     HomeworkModel(
       subject: 'Física y Química',
-      teacher: 'Dra. Ángela Bennett',
-      period: '5ª Hora',
-      title: 'Ficha de Laboratorio: Óptica y Refracción',
+      teacher: 'Dra. Bennett',
+      period: 'T1 - Trimestre 1',
+      title: 'Informe de Laboratorio: Enlaces Químicos',
       description:
-          'Resumir los datos experimentales obtenidos el miércoles y calcular el índice de refracción.',
+          'Redactar la práctica de laboratorio sobre conductividad y tipos de enlace. Incluir conclusiones y gráficas.',
       status: HomeworkStatus.pending,
-      deadline: 'Miércoles, 31 Oct',
+      deadline: '28 Oct',
       time: '23:59',
-    ),
-    HomeworkModel(
-      subject: 'Geografía e Historia',
-      teacher: 'D. Marcos Brody',
-      period: '2ª Hora',
-      title: 'Comentario de Texto: Revolución Industrial',
-      description:
-          'Lectura y comentario sobre testimonios históricos del siglo XIX.',
-      status: HomeworkStatus.completed,
-      deadline: 'Completada: 22 Oct',
-      time: '',
     ),
   ];
 
   List<InvoiceModel> _invoices = [
     const InvoiceModel(
-      id: 'INV-2026-001',
-      concept: 'Mensualidad Octubre 2026 — Lucas & Sophia',
-      monthYear: 'Octubre 2026',
-      amount: 280.00,
-      dueDate: '05 Nov 2026',
+      id: 'INV-2023-001',
+      concept: 'Cuota Mensual Escolar - Octubre 2023',
+      monthYear: 'Octubre 2023',
+      amount: 450.00,
+      dueDate: '31 Oct 2023',
       isPaid: false,
     ),
     const InvoiceModel(
-      id: 'INV-2026-002',
-      concept: 'Material de Laboratorio y Robótica',
-      monthYear: 'Octubre 2026',
-      amount: 45.00,
-      dueDate: '10 Nov 2026',
-      isPaid: false,
-    ),
-    const InvoiceModel(
-      id: 'INV-2026-003',
-      concept: 'Mensualidad Septiembre 2026',
-      monthYear: 'Septiembre 2026',
-      amount: 280.00,
-      dueDate: '05 Oct 2026',
+      id: 'INV-2023-002',
+      concept: 'Cuota Mensual Escolar - Septiembre 2023',
+      monthYear: 'Septiembre 2023',
+      amount: 450.00,
+      dueDate: '30 Sep 2023',
       isPaid: true,
-      paidDate: '02 Oct 2026',
-      receiptNumber: 'REC-9082',
+      paidDate: '28 Sep 2023',
+      receiptNumber: 'REC-98214',
     ),
   ];
 
-  List<ParentNotificationModel> _notifications = [
-    const ParentNotificationModel(
-      id: '1',
-      title: 'Nuevo informe publicado',
-      message:
-          'Dña. Sarah Vance ha publicado el informe de Lengua Castellana de hoy.',
-      timeAgo: 'Hace 25 min',
-      isRead: false,
-      type: 'report',
-    ),
-    const ParentNotificationModel(
-      id: '2',
-      title: 'Asistencia registrada',
-      message: 'Lucas ha entrado puntualmente a las 08:28.',
-      timeAgo: 'Hace 2 horas',
-      isRead: false,
-      type: 'attendance',
-    ),
-    const ParentNotificationModel(
-      id: '3',
-      title: 'Recordatorio de Tarea',
-      message: 'Tarea de Matemáticas Avanzadas vence mañana a las 08:30.',
-      timeAgo: 'Ayer',
-      isRead: true,
-      type: 'homework',
-    ),
-  ];
-
-  final List<ChatMessageModel> _messages = [
-    const ChatMessageModel(
-      id: '1',
-      senderName: 'Dña. Sarah Vance',
-      message:
-          'Hola Eleanor, quería felicitarte por el gran avance de Lucas en literatura.',
-      time: '10:15',
-      isMe: false,
-    ),
-    const ChatMessageModel(
-      id: '2',
-      senderName: 'Eleanor Vance',
-      message: '¡Muchas gracias Sarah! Ha estado repasando mucho en casa.',
-      time: '10:20',
-      isMe: true,
-    ),
-  ];
+  List<ParentNotificationModel> _notifications = [];
+  final List<ChatMessageModel> _messages = [];
+  final Map<String, int> _attendancePercentages = {};
 
   @override
   Future<List<ChildModel>> getChildren() async {
-    await Future.delayed(const Duration(milliseconds: 150));
+    if (parentRemoteDataSource != null) {
+      try {
+        final dtos = await parentRemoteDataSource!.getChildren();
+        if (dtos.isNotEmpty) {
+          _children = dtos.map((dto) => dto.toModel()).toList();
+          return _children;
+        }
+      } catch (_) {
+        // Fall back to cached list
+      }
+    }
+    await Future.delayed(const Duration(milliseconds: 100));
     return _children;
   }
 
   @override
   Future<ChildModel> getChildDetails(String id) async {
-    await Future.delayed(const Duration(milliseconds: 150));
-    return _children.firstWhere(
-      (c) => c.id == id,
-      orElse: () => _children.first,
+    final list = await getChildren();
+    return list.firstWhere((c) => c.id == id, orElse: () => list.first);
+  }
+
+  @override
+  Future<ChildModel> addChild(AddChildDto dto) async {
+    if (parentRemoteDataSource != null) {
+      try {
+        final childDto = await parentRemoteDataSource!.addChild(dto);
+        final model = childDto.toModel();
+        _children.add(model);
+        return model;
+      } catch (e) {
+        // Fall back if remote fails
+      }
+    }
+    final fallback = ChildModel(
+      id: '#STU-${DateTime.now().millisecondsSinceEpoch % 10000}',
+      name: dto.fullName,
+      grade: dto.gradeLevel ?? 'Curso general',
+      room: dto.enrollmentNumber ?? 'Aula general',
+      imageUrl: dto.avatarUrl ??
+          'https://images.unsplash.com/photo-1543610892-0b1f7e6d8ac1?w=400',
+      parentTeacher: 'Tutora asignada',
+      attendance: 100.0,
+      present: 1,
+      absent: 0,
+      late: 0,
+    );
+    _children.add(fallback);
+    return fallback;
+  }
+
+  @override
+  Future<List<ClassModel>> getTodayClasses({String? childId}) async {
+    if (childId != null && parentRemoteDataSource != null) {
+      try {
+        final now = DateTime.now();
+        final startOfDay = DateTime(now.year, now.month, now.day);
+        final endOfDay = DateTime(now.year, now.month, now.day, 23, 59, 59);
+        final sessions = await parentRemoteDataSource!.getChildSchedule(
+          childId,
+          fromDate: startOfDay,
+          toDate: endOfDay,
+        );
+        if (sessions.isNotEmpty) {
+          return sessions.map((s) => s.toClassModel()).toList();
+        }
+      } catch (_) {}
+    }
+    await Future.delayed(const Duration(milliseconds: 100));
+    return _todayClasses;
+  }
+
+  @override
+  Future<List<ClassModel>> getWeeklySchedule(int dayIndex, {String? childId}) async {
+    if (childId != null && parentRemoteDataSource != null) {
+      try {
+        final sessions = await parentRemoteDataSource!.getChildSchedule(childId);
+        if (sessions.isNotEmpty) {
+          return sessions.map((s) => s.toClassModel()).toList();
+        }
+      } catch (_) {}
+    }
+    await Future.delayed(const Duration(milliseconds: 100));
+    return _todayClasses;
+  }
+
+  @override
+  Future<List<ChildScheduleSessionDto>> getChildSchedule(
+    String childId, {
+    DateTime? fromDate,
+    DateTime? toDate,
+  }) async {
+    if (parentRemoteDataSource != null) {
+      try {
+        return await parentRemoteDataSource!.getChildSchedule(
+          childId,
+          fromDate: fromDate,
+          toDate: toDate,
+        );
+      } catch (_) {}
+    }
+    return const [];
+  }
+
+  @override
+  Future<List<ChildTeacherDto>> getChildTeachers(String childId) async {
+    if (parentRemoteDataSource != null) {
+      try {
+        return await parentRemoteDataSource!.getChildTeachers(childId);
+      } catch (_) {}
+    }
+    return const [];
+  }
+
+  @override
+  Future<ChildProgressDto> getChildProgress(String childId) async {
+    if (parentRemoteDataSource != null) {
+      try {
+        final progress = await parentRemoteDataSource!.getChildProgress(childId);
+        _attendancePercentages[childId] = progress.attendancePercentage.toInt();
+        return progress;
+      } catch (_) {}
+    }
+    return const ChildProgressDto(
+      attendancePercentage: 95,
+      homeworkCompletionPercentage: 88,
+      subjects: ['Matemáticas Avanzadas', 'Física y Química', 'Lengua Castellana'],
     );
   }
 
   @override
-  Future<void> addChild(ChildModel child) async {
-    await Future.delayed(const Duration(milliseconds: 300));
-    _children = [..._children, child];
-  }
-
-  @override
-  Future<List<ClassModel>> getTodayClasses() async {
-    await Future.delayed(const Duration(milliseconds: 150));
-    return _todayClasses;
-  }
-
-  @override
-  Future<List<ClassModel>> getWeeklySchedule(int dayIndex) async {
-    await Future.delayed(const Duration(milliseconds: 150));
-    return _todayClasses;
-  }
-
-  @override
   Future<List<ReportModel>> getReports() async {
-    await Future.delayed(const Duration(milliseconds: 150));
+    if (_children.isNotEmpty) {
+      return getChildReports(_children.first.id);
+    }
+    await Future.delayed(const Duration(milliseconds: 100));
+    return _reports;
+  }
+
+  @override
+  Future<List<ReportModel>> getChildReports(String childId) async {
+    if (parentRemoteDataSource != null) {
+      try {
+        final dtos = await parentRemoteDataSource!.getChildReports(childId);
+        if (dtos.isNotEmpty) {
+          return dtos.map((d) => d.toModel()).toList();
+        }
+      } catch (_) {}
+    }
+    await Future.delayed(const Duration(milliseconds: 100));
     return _reports;
   }
 
   @override
   Future<List<HomeworkModel>> getHomeworkList() async {
-    await Future.delayed(const Duration(milliseconds: 150));
-    return _homework;
+    if (_children.isNotEmpty) {
+      return getChildHomework(_children.first.id);
+    }
+    await Future.delayed(const Duration(milliseconds: 100));
+    return _homeworkList;
+  }
+
+  @override
+  Future<List<HomeworkModel>> getChildHomework(String childId) async {
+    if (parentRemoteDataSource != null) {
+      try {
+        final dtos = await parentRemoteDataSource!.getChildHomework(childId);
+        if (dtos.isNotEmpty) {
+          return dtos.map((d) => d.toModel()).toList();
+        }
+      } catch (_) {}
+    }
+    await Future.delayed(const Duration(milliseconds: 100));
+    return _homeworkList;
   }
 
   @override
   Future<List<AttendanceRecord>> getAttendanceHistory(String childId) async {
-    await Future.delayed(const Duration(milliseconds: 150));
+    if (parentRemoteDataSource != null) {
+      try {
+        final (meta, dtos) =
+            await parentRemoteDataSource!.getChildAttendance(childId);
+        if (meta != null) {
+          _attendancePercentages[childId] = meta.percentage;
+        }
+        if (dtos.isNotEmpty) {
+          return dtos.map((d) => d.toRecord()).toList();
+        }
+      } catch (_) {}
+    }
+
     final now = DateTime.now();
     return [
       AttendanceRecord(
@@ -300,49 +351,61 @@ class ParentRepositoryImpl implements ParentRepository {
       ),
       AttendanceRecord(
         date: DateFormat('d MMM').format(now.subtract(const Duration(days: 1))),
-        dayName: DateFormat(
-          'EEEE',
-        ).format(now.subtract(const Duration(days: 1))),
+        dayName: DateFormat('EEEE').format(now.subtract(const Duration(days: 1))),
         status: AttendanceStatus.present,
         checkInTime: '08:25',
       ),
       AttendanceRecord(
         date: DateFormat('d MMM').format(now.subtract(const Duration(days: 2))),
-        dayName: DateFormat(
-          'EEEE',
-        ).format(now.subtract(const Duration(days: 2))),
+        dayName: DateFormat('EEEE').format(now.subtract(const Duration(days: 2))),
         status: AttendanceStatus.late,
         checkInTime: '08:42',
         note: '12 min',
-      ),
-      AttendanceRecord(
-        date: DateFormat('d MMM').format(now.subtract(const Duration(days: 3))),
-        dayName: DateFormat(
-          'EEEE',
-        ).format(now.subtract(const Duration(days: 3))),
-        status: AttendanceStatus.present,
-        checkInTime: '08:29',
-      ),
-      AttendanceRecord(
-        date: DateFormat('d MMM').format(now.subtract(const Duration(days: 4))),
-        dayName: DateFormat(
-          'EEEE',
-        ).format(now.subtract(const Duration(days: 4))),
-        status: AttendanceStatus.excused,
-        checkInTime: '-',
       ),
     ];
   }
 
   @override
-  Future<List<InvoiceModel>> getInvoices() async {
-    await Future.delayed(const Duration(milliseconds: 150));
+  Future<int> getChildAttendancePercentage(String childId) async {
+    if (_attendancePercentages.containsKey(childId)) {
+      return _attendancePercentages[childId]!;
+    }
+    return 96;
+  }
+
+  @override
+  Future<List<InvoiceModel>> getInvoices({String? status}) async {
+    if (parentRemoteDataSource != null) {
+      try {
+        final dtos = await parentRemoteDataSource!.getInvoices(status: status);
+        if (dtos.isNotEmpty) {
+          _invoices = dtos.map((d) => d.toModel()).toList();
+          return _invoices;
+        }
+      } catch (_) {}
+    }
+    await Future.delayed(const Duration(milliseconds: 100));
     return _invoices;
   }
 
   @override
-  Future<void> payInvoice(String invoiceId, String paymentMethod) async {
-    await Future.delayed(const Duration(milliseconds: 400));
+  Future<List<ParentInvoiceDto>> getRawInvoices({String? status}) async {
+    if (parentRemoteDataSource != null) {
+      return parentRemoteDataSource!.getInvoices(status: status);
+    }
+    return const [];
+  }
+
+  @override
+  Future<String?> payInvoice(String invoiceId, [String? paymentMethod]) async {
+    String? clientSecret;
+    if (parentRemoteDataSource != null) {
+      try {
+        clientSecret = await parentRemoteDataSource!.payInvoice(invoiceId);
+      } catch (_) {}
+    }
+
+    // Optimistic local update
     _invoices = _invoices.map((inv) {
       if (inv.id == invoiceId) {
         return inv.copyWith(
@@ -353,23 +416,32 @@ class ParentRepositoryImpl implements ParentRepository {
       }
       return inv;
     }).toList();
+
+    return clientSecret;
   }
 
   @override
   Future<List<ParentNotificationModel>> getNotifications() async {
-    if (_remoteDataSource != null) {
+    if (notificationRemoteDataSource != null) {
       try {
-        final dtos = await _remoteDataSource.getAllNotifications();
+        final dtos = await notificationRemoteDataSource!.getAllNotifications();
         if (dtos.isNotEmpty) {
           _notifications = dtos.map((d) => d.toModel()).toList();
           return _notifications;
         }
-      } catch (_) {
-        // Fall back to cached notifications on error
-      }
+      } catch (_) {}
     }
-    await Future.delayed(const Duration(milliseconds: 150));
     return _notifications;
+  }
+
+  @override
+  Future<int> getUnreadNotificationCount() async {
+    if (notificationRemoteDataSource != null) {
+      try {
+        return await notificationRemoteDataSource!.getUnreadCount();
+      } catch (_) {}
+    }
+    return _notifications.where((n) => !n.isRead).length;
   }
 
   @override
@@ -381,9 +453,9 @@ class ParentRepositoryImpl implements ParentRepository {
       return n;
     }).toList();
 
-    if (_remoteDataSource != null) {
+    if (notificationRemoteDataSource != null) {
       try {
-        await _remoteDataSource.markAsRead(id);
+        await notificationRemoteDataSource!.markAsRead(id);
       } catch (_) {}
     }
   }
@@ -393,22 +465,22 @@ class ParentRepositoryImpl implements ParentRepository {
     _notifications =
         _notifications.map((n) => n.copyWith(isRead: true)).toList();
 
-    if (_remoteDataSource != null) {
+    if (notificationRemoteDataSource != null) {
       try {
-        await _remoteDataSource.markAllAsRead();
+        await notificationRemoteDataSource!.markAllAsRead();
       } catch (_) {}
     }
   }
 
   @override
   Future<List<ChatMessageModel>> getMessages(String teacherId) async {
-    await Future.delayed(const Duration(milliseconds: 150));
+    await Future.delayed(const Duration(milliseconds: 100));
     return _messages;
   }
 
   @override
   Future<void> sendMessage(String teacherId, String message) async {
-    await Future.delayed(const Duration(milliseconds: 200));
+    await Future.delayed(const Duration(milliseconds: 100));
     _messages.add(
       ChatMessageModel(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -419,5 +491,81 @@ class ParentRepositoryImpl implements ParentRepository {
         isMe: true,
       ),
     );
+  }
+
+  @override
+  Future<List<ConversationDto>> getConversations() async {
+    if (parentRemoteDataSource != null) {
+      try {
+        return await parentRemoteDataSource!.getConversations();
+      } catch (_) {}
+    }
+    return const [];
+  }
+
+  @override
+  Future<ChatMessageDto> sendConversationMessage(
+    String conversationId,
+    String body,
+  ) async {
+    if (parentRemoteDataSource != null) {
+      return parentRemoteDataSource!.sendConversationMessage(
+        conversationId,
+        body,
+      );
+    }
+    return ChatMessageDto(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      conversationId: conversationId,
+      senderId: 'me',
+      body: body,
+      sentAt: DateTime.now().toUtc().toIso8601String(),
+    );
+  }
+
+  @override
+  Future<List<AnnouncementDto>> getAnnouncements({
+    int page = 1,
+    int limit = 10,
+  }) async {
+    if (parentRemoteDataSource != null) {
+      try {
+        return await parentRemoteDataSource!.getAnnouncements(
+          page: page,
+          limit: limit,
+        );
+      } catch (_) {}
+    }
+    return const [];
+  }
+
+  @override
+  Future<ConversationDto> createConversation(String targetUserId) async {
+    if (parentRemoteDataSource != null) {
+      return await parentRemoteDataSource!.createConversation(targetUserId);
+    }
+    return ConversationDto(
+      id: 'conv-${DateTime.now().millisecondsSinceEpoch}',
+      type: 'PARENT_ADMIN',
+      unreadCount: 0,
+    );
+  }
+
+  @override
+  Future<List<ChatMessageDto>> getConversationMessages(
+    String conversationId, {
+    int page = 1,
+    int limit = 20,
+  }) async {
+    if (parentRemoteDataSource != null) {
+      try {
+        return await parentRemoteDataSource!.getConversationMessages(
+          conversationId,
+          page: page,
+          limit: limit,
+        );
+      } catch (_) {}
+    }
+    return const [];
   }
 }

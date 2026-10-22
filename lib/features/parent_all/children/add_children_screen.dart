@@ -19,6 +19,7 @@ class _AddChildScreenState extends ConsumerState<AddChildScreen> {
   final fullNameController = TextEditingController();
   final dobController = TextEditingController();
   final studentIdController = TextEditingController();
+  DateTime? _selectedDob;
 
   String gradeKey = AppStrings.primaria2;
   String genderKey = 'male';
@@ -321,6 +322,7 @@ class _AddChildScreenState extends ConsumerState<AddChildScreen> {
 
     if (picked != null) {
       setState(() {
+        _selectedDob = picked;
         dobController.text =
             '${picked.day.toString().padLeft(2, '0')}/'
             '${picked.month.toString().padLeft(2, '0')}/'
@@ -526,17 +528,43 @@ class _AddChildScreenState extends ConsumerState<AddChildScreen> {
     final selectedGrade =
         ref.read(languageProvider).valueOrNull?.tr(gradeKey) ??
         ref.watchTr(gradeKey);
-    await ref
+
+    final gender =
+        genderKey.toLowerCase().contains('female') ? 'Female' : 'Male';
+    final dobIso = _selectedDob?.toUtc().toIso8601String();
+    final enrollmentNumber = studentIdController.text.trim();
+
+    final success = await ref
         .read(parentChildrenControllerProvider.notifier)
         .addChild(
           name: fullNameController.text.trim(),
+          dob: dobIso,
+          gender: gender,
           grade: selectedGrade,
+          enrollmentNumber:
+              enrollmentNumber.isNotEmpty ? enrollmentNumber : null,
           room: 'Aula 2A',
           parentTeacher: parentTeacher,
         );
 
     if (mounted) {
-      context.pop();
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(ref.readTr(AppStrings.childAddedSuccess)),
+            backgroundColor: AppColors.emeraldGreenColor,
+          ),
+        );
+        context.pop();
+      } else {
+        final error = ref.read(parentChildrenControllerProvider).error;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(error ?? 'Error al matricular estudiante'),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
     }
   }
 

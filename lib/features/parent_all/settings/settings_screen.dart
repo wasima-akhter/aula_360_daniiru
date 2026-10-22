@@ -1,4 +1,5 @@
 import '../../share/export/screen_export.dart';
+import 'package:aula360/core/services/biometric/biometric_provider.dart';
 import '../../teacher_all/settings/language_picker.dart';
 import '../presentation/controllers/parent_settings_controller.dart';
 
@@ -15,6 +16,7 @@ class SettingsScreen extends ConsumerWidget {
 
     final settings = ref.watch(parentSettingsControllerProvider);
     final controller = ref.read(parentSettingsControllerProvider.notifier);
+    final biometricState = ref.watch(biometricControllerProvider);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
@@ -29,9 +31,9 @@ class SettingsScreen extends ConsumerWidget {
               _breadcrumb(tr),
               SizedBox(height: 23.h),
 
-              _sectionLabel(tr(AppStrings.settingsSectionAccount)),
+              _sectionLabel(tr(AppStrings.settingsSectionAccountSecurity)),
               SizedBox(height: 8.h),
-              _accountCard(context, tr),
+              _accountCard(context, ref, tr, biometricState),
 
               SizedBox(height: 22.h),
 
@@ -42,6 +44,12 @@ class SettingsScreen extends ConsumerWidget {
               _sectionLabel(tr(AppStrings.settingsSectionNotifications)),
               SizedBox(height: 8.h),
               _notificationCard(tr, settings, controller),
+
+              SizedBox(height: 22.h),
+
+              _sectionLabel(tr(AppStrings.legalTermsAndConditions).split(' ')[0] == 'Términos' ? 'Legal y Políticas' : 'Legal & Policies'),
+              SizedBox(height: 8.h),
+              _legalCard(context, tr),
             ],
           ),
         ),
@@ -120,7 +128,26 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _accountCard(BuildContext context, String Function(String) tr) {
+  Widget _accountCard(
+    BuildContext context,
+    WidgetRef ref,
+    String Function(String) tr,
+    BiometricState biometricState,
+  ) {
+    final isSpanish =
+        ref.read(languageProvider).valueOrNull?.language == AppLanguage.spanish;
+    final biometricIcon =
+        biometricState.sensorLabel.toLowerCase().contains('face')
+            ? Icons.face_rounded
+            : Icons.fingerprint;
+    final biometricSubtitle = !biometricState.isSupported
+        ? (isSpanish
+            ? 'No disponible en este dispositivo'
+            : 'Not supported on this device')
+        : (biometricState.isEnabled
+            ? (isSpanish ? 'Acceso rápido habilitado' : 'Quick access enabled')
+            : tr(AppStrings.settingsSecurityBiometricSub));
+
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -130,6 +157,63 @@ class SettingsScreen extends ConsumerWidget {
       ),
       child: Column(
         children: [
+          _notificationRow(
+            icon: biometricIcon,
+            title: biometricState.isSupported
+                ? biometricState.sensorLabel
+                : tr(AppStrings.settingsSecurityBiometric),
+            subtitle: biometricSubtitle,
+            value: biometricState.isEnabled,
+            onChanged: (val) async {
+              if (!biometricState.isSupported) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      isSpanish
+                          ? 'La biometría no es compatible con este dispositivo'
+                          : 'Biometrics is not supported on this device',
+                      style: TxtStyle.titleLarge(
+                        fontSize: 15.sp,
+                        color: Colors.white,
+                      ),
+                    ),
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+                return;
+              }
+
+              final reason = isSpanish
+                  ? 'Verifique su identidad para configurar el acceso biométrico'
+                  : 'Verify your identity to configure biometric access';
+              final success = await ref
+                  .read(biometricControllerProvider.notifier)
+                  .toggleBiometric(val, verificationReason: reason);
+
+              if (!context.mounted) return;
+
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    success
+                        ? (val
+                            ? tr(AppStrings.settingsBiometricEnabled)
+                            : tr(AppStrings.settingsBiometricDisabled))
+                        : (ref.read(biometricControllerProvider).error ??
+                            (isSpanish
+                                ? 'Error al configurar biometría'
+                                : 'Failed to configure biometrics')),
+                    style: TxtStyle.titleLarge(
+                      fontSize: 15.sp,
+                      color: Colors.white,
+                    ),
+                  ),
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+            },
+          ),
+          _settingsDivider(),
           _settingsRow(
             icon: Icons.lock_outline,
             title: tr(AppStrings.settingsSecurityChangePassword),
@@ -226,6 +310,48 @@ class SettingsScreen extends ConsumerWidget {
             subtitle: tr(AppStrings.settingsNotifAttendanceAlertsSub),
             value: settings.attendanceAlerts,
             onChanged: (value) => controller.toggleAttendanceAlerts(value),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _legalCard(BuildContext context, String Function(String) tr) {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(9.r),
+        border: Border.all(color: AppColors.border),
+      ),
+      child: Column(
+        children: [
+          _settingsRow(
+            icon: Icons.description_outlined,
+            title: tr(AppStrings.legalTermsAndConditions),
+            subtitle: tr(AppStrings.legalTermsAndConditionsSubtitle),
+            onTap: () => context.push(RoutePath.termsAndConditionsScreen.addBasePath),
+          ),
+          _settingsDivider(),
+          _settingsRow(
+            icon: Icons.privacy_tip_outlined,
+            title: tr(AppStrings.legalPrivacyPolicy),
+            subtitle: tr(AppStrings.legalPrivacyPolicySubtitle),
+            onTap: () => context.push(RoutePath.privacyPolicyScreen.addBasePath),
+          ),
+          _settingsDivider(),
+          _settingsRow(
+            icon: Icons.info_outline,
+            title: tr(AppStrings.legalAboutUs),
+            subtitle: tr(AppStrings.legalAboutUsSubtitle),
+            onTap: () => context.push(RoutePath.aboutUsScreen.addBasePath),
+          ),
+          _settingsDivider(),
+          _settingsRow(
+            icon: Icons.security_outlined,
+            title: tr(AppStrings.legalDataProtection),
+            subtitle: tr(AppStrings.legalDataProtectionSubtitle),
+            onTap: () => context.push(RoutePath.dataProtectionScreen.addBasePath),
           ),
         ],
       ),

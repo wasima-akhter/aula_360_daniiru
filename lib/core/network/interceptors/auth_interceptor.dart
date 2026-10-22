@@ -118,18 +118,21 @@ class AuthInterceptor extends Interceptor {
   }
 
   bool _isPublicEndpoint(String path) {
+    if (path.contains('/legal/')) return true;
     const publicEndpoints = <String>{
       ApiConstants.signup,
       ApiConstants.login,
       ApiConstants.forgotPassword,
       ApiConstants.resetPassword,
       ApiConstants.recoverFind,
+      ApiConstants.legal,
     };
 
     return publicEndpoints.any((endpoint) => path.endsWith(endpoint));
   }
 
   bool _isExcludedFromSessionExpiry(String path) {
+    if (path.contains('/legal/')) return true;
     const excluded = <String>{
       ApiConstants.signup,
       ApiConstants.login,
@@ -141,6 +144,7 @@ class AuthInterceptor extends Interceptor {
       ApiConstants.recoverResend,
       ApiConstants.recoverVerify,
       ApiConstants.recoverReset,
+      ApiConstants.legal,
     };
 
     return excluded.any((endpoint) => path.endsWith(endpoint));

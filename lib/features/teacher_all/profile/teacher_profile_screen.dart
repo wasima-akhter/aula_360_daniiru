@@ -1,8 +1,7 @@
-import '../../auth/presentation/controllers/auth_controller.dart';
 import '../../parent_all/helper/parent_widgets.dart';
 import '../../share/component/logout_btn.dart';
 import '../../share/export/screen_export.dart';
-import '../presentation/controllers/teacher_profile_controller.dart';
+import 'presentation/controllers/teacher_profile_controller.dart';
 
 /// ===============================================================
 /// PROFILE SCREEN
@@ -15,14 +14,7 @@ class TeacherProfileScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(teacherProfileControllerProvider);
     final profile = state.profile;
-    final authUser = ref.watch(authControllerProvider).user;
-    final teacherId = profile.id.trim().isNotEmpty
-        ? profile.id.trim()
-        : (authUser?.id.trim() ?? '');
-    final hasId = teacherId.isNotEmpty;
-    final idText = hasId
-        ? '${ref.watchTr(AppStrings.teacherId)}: ${teacherId.startsWith('#') ? teacherId : '#$teacherId'}'
-        : ref.watchTr(AppStrings.teacherId);
+
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
@@ -79,11 +71,6 @@ class TeacherProfileScreen extends ConsumerWidget {
   // ===============================================================
 
   Widget _profileCard(WidgetRef ref, profile) {
-    final authUser = ref.watch(authControllerProvider).user;
-    final teacherId = ((profile.id ?? '') as String).trim().isNotEmpty
-        ? (profile.id as String).trim()
-        : (authUser?.id.trim() ?? '');
-    final hasId = teacherId.isNotEmpty;
     final badgeText = ref.watchTr(AppStrings.verified);
     // hasId
     //     ? '${ref.watchTr(AppStrings.teacherId)}: ${teacherId.startsWith('#') ? teacherId : '#$teacherId'}'

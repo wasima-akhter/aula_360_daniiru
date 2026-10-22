@@ -2,7 +2,7 @@ import '../../parent_all/helper/parent_home_helper.dart';
 import '../../share/export/screen_export.dart';
 import '../helper/teacher_enums.dart';
 import '../helper/teacher_models.dart';
-import '../presentation/controllers/teacher_students_controller.dart';
+import 'presentation/controllers/teacher_students_controller.dart';
 
 /// ===============================================================
 /// TEACHER STUDENTS SCREEN
@@ -25,23 +25,33 @@ class TeacherStudentsScreen extends ConsumerWidget {
       ),
       body: state.isLoading
           ? const Center(child: CircularProgressIndicator())
-          : Column(
-              children: [
-                _searchSection(ref, controller),
-                _filterSection(ref, state, controller),
-                Expanded(
-                  child: ListView(
-                    physics: const BouncingScrollPhysics(),
-                    padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 30.h),
+          : state.error != null
+              ? _errorView(ref, state.error!, controller)
+              : RefreshIndicator(
+                  onRefresh: controller.refresh,
+                  child: Column(
                     children: [
-                      _rosterHeader(ref, state.students),
-                      SizedBox(height: 7.h),
-                      _studentList(context, ref, filteredStudents),
+                      _searchSection(ref, controller),
+                      _filterSection(ref, state, controller),
+                      Expanded(
+                        child: filteredStudents.isEmpty
+                            ? _emptyView(ref, controller)
+                            : ListView(
+                                physics: const AlwaysScrollableScrollPhysics(
+                                  parent: BouncingScrollPhysics(),
+                                ),
+                                padding:
+                                    EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 30.h),
+                                children: [
+                                  _rosterHeader(ref, state.students),
+                                  SizedBox(height: 7.h),
+                                  _studentList(context, ref, filteredStudents),
+                                ],
+                              ),
+                      ),
                     ],
                   ),
                 ),
-              ],
-            ),
     );
   }
 
@@ -220,7 +230,7 @@ class TeacherStudentsScreen extends ConsumerWidget {
   }) {
     return InkWell(
       onTap: () {
-        context.push(RoutePath.teacherStudentDetail);
+        context.push(RoutePath.teacherStudentDetail, extra: student.id);
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 11.w, vertical: 10.h),
@@ -291,21 +301,41 @@ class TeacherStudentsScreen extends ConsumerWidget {
     return Stack(
       children: [
         Container(
-          width: 36.w,
-          height: 36.w,
+          width: 38.w,
+          height: 38.w,
           decoration: const BoxDecoration(
             shape: BoxShape.circle,
             color: Color(0xffe8edf5),
           ),
-          child: Center(
-            child: Text(
-              student.initials,
-              style: TxtStyle.titleLarge(
-                color: AppColors.primaryDark,
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
+          child: ClipOval(
+            child: (student.avatarUrl != null && student.avatarUrl!.isNotEmpty)
+                ? CustomNetworkImage(
+                    imageUrl: student.avatarUrl!,
+                    fit: BoxFit.cover,
+                    width: 38.w,
+                    height: 38.w,
+                    boxShape: BoxShape.circle,
+                    errorWidget: Center(
+                      child: Text(
+                        student.initials,
+                        style: TxtStyle.titleLarge(
+                          color: AppColors.primaryDark,
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  )
+                : Center(
+                    child: Text(
+                      student.initials,
+                      style: TxtStyle.titleLarge(
+                        color: AppColors.primaryDark,
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
           ),
         ),
         Positioned(
@@ -350,6 +380,112 @@ class TeacherStudentsScreen extends ConsumerWidget {
             ),
           ),
       ],
+    );
+  }
+
+  Widget _errorView(
+    WidgetRef ref,
+    String error,
+    TeacherStudentsController controller,
+  ) {
+    final isSpanish = ref.watch(languageProvider).valueOrNull?.language ==
+        AppLanguage.spanish;
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.all(24.w),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.error_outline_rounded,
+              size: 48.sp,
+              color: AppColors.redColor,
+            ),
+            SizedBox(height: 12.h),
+            Text(
+              isSpanish
+                  ? 'Error al cargar estudiantes'
+                  : 'Failed to load students',
+              style: TxtStyle.titleLarge(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.w700,
+                color: AppColors.text,
+              ),
+            ),
+            SizedBox(height: 6.h),
+            Text(
+              error,
+              textAlign: TextAlign.center,
+              style: TxtStyle.bodyMedium(
+                fontSize: 14.sp,
+                color: AppColors.subtitleTextColor,
+              ),
+            ),
+            SizedBox(height: 16.h),
+            ElevatedButton.icon(
+              onPressed: () => controller.refresh(),
+              icon: const Icon(Icons.refresh_rounded, size: 18),
+              label: Text(
+                isSpanish ? 'Reintentar' : 'Retry',
+                style: TxtStyle.bodyMedium(
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primaryDark,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _emptyView(
+    WidgetRef ref,
+    TeacherStudentsController controller,
+  ) {
+    final tr = ref.watchTr;
+    final isSpanish = ref.watch(languageProvider).valueOrNull?.language ==
+        AppLanguage.spanish;
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.all(24.w),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.people_outline_rounded,
+              size: 48.sp,
+              color: AppColors.subtitleTextColor,
+            ),
+            SizedBox(height: 12.h),
+            Text(
+              tr(AppStrings.noStudentsFound),
+              style: TxtStyle.titleLarge(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.w700,
+                color: AppColors.text,
+              ),
+            ),
+            SizedBox(height: 6.h),
+            Text(
+              isSpanish
+                  ? 'No hay alumnos que coincidan con los filtros actuales.'
+                  : 'No students match your current search or filter.',
+              textAlign: TextAlign.center,
+              style: TxtStyle.bodyMedium(
+                fontSize: 14.sp,
+                color: AppColors.subtitleTextColor,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -4,14 +4,17 @@ import '../../auth/presentation/controllers/auth_controller.dart';
 import '../../parent_all/helper/parent_home_helper.dart';
 import '../../share/export/screen_export.dart';
 import '../helper/teacher_enums.dart';
-import '../presentation/controllers/teacher_reports_controller.dart';
+import '../reports/presentation/controllers/teacher_reports_controller.dart';
+import 'presentation/controllers/teacher_attendance_controller.dart';
 
 /// ===============================================================
 /// 2. POST CLASS REPORT SCREEN
 /// ===============================================================
 
 class TeacherPostClassReportScreen extends ConsumerStatefulWidget {
-  const TeacherPostClassReportScreen({super.key});
+  final String? sessionId;
+
+  const TeacherPostClassReportScreen({super.key, this.sessionId});
 
   @override
   ConsumerState<TeacherPostClassReportScreen> createState() =>
@@ -44,6 +47,7 @@ class _TeacherPostClassReportScreenState
     final formController = ref.read(
       teacherReportFormControllerProvider.notifier,
     );
+    final attendanceState = ref.watch(teacherAttendanceControllerProvider);
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -153,9 +157,10 @@ class _TeacherPostClassReportScreenState
               SizedBox(
                 width: double.infinity,
                 child: AulaPrimaryButton(
-                  onTap: () {
-                    context.push(RoutePath.teacherReportSubmitted);
-                  },
+                  isLoading: attendanceState.isEndingSession,
+                  onTap: attendanceState.isEndingSession
+                      ? null
+                      : () => _submitReport(context, formState),
                   text: ref.watchTr(AppStrings.sendReportBtn),
                   trailing: Icon(
                     Icons.arrow_forward_rounded,
@@ -169,6 +174,58 @@ class _TeacherPostClassReportScreenState
         ),
       ),
     );
+  }
+
+  Future<void> _submitReport(
+    BuildContext context,
+    TeacherReportFormState formState,
+  ) async {
+    final attendanceController =
+        ref.read(teacherAttendanceControllerProvider.notifier);
+
+    String attitude = 'SATISFACTORY';
+    if (formState.conduct == StudentConduct.excellent) attitude = 'EXCELLENT';
+    if (formState.conduct == StudentConduct.needsAttention) {
+      attitude = 'NEEDS_ATTENTION';
+    }
+
+    // Backend Swagger schema strictly requires: ['MODERATE', 'ON_TRACK', 'HIGH_EFFORT']
+    String effort = 'ON_TRACK';
+    if (formState.effort == WorkEffort.highEffort) effort = 'HIGH_EFFORT';
+    if (formState.effort == WorkEffort.moderate) effort = 'MODERATE';
+
+    final content = formState.homework.isNotEmpty
+        ? formState.homework
+        : 'Session completed';
+
+    final sid = widget.sessionId ?? 'session-current';
+    final success = await attendanceController.endSession(
+      sessionId: sid,
+      contentCovered: content,
+      homeworkAssigned:
+          formState.homework.isEmpty ? null : formState.homework,
+      attitudeRating: attitude,
+      workEffortRating: effort,
+      observations: formState.notes.isEmpty ? null : formState.notes,
+    );
+
+    if (context.mounted) {
+      if (success) {
+        context.push(RoutePath.teacherReportSubmitted);
+      } else {
+        final err =
+            ref.read(teacherAttendanceControllerProvider).endSessionError;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: AppColors.error,
+            content: Text(
+              err ??
+                  'No se pudo finalizar la clase. Revisa la conexión o el estado de la sesión.',
+            ),
+          ),
+        );
+      }
+    }
   }
 
   Widget _classHeader() {

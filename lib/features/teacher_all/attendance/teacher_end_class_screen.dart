@@ -6,7 +6,9 @@ import '../../share/export/screen_export.dart';
 /// ===============================================================
 
 class TeacherEndClassScreen extends ConsumerWidget {
-  const TeacherEndClassScreen({super.key});
+  final String? sessionId;
+
+  const TeacherEndClassScreen({super.key, this.sessionId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -67,7 +69,7 @@ class TeacherEndClassScreen extends ConsumerWidget {
                     width: double.infinity,
                     child: AulaPrimaryButton(
                       onTap: () {
-                        context.push(RoutePath.teacherPostClassReport);
+                        context.push(RoutePath.teacherPostClassReport, extra: sessionId);
                       },
                       text: ref.watchTr(AppStrings.finishClassAndCreateReport),
                       trailing: Icon(

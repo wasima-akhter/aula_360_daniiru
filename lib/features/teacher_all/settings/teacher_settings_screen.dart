@@ -1,5 +1,6 @@
 import '../../share/export/screen_export.dart';
-import '../presentation/controllers/teacher_settings_controller.dart';
+import 'package:aula360/core/services/biometric/biometric_provider.dart';
+import 'presentation/controllers/teacher_settings_controller.dart';
 import 'language_picker.dart';
 
 /// ===============================================================
@@ -21,6 +22,8 @@ class TeacherSettingsScreen extends ConsumerWidget {
     final settingsController = ref.read(
       teacherSettingsControllerProvider.notifier,
     );
+
+    final biometricState = ref.watch(biometricControllerProvider);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
@@ -44,7 +47,23 @@ class TeacherSettingsScreen extends ConsumerWidget {
               SizedBox(height: 22.h),
               _sectionLabel(tr(AppStrings.settingsSectionAccountSecurity)),
               SizedBox(height: 8.h),
-              _securityCard(context, tr, settingsState, settingsController),
+              _securityCard(
+                context,
+                ref,
+                tr,
+                settingsState,
+                settingsController,
+                biometricState,
+              ),
+              SizedBox(height: 22.h),
+              _sectionLabel(
+                tr(AppStrings.legalTermsAndConditions).split(' ')[0] ==
+                        'Términos'
+                    ? 'Legal y Políticas'
+                    : 'Legal & Policies',
+              ),
+              SizedBox(height: 8.h),
+              _legalCard(context, tr),
             ],
           ),
         ),
@@ -238,25 +257,69 @@ class TeacherSettingsScreen extends ConsumerWidget {
 
   Widget _securityCard(
     BuildContext context,
+    WidgetRef ref,
     String Function(String) tr,
     TeacherSettingsState state,
     TeacherSettingsController controller,
+    BiometricState biometricState,
   ) {
+    final isSpanish =
+        ref.read(languageProvider).valueOrNull?.language == AppLanguage.spanish;
+    final biometricIcon =
+        biometricState.sensorLabel.toLowerCase().contains('face')
+            ? Icons.face_rounded
+            : Icons.fingerprint;
+    final biometricSubtitle = !biometricState.isSupported
+        ? (isSpanish
+            ? 'No disponible en este dispositivo'
+            : 'Not supported on this device')
+        : (biometricState.isEnabled
+            ? (isSpanish ? 'Acceso rápido habilitado' : 'Quick access enabled')
+            : tr(AppStrings.settingsSecurityBiometricSub));
+
     return _card(
       child: Column(
         children: [
           _switchRow(
-            icon: Icons.fingerprint,
-            title: tr(AppStrings.settingsSecurityBiometric),
-            subtitle: tr(AppStrings.settingsSecurityBiometricSub),
-            value: false,
-            onChanged: (val) {
-              _showMessage(
-                context,
-                val
-                    ? tr(AppStrings.settingsBiometricEnabled)
-                    : tr(AppStrings.settingsBiometricDisabled),
-              );
+            icon: biometricIcon,
+            title: biometricState.isSupported
+                ? biometricState.sensorLabel
+                : tr(AppStrings.settingsSecurityBiometric),
+            subtitle: biometricSubtitle,
+            value: biometricState.isEnabled,
+            onChanged: (val) async {
+              if (!biometricState.isSupported) {
+                _showMessage(
+                  context,
+                  isSpanish
+                      ? 'La biometría no es compatible con este dispositivo'
+                      : 'Biometrics is not supported on this device',
+                );
+                return;
+              }
+
+              final reason = isSpanish
+                  ? 'Verifique su identidad para configurar el acceso biométrico'
+                  : 'Verify your identity to configure biometric access';
+              final success = await ref
+                  .read(biometricControllerProvider.notifier)
+                  .toggleBiometric(val, verificationReason: reason);
+
+              if (!context.mounted) return;
+
+              if (success) {
+                _showMessage(
+                  context,
+                  val
+                      ? tr(AppStrings.settingsBiometricEnabled)
+                      : tr(AppStrings.settingsBiometricDisabled),
+                );
+              } else {
+                final err = ref.read(biometricControllerProvider).error;
+                if (err != null && err.isNotEmpty) {
+                  _showMessage(context, err);
+                }
+              }
             },
           ),
           _divider(),
@@ -268,6 +331,8 @@ class TeacherSettingsScreen extends ConsumerWidget {
               context.push(RoutePath.changePassword);
             },
           ),
+
+          /*
           _divider(),
           _settingsRow(
             icon: Icons.devices_outlined,
@@ -302,11 +367,52 @@ class TeacherSettingsScreen extends ConsumerWidget {
             ),
             onTap: () => _showActiveSessions(context, tr),
           ),
+*/
         ],
       ),
     );
   }
 
+  Widget _legalCard(BuildContext context, String Function(String) tr) {
+    return _card(
+      child: Column(
+        children: [
+          _settingsRow(
+            icon: Icons.description_outlined,
+            title: tr(AppStrings.legalTermsAndConditions),
+            subtitle: tr(AppStrings.legalTermsAndConditionsSubtitle),
+            onTap: () =>
+                context.push(RoutePath.termsAndConditionsScreen.addBasePath),
+          ),
+          _divider(),
+          _settingsRow(
+            icon: Icons.privacy_tip_outlined,
+            title: tr(AppStrings.legalPrivacyPolicy),
+            subtitle: tr(AppStrings.legalPrivacyPolicySubtitle),
+            onTap: () =>
+                context.push(RoutePath.privacyPolicyScreen.addBasePath),
+          ),
+          _divider(),
+          _settingsRow(
+            icon: Icons.info_outline,
+            title: tr(AppStrings.legalAboutUs),
+            subtitle: tr(AppStrings.legalAboutUsSubtitle),
+            onTap: () => context.push(RoutePath.aboutUsScreen.addBasePath),
+          ),
+          _divider(),
+          _settingsRow(
+            icon: Icons.security_outlined,
+            title: tr(AppStrings.legalDataProtection),
+            subtitle: tr(AppStrings.legalDataProtectionSubtitle),
+            onTap: () =>
+                context.push(RoutePath.dataProtectionScreen.addBasePath),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /*
   // ===============================================================
   // ACTIVE SESSIONS
   // ===============================================================
@@ -461,6 +567,7 @@ class TeacherSettingsScreen extends ConsumerWidget {
       ),
     );
   }
+  */
 
   // ===============================================================
   // GENERIC WIDGETS

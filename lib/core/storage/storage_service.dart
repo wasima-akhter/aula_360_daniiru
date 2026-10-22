@@ -246,8 +246,47 @@ class StorageService {
     await _localStorage.clear();
   }
 
+  // ==============================
+  // Biometrics
+  // ==============================
+
+  bool get isBiometricEnabled {
+    return _localStorage.getBool(StorageKeys.isBiometricEnabled) ?? false;
+  }
+
+  Future<void> setBiometricEnabled(bool value) async {
+    await _localStorage.setBool(StorageKeys.isBiometricEnabled, value);
+    if (!value) {
+      await clearBiometricToken();
+    }
+  }
+
+  Future<void> saveBiometricToken(String token) async {
+    await _secureStorage.write(
+      key: StorageKeys.biometricAuthToken,
+      value: token,
+    );
+  }
+
+  Future<String?> getBiometricToken() async {
+    return _secureStorage.read(key: StorageKeys.biometricAuthToken);
+  }
+
+  Future<void> clearBiometricToken() async {
+    await _secureStorage.delete(key: StorageKeys.biometricAuthToken);
+  }
+
+  bool get hasShownBiometricOptIn {
+    return _localStorage.getBool(StorageKeys.biometricOptInPromptShown) ?? false;
+  }
+
+  Future<void> setShownBiometricOptIn(bool value) async {
+    await _localStorage.setBool(StorageKeys.biometricOptInPromptShown, value);
+  }
+
   Future<void> clearAll() async {
     await clearAuthentication();
+    await clearBiometricToken();
     await clearLocalData();
   }
 }

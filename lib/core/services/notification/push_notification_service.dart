@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -10,8 +11,7 @@ import '../../storage/storage_service.dart';
 /// Centralized service managing Firebase Cloud Messaging (FCM) push notification tokens,
 /// runtime OS permissions (Android 13+ POST_NOTIFICATIONS & iOS APNs), and token lifecycle.
 class PushNotificationService {
-  PushNotificationService({required StorageService storageService})
-      : _storageService = storageService;
+  PushNotificationService({required this._storageService});
 
   final StorageService _storageService;
   bool _isInitialized = false;
@@ -28,15 +28,17 @@ class PushNotificationService {
 
       // Listen for token rotations while the app is active
       _tokenRefreshSubscription?.cancel();
-      _tokenRefreshSubscription =
-          FirebaseMessaging.instance.onTokenRefresh.listen((newToken) async {
-        debugPrint('FCM token refreshed: $newToken');
-        await _storageService.saveFcmToken(newToken);
-      });
+      _tokenRefreshSubscription = FirebaseMessaging.instance.onTokenRefresh
+          .listen((newToken) async {
+            debugPrint('FCM token refreshed: $newToken');
+            await _storageService.saveFcmToken(newToken);
+          });
 
       _isInitialized = true;
     } catch (e) {
-      debugPrint('PushNotificationService: Firebase initialization skipped/failed: $e');
+      debugPrint(
+        'PushNotificationService: Firebase initialization skipped/failed: $e',
+      );
     }
   }
 
@@ -56,10 +58,14 @@ class PushNotificationService {
         sound: true,
       );
 
-      debugPrint('Notification permission status: ${settings.authorizationStatus}');
+      debugPrint(
+        'Notification permission status: ${settings.authorizationStatus}',
+      );
       return settings;
     } catch (e) {
-      debugPrint('PushNotificationService: Failed to request notification permissions: $e');
+      debugPrint(
+        'PushNotificationService: Failed to request notification permissions: $e',
+      );
       return null;
     }
   }
@@ -68,7 +74,8 @@ class PushNotificationService {
   Future<bool> isPermissionGranted() async {
     try {
       await initialize();
-      final settings = await FirebaseMessaging.instance.getNotificationSettings();
+      final settings = await FirebaseMessaging.instance
+          .getNotificationSettings();
       return settings.authorizationStatus == AuthorizationStatus.authorized ||
           settings.authorizationStatus == AuthorizationStatus.provisional;
     } catch (_) {
@@ -85,9 +92,12 @@ class PushNotificationService {
 
       if (requestPermissionFirst) {
         final settings = await requestPermissions();
-        final isDenied = settings?.authorizationStatus == AuthorizationStatus.denied;
+        final isDenied =
+            settings?.authorizationStatus == AuthorizationStatus.denied;
         if (isDenied) {
-          debugPrint('PushNotificationService: Notification permissions denied by user');
+          debugPrint(
+            'PushNotificationService: Notification permissions denied by user',
+          );
           return null;
         }
       }
@@ -128,7 +138,8 @@ class PushNotificationService {
   Future<AuthorizationStatus> getAuthorizationStatus() async {
     try {
       await initialize();
-      final settings = await FirebaseMessaging.instance.getNotificationSettings();
+      final settings = await FirebaseMessaging.instance
+          .getNotificationSettings();
       return settings.authorizationStatus;
     } catch (_) {
       return AuthorizationStatus.notDetermined;
@@ -140,12 +151,15 @@ class PushNotificationService {
   /// - Returns false if the user previously dismissed the primer within the cooldown window (default 7 days).
   /// - Returns false if the OS permission has already been denied at the system level.
   /// - Returns true when permissions are notDetermined and the user has not recently dismissed the primer.
-  Future<bool> shouldShowSoftPrimer({Duration cooldown = const Duration(days: 7)}) async {
+  Future<bool> shouldShowSoftPrimer({
+    Duration cooldown = const Duration(days: 7),
+  }) async {
     try {
       final isGranted = await isPermissionGranted();
       if (isGranted) return false;
 
-      final isDismissedRecently = _storageService.isNotificationPrimerDismissedRecently(cooldown: cooldown);
+      final isDismissedRecently = _storageService
+          .isNotificationPrimerDismissedRecently(cooldown: cooldown);
       if (isDismissedRecently) return false;
 
       final status = await getAuthorizationStatus();
@@ -171,7 +185,8 @@ class PushNotificationService {
   Future<bool> promptPermissionsFromPrimer() async {
     try {
       final settings = await requestPermissions();
-      final isGranted = settings?.authorizationStatus == AuthorizationStatus.authorized ||
+      final isGranted =
+          settings?.authorizationStatus == AuthorizationStatus.authorized ||
           settings?.authorizationStatus == AuthorizationStatus.provisional;
 
       // Mark primer as dismissed so it doesn't show again
@@ -179,12 +194,16 @@ class PushNotificationService {
 
       if (isGranted) {
         final token = await getFcmToken(requestPermissionFirst: false);
-        debugPrint('PushNotificationService: Permission granted via primer, FCM token: $token');
+        debugPrint(
+          'PushNotificationService: Permission granted via primer, FCM token: $token',
+        );
         return true;
       }
       return false;
     } catch (e) {
-      debugPrint('PushNotificationService: Error requesting permission from primer: $e');
+      debugPrint(
+        'PushNotificationService: Error requesting permission from primer: $e',
+      );
       return false;
     }
   }
@@ -196,8 +215,9 @@ class PushNotificationService {
 }
 
 /// Riverpod provider for [PushNotificationService].
-final pushNotificationServiceProvider =
-    Provider<PushNotificationService>((ref) {
+final pushNotificationServiceProvider = Provider<PushNotificationService>((
+  ref,
+) {
   final storage = ref.watch(storageServiceProvider);
   final service = PushNotificationService(storageService: storage);
   ref.onDispose(service.dispose);

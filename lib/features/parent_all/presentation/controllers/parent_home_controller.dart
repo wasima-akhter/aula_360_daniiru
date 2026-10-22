@@ -49,10 +49,11 @@ class ParentHomeController extends Notifier<ParentHomeState> {
   Future<void> loadDashboardData() async {
     try {
       final children = await _repository.getChildren();
-      final classes = await _repository.getTodayClasses();
+      final activeChild = children.isNotEmpty ? children.first : null;
+      final classes = await _repository.getTodayClasses(childId: activeChild?.id);
       state = state.copyWith(
         todayClasses: classes,
-        selectedChild: children.isNotEmpty ? children.first : null,
+        selectedChild: activeChild,
         isLoading: false,
       );
     } catch (e) {
@@ -60,7 +61,9 @@ class ParentHomeController extends Notifier<ParentHomeState> {
     }
   }
 
-  void selectChild(ChildModel child) {
-    state = state.copyWith(selectedChild: child);
+  Future<void> selectChild(ChildModel child) async {
+    state = state.copyWith(selectedChild: child, isLoading: true);
+    final classes = await _repository.getTodayClasses(childId: child.id);
+    state = state.copyWith(todayClasses: classes, isLoading: false);
   }
 }

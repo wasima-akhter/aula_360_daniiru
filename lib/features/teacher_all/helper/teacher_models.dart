@@ -63,6 +63,8 @@ class TeacherProfileData {
 /// ===============================================================
 
 class AcademyClass {
+  final String id;
+  final String scheduleId;
   final String time;
   final String title;
   final String subtitle;
@@ -70,8 +72,11 @@ class AcademyClass {
   final String group;
   final int students;
   final ClassStatus status;
+  final String rawStatus;
 
   const AcademyClass({
+    this.id = '',
+    this.scheduleId = '',
     required this.time,
     required this.title,
     required this.subtitle,
@@ -79,6 +84,7 @@ class AcademyClass {
     required this.group,
     required this.students,
     required this.status,
+    this.rawStatus = 'SCHEDULED',
   });
 }
 
@@ -87,12 +93,14 @@ class AcademyClass {
 /// ===============================================================
 
 class AttendanceStudent {
+  final String id;
   final String name;
   final String initials;
   final String desk;
   TeacherAttendanceStatus status;
 
   AttendanceStudent({
+    this.id = '',
     required this.name,
     required this.initials,
     required this.desk,
@@ -169,6 +177,8 @@ const List<AcademyClass> upcomingClasses = [
 /// ===============================================================
 
 class HomeScheduleItem {
+  final String id;
+  final String scheduleId;
   final String startTime;
   final String endTime;
   final String title;
@@ -177,8 +187,11 @@ class HomeScheduleItem {
   final String group;
   final int students;
   final HomeClassType type;
+  final String rawStatus;
 
   const HomeScheduleItem({
+    this.id = '',
+    this.scheduleId = '',
     required this.startTime,
     required this.endTime,
     required this.title,
@@ -187,6 +200,7 @@ class HomeScheduleItem {
     required this.group,
     required this.students,
     required this.type,
+    this.rawStatus = 'SCHEDULED',
   });
 }
 
@@ -243,6 +257,9 @@ class TeacherStudent {
   final int attendance;
   final StudentStatus status;
   final String initials;
+  final String? avatarUrl;
+  final String? gradeLevel;
+  final String? enrollmentNumber;
 
   const TeacherStudent({
     required this.name,
@@ -253,6 +270,9 @@ class TeacherStudent {
     required this.attendance,
     required this.status,
     required this.initials,
+    this.avatarUrl,
+    this.gradeLevel,
+    this.enrollmentNumber,
   });
 }
 

@@ -23,6 +23,9 @@ import 'package:go_router/go_router.dart';
 
 import '../../features/auth/presentation/parent_auth/login_screen.dart';
 import '../../features/auth/presentation/parent_auth/sign_up_screen.dart';
+import '../../features/legal/domain/entities/legal_content.dart';
+import '../../features/legal/presentation/screens/legal_content_screen.dart';
+import '../../features/parent_all/notification/notification_screen.dart';
 import '../../features/auth/presentation/screens/active_otp_screen.dart';
 import '../../features/auth/presentation/screens/forget_password_screen.dart';
 import '../../features/auth/presentation/screens/reset_password_screen.dart';
@@ -39,6 +42,7 @@ import '../../features/parent_all/profile/parent_edit_profile_screen.dart';
 import '../../features/parent_all/teacher_info/teacher_info_screen.dart';
 import '../../features/teacher_all/attendance/teacher_attendance_screen.dart';
 import '../../features/teacher_all/classes/teacher_class_detail_screen.dart';
+import '../../features/teacher_all/homework/teacher_homework_screen.dart';
 import '../../features/teacher_all/profile/teacher_edit_profile_screen.dart';
 import '../../features/teacher_all/settings/change_password_screen.dart';
 import '../../features/teacher_all/settings/teacher_settings_screen.dart';
@@ -280,9 +284,10 @@ class AppRouter {
         name: RoutePath.teacherInformation,
         path: RoutePath.teacherInformation.addBasePath,
         pageBuilder: (context, state) {
+          final child = state.extra is ChildModel ? state.extra as ChildModel : null;
           return _buildPageWithAnimation(
             state: state,
-            child: TeacherInformationScreen(),
+            child: TeacherInformationScreen(child: child),
           );
         },
       ),
@@ -366,9 +371,11 @@ class AppRouter {
         name: RoutePath.childProfile,
         path: RoutePath.childProfile.addBasePath,
         pageBuilder: (context, state) {
+          final child =
+              state.extra is ChildModel ? state.extra as ChildModel : null;
           return _buildPageWithAnimation(
             state: state,
-            child: ChildProfileScreen(),
+            child: ChildProfileScreen(child: child),
           );
         },
       ),
@@ -376,9 +383,11 @@ class AppRouter {
         name: RoutePath.attendance,
         path: RoutePath.attendance.addBasePath,
         pageBuilder: (context, state) {
+          final child =
+              state.extra is ChildModel ? state.extra as ChildModel : null;
           return _buildPageWithAnimation(
             state: state,
-            child: AttendanceScreen(),
+            child: AttendanceScreen(child: child),
           );
         },
       ),
@@ -410,9 +419,13 @@ class AppRouter {
         name: RoutePath.teacherAttendance,
         path: RoutePath.teacherAttendance.addBasePath,
         pageBuilder: (context, state) {
+          final extra = state.extra;
+          final sessionId = extra is String
+              ? extra
+              : (extra is AcademyClass ? extra.id : null);
           return _buildPageWithAnimation(
             state: state,
-            child: TeacherAttendanceScreen(),
+            child: TeacherAttendanceScreen(sessionId: sessionId),
           );
         },
       ),
@@ -420,9 +433,11 @@ class AppRouter {
         name: RoutePath.teacherClassDetail,
         path: RoutePath.teacherClassDetail.addBasePath,
         pageBuilder: (context, state) {
+          final extra = state.extra;
+          final academyClass = extra is AcademyClass ? extra : null;
           return _buildPageWithAnimation(
             state: state,
-            child: TeacherClassDetailScreen(),
+            child: TeacherClassDetailScreen(academyClass: academyClass),
           );
         },
       ),
@@ -430,9 +445,11 @@ class AppRouter {
         name: RoutePath.teacherPostClassReport,
         path: RoutePath.teacherPostClassReport.addBasePath,
         pageBuilder: (context, state) {
+          final extra = state.extra;
+          final sessionId = extra is String ? extra : null;
           return _buildPageWithAnimation(
             state: state,
-            child: TeacherPostClassReportScreen(),
+            child: TeacherPostClassReportScreen(sessionId: sessionId),
           );
         },
       ),
@@ -450,9 +467,21 @@ class AppRouter {
         name: RoutePath.teacherEndClass,
         path: RoutePath.teacherEndClass.addBasePath,
         pageBuilder: (context, state) {
+          final extra = state.extra;
+          final sessionId = extra is String ? extra : null;
           return _buildPageWithAnimation(
             state: state,
-            child: TeacherEndClassScreen(),
+            child: TeacherEndClassScreen(sessionId: sessionId),
+          );
+        },
+      ),
+      GoRoute(
+        name: RoutePath.teacherHomework,
+        path: RoutePath.teacherHomework.addBasePath,
+        pageBuilder: (context, state) {
+          return _buildPageWithAnimation(
+            state: state,
+            child: const TeacherHomeworkScreen(),
           );
         },
       ),
@@ -472,9 +501,71 @@ class AppRouter {
         name: RoutePath.teacherStudentDetail,
         path: RoutePath.teacherStudentDetail.addBasePath,
         pageBuilder: (context, state) {
+          final extra = state.extra;
+          final studentId = extra is String
+              ? extra
+              : (extra is TeacherStudent ? extra.id : null);
           return _buildPageWithAnimation(
             state: state,
-            child: TeacherStudentDetailsScreen(),
+            child: TeacherStudentDetailsScreen(studentId: studentId),
+          );
+        },
+      ),
+      GoRoute(
+        name: RoutePath.notification,
+        path: RoutePath.notification.addBasePath,
+        pageBuilder: (context, state) {
+          return _buildPageWithAnimation(
+            state: state,
+            child: const NotificationsScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        name: RoutePath.termsAndConditionsScreen,
+        path: RoutePath.termsAndConditionsScreen.addBasePath,
+        pageBuilder: (context, state) {
+          return _buildPageWithAnimation(
+            state: state,
+            child: const LegalContentScreen(
+              type: LegalContentType.termsAndCondition,
+            ),
+          );
+        },
+      ),
+      GoRoute(
+        name: RoutePath.privacyPolicyScreen,
+        path: RoutePath.privacyPolicyScreen.addBasePath,
+        pageBuilder: (context, state) {
+          return _buildPageWithAnimation(
+            state: state,
+            child: const LegalContentScreen(
+              type: LegalContentType.privacyAndPolicy,
+            ),
+          );
+        },
+      ),
+      GoRoute(
+        name: RoutePath.aboutUsScreen,
+        path: RoutePath.aboutUsScreen.addBasePath,
+        pageBuilder: (context, state) {
+          return _buildPageWithAnimation(
+            state: state,
+            child: const LegalContentScreen(
+              type: LegalContentType.aboutUs,
+            ),
+          );
+        },
+      ),
+      GoRoute(
+        name: RoutePath.dataProtectionScreen,
+        path: RoutePath.dataProtectionScreen.addBasePath,
+        pageBuilder: (context, state) {
+          return _buildPageWithAnimation(
+            state: state,
+            child: const LegalContentScreen(
+              type: LegalContentType.dataProtection,
+            ),
           );
         },
       ),

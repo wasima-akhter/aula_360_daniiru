@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../data/dtos/add_child_dto.dart';
 import '../../data/repositories/parent_repository_impl.dart';
 import '../../domain/models/parent_models.dart';
 import '../../domain/repositories/parent_repository.dart';
@@ -65,31 +66,31 @@ class ParentChildrenController extends Notifier<ParentChildrenState> {
 
   Future<bool> addChild({
     required String name,
-    required String grade,
-    required String room,
-    required String parentTeacher,
+    String? dob,
+    String? gender,
+    String? grade,
+    String? enrollmentNumber,
+    String? avatarUrl,
+    String? room,
+    String? parentTeacher,
   }) async {
-    state = state.copyWith(isLoading: true);
+    state = state.copyWith(isLoading: true, error: null);
     try {
-      final newChild = ChildModel(
-        id: '#STU-${DateTime.now().millisecondsSinceEpoch % 10000}',
-        name: name,
-        grade: grade,
-        room: room,
-        imageUrl:
-            'https://images.unsplash.com/photo-1543610892-0b1f7e6d8ac1?w=400',
-        parentTeacher: parentTeacher,
-        attendance: 100.0,
-        present: 1,
-        absent: 0,
-        late: 0,
+      final dto = AddChildDto(
+        fullName: name,
+        dob: dob,
+        gender: gender,
+        gradeLevel: grade,
+        enrollmentNumber: enrollmentNumber,
+        avatarUrl: avatarUrl,
       );
-      await _repository.addChild(newChild);
+      final newChild = await _repository.addChild(dto);
       final updated = await _repository.getChildren();
       state = state.copyWith(
-        children: updated,
+        children: updated.isNotEmpty ? updated : [...state.children, newChild],
         selectedChild: newChild,
         isLoading: false,
+        error: null,
       );
       return true;
     } catch (e) {

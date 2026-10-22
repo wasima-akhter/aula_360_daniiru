@@ -3,7 +3,7 @@ abstract final class AppConstants {
   // Application
   // ==============================
 
-  static const String appName = 'Tailored Eats';
+  static const String appName = 'Aula360';
 
   // ==============================
   // API

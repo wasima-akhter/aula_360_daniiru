@@ -155,9 +155,7 @@ class _PaymentReceiptScreenState extends ConsumerState<PaymentReceiptScreen> {
                       ),
                     ),
                     IconButton(
-                      onPressed: () => ref
-                          .read(navigationProvider.notifier)
-                          .goToTeacherHome(context),
+                      onPressed: () => Navigator.of(modalContext).pop(),
                       icon: Icon(
                         Icons.close,
                         color: AppColors.subtitleTextColor,
@@ -468,8 +466,7 @@ class _PaymentReceiptScreenState extends ConsumerState<PaymentReceiptScreen> {
       elevation: 0,
       centerTitle: true,
       leading: IconButton(
-        onPressed: () =>
-            ref.read(navigationProvider.notifier).goToTeacherHome(context),
+        onPressed: () => context.go(RoutePath.parentHome.addBasePath),
         icon: Icon(
           Icons.close,
           color: AppColors.subtitleTextColor,

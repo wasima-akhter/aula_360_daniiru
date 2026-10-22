@@ -1,10 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../data/dtos/child_schedule_dto.dart';
 import '../../data/repositories/parent_repository_impl.dart';
 import '../../domain/models/parent_models.dart';
 import '../../domain/repositories/parent_repository.dart';
+import 'parent_children_controller.dart';
 
 class ParentScheduleState {
   final List<ClassModel> classes;
+  final List<ChildScheduleSessionDto> rawSessions;
   final int selectedDayIndex;
   final int selectedChildIndex;
   final bool isLoading;
@@ -12,6 +15,7 @@ class ParentScheduleState {
 
   const ParentScheduleState({
     this.classes = const [],
+    this.rawSessions = const [],
     this.selectedDayIndex = 2,
     this.selectedChildIndex = 0,
     this.isLoading = false,
@@ -20,6 +24,7 @@ class ParentScheduleState {
 
   ParentScheduleState copyWith({
     List<ClassModel>? classes,
+    List<ChildScheduleSessionDto>? rawSessions,
     int? selectedDayIndex,
     int? selectedChildIndex,
     bool? isLoading,
@@ -27,6 +32,7 @@ class ParentScheduleState {
   }) {
     return ParentScheduleState(
       classes: classes ?? this.classes,
+      rawSessions: rawSessions ?? this.rawSessions,
       selectedDayIndex: selectedDayIndex ?? this.selectedDayIndex,
       selectedChildIndex: selectedChildIndex ?? this.selectedChildIndex,
       isLoading: isLoading ?? this.isLoading,
@@ -50,18 +56,43 @@ class ParentScheduleController extends Notifier<ParentScheduleState> {
     return const ParentScheduleState(isLoading: true, selectedDayIndex: 2);
   }
 
-  Future<void> loadSchedule(int dayIndex) async {
-    state = state.copyWith(isLoading: true);
+  Future<void> loadSchedule(int dayIndex, {String? childId}) async {
+    state = state.copyWith(isLoading: true, selectedDayIndex: dayIndex, error: null);
     try {
-      final list = await _repository.getWeeklySchedule(dayIndex);
+      final children = ref.read(parentChildrenControllerProvider).children;
+      final effectiveChildId = childId ??
+          (children.isNotEmpty && state.selectedChildIndex < children.length
+              ? children[state.selectedChildIndex].id
+              : null);
+
+      if (effectiveChildId != null && effectiveChildId.isNotEmpty) {
+        final sessions = await _repository.getChildSchedule(effectiveChildId);
+        if (sessions.isNotEmpty) {
+          state = state.copyWith(
+            rawSessions: sessions,
+            classes: sessions.map((s) => s.toClassModel()).toList(),
+            selectedDayIndex: dayIndex,
+            isLoading: false,
+            error: null,
+          );
+          return;
+        }
+      }
+
+      final list = await _repository.getWeeklySchedule(dayIndex, childId: effectiveChildId);
       state = state.copyWith(
         classes: list,
         selectedDayIndex: dayIndex,
         isLoading: false,
+        error: null,
       );
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
     }
+  }
+
+  Future<void> refresh() async {
+    await loadSchedule(state.selectedDayIndex);
   }
 
   void selectDay(int dayIndex) {
@@ -70,5 +101,6 @@ class ParentScheduleController extends Notifier<ParentScheduleState> {
 
   void selectChild(int childIndex) {
     state = state.copyWith(selectedChildIndex: childIndex);
+    loadSchedule(state.selectedDayIndex);
   }
 }

@@ -1,4 +1,6 @@
+import 'package:aula360/core/services/biometric/biometric_provider.dart';
 import 'package:aula360/core/storage/storage_provider.dart';
+import 'package:aula360/core/storage/storage_service.dart';
 import 'package:aula360/core/utils/jwt_helper.dart';
 import 'package:aula360/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:aula360/features/auth/presentation/screens/active_otp_screen.dart';
@@ -41,6 +43,34 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     final hasValidToken = await storageService.hasValidAccessToken();
 
     if (hasValidToken) {
+      // ---------------------------------------------------------------
+      // Biometric Check on App Launch
+      // If user enabled biometric quick-access, prompt OS verification.
+      // Strictly communicates via pass/fail signal from the OS.
+      // ---------------------------------------------------------------
+      if (storageService.isBiometricEnabled) {
+        final biometricService = ref.read(biometricServiceProvider);
+        final isSupported = await biometricService.isDeviceSupported();
+        if (isSupported) {
+          final isSpanish = ref.read(languageProvider).valueOrNull?.language ==
+              AppLanguage.spanish;
+          final reason = isSpanish
+              ? 'Verifique su identidad para ingresar a Aula 360'
+              : 'Verify your identity to access Aula 360';
+
+          final didAuthenticate = await biometricService.authenticate(
+            localizedReason: reason,
+          );
+
+          if (!didAuthenticate) {
+            // Biometric failed or cancelled: Fall back to manual password login
+            if (!mounted) return;
+            _fallbackToPasswordLogin(storageService);
+            return;
+          }
+        }
+      }
+
       // Decode access token to retrieve and persist email
       final accessToken = await storageService.getAccessToken();
       final emailFromToken = JwtHelper.extractEmail(accessToken);
@@ -146,6 +176,17 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       context.pushReplacement(RoutePath.chooseLanguageScreen);
     } else {
       context.pushReplacement(RoutePath.chooseLanguageScreen);
+    }
+  }
+
+  void _fallbackToPasswordLogin(StorageService storageService) {
+    final roleStr = storageService.getUserRole()?.toLowerCase();
+    if (roleStr == 'teacher') {
+      context.pushReplacement(RoutePath.teacherLoginScreen);
+    } else if (roleStr == 'parent') {
+      context.pushReplacement(RoutePath.loginScreen);
+    } else {
+      context.pushReplacement(RoutePath.chooseRoleScreen);
     }
   }
 

@@ -2,7 +2,7 @@ import '../../parent_all/helper/parent_home_helper.dart';
 import '../../share/export/screen_export.dart';
 import '../helper/teacher_enums.dart';
 import '../helper/teacher_models.dart';
-import '../presentation/controllers/teacher_reports_controller.dart';
+import 'presentation/controllers/teacher_reports_controller.dart';
 
 /// ===============================================================
 /// REPORTS SCREEN

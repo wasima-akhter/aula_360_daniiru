@@ -1,4 +1,4 @@
-import '../config/app_config.dart';
+import '../../core/config/app_config.dart';
 
 class ApiUrls {
   static const String base = AppConfig.baseURL;
@@ -227,15 +227,6 @@ class ApiUrls {
 
   static String toggleReviewHelpful() {
     return '$base/review/toggle-helpful';
-  }
-
-  // Alerts
-  static String getAllNotifications() {
-    return '$base/notification/get-all-notifications';
-  }
-
-  static String markNotificationsAsRead() {
-    return '$base/notification/update-as-mark-unread';
   }
 
   // Claims( Customer)

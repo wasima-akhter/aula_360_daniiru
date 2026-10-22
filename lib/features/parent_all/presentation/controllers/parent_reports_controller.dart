@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/repositories/parent_repository_impl.dart';
 import '../../domain/models/parent_models.dart';
 import '../../domain/repositories/parent_repository.dart';
+import 'parent_children_controller.dart';
 
 class ParentReportsState {
   final List<ReportModel> reports;
@@ -84,13 +85,43 @@ class ParentReportsController extends Notifier<ParentReportsState> {
   @override
   ParentReportsState build() {
     _repository = ref.watch(parentRepositoryProvider);
+    final children = ref.watch(parentChildrenControllerProvider).children;
+    final students = children.isNotEmpty
+        ? children
+            .map((c) => StudentModel(
+                  name: c.name,
+                  grade: '${c.grade} • ${c.classroom}',
+                  initials: c.initials,
+                ))
+            .toList()
+        : const [
+            StudentModel(
+              name: 'Lucas Rivera',
+              grade: '2º ESO • Aula 3B',
+              initials: 'LR',
+            ),
+            StudentModel(
+              name: 'Sophia Rivera',
+              grade: '5º Primaria • Aula 1A',
+              initials: 'SR',
+            ),
+          ];
+
     Future.microtask(() => loadReports());
-    return const ParentReportsState(isLoading: true);
+    return ParentReportsState(isLoading: true, students: students);
   }
 
-  Future<void> loadReports() async {
+  Future<void> loadReports([String? childId]) async {
     try {
-      final reports = await _repository.getReports();
+      state = state.copyWith(isLoading: true, error: null);
+      final children = ref.read(parentChildrenControllerProvider).children;
+      final id = childId ??
+          (state.selectedStudentIndex < children.length
+              ? children[state.selectedStudentIndex].id
+              : ref.read(parentChildrenControllerProvider).selectedChild?.id);
+      final reports = id != null
+          ? await _repository.getChildReports(id)
+          : await _repository.getReports();
       state = state.copyWith(reports: reports, isLoading: false);
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
@@ -99,6 +130,10 @@ class ParentReportsController extends Notifier<ParentReportsState> {
 
   void selectStudent(int index) {
     state = state.copyWith(selectedStudentIndex: index);
+    final children = ref.read(parentChildrenControllerProvider).children;
+    if (index >= 0 && index < children.length) {
+      loadReports(children[index].id);
+    }
   }
 
   void selectCategory(int index) {

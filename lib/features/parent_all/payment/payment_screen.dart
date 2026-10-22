@@ -1,4 +1,6 @@
 import '../../share/export/screen_export.dart';
+import '../domain/models/parent_models.dart';
+import '../presentation/controllers/parent_children_controller.dart';
 import '../presentation/controllers/parent_payment_controller.dart';
 
 class TuitionPaymentScreen extends ConsumerStatefulWidget {
@@ -19,6 +21,13 @@ class _TuitionPaymentScreenState extends ConsumerState<TuitionPaymentScreen> {
       parentPaymentControllerProvider.notifier,
     );
 
+    final activeChild = ref
+        .watch(parentChildrenControllerProvider)
+        .selectedChild;
+    final pendingInvoice = paymentState.pendingInvoices.isNotEmpty
+        ? paymentState.pendingInvoices.first
+        : null;
+
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
       appBar: _paymentAppBar(),
@@ -29,7 +38,7 @@ class _TuitionPaymentScreenState extends ConsumerState<TuitionPaymentScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _studentInvoiceCard(),
+              _studentInvoiceCard(activeChild, pendingInvoice),
               SizedBox(height: 20.h),
               _sectionTitle(ref.watchTr(AppStrings.paymentMethodTitle)),
               SizedBox(height: 10.h),
@@ -37,7 +46,7 @@ class _TuitionPaymentScreenState extends ConsumerState<TuitionPaymentScreen> {
               SizedBox(height: 10.h),
               _saveCard(),
               SizedBox(height: 20.h),
-              _payButton(paymentState, paymentController),
+              _payButton(paymentState, paymentController, pendingInvoice),
             ],
           ),
         ),
@@ -79,7 +88,23 @@ class _TuitionPaymentScreenState extends ConsumerState<TuitionPaymentScreen> {
     );
   }
 
-  Widget _studentInvoiceCard() {
+  Widget _studentInvoiceCard(ChildModel? child, InvoiceModel? invoice) {
+    final initials = child?.initials ?? 'LR';
+    final name = child?.name ?? 'Lucas Rivera';
+    final gradeClass = child != null
+        ? '${child.grade} • ${child.classroom}'
+        : '${ref.watchTr(AppStrings.eso2)} • ${ref.watchTr(AppStrings.aula3)}';
+    final invoiceNum = invoice != null
+        ? '#${invoice.id.length > 8 ? invoice.id.substring(0, 8).toUpperCase() : invoice.id}'
+        : '#A360-8492';
+    final concept = invoice?.concept ?? 'Cuota 2º Trimestre';
+    final amountFormatted = invoice != null
+        ? '${invoice.amount.toStringAsFixed(2)} €'
+        : '340,00 €';
+    final dueDateText = invoice != null
+        ? 'Vence: ${invoice.dueDate}'
+        : 'Vence: 15 Oct 2024';
+
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(13.w),
@@ -96,12 +121,12 @@ class _TuitionPaymentScreenState extends ConsumerState<TuitionPaymentScreen> {
                 width: 34.w,
                 height: 34.w,
                 alignment: Alignment.center,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: AppColors.blueSoft,
                   shape: BoxShape.circle,
                 ),
                 child: Text(
-                  'LR',
+                  initials,
                   style: TxtStyle.titleLarge(
                     color: AppColors.primaryDark,
                     fontSize: 16.sp,
@@ -115,7 +140,7 @@ class _TuitionPaymentScreenState extends ConsumerState<TuitionPaymentScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Lucas Rivera',
+                      name,
                       style: TxtStyle.titleLarge(
                         color: AppColors.text,
                         fontSize: 17.sp,
@@ -124,7 +149,7 @@ class _TuitionPaymentScreenState extends ConsumerState<TuitionPaymentScreen> {
                     ),
                     SizedBox(height: 2.h),
                     Text(
-                      '${ref.watchTr(AppStrings.eso2)} • ${ref.watchTr(AppStrings.aula3)}',
+                      gradeClass,
                       style: TxtStyle.titleLarge(
                         color: AppColors.subtitleTextColor,
                         fontSize: 14.sp,
@@ -140,7 +165,7 @@ class _TuitionPaymentScreenState extends ConsumerState<TuitionPaymentScreen> {
                   borderRadius: BorderRadius.circular(5.r),
                 ),
                 child: Text(
-                  '${ref.watchTr(AppStrings.invoiceLabel)} #A360-8492',
+                  '${ref.watchTr(AppStrings.invoiceLabel)} $invoiceNum',
                   style: TxtStyle.titleLarge(
                     color: AppColors.primaryDark,
                     fontSize: 13.5.sp,
@@ -153,9 +178,7 @@ class _TuitionPaymentScreenState extends ConsumerState<TuitionPaymentScreen> {
           SizedBox(height: 14.h),
           Divider(height: 1, color: AppColors.backgroundsLinesColor),
           SizedBox(height: 10.h),
-          _invoiceRow('Cuota 2º Trimestre', '300,00 €'),
-          SizedBox(height: 8.h),
-          _invoiceRow('Material y Laboratorio de Ciencias', '40,00 €'),
+          _invoiceRow(concept, amountFormatted),
           SizedBox(height: 12.h),
           Divider(height: 1, color: AppColors.backgroundsLinesColor),
           SizedBox(height: 10.h),
@@ -176,7 +199,7 @@ class _TuitionPaymentScreenState extends ConsumerState<TuitionPaymentScreen> {
                     ),
                     SizedBox(height: 3.h),
                     Text(
-                      '340,00 €',
+                      amountFormatted,
                       style: TxtStyle.titleLarge(
                         color: AppColors.primaryDark,
                         fontSize: 25.sp,
@@ -193,7 +216,7 @@ class _TuitionPaymentScreenState extends ConsumerState<TuitionPaymentScreen> {
                   borderRadius: BorderRadius.circular(5.r),
                 ),
                 child: Text(
-                  'Vence: 15 Oct 2024',
+                  dueDateText,
                   style: TxtStyle.titleLarge(
                     color: AppColors.subtitleTextColor,
                     fontSize: 13.5.sp,
@@ -444,19 +467,29 @@ class _TuitionPaymentScreenState extends ConsumerState<TuitionPaymentScreen> {
   Widget _payButton(
     ParentPaymentState state,
     ParentPaymentController controller,
+    InvoiceModel? invoice,
   ) {
+    final amountFormatted = invoice != null
+        ? '${invoice.amount.toStringAsFixed(2)} €'
+        : '340,00 €';
+    final invoiceId =
+        invoice?.id ??
+        (state.pendingInvoices.isNotEmpty
+            ? state.pendingInvoices.first.id
+            : 'INV-2026-001');
+
     return SizedBox(
       width: double.infinity,
       child: AulaPrimaryButton(
-        text: '${ref.watchTr(AppStrings.payNowBtn)} 340,00 €',
+        text: '${ref.watchTr(AppStrings.payNowBtn)} $amountFormatted',
         isLoading: state.isProcessing,
         backgroundColor: AppColors.primaryDark,
         leading: Icon(Icons.lock_outline, color: Colors.white, size: 15.sp),
         trailing: const SizedBox.shrink(),
         onTapAsync: () async {
-          final success = await controller.processPayment('INV-2026-001');
+          final success = await controller.processPayment(invoiceId);
           if (success && mounted) {
-            context.go(RoutePath.paymentReceipt);
+            context.go(RoutePath.paymentReceipt.addBasePath);
           }
         },
       ),

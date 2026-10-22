@@ -40,32 +40,128 @@ class HomeworkScreen extends ConsumerWidget {
         showBack: true,
       ),
       body: SafeArea(
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            SliverPadding(
-              padding: EdgeInsets.fromLTRB(16.w, 18.h, 16.w, 20.h),
-              sliver: SliverList(
-                delegate: SliverChildListDelegate([
-                  _studentSelector(state, controller),
-                  SizedBox(height: 22.h),
-                  _tabs(state, controller, tabs),
-                ]),
-              ),
+        child: RefreshIndicator(
+          color: AppColors.primary,
+          onRefresh: () => controller.loadHomework(),
+          child: CustomScrollView(
+            physics: const AlwaysScrollableScrollPhysics(
+              parent: BouncingScrollPhysics(),
             ),
+            slivers: [
+              SliverPadding(
+                padding: EdgeInsets.fromLTRB(16.w, 18.h, 16.w, 20.h),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate([
+                    _studentSelector(state, controller),
+                    SizedBox(height: 22.h),
+                    _tabs(state, controller, tabs),
+                  ]),
+                ),
+              ),
 
-            SliverPadding(
-              padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 30.h),
-              sliver: SliverList(
-                delegate: SliverChildListDelegate([
-                  for (final item in filtered) ...[
-                    _homeworkCard(context, ref, item),
-                    SizedBox(height: 12.h),
-                  ],
-                ]),
-              ),
-            ),
-          ],
+              if (state.isLoading)
+                const SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Center(
+                    child: CircularProgressIndicator(color: AppColors.primary),
+                  ),
+                )
+              else if (state.error != null)
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Center(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 30.w),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.error_outline, color: AppColors.error, size: 40.sp),
+                          SizedBox(height: 12.h),
+                          Text(
+                            state.error!,
+                            textAlign: TextAlign.center,
+                            style: TxtStyle.titleLarge(
+                              color: AppColors.secondaryText,
+                              fontSize: 14.sp,
+                            ),
+                          ),
+                          SizedBox(height: 16.h),
+                          TextButton.icon(
+                            onPressed: () => controller.loadHomework(),
+                            icon: const Icon(Icons.refresh, color: AppColors.primary),
+                            label: Text(
+                              ref.watchTr(AppStrings.retry),
+                              style: TxtStyle.titleLarge(
+                                color: AppColors.primary,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                )
+              else if (filtered.isEmpty)
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Center(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 35.w),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: 58.w,
+                            height: 58.w,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFE8EDFF),
+                              borderRadius: BorderRadius.circular(16.r),
+                            ),
+                            child: Icon(
+                              Icons.assignment_turned_in_outlined,
+                              color: AppColors.primary,
+                              size: 28.sp,
+                            ),
+                          ),
+                          SizedBox(height: 14.h),
+                          Text(
+                            'No hay tareas pendientes',
+                            style: TxtStyle.titleLarge(
+                              color: AppColors.text,
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          SizedBox(height: 6.h),
+                          Text(
+                            'Todas las tareas asignadas para esta categoría están al día.',
+                            textAlign: TextAlign.center,
+                            style: TxtStyle.titleLarge(
+                              color: AppColors.secondaryText,
+                              fontSize: 14.5.sp,
+                              height: 1.4,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                )
+              else
+                SliverPadding(
+                  padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 30.h),
+                  sliver: SliverList(
+                    delegate: SliverChildListDelegate([
+                      for (final item in filtered) ...[
+                        _homeworkCard(context, ref, item),
+                        SizedBox(height: 12.h),
+                      ],
+                    ]),
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );

@@ -1,4 +1,3 @@
-import '../../auth/presentation/controllers/auth_controller.dart';
 import '../../share/component/logout_btn.dart';
 import '../../share/export/screen_export.dart';
 import '../helper/parent_widgets.dart';
@@ -65,11 +64,6 @@ class ParentProfileScreen extends ConsumerWidget {
     WidgetRef ref,
     ParentProfileState profile,
   ) {
-    final authUser = ref.watch(authControllerProvider).user;
-    final parentId = profile.userId.trim().isNotEmpty
-        ? profile.userId.trim()
-        : (authUser?.id.trim() ?? '');
-    final hasId = parentId.isNotEmpty;
     final idText = ref.watchTr(AppStrings.verified);
 
     // hasId

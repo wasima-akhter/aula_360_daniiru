@@ -27,4 +27,12 @@ abstract final class StorageKeys {
       'notification_primer_dismissed';
   static const String notificationPrimerDismissedAt =
       'notification_primer_dismissed_at';
+
+  // ==============================
+  // Biometrics
+  // ==============================
+  static const String isBiometricEnabled = 'is_biometric_enabled';
+  static const String biometricAuthToken = 'biometric_auth_token';
+  static const String biometricOptInPromptShown =
+      'biometric_opt_in_prompt_shown';
 }

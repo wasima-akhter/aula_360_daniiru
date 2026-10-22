@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import '../../parent_all/helper/parent_home_helper.dart';
 import '../../share/export/screen_export.dart';
 import '../helper/teacher_models.dart';
-import '../presentation/controllers/teacher_classes_controller.dart';
+import 'presentation/controllers/teacher_classes_controller.dart';
 
 /// ===============================================================
 /// 2. CLASS DETAILS SCREEN
@@ -89,20 +89,7 @@ class TeacherClassDetailScreen extends ConsumerWidget {
                   SizedBox(height: 10.h),
                   _roomStatusCard(ref),
                   SizedBox(height: 34.h),
-                  SizedBox(
-                    width: double.infinity,
-                    child: AulaPrimaryButton(
-                      onTap: () {
-                        context.push(RoutePath.teacherAttendance);
-                      },
-                      text: ref.watchTr(AppStrings.takeAttendance),
-                      trailing: Icon(
-                        Icons.arrow_forward_rounded,
-                        color: Colors.white,
-                        size: 18.sp,
-                      ),
-                    ),
-                  ),
+                  _buildActionButtons(context, ref, currentClass),
                 ],
               ),
             ),
@@ -110,6 +97,145 @@ class TeacherClassDetailScreen extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  Widget _buildActionButtons(
+    BuildContext context,
+    WidgetRef ref,
+    AcademyClass currentClass,
+  ) {
+    final classesState = ref.watch(teacherClassesControllerProvider);
+    final classesController =
+        ref.read(teacherClassesControllerProvider.notifier);
+
+    if (currentClass.rawStatus == 'SCHEDULED') {
+      return SizedBox(
+        width: double.infinity,
+        child: AulaPrimaryButton(
+          isLoading: classesState.isStartingSession,
+          onTap: classesState.isStartingSession
+              ? null
+              : () async {
+                  final success =
+                      await classesController.startSession(currentClass.id);
+                  if (context.mounted) {
+                    if (success) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          backgroundColor: AppColors.emeraldGreenColor,
+                          content: Text('Clase iniciada exitosamente'),
+                        ),
+                      );
+                    } else {
+                      final err = ref
+                          .read(teacherClassesControllerProvider)
+                          .actionError;
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          backgroundColor: AppColors.error,
+                          content: Text(err ?? 'Error al iniciar la sesión'),
+                        ),
+                      );
+                    }
+                  }
+                },
+          text: 'Comenzar Clase',
+          backgroundColor: AppColors.primaryDark,
+          trailing: Icon(
+            Icons.play_arrow_rounded,
+            color: Colors.white,
+            size: 20.sp,
+          ),
+        ),
+      );
+    } else if (currentClass.rawStatus == 'COMPLETED') {
+      return Container(
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(vertical: 14.h),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: AppColors.softSlateBgColor,
+          borderRadius: BorderRadius.circular(10.r),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.check_circle_rounded,
+              color: AppColors.emeraldGreenColor,
+              size: 20.sp,
+            ),
+            SizedBox(width: 8.w),
+            Text(
+              'Clase Finalizada',
+              style: TxtStyle.titleMedium(
+                color: AppColors.emeraldGreenColor,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
+        ),
+      );
+    } else {
+      return Column(
+        children: [
+          SizedBox(
+            width: double.infinity,
+            child: AulaPrimaryButton(
+              onTap: () {
+                context.push(
+                  RoutePath.teacherAttendance,
+                  extra: currentClass.id,
+                );
+              },
+              text: ref.watchTr(AppStrings.takeAttendance),
+              trailing: Icon(
+                Icons.arrow_forward_rounded,
+                color: Colors.white,
+                size: 18.sp,
+              ),
+            ),
+          ),
+          SizedBox(height: 12.h),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppColors.primaryDark,
+                side: const BorderSide(
+                  color: AppColors.primaryDark,
+                  width: 1.5,
+                ),
+                padding: EdgeInsets.symmetric(vertical: 14.h),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.r),
+                ),
+              ),
+              onPressed: () {
+                context.push(
+                  RoutePath.teacherEndClass,
+                  extra: currentClass.id,
+                );
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.stop_circle_outlined, size: 18.sp),
+                  SizedBox(width: 8.w),
+                  Text(
+                    ref.watchTr(AppStrings.endClassTitle),
+                    style: TxtStyle.titleMedium(
+                      color: AppColors.primaryDark,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      );
+    }
   }
 
   Widget _groupLabel(WidgetRef ref, AcademyClass currentClass) {

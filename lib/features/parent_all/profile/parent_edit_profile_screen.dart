@@ -206,11 +206,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   }
 
   Widget _profilePhotoCard(ParentProfileState profile) {
-    final authUser = ref.watch(authControllerProvider).user;
-    final parentId = profile.userId.trim().isNotEmpty
-        ? profile.userId.trim()
-        : (authUser?.id.trim() ?? '');
-    final hasId = parentId.isNotEmpty;
     final idText = ref.watchTr(AppStrings.verified);
     // hasId
     //     ? '${ref.watchTr(AppStrings.verified)}: ${parentId.startsWith('#') ? parentId : '#$parentId'}'

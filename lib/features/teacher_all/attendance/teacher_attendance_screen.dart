@@ -3,14 +3,16 @@ import '../../share/export/screen_export.dart';
 import '../helper/teacher_enums.dart';
 import '../helper/teacher_models.dart';
 import '../helper/teacher_widgets.dart';
-import '../presentation/controllers/teacher_attendance_controller.dart';
+import 'presentation/controllers/teacher_attendance_controller.dart';
 
 /// ===============================================================
 /// 3. ATTENDANCE SCREEN
 /// ===============================================================
 
 class TeacherAttendanceScreen extends ConsumerWidget {
-  const TeacherAttendanceScreen({super.key});
+  final String? sessionId;
+
+  const TeacherAttendanceScreen({super.key, this.sessionId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -25,36 +27,124 @@ class TeacherAttendanceScreen extends ConsumerWidget {
       ),
       body: state.isLoading
           ? const Center(child: CircularProgressIndicator())
-          : CustomScrollView(
-              physics: const BouncingScrollPhysics(),
-              slivers: [
-                SliverPersistentHeader(
-                  pinned: true,
-                  delegate: StickyHeaderDelegate(
-                    minHeight: 110.h,
-                    maxHeight: 110.h,
-                    child: _attendanceSummary(context, ref, state, controller),
-                  ),
-                ),
-                SliverToBoxAdapter(
+          : state.error != null
+              ? Center(
                   child: Padding(
-                    padding: EdgeInsets.fromLTRB(16.w, 2.h, 16.w, 100.h),
+                    padding: EdgeInsets.symmetric(horizontal: 24.w),
                     child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        for (int i = 0; i < state.students.length; i++)
-                          _studentRow(
-                            ref,
-                            state.students[i],
-                            onSelectStatus: (status) {
-                              controller.updateStudentStatus(i, status);
-                            },
+                        Icon(
+                          Icons.error_outline_rounded,
+                          color: AppColors.error,
+                          size: 48.sp,
+                        ),
+                        SizedBox(height: 12.h),
+                        Text(
+                          'Error al cargar asistencia',
+                          style: TxtStyle.titleLarge(
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.w700,
                           ),
+                        ),
+                        SizedBox(height: 8.h),
+                        Text(
+                          state.error!,
+                          textAlign: TextAlign.center,
+                          style: TxtStyle.bodyMedium(
+                            color: AppColors.subtitleTextColor,
+                            fontSize: 13.sp,
+                          ),
+                        ),
+                        SizedBox(height: 16.h),
+                        AulaPrimaryButton(
+                          text: 'Reintentar',
+                          onTap: () => controller.loadStudents(),
+                        ),
                       ],
                     ),
                   ),
-                ),
-              ],
-            ),
+                )
+              : state.students.isEmpty
+                  ? Center(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 24.w),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.people_outline_rounded,
+                              color: AppColors.subtitleTextColor,
+                              size: 54.sp,
+                            ),
+                            SizedBox(height: 12.h),
+                            Text(
+                              'No hay alumnos asignados',
+                              style: TxtStyle.titleLarge(
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            SizedBox(height: 6.h),
+                            Text(
+                              'No se encontraron alumnos para registrar asistencia en esta sesión.',
+                              textAlign: TextAlign.center,
+                              style: TxtStyle.bodyMedium(
+                                color: AppColors.subtitleTextColor,
+                                fontSize: 14.sp,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  : CustomScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      slivers: [
+                        SliverPersistentHeader(
+                          pinned: true,
+                          delegate: StickyHeaderDelegate(
+                            minHeight: 110.h,
+                            maxHeight: 110.h,
+                            child: _attendanceSummary(
+                              context,
+                              ref,
+                              state,
+                              controller,
+                            ),
+                          ),
+                        ),
+                        SliverToBoxAdapter(
+                          child: Padding(
+                            padding: EdgeInsets.fromLTRB(
+                              16.w,
+                              2.h,
+                              16.w,
+                              100.h,
+                            ),
+                            child: Column(
+                              children: [
+                                for (
+                                  int i = 0;
+                                  i < state.students.length;
+                                  i++
+                                )
+                                  _studentRow(
+                                    ref,
+                                    state.students[i],
+                                    onSelectStatus: (status) {
+                                      controller.updateStudentStatus(
+                                        i,
+                                        status,
+                                      );
+                                    },
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
 
       /// Bottom action only — NOT navigation.
       bottomNavigationBar: SafeArea(
@@ -292,9 +382,28 @@ class TeacherAttendanceScreen extends ConsumerWidget {
           ),
           actions: [
             TextButton(
-              onPressed: () {
+              onPressed: () async {
                 Navigator.of(dialogContext).pop();
-                context.push(RoutePath.teacherEndClass);
+                final success = await ref
+                    .read(teacherAttendanceControllerProvider.notifier)
+                    .submitAttendance(sessionId: sessionId);
+                if (context.mounted) {
+                  if (success) {
+                    context.push(RoutePath.teacherEndClass, extra: sessionId);
+                  } else {
+                    final err = ref
+                        .read(teacherAttendanceControllerProvider)
+                        .error;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        backgroundColor: AppColors.error,
+                        content: Text(
+                          err ?? 'No se pudo guardar la asistencia.',
+                        ),
+                      ),
+                    );
+                  }
+                }
               },
               child: Text(
                 ref.watchTr(AppStrings.roleContinue),

@@ -57,6 +57,14 @@ class ChildModel {
       late: late ?? this.late,
     );
   }
+
+  String get classroom => room;
+  String get initials {
+    final parts = name.trim().split(RegExp(r'\s+'));
+    if (parts.isEmpty || parts.first.isEmpty) return 'ST';
+    if (parts.length == 1) return parts.first.substring(0, 1).toUpperCase();
+    return '${parts.first[0]}${parts.last[0]}'.toUpperCase();
+  }
 }
 
 // ===============================================================

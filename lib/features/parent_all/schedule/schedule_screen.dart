@@ -73,9 +73,13 @@ class ScheduleScreen extends ConsumerWidget {
         title: ref.watchTr(AppStrings.navSchedule),
         showBack: false,
       ),
-      body: CustomScrollView(
-        physics: const BouncingScrollPhysics(),
-        slivers: [
+      body: RefreshIndicator(
+        onRefresh: scheduleController.refresh,
+        child: CustomScrollView(
+          physics: const AlwaysScrollableScrollPhysics(
+            parent: BouncingScrollPhysics(),
+          ),
+          slivers: [
           SliverPadding(
             padding: EdgeInsets.fromLTRB(16.w, 18.h, 16.w, 30.h),
             sliver: SliverList(
@@ -208,9 +212,26 @@ class ScheduleScreen extends ConsumerWidget {
 
                 SizedBox(height: 12.h),
 
-                for (final classData in upcomingClasses) ...[
-                  _scheduleClassCard(context, classData),
-                  SizedBox(height: 12.h),
+                if (scheduleState.isLoading) ...[
+                  const Center(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 24),
+                      child: CircularProgressIndicator(),
+                    ),
+                  ),
+                ] else if (scheduleState.error != null) ...[
+                  _errorCard(
+                    ref,
+                    scheduleState.error!,
+                    () => scheduleController.loadSchedule(selectedIndex),
+                  ),
+                ] else if (upcomingClasses.isEmpty) ...[
+                  _emptyScheduleCard(ref),
+                ] else ...[
+                  for (final classData in upcomingClasses) ...[
+                    _scheduleClassCard(context, classData),
+                    SizedBox(height: 12.h),
+                  ],
                 ],
 
                 SizedBox(height: 9.h),
@@ -232,7 +253,8 @@ class ScheduleScreen extends ConsumerWidget {
           ),
         ],
       ),
-    );
+    ),
+  );
   }
 
   Widget _studentCard(ChildModel student, bool selected, VoidCallback onTap) {
@@ -575,5 +597,84 @@ class ScheduleScreen extends ConsumerWidget {
     }
 
     return name.substring(0, 2).toUpperCase();
+  }
+
+  Widget _emptyScheduleCard(WidgetRef ref) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(vertical: 28.h, horizontal: 16.w),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(color: AppColors.backgroundsLinesColor),
+      ),
+      child: Column(
+        children: [
+          Icon(
+            Icons.event_busy_outlined,
+            size: 40.sp,
+            color: AppColors.subtitleTextColor,
+          ),
+          SizedBox(height: 10.h),
+          Text(
+            ref.watchTr(AppStrings.noScheduleFound),
+            textAlign: TextAlign.center,
+            style: TxtStyle.titleLarge(
+              color: AppColors.text,
+              fontSize: 15.sp,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          SizedBox(height: 4.h),
+          Text(
+            ref.watchTr(AppStrings.noScheduleFoundDesc),
+            textAlign: TextAlign.center,
+            style: TxtStyle.bodyMedium(
+              color: AppColors.subtitleTextColor,
+              fontSize: 13.sp,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _errorCard(WidgetRef ref, String error, VoidCallback onRetry) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 16.w),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(color: AppColors.backgroundsLinesColor),
+      ),
+      child: Column(
+        children: [
+          Icon(
+            Icons.error_outline_rounded,
+            size: 40.sp,
+            color: AppColors.redColor,
+          ),
+          SizedBox(height: 10.h),
+          Text(
+            error,
+            textAlign: TextAlign.center,
+            style: TxtStyle.bodyMedium(
+              color: AppColors.text,
+              fontSize: 14.sp,
+            ),
+          ),
+          SizedBox(height: 12.h),
+          ElevatedButton(
+            onPressed: onRetry,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary,
+              foregroundColor: Colors.white,
+            ),
+            child: Text(ref.watchTr(AppStrings.retry)),
+          ),
+        ],
+      ),
+    );
   }
 }

@@ -10,17 +10,56 @@ import '../presentation/controllers/parent_children_controller.dart';
 /// 6. ATTENDANCE / ASISTENCIA
 /// ===============================================================
 
-class AttendanceScreen extends ConsumerWidget {
+class AttendanceScreen extends ConsumerStatefulWidget {
   final ChildModel? child;
 
   const AttendanceScreen({super.key, this.child});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<AttendanceScreen> createState() => _AttendanceScreenState();
+}
+
+class _AttendanceScreenState extends ConsumerState<AttendanceScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadData();
+    });
+  }
+
+  @override
+  void didUpdateWidget(covariant AttendanceScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.child?.id != widget.child?.id) {
+      _loadData();
+    }
+  }
+
+  void _loadData() {
+    final activeChild = _getActiveChild();
+    if (activeChild != null && activeChild.id.isNotEmpty) {
+      ref
+          .read(parentAttendanceControllerProvider.notifier)
+          .loadAttendance(activeChild.id);
+    }
+  }
+
+  ChildModel? _getActiveChild() {
+    final childrenState = ref.read(parentChildrenControllerProvider);
+    return widget.child ??
+        childrenState.selectedChild ??
+        (childrenState.children.isNotEmpty
+            ? childrenState.children.first
+            : null);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final childrenState = ref.watch(parentChildrenControllerProvider);
     final attendanceState = ref.watch(parentAttendanceControllerProvider);
     final activeChild =
-        child ??
+        widget.child ??
         childrenState.selectedChild ??
         (childrenState.children.isNotEmpty
             ? childrenState.children.first
@@ -30,24 +69,47 @@ class AttendanceScreen extends ConsumerWidget {
       backgroundColor: const Color(0xFFF8F7FC),
       appBar: simpleAppBar(context, ref.watchTr(AppStrings.attendance)),
       body: SafeArea(
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          padding: EdgeInsets.fromLTRB(14.w, 14.h, 14.w, 30.h),
-          child: Column(
-            children: [
-              if (activeChild != null) _summaryCard(ref, activeChild),
-              SizedBox(height: 17.h),
-              _monthHeader(ref, attendanceState.records.length),
-              SizedBox(height: 8.h),
-              _attendanceCard(ref, attendanceState.records),
-            ],
+        child: RefreshIndicator(
+          onRefresh: () async {
+            if (activeChild != null) {
+              await ref
+                  .read(parentAttendanceControllerProvider.notifier)
+                  .loadAttendance(activeChild.id);
+            }
+          },
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(
+              parent: BouncingScrollPhysics(),
+            ),
+            padding: EdgeInsets.fromLTRB(14.w, 14.h, 14.w, 30.h),
+            child: Column(
+              children: [
+                if (activeChild != null)
+                  _summaryCard(ref, activeChild, attendanceState),
+                SizedBox(height: 17.h),
+                _monthHeader(ref, attendanceState.records.length),
+                SizedBox(height: 8.h),
+                _attendanceContent(ref, attendanceState, activeChild),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _summaryCard(WidgetRef ref, ChildModel child) {
+  Widget _summaryCard(
+    WidgetRef ref,
+    ChildModel child,
+    ParentAttendanceState state,
+  ) {
+    final displayPercentage = state.percentage;
+    final presentCount =
+        state.records.isNotEmpty ? state.presentCount : child.present;
+    final absentCount =
+        state.records.isNotEmpty ? state.absentCount : child.absent;
+    final lateCount = state.records.isNotEmpty ? state.lateCount : child.late;
+
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(12.w),
@@ -114,7 +176,7 @@ class AttendanceScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    '${child.attendance.toStringAsFixed(0)}%',
+                    '$displayPercentage%',
                     style: TxtStyle.titleLarge(
                       color: AppColors.primaryDark,
                       fontSize: 19.sp,
@@ -139,21 +201,21 @@ class AttendanceScreen extends ConsumerWidget {
             children: [
               Expanded(
                 child: _summaryStat(
-                  '${child.present}',
+                  '$presentCount',
                   ref.watchTr(AppStrings.present),
                   AppColors.emeraldGreenColor,
                 ),
               ),
               Expanded(
                 child: _summaryStat(
-                  '${child.absent}',
+                  '$absentCount',
                   ref.watchTr(AppStrings.absent),
                   AppColors.error,
                 ),
               ),
               Expanded(
                 child: _summaryStat(
-                  '${child.late}',
+                  '$lateCount',
                   ref.watchTr(AppStrings.late),
                   AppColors.orangeColor,
                 ),
@@ -181,7 +243,7 @@ class AttendanceScreen extends ConsumerWidget {
           label,
           style: TxtStyle.titleLarge(
             color: AppColors.subtitleTextColor,
-            fontSize: 14.sp,
+            fontSize: 13.sp,
           ),
         ),
       ],
@@ -220,13 +282,24 @@ class AttendanceScreen extends ConsumerWidget {
     );
   }
 
-  Widget _attendanceCard(WidgetRef ref, List<AttendanceRecord> records) {
-    final langCode =
-        ref.watch(languageProvider).valueOrNull?.language.code ?? 'en';
+  Widget _attendanceContent(
+    WidgetRef ref,
+    ParentAttendanceState state,
+    ChildModel? activeChild,
+  ) {
+    if (state.isLoading && state.records.isEmpty) {
+      return Padding(
+        padding: EdgeInsets.symmetric(vertical: 40.h),
+        child: const Center(
+          child: CircularProgressIndicator(strokeWidth: 2.5),
+        ),
+      );
+    }
 
-    if (records.isNotEmpty) {
+    if (state.error != null && state.records.isEmpty) {
       return Container(
         width: double.infinity,
+        padding: EdgeInsets.all(20.w),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(9.r),
@@ -234,37 +307,70 @@ class AttendanceScreen extends ConsumerWidget {
         ),
         child: Column(
           children: [
-            for (int i = 0; i < records.length; i++) ...[
-              if (i > 0) _divider(),
-              _attendanceRow(
-                ref: ref,
-                subject: records[i].dayName,
-                date: '${records[i].date} • ${records[i].checkInTime}',
-                status: records[i].status,
-                detail: records[i].note,
+            Icon(Icons.error_outline, size: 36.sp, color: AppColors.error),
+            SizedBox(height: 10.h),
+            Text(
+              state.error!,
+              textAlign: TextAlign.center,
+              style: TxtStyle.bodyMedium(
+                color: AppColors.error,
+                fontSize: 13.5.sp,
               ),
-            ],
+            ),
+            SizedBox(height: 12.h),
+            ElevatedButton.icon(
+              onPressed: () {
+                if (activeChild != null) {
+                  ref
+                      .read(parentAttendanceControllerProvider.notifier)
+                      .loadAttendance(activeChild.id);
+                }
+              },
+              icon: const Icon(Icons.refresh, size: 16),
+              label: Text(ref.watchTr(AppStrings.retry)),
+            ),
           ],
         ),
       );
     }
 
-    final today = ref.watchTr(AppStrings.today);
-    final yesterday = ref.watchTr(AppStrings.yesterday);
-    final now = DateTime.now();
-    final todayDate = DateFormat('d MMM', langCode).format(now);
-    final yesterdayDate = DateFormat(
-      'd MMM',
-      langCode,
-    ).format(now.subtract(const Duration(days: 1)));
-    final d2Date = DateFormat(
-      'E, d MMM',
-      langCode,
-    ).format(now.subtract(const Duration(days: 2)));
-    final d3Date = DateFormat(
-      'E, d MMM',
-      langCode,
-    ).format(now.subtract(const Duration(days: 3)));
+    if (state.records.isEmpty) {
+      return Container(
+        width: double.infinity,
+        padding: EdgeInsets.all(24.w),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(9.r),
+          border: Border.all(color: AppColors.border),
+        ),
+        child: Column(
+          children: [
+            Icon(
+              Icons.fact_check_outlined,
+              size: 40.sp,
+              color: AppColors.subtitleTextColor,
+            ),
+            SizedBox(height: 10.h),
+            Text(
+              'No hay registros de asistencia',
+              style: TxtStyle.titleLarge(
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            SizedBox(height: 4.h),
+            Text(
+              'Aún no se han registrado sesiones de asistencia para este periodo.',
+              textAlign: TextAlign.center,
+              style: TxtStyle.bodyMedium(
+                color: AppColors.subtitleTextColor,
+                fontSize: 13.sp,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
 
     return Container(
       width: double.infinity,
@@ -275,48 +381,18 @@ class AttendanceScreen extends ConsumerWidget {
       ),
       child: Column(
         children: [
-          _attendanceRow(
-            ref: ref,
-            subject: ref.watchTr(AppStrings.subjectMathAdvanced),
-            date: '$today, $todayDate • 09:00',
-            status: AttendanceStatus.present,
-          ),
-          _divider(),
-          _attendanceRow(
-            ref: ref,
-            subject: ref.watchTr(AppStrings.subjectSpanishLanguage),
-            date: '$today, $todayDate • 10:30',
-            status: AttendanceStatus.late,
-            detail: '10 min',
-          ),
-          _divider(),
-          _attendanceRow(
-            ref: ref,
-            subject: ref.watchTr(AppStrings.subjectBiology),
-            date: '$yesterday, $yesterdayDate • 13:15',
-            status: AttendanceStatus.present,
-          ),
-          _divider(),
-          _attendanceRow(
-            ref: ref,
-            subject: ref.watchTr(AppStrings.subjectHistory),
-            date: '$yesterday, $yesterdayDate • 14:45',
-            status: AttendanceStatus.present,
-          ),
-          _divider(),
-          _attendanceRow(
-            ref: ref,
-            subject: ref.watchTr(AppStrings.subjectPhysicalEducation),
-            date: '$d2Date • 08:30',
-            status: AttendanceStatus.excused,
-          ),
-          _divider(),
-          _attendanceRow(
-            ref: ref,
-            subject: ref.watchTr(AppStrings.subjectVisualArts),
-            date: '$d3Date • 13:15',
-            status: AttendanceStatus.present,
-          ),
+          for (int i = 0; i < state.records.length; i++) ...[
+            if (i > 0) _divider(),
+            _attendanceRow(
+              ref: ref,
+              subject: state.records[i].dayName.isNotEmpty
+                  ? state.records[i].dayName
+                  : 'Sesión',
+              date: '${state.records[i].date} • ${state.records[i].checkInTime}',
+              status: state.records[i].status,
+              detail: state.records[i].note,
+            ),
+          ],
         ],
       ),
     );

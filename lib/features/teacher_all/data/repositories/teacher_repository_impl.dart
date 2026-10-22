@@ -1,4 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'package:aula360/core/network/network_providers.dart';
 import '../../../profile/data/dtos/teacher_profile_dto.dart';
 import '../../../profile/domain/repositories/profile_repository.dart';
 import '../../../profile/presentation/providers/profile_providers.dart';
@@ -7,22 +9,36 @@ import '../../../settings/presentation/providers/settings_providers.dart';
 import '../../domain/repositories/teacher_repository.dart';
 import '../../helper/teacher_enums.dart';
 import '../../helper/teacher_models.dart';
+import '../datasources/teacher_remote_data_source.dart';
+import '../dtos/attendance_dtos.dart';
+import '../dtos/class_session_dto.dart';
+import '../dtos/end_session_dtos.dart';
+import '../dtos/teacher_homework_dto.dart';
+
+final teacherRemoteDataSourceProvider = Provider<TeacherRemoteDataSource>((ref) {
+  final client = ref.watch(apiClientProvider);
+  return TeacherRemoteDataSourceImpl(client);
+});
 
 final teacherRepositoryProvider = Provider<TeacherRepository>((ref) {
   return TeacherRepositoryImpl(
+    remoteDataSource: ref.watch(teacherRemoteDataSourceProvider),
     profileRepository: ref.watch(profileRepositoryProvider),
     settingsRepository: ref.watch(settingsRepositoryProvider),
   );
 });
 
 class TeacherRepositoryImpl implements TeacherRepository {
+  final TeacherRemoteDataSource? remoteDataSource;
   final ProfileRepository? profileRepository;
   final SettingsRepository? settingsRepository;
 
   TeacherRepositoryImpl({
+    this.remoteDataSource,
     this.profileRepository,
     this.settingsRepository,
   });
+
   final List<AttendanceStudent> _attendanceStudents = [
     AttendanceStudent(
       name: 'Lucas Rivera',
@@ -72,6 +88,28 @@ class TeacherRepositoryImpl implements TeacherRepository {
 
   @override
   Future<List<AcademyClass>> getTodayClasses() async {
+    if (remoteDataSource != null) {
+      final sessions =
+          await remoteDataSource!.getSessions(date: DateTime.now());
+      return sessions.map((s) {
+        final status = s.status == 'ONGOING'
+            ? ClassStatus.next
+            : ClassStatus.scheduled;
+
+        return AcademyClass(
+          id: s.id,
+          scheduleId: s.scheduleId,
+          time: '${s.startTime} - ${s.endTime}',
+          title: s.subjectName,
+          subtitle: s.cohortName,
+          room: s.classroomRoomNumber,
+          group: s.cohortName,
+          students: 24,
+          status: status,
+          rawStatus: s.status,
+        );
+      }).toList();
+    }
     await Future.delayed(const Duration(milliseconds: 150));
     return todayClasses;
   }
@@ -84,6 +122,27 @@ class TeacherRepositoryImpl implements TeacherRepository {
 
   @override
   Future<List<HomeScheduleItem>> getHomeSchedule() async {
+    if (remoteDataSource != null) {
+      final sessions =
+          await remoteDataSource!.getSessions(date: DateTime.now());
+      return sessions.map((s) {
+        return HomeScheduleItem(
+          id: s.id,
+          scheduleId: s.scheduleId,
+          startTime: s.startTime,
+          endTime: s.endTime,
+          title: s.subjectName,
+          subtitle: s.cohortName,
+          room: s.classroomRoomNumber,
+          group: s.cohortName,
+          students: 24,
+          type: s.status == 'ONGOING'
+              ? HomeClassType.next
+              : HomeClassType.scheduled,
+          rawStatus: s.status,
+        );
+      }).toList();
+    }
     await Future.delayed(const Duration(milliseconds: 150));
     return homeSchedule;
   }
@@ -197,5 +256,86 @@ class TeacherRepositoryImpl implements TeacherRepository {
       return;
     }
     await Future.delayed(const Duration(milliseconds: 300));
+  }
+
+  // ==========================================
+  // REAL OPENAPI BACKEND ENDPOINTS
+  // ==========================================
+
+  @override
+  Future<List<ClassSessionDto>> getTeacherSessions({DateTime? date}) async {
+    if (remoteDataSource != null) {
+      return remoteDataSource!.getSessions(date: date);
+    }
+    return const [];
+  }
+
+  @override
+  Future<ClassSessionDto> startSession(String sessionId) async {
+    if (remoteDataSource != null) {
+      return remoteDataSource!.startSession(sessionId);
+    }
+    throw UnsupportedError('Remote data source not available');
+  }
+
+  @override
+  Future<int> takeSessionAttendance(
+    String sessionId,
+    TakeAttendancePayloadDto payload,
+  ) async {
+    if (remoteDataSource != null) {
+      return remoteDataSource!.takeAttendance(sessionId, payload);
+    }
+    return 0;
+  }
+
+  @override
+  Future<ClassSessionDto> endSessionAndSubmitReport(
+    String sessionId,
+    EndSessionPayloadDto payload,
+  ) async {
+    if (remoteDataSource != null) {
+      return remoteDataSource!.endSession(sessionId, payload);
+    }
+    throw UnsupportedError('Remote data source not available');
+  }
+
+  @override
+  Future<void> createHomework(CreateHomeworkRequestDto request) async {
+    if (remoteDataSource != null) {
+      return remoteDataSource!.createHomework(request);
+    }
+  }
+
+  @override
+  Future<List<TeacherHomeworkDto>> getHomeworkList({
+    String? cohortId,
+    int page = 1,
+    int limit = 20,
+  }) async {
+    if (remoteDataSource != null) {
+      return remoteDataSource!.getHomework(
+        cohortId: cohortId,
+        page: page,
+        limit: limit,
+      );
+    }
+    return const [];
+  }
+
+  @override
+  Future<HomeworkSubmissionDto> markHomeworkSubmission({
+    required String homeworkId,
+    required String studentId,
+    required MarkHomeworkSubmissionRequestDto request,
+  }) async {
+    if (remoteDataSource != null) {
+      return remoteDataSource!.markHomeworkSubmission(
+        homeworkId: homeworkId,
+        studentId: studentId,
+        request: request,
+      );
+    }
+    throw UnsupportedError('Remote data source not available');
   }
 }

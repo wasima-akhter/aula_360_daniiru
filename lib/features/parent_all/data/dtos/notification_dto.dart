@@ -25,13 +25,19 @@ class NotificationDto {
 
     return NotificationDto(
       id: (json['id'] ?? json['_id'] ?? '').toString(),
-      title: json['title'] as String? ?? json['subject'] as String? ?? '',
-      message: json['message'] as String? ??
+      title: json['notificationTitle'] as String? ??
+          json['title'] as String? ??
+          json['subject'] as String? ??
+          '',
+      message: json['notificationDescription'] as String? ??
+          json['message'] as String? ??
           json['body'] as String? ??
           json['content'] as String? ??
           json['description'] as String? ??
           '',
-      type: json['type'] as String? ?? 'announcement',
+      type: json['notificationType'] as String? ??
+          json['type'] as String? ??
+          'announcement',
       isRead: json['isRead'] as bool? ?? json['read'] as bool? ?? false,
       createdAt: rawDate,
       timeAgo: timeAgoStr,

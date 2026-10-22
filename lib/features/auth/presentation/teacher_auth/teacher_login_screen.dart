@@ -1,6 +1,8 @@
 import 'package:aula360/features/share/export/screen_export.dart';
 import 'package:flutter/foundation.dart';
 
+import '../../../../core/services/biometric/biometric_provider.dart';
+import '../../../../core/services/biometric/widgets/biometric_opt_in_sheet.dart';
 import '../../../../core/storage/storage_provider.dart';
 import '../../../../core/utils/validators.dart';
 import '../../../../utils/enum/app_enum.dart';
@@ -76,7 +78,21 @@ class _TeacherLoginScreenState extends ConsumerState<TeacherLoginScreen> {
 
     switch (outcome) {
       case LoginOutcome.authenticated:
-        context.go(RoutePath.navigationPages);
+        final storage = ref.read(storageServiceProvider);
+        final biometricService = ref.read(biometricServiceProvider);
+        final isSupported = await biometricService.isDeviceSupported();
+
+        if (isSupported &&
+            !storage.isBiometricEnabled &&
+            !storage.hasShownBiometricOptIn) {
+          if (mounted) {
+            await BiometricOptInSheet.show(context);
+          }
+        }
+
+        if (mounted) {
+          context.go(RoutePath.navigationPages);
+        }
         break;
 
       case LoginOutcome.profileSetupRequired:
@@ -119,10 +135,50 @@ class _TeacherLoginScreenState extends ConsumerState<TeacherLoginScreen> {
     }
   }
 
+  Future<void> _loginWithBiometrics() async {
+    final biometricService = ref.read(biometricServiceProvider);
+    final isSpanish = ref.read(languageProvider).valueOrNull?.language ==
+        AppLanguage.spanish;
+    final reason = isSpanish
+        ? 'Verifique su identidad para ingresar a Aula 360'
+        : 'Verify your identity to access Aula 360';
+
+    final authenticated =
+        await biometricService.authenticate(localizedReason: reason);
+    if (!authenticated || !mounted) return;
+
+    final storage = ref.read(storageServiceProvider);
+    final token =
+        await storage.getBiometricToken() ?? await storage.getAccessToken();
+
+    if (token != null && token.isNotEmpty) {
+      final isValid = await storage.hasValidAccessToken();
+      if (isValid) {
+        final authNotifier = ref.read(authControllerProvider.notifier);
+        final isAuthenticated = await authNotifier.checkSession();
+        if (mounted && isAuthenticated) {
+          ref.read(userRoleProvider.notifier).loginAsTeacher();
+          context.go(RoutePath.navigationPages);
+          return;
+        }
+      }
+    }
+
+    if (mounted) {
+      ApiSnackbar.show(
+        isSpanish
+            ? 'Sesión biométrica expirada. Inicie sesión con su contraseña.'
+            : 'Biometric session expired. Please log in with password.',
+        type: SnackbarType.warning,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final tr = ref.watchTr;
     final authState = ref.watch(authControllerProvider);
+    final storageService = ref.watch(storageServiceProvider);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -283,6 +339,29 @@ class _TeacherLoginScreenState extends ConsumerState<TeacherLoginScreen> {
                 isLoading: authState.isLoading,
                 onTap: _login,
               ),
+
+              if (storageService.isBiometricEnabled) ...[
+                Gap(12.h),
+                OutlinedButton.icon(
+                  onPressed: _loginWithBiometrics,
+                  icon: const Icon(Icons.fingerprint_rounded, size: 22),
+                  label: Text(
+                    tr(AppStrings.settingsSecurityBiometric),
+                    style: TxtStyle.titleLarge(
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    minimumSize: Size(double.infinity, 50.h),
+                    side: const BorderSide(color: AppColors.primary, width: 1.5),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
+                  ),
+                ),
+              ],
 
               SizedBox(height: 29.h),
 

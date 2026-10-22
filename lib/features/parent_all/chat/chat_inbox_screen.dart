@@ -1,4 +1,7 @@
 import '../../share/export/screen_export.dart';
+import '../data/dtos/conversation_dto.dart';
+import '../presentation/controllers/parent_chat_controller.dart';
+import '../presentation/controllers/parent_children_controller.dart';
 
 /// ===============================================================
 /// 1. TEACHER CHAT SCREEN / CHAT CON PROFESOR
@@ -13,76 +16,132 @@ class TeacherChatScreen extends ConsumerStatefulWidget {
 
 class _TeacherChatScreenState extends ConsumerState<TeacherChatScreen> {
   final TextEditingController _messageController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void dispose() {
     _messageController.dispose();
+    _scrollController.dispose();
     super.dispose();
+  }
+
+  void _scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 250),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+  }
+
+  String _formatTime(String? iso) {
+    if (iso == null || iso.isEmpty) return '12:00';
+    try {
+      final dt = DateTime.parse(iso).toLocal();
+      return '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
+    } catch (_) {
+      return '12:00';
+    }
+  }
+
+  bool _isMe(ChatMessageDto msg, ConversationDto? conv) {
+    if (msg.senderId == 'me') return true;
+    final otherId = conv?.participant?.id;
+    if (otherId != null && otherId.isNotEmpty && msg.senderId == otherId) {
+      return false;
+    }
+    return true;
   }
 
   @override
   Widget build(BuildContext context) {
+    final chatState = ref.watch(parentChatControllerProvider);
+    final chatController = ref.read(parentChatControllerProvider.notifier);
+    final activeChild =
+        ref.watch(parentChildrenControllerProvider).selectedChild;
+
+    final conv = chatState.selectedConversation;
+
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
-      appBar: _chatAppBar(),
+      appBar: _chatAppBar(chatState, conv, activeChild),
       body: SafeArea(
         child: Column(
           children: [
             Expanded(
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                padding: EdgeInsets.fromLTRB(14.w, 10.h, 14.w, 20.h),
-                child: Column(
-                  children: [
-                    _chatTabs(),
-                    SizedBox(height: 15.h),
-                    _dateDivider(),
-                    SizedBox(height: 12.h),
+              child: RefreshIndicator(
+                color: AppColors.primary,
+                onRefresh: () => chatController.loadConversations(),
+                child: SingleChildScrollView(
+                  controller: _scrollController,
+                  physics: const AlwaysScrollableScrollPhysics(
+                    parent: BouncingScrollPhysics(),
+                  ),
+                  padding: EdgeInsets.fromLTRB(14.w, 10.h, 14.w, 20.h),
+                  child: Column(
+                    children: [
+                      _chatTabs(chatState, chatController),
+                      SizedBox(height: 15.h),
+                      _dateDivider(),
+                      SizedBox(height: 12.h),
 
-                    _messageLabel('Dña. Vance • Tutora y Matemáticas'),
-                    SizedBox(height: 6.h),
-
-                    _incomingMessage(
-                      'Buenas tardes Sres. Rivera.\n\n'
-                          'Lucas completó su evaluación de matemáticas '
-                          'de forma excelente (94%). '
-                          'Por favor asegúrense de que revise los ejercicios '
-                          'del Tema 6 este fin de semana.',
-                      '11:42',
-                    ),
-
-                    SizedBox(height: 12.h),
-
-                    _outgoingMessage(
-                      '¡Muchas gracias Dña. Vance! Hemos visto la '
-                          'tarea actualizada y repasaremos el Tema 6 '
-                          'juntos esta tarde.',
-                      '12:05',
-                    ),
-
-                    SizedBox(height: 12.h),
-
-                    _messageLabel('Dña. Vance'),
-                    SizedBox(height: 6.h),
-
-                    _incomingMessage(
-                      '¡Perfecto! Avísenme si necesita cualquier '
-                          'aclaración adicional durante la tutoría '
-                          'del lunes.',
-                      '12:18',
-                    ),
-                  ],
+                      if (chatState.isLoading && chatState.messages.isEmpty)
+                        Padding(
+                          padding: EdgeInsets.symmetric(vertical: 40.h),
+                          child: const Center(
+                            child: CircularProgressIndicator(
+                              color: AppColors.primary,
+                            ),
+                          ),
+                        )
+                      else if (chatState.messages.isEmpty)
+                        _emptyChatPlaceholder()
+                      else ...[
+                        for (final msg in chatState.messages) ...[
+                          if (_isMe(msg, conv)) ...[
+                            _outgoingMessage(
+                              msg.body,
+                              _formatTime(msg.sentAt),
+                            ),
+                            SizedBox(height: 12.h),
+                          ] else ...[
+                            _messageLabel(
+                              msg.sender?.fullName ?? conv?.displayName ?? 'Profesor',
+                            ),
+                            SizedBox(height: 6.h),
+                            _incomingMessage(
+                              msg.body,
+                              _formatTime(msg.sentAt),
+                            ),
+                            SizedBox(height: 12.h),
+                          ],
+                        ],
+                      ],
+                    ],
+                  ),
                 ),
               ),
             ),
-            _messageComposer(),
+            _messageComposer(chatState, chatController),
           ],
         ),
       ),
     );
   }
 
-  PreferredSizeWidget _chatAppBar() {
+  PreferredSizeWidget _chatAppBar(
+    ParentChatState state,
+    ConversationDto? conv,
+    dynamic activeChild,
+  ) {
+    final title = conv?.displayName ?? 'Dña. Sarah Vance';
+    final childInfo = activeChild != null
+        ? '${activeChild.name} • ${activeChild.grade}'
+        : 'Lucas Rivera • ${ref.watchTr(AppStrings.eso2)}';
+
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
@@ -97,20 +156,26 @@ class _TeacherChatScreenState extends ConsumerState<TeacherChatScreen> {
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                'Dña. Sarah Vance',
-                style: TxtStyle.titleLarge(
-                  color: AppColors.primaryDark,
-                  fontSize: 17.sp,
-                  fontWeight: FontWeight.w800,
+              Flexible(
+                child: Text(
+                  title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TxtStyle.titleLarge(
+                    color: AppColors.primaryDark,
+                    fontSize: 17.sp,
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
               ),
               SizedBox(width: 5.w),
               Container(
-                width: 6.w,
-                height: 6.w,
-                decoration: const BoxDecoration(
-                  color: AppColors.emeraldGreenColor,
+                width: 7.w,
+                height: 7.w,
+                decoration: BoxDecoration(
+                  color: state.isConnected
+                      ? AppColors.emeraldGreenColor
+                      : Colors.grey,
                   shape: BoxShape.circle,
                 ),
               ),
@@ -118,7 +183,7 @@ class _TeacherChatScreenState extends ConsumerState<TeacherChatScreen> {
           ),
           SizedBox(height: 2.h),
           Text(
-            'Lucas Rivera • ${ref.watchTr(AppStrings.eso2)}',
+            childInfo,
             style: TxtStyle.titleLarge(
               color: AppColors.subtitleTextColor,
               fontSize: 13.5.sp,
@@ -134,7 +199,12 @@ class _TeacherChatScreenState extends ConsumerState<TeacherChatScreen> {
     );
   }
 
-  Widget _chatTabs() {
+  Widget _chatTabs(
+    ParentChatState state,
+    ParentChatController controller,
+  ) {
+    final isTutoring = state.selectedTab == 0;
+
     return Container(
       padding: EdgeInsets.all(3.w),
       decoration: BoxDecoration(
@@ -144,39 +214,108 @@ class _TeacherChatScreenState extends ConsumerState<TeacherChatScreen> {
       child: Row(
         children: [
           Expanded(
-            child: Container(
-              alignment: Alignment.center,
-              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(15.r),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: .05),
-                    blurRadius: 3,
+            child: GestureDetector(
+              onTap: () => controller.selectTab(0),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                alignment: Alignment.center,
+                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
+                decoration: BoxDecoration(
+                  color: isTutoring ? Colors.white : Colors.transparent,
+                  borderRadius: BorderRadius.circular(15.r),
+                  boxShadow: isTutoring
+                      ? [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: .05),
+                            blurRadius: 3,
+                          ),
+                        ]
+                      : null,
+                ),
+                child: Text(
+                  ref.watchTr(AppStrings.chatTutoringTab),
+                  style: TxtStyle.titleLarge(
+                    color: isTutoring
+                        ? AppColors.primaryDark
+                        : AppColors.subtitleTextColor,
+                    fontSize: 14.sp,
+                    fontWeight: isTutoring ? FontWeight.w700 : FontWeight.w600,
                   ),
-                ],
-              ),
-              child: Text(
-                ref.watchTr(AppStrings.chatTutoringTab),
-                style: TxtStyle.titleLarge(
-                  color: AppColors.primaryDark,
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w700,
                 ),
               ),
             ),
           ),
           Expanded(
-            child: Center(
-              child: Text(
-                ref.watchTr(AppStrings.chatAdministrationTab),
-                style: TxtStyle.titleLarge(
-                  color: AppColors.subtitleTextColor,
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w600,
+            child: GestureDetector(
+              onTap: () => controller.selectTab(1),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                alignment: Alignment.center,
+                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
+                decoration: BoxDecoration(
+                  color: !isTutoring ? Colors.white : Colors.transparent,
+                  borderRadius: BorderRadius.circular(15.r),
+                  boxShadow: !isTutoring
+                      ? [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: .05),
+                            blurRadius: 3,
+                          ),
+                        ]
+                      : null,
+                ),
+                child: Text(
+                  ref.watchTr(AppStrings.chatAdministrationTab),
+                  style: TxtStyle.titleLarge(
+                    color: !isTutoring
+                        ? AppColors.primaryDark
+                        : AppColors.subtitleTextColor,
+                    fontSize: 14.sp,
+                    fontWeight: !isTutoring ? FontWeight.w700 : FontWeight.w600,
+                  ),
                 ),
               ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _emptyChatPlaceholder() {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 40.h, horizontal: 20.w),
+      child: Column(
+        children: [
+          Container(
+            width: 50.w,
+            height: 50.w,
+            decoration: const BoxDecoration(
+              color: AppColors.blueSoft,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.chat_bubble_outline,
+              size: 24.sp,
+              color: AppColors.primaryDark,
+            ),
+          ),
+          SizedBox(height: 12.h),
+          Text(
+            'Sin mensajes previos',
+            style: TxtStyle.titleLarge(
+              color: AppColors.text,
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          SizedBox(height: 4.h),
+          Text(
+            'Escribe un mensaje para comunicarte directamente.',
+            textAlign: TextAlign.center,
+            style: TxtStyle.titleLarge(
+              color: AppColors.subtitleTextColor,
+              fontSize: 13.5.sp,
             ),
           ),
         ],
@@ -193,11 +332,12 @@ class _TeacherChatScreenState extends ConsumerState<TeacherChatScreen> {
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 10.w),
           child: Text(
-            'HOY, 24 OCT',
+            'CHAT EN TIEMPO REAL',
             style: TxtStyle.titleLarge(
               color: AppColors.subtitleTextColor,
-              fontSize: 13.5.sp,
+              fontSize: 12.sp,
               fontWeight: FontWeight.w700,
+              letterSpacing: .5,
             ),
           ),
         ),
@@ -215,7 +355,7 @@ class _TeacherChatScreenState extends ConsumerState<TeacherChatScreen> {
         text,
         style: TxtStyle.titleLarge(
           color: AppColors.blueTextColor,
-          fontSize: 15.sp,
+          fontSize: 13.5.sp,
           fontWeight: FontWeight.w700,
         ),
       ),
@@ -254,7 +394,7 @@ class _TeacherChatScreenState extends ConsumerState<TeacherChatScreen> {
           time,
           style: TxtStyle.titleLarge(
             color: AppColors.subtitleTextColor,
-            fontSize: 13.sp,
+            fontSize: 12.sp,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -296,7 +436,7 @@ class _TeacherChatScreenState extends ConsumerState<TeacherChatScreen> {
               time,
               style: TxtStyle.titleLarge(
                 color: AppColors.subtitleTextColor,
-                fontSize: 13.sp,
+                fontSize: 12.sp,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -308,7 +448,10 @@ class _TeacherChatScreenState extends ConsumerState<TeacherChatScreen> {
     );
   }
 
-  Widget _messageComposer() {
+  Widget _messageComposer(
+    ParentChatState state,
+    ParentChatController controller,
+  ) {
     return Container(
       padding: EdgeInsets.fromLTRB(12.w, 8.h, 12.w, 10.h),
       decoration: BoxDecoration(
@@ -345,20 +488,44 @@ class _TeacherChatScreenState extends ConsumerState<TeacherChatScreen> {
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.only(bottom: 9.h),
                 ),
+                onSubmitted: (_) async {
+                  final text = _messageController.text;
+                  _messageController.clear();
+                  final success = await controller.sendMessage(text);
+                  if (success) _scrollToBottom();
+                },
               ),
             ),
           ),
           SizedBox(width: 7.w),
           GestureDetector(
-            onTap: () {},
+            onTap: state.isSending
+                ? null
+                : () async {
+                    final text = _messageController.text;
+                    if (text.trim().isEmpty) return;
+                    _messageController.clear();
+                    final success = await controller.sendMessage(text);
+                    if (success) _scrollToBottom();
+                  },
             child: Container(
               width: 31.w,
               height: 31.w,
+              alignment: Alignment.center,
               decoration: const BoxDecoration(
                 color: AppColors.primaryDark,
                 shape: BoxShape.circle,
               ),
-              child: Icon(Icons.send, color: Colors.white, size: 14.sp),
+              child: state.isSending
+                  ? SizedBox(
+                      width: 14.w,
+                      height: 14.w,
+                      child: const CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
+                    )
+                  : Icon(Icons.send, color: Colors.white, size: 14.sp),
             ),
           ),
         ],

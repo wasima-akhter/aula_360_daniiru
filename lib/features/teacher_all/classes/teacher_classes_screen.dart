@@ -5,7 +5,7 @@ import '../../share/export/screen_export.dart';
 import '../helper/teacher_enums.dart';
 import '../helper/teacher_models.dart';
 import '../helper/teacher_widgets.dart';
-import '../presentation/controllers/teacher_classes_controller.dart';
+import 'presentation/controllers/teacher_classes_controller.dart';
 
 /// ===============================================================
 /// 1. CLASSES SCREEN
@@ -28,41 +28,160 @@ class TeacherClassesScreen extends ConsumerWidget {
       appBar: AulaAppBar(
         title: ref.watchTr(AppStrings.navClasses),
         showBack: false,
+        actions: [
+          IconButton(
+            tooltip: 'Tareas',
+            icon: Icon(
+              Icons.assignment_outlined,
+              color: AppColors.primaryDark,
+              size: 24.sp,
+            ),
+            onPressed: () {
+              context.push(RoutePath.teacherHomework.addBasePath);
+            },
+          ),
+          SizedBox(width: 8.w),
+        ],
       ),
-      body: state.isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : CustomScrollView(
-              physics: const BouncingScrollPhysics(),
-              slivers: [
-                SliverToBoxAdapter(child: _pageHeader(ref)),
+      body: RefreshIndicator(
+        color: AppColors.primaryDark,
+        onRefresh: () async {
+          await controller.loadClasses();
+        },
+        child: state.isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : state.error != null
+                ? Center(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 24.w),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.error_outline_rounded,
+                            color: AppColors.error,
+                            size: 48.sp,
+                          ),
+                          SizedBox(height: 12.h),
+                          Text(
+                            'Error al cargar clases',
+                            style: TxtStyle.titleLarge(
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          SizedBox(height: 8.h),
+                          Text(
+                            state.error!,
+                            textAlign: TextAlign.center,
+                            style: TxtStyle.bodyMedium(
+                              color: AppColors.subtitleTextColor,
+                              fontSize: 13.sp,
+                            ),
+                          ),
+                          SizedBox(height: 16.h),
+                          AulaPrimaryButton(
+                            text: 'Reintentar',
+                            onTap: () => controller.loadClasses(),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                : CustomScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(
+                      parent: BouncingScrollPhysics(),
+                    ),
+                    slivers: [
+                      SliverToBoxAdapter(child: _pageHeader(ref)),
 
-                /// Sticky tabs.
-                SliverPersistentHeader(
-                  pinned: true,
-                  delegate: StickyHeaderDelegate(
-                    minHeight: 59.h,
-                    maxHeight: 59.h,
-                    child: _tabs(ref, state, controller),
-                  ),
-                ),
+                      /// Sticky tabs.
+                      SliverPersistentHeader(
+                        pinned: true,
+                        delegate: StickyHeaderDelegate(
+                          minHeight: 59.h,
+                          maxHeight: 59.h,
+                          child: _tabs(ref, state, controller),
+                        ),
+                      ),
 
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 30.h),
-                    child: Column(
-                      children: [
-                        ...visibleClasses.map(
-                          (academyClass) => Padding(
-                            padding: EdgeInsets.only(bottom: 1.h),
-                            child: _classCard(context, ref, academyClass),
+                      if (visibleClasses.isEmpty)
+                        SliverToBoxAdapter(
+                          child: Padding(
+                            padding: EdgeInsets.fromLTRB(
+                              24.w,
+                              60.h,
+                              24.w,
+                              30.h,
+                            ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  width: 64.w,
+                                  height: 64.w,
+                                  decoration: const BoxDecoration(
+                                    color: AppColors.blueSoft,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.calendar_today_outlined,
+                                    color: AppColors.primaryDark,
+                                    size: 30.sp,
+                                  ),
+                                ),
+                                SizedBox(height: 16.h),
+                                Text(
+                                  state.selectedTab == ClassTab.today
+                                      ? 'No hay clases programadas para hoy'
+                                      : 'No hay próximas clases programadas',
+                                  textAlign: TextAlign.center,
+                                  style: TxtStyle.titleLarge(
+                                    fontSize: 17.sp,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                SizedBox(height: 8.h),
+                                Text(
+                                  'Las clases asignadas por la administración aparecerán aquí automáticamente.',
+                                  textAlign: TextAlign.center,
+                                  style: TxtStyle.bodyMedium(
+                                    color: AppColors.subtitleTextColor,
+                                    fontSize: 13.5.sp,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      else
+                        SliverToBoxAdapter(
+                          child: Padding(
+                            padding: EdgeInsets.fromLTRB(
+                              16.w,
+                              14.h,
+                              16.w,
+                              30.h,
+                            ),
+                            child: Column(
+                              children: [
+                                ...visibleClasses.map(
+                                  (academyClass) => Padding(
+                                    padding: EdgeInsets.only(bottom: 1.h),
+                                    child: _classCard(
+                                      context,
+                                      ref,
+                                      academyClass,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ],
-                    ),
+                    ],
                   ),
-                ),
-              ],
-            ),
+      ),
     );
   }
 
@@ -201,7 +320,7 @@ class TeacherClassesScreen extends ConsumerWidget {
   ) {
     return GestureDetector(
       onTap: () {
-        context.push(RoutePath.teacherClassDetail);
+        context.push(RoutePath.teacherClassDetail, extra: academyClass);
       },
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 14.h),

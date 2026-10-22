@@ -1,22 +1,63 @@
 import '../../share/export/screen_export.dart';
+import '../data/dtos/child_progress_dto.dart';
 import '../domain/models/parent_models.dart';
 import '../helper/parent_widgets.dart';
 import '../presentation/controllers/parent_children_controller.dart';
+import '../presentation/controllers/parent_progress_controller.dart';
 
 /// ===============================================================
 /// 5. CHILD PROFILE / PERFIL DEL ALUMNO
 /// ===============================================================
 
-class ChildProfileScreen extends ConsumerWidget {
+class ChildProfileScreen extends ConsumerStatefulWidget {
   final ChildModel? child;
 
   const ChildProfileScreen({super.key, this.child});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ChildProfileScreen> createState() => _ChildProfileScreenState();
+}
+
+class _ChildProfileScreenState extends ConsumerState<ChildProfileScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadProgressIfNeeded();
+    });
+  }
+
+  @override
+  void didUpdateWidget(covariant ChildProfileScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.child?.id != widget.child?.id) {
+      _loadProgressIfNeeded();
+    }
+  }
+
+  void _loadProgressIfNeeded() {
+    final activeChild = _getActiveChild();
+    if (activeChild != null && activeChild.id.isNotEmpty) {
+      ref
+          .read(parentProgressControllerProvider.notifier)
+          .loadProgress(activeChild.id);
+    }
+  }
+
+  ChildModel? _getActiveChild() {
+    final childrenState = ref.read(parentChildrenControllerProvider);
+    return widget.child ??
+        childrenState.selectedChild ??
+        (childrenState.children.isNotEmpty
+            ? childrenState.children.first
+            : null);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final state = ref.watch(parentChildrenControllerProvider);
     final activeChild =
-        child ??
+        widget.child ??
         state.selectedChild ??
         (state.children.isNotEmpty ? state.children.first : null);
 
@@ -27,25 +68,43 @@ class ChildProfileScreen extends ConsumerWidget {
       );
     }
 
+    final progressState = ref.watch(parentProgressControllerProvider);
+    final progress = progressState.progressByChild[activeChild.id];
+
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
       appBar: simpleAppBar(context, ref.watchTr(AppStrings.childProfile)),
       body: SafeArea(
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          padding: EdgeInsets.fromLTRB(14.w, 14.h, 14.w, 30.h),
-          child: Column(
-            children: [
-              _studentHeader(context, ref, activeChild),
-              SizedBox(height: 18.h),
-              _sectionLabel(
-                ref.watchTr(AppStrings.academicActivity).toUpperCase(),
-              ),
-              SizedBox(height: 8.h),
-              _activityCard(context, ref, activeChild),
-              SizedBox(height: 13.h),
-              _messageCard(context),
-            ],
+        child: RefreshIndicator(
+          onRefresh: () async {
+            await ref
+                .read(parentProgressControllerProvider.notifier)
+                .loadProgress(activeChild.id);
+          },
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(
+              parent: BouncingScrollPhysics(),
+            ),
+            padding: EdgeInsets.fromLTRB(14.w, 14.h, 14.w, 30.h),
+            child: Column(
+              children: [
+                _studentHeader(context, ref, activeChild, progress),
+                SizedBox(height: 18.h),
+                _sectionLabel(
+                  ref.watchTr(AppStrings.academicActivity).toUpperCase(),
+                ),
+                SizedBox(height: 8.h),
+                _activityCard(
+                  context,
+                  ref,
+                  activeChild,
+                  progress,
+                  progressState,
+                ),
+                SizedBox(height: 13.h),
+                _messageCard(context),
+              ],
+            ),
           ),
         ),
       ),
@@ -56,7 +115,18 @@ class ChildProfileScreen extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
     ChildModel activeChild,
+    ChildProgressDto? progress,
   ) {
+    final attendanceText = progress != null
+        ? '${progress.attendancePercentage}%'
+        : '${activeChild.attendance.toStringAsFixed(1)}%';
+    final homeworkText = progress != null
+        ? '${progress.homeworkCompletionPercentage}%'
+        : '-';
+    final subjectsText = progress != null
+        ? '${progress.subjects.length}'
+        : '-';
+
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(12.w),
@@ -148,15 +218,23 @@ class ChildProfileScreen extends ConsumerWidget {
               Expanded(
                 child: _stat(
                   ref.watchTr(AppStrings.attendance),
-                  '${activeChild.attendance.toStringAsFixed(1)}%',
+                  attendanceText,
                   AppColors.emeraldGreenColor,
                 ),
               ),
               Expanded(
-                child: _stat('Nota Media', '8.8', AppColors.primaryDark),
+                child: _stat(
+                  ref.watchTr(AppStrings.homeworkCompletion),
+                  homeworkText,
+                  AppColors.primaryDark,
+                ),
               ),
               Expanded(
-                child: _stat('Tareas', '2 Pend.', AppColors.orangeColor),
+                child: _stat(
+                  ref.watchTr(AppStrings.enrolledSubjects),
+                  subjectsText,
+                  AppColors.orangeColor,
+                ),
               ),
             ],
           ),
@@ -170,9 +248,11 @@ class ChildProfileScreen extends ConsumerWidget {
       children: [
         Text(
           title,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           style: TxtStyle.titleLarge(
             color: AppColors.subtitleTextColor,
-            fontSize: 13.5.sp,
+            fontSize: 12.5.sp,
           ),
         ),
         SizedBox(height: 3.h),
@@ -206,6 +286,8 @@ class ChildProfileScreen extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
     ChildModel activeChild,
+    ChildProgressDto? progress,
+    ParentProgressState progressState,
   ) {
     return Container(
       decoration: BoxDecoration(
@@ -229,8 +311,9 @@ class ChildProfileScreen extends ConsumerWidget {
             icon: Icons.fact_check_outlined,
             color: AppColors.emeraldGreenColor,
             title: ref.watchTr(AppStrings.attendance),
-            subtitle:
-                '${activeChild.attendance.toStringAsFixed(0)}% registro de asistencia',
+            subtitle: progress != null
+                ? '${progress.attendancePercentage}% registro de asistencia'
+                : '${activeChild.attendance.toStringAsFixed(0)}% registro de asistencia',
             onTap: () {
               context.push(RoutePath.attendance, extra: activeChild);
             },
@@ -250,7 +333,9 @@ class ChildProfileScreen extends ConsumerWidget {
             icon: Icons.assignment_outlined,
             color: AppColors.orangeColor,
             title: 'Tareas',
-            subtitle: '2 ejercicios pendientes',
+            subtitle: progress != null
+                ? '${progress.homeworkCompletionPercentage}% completadas'
+                : 'Ejercicios pendientes',
             onTap: () {
               context.push(RoutePath.homework);
             },
@@ -259,19 +344,287 @@ class ChildProfileScreen extends ConsumerWidget {
           _activityRow(
             icon: Icons.trending_up,
             color: AppColors.purpleAccentColor,
-            title: 'Progreso Académico',
-            subtitle: 'Notas y evaluación trimestral',
-            onTap: () {},
+            title: ref.watchTr(AppStrings.academicProgressTitle),
+            subtitle: progress != null
+                ? '${progress.subjects.length} ${ref.watchTr(AppStrings.subjectsTitle).toLowerCase()} • ${progress.attendancePercentage}% asistencia'
+                : 'Notas y evaluación trimestral',
+            onTap: () {
+              _showProgressBottomSheet(
+                context,
+                ref,
+                activeChild,
+                progress,
+                progressState,
+              );
+            },
           ),
           _divider(),
           _activityRow(
             icon: Icons.school_outlined,
             color: AppColors.subtitleTextColor,
-            title: 'Información del Profesor',
-            subtitle: activeChild.parentTeacher,
+            title: ref.watchTr(AppStrings.teacherInfoTitle),
+            subtitle: activeChild.parentTeacher.isNotEmpty
+                ? activeChild.parentTeacher
+                : 'Consultar información del profesor',
             onTap: () {
-              context.push(RoutePath.teacherInformation);
+              context.push(RoutePath.teacherInformation, extra: activeChild);
             },
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showProgressBottomSheet(
+    BuildContext context,
+    WidgetRef ref,
+    ChildModel child,
+    ChildProgressDto? progress,
+    ParentProgressState progressState,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (bottomSheetContext) {
+        return Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+          ),
+          padding: EdgeInsets.fromLTRB(18.w, 14.h, 18.w, 24.h),
+          child: SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 38.w,
+                    height: 4.h,
+                    margin: EdgeInsets.only(bottom: 14.h),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade300,
+                      borderRadius: BorderRadius.circular(2.r),
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(8.w),
+                          decoration: BoxDecoration(
+                            color: AppColors.purpleAccentColor.withValues(
+                              alpha: 0.12,
+                            ),
+                            borderRadius: BorderRadius.circular(8.r),
+                          ),
+                          child: Icon(
+                            Icons.trending_up,
+                            color: AppColors.purpleAccentColor,
+                            size: 20.sp,
+                          ),
+                        ),
+                        SizedBox(width: 10.w),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              ref.watchTr(AppStrings.academicProgressTitle),
+                              style: TxtStyle.titleLarge(
+                                fontSize: 17.sp,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                            Text(
+                              '${child.name} • ${child.grade}',
+                              style: TxtStyle.bodyMedium(
+                                color: AppColors.subtitleTextColor,
+                                fontSize: 12.5.sp,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.of(bottomSheetContext).pop(),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 16.h),
+                if (progressState.isLoading && progress == null) ...[
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 24.h),
+                    child: const Center(
+                      child: CircularProgressIndicator(strokeWidth: 2.5),
+                    ),
+                  ),
+                ] else if (progress != null) ...[
+                  _metricProgressBar(
+                    title: ref.watchTr(AppStrings.attendance),
+                    percentage: progress.attendancePercentage,
+                    color: AppColors.emeraldGreenColor,
+                    icon: Icons.fact_check_outlined,
+                  ),
+                  SizedBox(height: 14.h),
+                  _metricProgressBar(
+                    title: ref.watchTr(AppStrings.homeworkCompletion),
+                    percentage: progress.homeworkCompletionPercentage,
+                    color: AppColors.primaryDark,
+                    icon: Icons.assignment_turned_in_outlined,
+                  ),
+                  SizedBox(height: 18.h),
+                  Text(
+                    ref.watchTr(AppStrings.enrolledSubjects),
+                    style: TxtStyle.titleLarge(
+                      fontSize: 14.5.sp,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  SizedBox(height: 8.h),
+                  if (progress.subjects.isEmpty)
+                    Text(
+                      'No hay materias matriculadas',
+                      style: TxtStyle.bodyMedium(
+                        color: AppColors.subtitleTextColor,
+                        fontSize: 13.sp,
+                      ),
+                    )
+                  else
+                    Wrap(
+                      spacing: 8.w,
+                      runSpacing: 8.h,
+                      children: progress.subjects.map((subject) {
+                        return Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 10.w,
+                            vertical: 6.h,
+                          ),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF4F3F8),
+                            borderRadius: BorderRadius.circular(8.r),
+                            border: Border.all(color: AppColors.border),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.auto_stories_outlined,
+                                size: 14.sp,
+                                color: AppColors.primaryDark,
+                              ),
+                              SizedBox(width: 6.w),
+                              Text(
+                                subject,
+                                style: TxtStyle.titleLarge(
+                                  fontSize: 13.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.text,
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                ] else ...[
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 16.h),
+                    child: Center(
+                      child: Column(
+                        children: [
+                          Text(
+                            progressState.error ?? 'Error al cargar progreso',
+                            textAlign: TextAlign.center,
+                            style: TxtStyle.bodyMedium(
+                              color: AppColors.redColor,
+                              fontSize: 13.sp,
+                            ),
+                          ),
+                          SizedBox(height: 10.h),
+                          ElevatedButton.icon(
+                            onPressed: () {
+                              ref
+                                  .read(
+                                    parentProgressControllerProvider.notifier,
+                                  )
+                                  .loadProgress(child.id);
+                            },
+                            icon: const Icon(Icons.refresh, size: 16),
+                            label: Text(ref.watchTr(AppStrings.retry)),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _metricProgressBar({
+    required String title,
+    required num percentage,
+    required Color color,
+    required IconData icon,
+  }) {
+    final clamped = (percentage / 100.0).clamp(0.0, 1.0);
+    final displayVal = percentage is int ? percentage : percentage.round();
+    return Container(
+      padding: EdgeInsets.all(12.w),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF9F9FB),
+        borderRadius: BorderRadius.circular(10.r),
+        border: Border.all(color: AppColors.border),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Icon(icon, size: 16.sp, color: color),
+                  SizedBox(width: 6.w),
+                  Text(
+                    title,
+                    style: TxtStyle.titleLarge(
+                      fontSize: 13.5.sp,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.text,
+                    ),
+                  ),
+                ],
+              ),
+              Text(
+                '$displayVal%',
+                style: TxtStyle.titleLarge(
+                  fontSize: 15.sp,
+                  fontWeight: FontWeight.w800,
+                  color: color,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 8.h),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(5.r),
+            child: LinearProgressIndicator(
+              value: clamped,
+              minHeight: 8.h,
+              backgroundColor: color.withValues(alpha: 0.15),
+              valueColor: AlwaysStoppedAnimation<Color>(color),
+            ),
           ),
         ],
       ),

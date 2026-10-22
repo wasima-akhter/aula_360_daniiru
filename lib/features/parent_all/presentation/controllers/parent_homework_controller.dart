@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/repositories/parent_repository_impl.dart';
 import '../../domain/models/parent_models.dart';
 import '../../domain/repositories/parent_repository.dart';
+import 'parent_children_controller.dart';
 
 class ParentHomeworkState {
   final List<HomeworkModel> homework;
@@ -73,13 +74,43 @@ class ParentHomeworkController extends Notifier<ParentHomeworkState> {
   @override
   ParentHomeworkState build() {
     _repository = ref.watch(parentRepositoryProvider);
+    final children = ref.watch(parentChildrenControllerProvider).children;
+    final students = children.isNotEmpty
+        ? children
+            .map((c) => StudentModel(
+                  name: c.name,
+                  grade: '${c.grade} • ${c.classroom}',
+                  initials: c.initials,
+                ))
+            .toList()
+        : const [
+            StudentModel(
+              name: 'Lucas Rivera',
+              grade: '2º ESO • Aula 3B',
+              initials: 'LR',
+            ),
+            StudentModel(
+              name: 'Sophia Rivera',
+              grade: '5º Primaria • Aula 1A',
+              initials: 'SR',
+            ),
+          ];
+
     Future.microtask(() => loadHomework());
-    return const ParentHomeworkState(isLoading: true);
+    return ParentHomeworkState(isLoading: true, students: students);
   }
 
-  Future<void> loadHomework() async {
+  Future<void> loadHomework([String? childId]) async {
     try {
-      final items = await _repository.getHomeworkList();
+      state = state.copyWith(isLoading: true, error: null);
+      final children = ref.read(parentChildrenControllerProvider).children;
+      final id = childId ??
+          (state.selectedStudentIndex < children.length
+              ? children[state.selectedStudentIndex].id
+              : ref.read(parentChildrenControllerProvider).selectedChild?.id);
+      final items = id != null
+          ? await _repository.getChildHomework(id)
+          : await _repository.getHomeworkList();
       state = state.copyWith(homework: items, isLoading: false);
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
@@ -88,6 +119,10 @@ class ParentHomeworkController extends Notifier<ParentHomeworkState> {
 
   void selectStudent(int index) {
     state = state.copyWith(selectedStudentIndex: index);
+    final children = ref.read(parentChildrenControllerProvider).children;
+    if (index >= 0 && index < children.length) {
+      loadHomework(children[index].id);
+    }
   }
 
   void selectTab(int index) {

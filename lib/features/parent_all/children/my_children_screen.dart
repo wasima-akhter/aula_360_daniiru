@@ -20,17 +20,71 @@ class MyChildrenScreen extends ConsumerWidget {
       backgroundColor: const Color(0xFFF8F7FC),
       appBar: simpleAppBar(context, ref.watchTr(AppStrings.myChildren)),
       body: SafeArea(
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          padding: EdgeInsets.fromLTRB(14.w, 15.h, 14.w, 30.h),
-          child: Column(
-            children: [
-              for (final child in children) ...[
-                _childCard(context, ref, child),
-                SizedBox(height: 12.h),
+        child: RefreshIndicator(
+          onRefresh: () async {
+            await ref
+                .read(parentChildrenControllerProvider.notifier)
+                .loadChildren();
+          },
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(
+              parent: BouncingScrollPhysics(),
+            ),
+            padding: EdgeInsets.fromLTRB(14.w, 15.h, 14.w, 30.h),
+            child: Column(
+              children: [
+                if (state.isLoading && children.isEmpty)
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 40.h),
+                    child: const Center(
+                      child: CircularProgressIndicator(strokeWidth: 2.5),
+                    ),
+                  )
+                else if (children.isEmpty)
+                  Container(
+                    width: double.infinity,
+                    margin: EdgeInsets.only(bottom: 16.h),
+                    padding: EdgeInsets.all(20.w),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10.r),
+                      border: Border.all(color: AppColors.border),
+                    ),
+                    child: Column(
+                      children: [
+                        Icon(
+                          Icons.family_restroom_outlined,
+                          size: 40.sp,
+                          color: AppColors.primary,
+                        ),
+                        SizedBox(height: 10.h),
+                        Text(
+                          'No hay alumnos vinculados',
+                          style: TxtStyle.titleLarge(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        SizedBox(height: 4.h),
+                        Text(
+                          'Vincule a su hijo/a para ver su horario, asistencia y calificaciones.',
+                          textAlign: TextAlign.center,
+                          style: TxtStyle.bodyMedium(
+                            color: AppColors.subtitleTextColor,
+                            fontSize: 13.sp,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                else
+                  for (final child in children) ...[
+                    _childCard(context, ref, child),
+                    SizedBox(height: 12.h),
+                  ],
+                _addChildButton(context, ref),
               ],
-              _addChildButton(context, ref),
-            ],
+            ),
           ),
         ),
       ),

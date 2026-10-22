@@ -51,63 +51,114 @@ class ReportsScreen extends ConsumerWidget {
         title: ref.watchTr(AppStrings.navReports),
         showBack: false,
       ),
-      body: CustomScrollView(
-        physics: const BouncingScrollPhysics(),
-        slivers: [
-          SliverPadding(
-            padding: EdgeInsets.fromLTRB(16.w, 18.h, 16.w, 20.h),
-            sliver: SliverList(
-              delegate: SliverChildListDelegate([
-                _studentSection(ref, state, controller),
-                SizedBox(height: 22.h),
-                _categoryTabs(state, controller, categories),
-              ]),
-            ),
+      body: RefreshIndicator(
+        color: AppColors.primary,
+        onRefresh: () => controller.loadReports(),
+        child: CustomScrollView(
+          physics: const AlwaysScrollableScrollPhysics(
+            parent: BouncingScrollPhysics(),
           ),
-
-          // =========================================================
-          // REPORT SECTIONS
-          // =========================================================
-          for (final entry in groupedReports.entries) ...[
-            SliverPersistentHeader(
-              pinned: true,
-              delegate: _StickyDateHeaderDelegate(
-                height: 38.h,
-                child: Container(
-                  color: const Color(0xFFF8F7FC),
-                  padding: EdgeInsets.fromLTRB(16.w, 0.h, 16.w, 7.h),
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    _formatDateHeader(entry.key, ref),
-                    style: TxtStyle.titleLarge(
-                      color: AppColors.secondaryText,
-                      fontSize: 13.5.sp,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: .45,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-
+          slivers: [
             SliverPadding(
-              padding: EdgeInsets.fromLTRB(16.w, 3.h, 16.w, 5.h),
+              padding: EdgeInsets.fromLTRB(16.w, 18.h, 16.w, 20.h),
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
-                  for (final report in entry.value) ...[
-                    _reportCard(context, ref, report),
-                    SizedBox(height: 12.h),
-                  ],
+                  _studentSection(ref, state, controller),
+                  SizedBox(height: 22.h),
+                  _categoryTabs(state, controller, categories),
                 ]),
               ),
             ),
+
+            if (state.isLoading)
+              const SliverFillRemaining(
+                hasScrollBody: false,
+                child: Center(
+                  child: CircularProgressIndicator(color: AppColors.primary),
+                ),
+              )
+            else if (state.error != null)
+              SliverFillRemaining(
+                hasScrollBody: false,
+                child: Center(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 30.w),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.error_outline, color: AppColors.error, size: 40.sp),
+                        SizedBox(height: 12.h),
+                        Text(
+                          state.error!,
+                          textAlign: TextAlign.center,
+                          style: TxtStyle.titleLarge(
+                            color: AppColors.secondaryText,
+                            fontSize: 14.sp,
+                          ),
+                        ),
+                        SizedBox(height: 16.h),
+                        TextButton.icon(
+                          onPressed: () => controller.loadReports(),
+                          icon: const Icon(Icons.refresh, color: AppColors.primary),
+                          label: Text(
+                            ref.watchTr(AppStrings.retry),
+                            style: TxtStyle.titleLarge(
+                              color: AppColors.primary,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              )
+            else ...[
+              // =========================================================
+              // REPORT SECTIONS
+              // =========================================================
+              for (final entry in groupedReports.entries) ...[
+                SliverPersistentHeader(
+                  pinned: true,
+                  delegate: _StickyDateHeaderDelegate(
+                    height: 38.h,
+                    child: Container(
+                      color: const Color(0xFFF8F7FC),
+                      padding: EdgeInsets.fromLTRB(16.w, 0.h, 16.w, 7.h),
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        _formatDateHeader(entry.key, ref),
+                        style: TxtStyle.titleLarge(
+                          color: AppColors.secondaryText,
+                          fontSize: 13.5.sp,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: .45,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
+                SliverPadding(
+                  padding: EdgeInsets.fromLTRB(16.w, 3.h, 16.w, 5.h),
+                  sliver: SliverList(
+                    delegate: SliverChildListDelegate([
+                      for (final report in entry.value) ...[
+                        _reportCard(context, ref, report),
+                        SizedBox(height: 12.h),
+                      ],
+                    ]),
+                  ),
+                ),
+              ],
+
+              if (filteredReports.isEmpty)
+                SliverFillRemaining(hasScrollBody: false, child: _emptyState(ref)),
+            ],
+
+            SliverToBoxAdapter(child: SizedBox(height: 20.h)),
           ],
-
-          if (filteredReports.isEmpty)
-            SliverFillRemaining(hasScrollBody: false, child: _emptyState(ref)),
-
-          SliverToBoxAdapter(child: SizedBox(height: 20.h)),
-        ],
+        ),
       ),
     );
   }
@@ -149,28 +200,30 @@ class ReportsScreen extends ConsumerWidget {
 
         SizedBox(height: 10.h),
 
-        LayoutBuilder(
-          builder: (context, constraints) {
-            final cardWidth = (constraints.maxWidth - 10.w) / 2;
-
-            return SizedBox(
-              height: 82.h,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: cardWidth,
-                    child: _studentCard(state, controller, 0),
-                  ),
-                  SizedBox(width: 10.w),
-                  SizedBox(
-                    width: cardWidth,
-                    child: _studentCard(state, controller, 1),
-                  ),
-                ],
+        if (state.students.isEmpty)
+          const SizedBox.shrink()
+        else if (state.students.length <= 2)
+          Row(
+            children: [
+              for (int i = 0; i < state.students.length; i++) ...[
+                Expanded(child: _studentCard(state, controller, i)),
+                if (i != state.students.length - 1) SizedBox(width: 10.w),
+              ],
+            ],
+          )
+        else
+          SizedBox(
+            height: 82.h,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              itemCount: state.students.length,
+              separatorBuilder: (_, _) => SizedBox(width: 10.w),
+              itemBuilder: (context, i) => SizedBox(
+                width: 160.w,
+                child: _studentCard(state, controller, i),
               ),
-            );
-          },
-        ),
+            ),
+          ),
       ],
     );
   }

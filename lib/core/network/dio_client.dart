@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 
-import '../../utils/config/app_config.dart';
+import '../config/app_config.dart';
 import '../constants/app_constants.dart';
 
 class DioClient {

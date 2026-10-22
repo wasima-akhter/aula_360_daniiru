@@ -1,134 +1,248 @@
 import 'package:intl/intl.dart';
 
-import '../../auth/presentation/controllers/auth_controller.dart';
-import '../../parent_all/helper/parent_home_helper.dart';
-import '../../share/export/screen_export.dart';
+import 'package:aula360/features/auth/presentation/controllers/auth_controller.dart';
+import 'package:aula360/features/parent_all/helper/parent_home_helper.dart';
+import 'package:aula360/features/share/export/screen_export.dart';
+import 'data/dtos/teacher_students_dtos.dart';
+import 'presentation/controllers/teacher_student_detail_controller.dart';
+import 'presentation/controllers/teacher_students_controller.dart';
 
-class TeacherFacultyNotesNotifier extends Notifier<List<String>> {
+/// ===============================================================
+/// TEACHER STUDENT DETAILS SCREEN
+/// ===============================================================
+
+class TeacherStudentDetailsScreen extends ConsumerStatefulWidget {
+  final String? studentId;
+
+  const TeacherStudentDetailsScreen({super.key, this.studentId});
+
   @override
-  List<String> build() => [];
-
-  void addNote(String note) {
-    state = [...state, note];
-  }
+  ConsumerState<TeacherStudentDetailsScreen> createState() =>
+      _TeacherStudentDetailsScreenState();
 }
 
-final teacherFacultyNotesProvider =
-    NotifierProvider<TeacherFacultyNotesNotifier, List<String>>(
-      TeacherFacultyNotesNotifier.new,
-    );
-
-/// ===============================================================
-/// STUDENT DETAILS SCREEN
-/// ===============================================================
-
-class TeacherStudentDetailsScreen extends ConsumerWidget {
-  const TeacherStudentDetailsScreen({super.key});
+class _TeacherStudentDetailsScreenState
+    extends ConsumerState<TeacherStudentDetailsScreen> {
+  String _effectiveId = '';
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final facultyNotes = ref.watch(teacherFacultyNotesProvider);
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initAndFetch();
+    });
+  }
+
+  void _initAndFetch() {
+    final studentsRoster =
+        ref.read(teacherStudentsControllerProvider).students;
+    final id = widget.studentId != null && widget.studentId!.isNotEmpty
+        ? widget.studentId!
+        : (studentsRoster.isNotEmpty ? studentsRoster.first.id : '');
+    if (mounted) {
+      setState(() {
+        _effectiveId = id;
+      });
+    }
+    if (id.isNotEmpty) {
+      ref
+          .read(teacherStudentDetailControllerProvider.notifier)
+          .loadStudentDetail(id);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final tr = ref.watchTr;
     final langCode =
         ref.watch(languageProvider).valueOrNull?.language.code ?? 'en';
     final user = ref.watch(authControllerProvider).user;
     final facultyName = user?.fullName.isNotEmpty == true
         ? user!.fullName
-        : ref.watchTr(AppStrings.facultyPrefix);
-    final formattedDate = DateFormat('d MMM', langCode).format(DateTime.now());
+        : tr(AppStrings.facultyPrefix);
+
+    // Resolve effective student ID
+    final studentsRoster =
+        ref.watch(teacherStudentsControllerProvider).students;
+    final effectiveId = widget.studentId != null && widget.studentId!.isNotEmpty
+        ? widget.studentId!
+        : (studentsRoster.isNotEmpty ? studentsRoster.first.id : _effectiveId);
+
+    if (effectiveId.isEmpty) {
+      return Scaffold(
+        backgroundColor: AppColors.softBackground,
+        appBar: AulaAppBar(
+          title: tr(AppStrings.studentDetailsTitle),
+          showBack: true,
+        ),
+        body: Center(
+          child: Padding(
+            padding: EdgeInsets.all(24.w),
+            child: Text(
+              tr(AppStrings.noStudentsFound),
+              style: TxtStyle.titleLarge(
+                fontSize: 16.sp,
+                color: AppColors.subtitleTextColor,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    final detailState = ref.watch(teacherStudentDetailControllerProvider);
+    final detailController =
+        ref.read(teacherStudentDetailControllerProvider.notifier);
+    final student = detailState.student;
 
     return Scaffold(
       backgroundColor: AppColors.softBackground,
       appBar: AulaAppBar(
-        title: ref.watchTr(AppStrings.studentDetailsTitle),
+        title: tr(AppStrings.studentDetailsTitle),
         showBack: true,
         actions: [
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-            decoration: BoxDecoration(
-              color: const Color(0xfff0f3f8),
-              borderRadius: BorderRadius.circular(4.r),
-            ),
-            child: Text(
-              '#ST-2041',
-              style: TxtStyle.bodyMedium(
-                color: AppColors.subtitleTextColor,
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w600,
+          if (student != null) ...[
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+              decoration: BoxDecoration(
+                color: const Color(0xfff0f3f8),
+                borderRadius: BorderRadius.circular(4.r),
+              ),
+              child: Text(
+                student.enrollmentNumber.isNotEmpty
+                    ? student.enrollmentNumber
+                    : '#${student.id.substring(0, 8)}',
+                style: TxtStyle.bodyMedium(
+                  color: AppColors.subtitleTextColor,
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
-          ),
-          SizedBox(width: 10.w),
-          Icon(
-            Icons.more_vert_rounded,
-            color: AppColors.subtitleTextColor,
-            size: 20.sp,
-          ),
-          SizedBox(width: 4.w),
+            SizedBox(width: 10.w),
+          ],
         ],
       ),
       body: SafeArea(
-        child: ListView(
-          physics: const BouncingScrollPhysics(),
-          padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 30.h),
-          children: [
-            _profileHeader(ref),
-            SizedBox(height: 13.h),
-            _metrics(ref),
-            SizedBox(height: 18.h),
-            _sectionTitle(
-              ref,
-              ref.watchTr(AppStrings.latestClassReportTitle),
-              trailing:
-                  '$formattedDate · ${ref.watchTr(AppStrings.sessionPrefix)} #18',
-            ),
-            SizedBox(height: 8.h),
-            _latestReport(ref),
-            SizedBox(height: 16.h),
-            _sectionTitle(
-              ref,
-              ref.watchTr(AppStrings.activeHomeworkTitle),
-              trailingWidget: _reviewDueTag(ref),
-            ),
-            SizedBox(height: 8.h),
-            _homeworkCard(ref, langCode),
-            SizedBox(height: 17.h),
-            _sectionTitle(
-              ref,
-              ref.watchTr(AppStrings.facultyNoteTitle),
-              trailing: facultyName,
-            ),
-            SizedBox(height: 8.h),
-            _facultyNoteWidget(ref, facultyNotes),
-            SizedBox(height: 8.h),
-            _addNoteButton(context, ref),
-            Gap(20.h),
-          ],
-        ),
+        child: detailState.isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : detailState.error != null
+                ? _errorView(
+                    ref,
+                    detailState.error!,
+                    () => detailController.loadStudentDetail(effectiveId),
+                  )
+                : student == null
+                    ? _emptyView(ref)
+                    : RefreshIndicator(
+                        onRefresh: () =>
+                            detailController.loadStudentDetail(effectiveId),
+                        child: ListView(
+                          physics: const AlwaysScrollableScrollPhysics(
+                            parent: BouncingScrollPhysics(),
+                          ),
+                          padding:
+                              EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 30.h),
+                          children: [
+                            _profileHeader(ref, student),
+                            SizedBox(height: 13.h),
+                            _metrics(ref, student),
+                            SizedBox(height: 18.h),
+                            _sectionTitle(
+                              ref,
+                              tr(AppStrings.latestClassReportTitle),
+                              trailing: student.latestReport?.submittedAt !=
+                                      null
+                                  ? DateFormat('d MMM', langCode).format(
+                                      student.latestReport!.submittedAt!,
+                                    )
+                                  : null,
+                            ),
+                            SizedBox(height: 8.h),
+                            _latestReport(ref, student.latestReport),
+                            SizedBox(height: 16.h),
+                            _sectionTitle(
+                              ref,
+                              tr(AppStrings.activeHomeworkTitle),
+                              trailingWidget: student.latestReport != null
+                                  ? _reviewDueTag(ref)
+                                  : null,
+                            ),
+                            SizedBox(height: 8.h),
+                            _homeworkCard(ref, langCode, student.latestReport),
+                            SizedBox(height: 17.h),
+                            _sectionTitle(
+                              ref,
+                              tr(AppStrings.facultyNoteTitle),
+                              trailing: facultyName,
+                            ),
+                            SizedBox(height: 8.h),
+                            _facultyNotesSection(ref, student.notes, langCode),
+                            SizedBox(height: 12.h),
+                            _addNoteButton(
+                              context,
+                              ref,
+                              detailController,
+                              detailState.isAddingNote,
+                              effectiveId,
+                            ),
+                            Gap(20.h),
+                          ],
+                        ),
+                      ),
       ),
     );
   }
 
-  Widget _profileHeader(WidgetRef ref) {
+  // ===============================================================
+  // PROFILE HEADER
+  // ===============================================================
+
+  Widget _profileHeader(WidgetRef ref, TeacherStudentDetailDto student) {
+    final tr = ref.watchTr;
+    final isActive = student.status.toUpperCase() == 'ACTIVE';
+
     return Row(
       children: [
         Stack(
           children: [
             Container(
-              width: 52.w,
-              height: 52.w,
+              width: 54.w,
+              height: 54.w,
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
                 color: Color(0xffe8edf5),
               ),
-              child: Center(
-                child: Text(
-                  'LR',
-                  style: TxtStyle.titleLarge(
-                    color: AppColors.primaryDark,
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
+              child: ClipOval(
+                child: (student.avatarUrl != null &&
+                        student.avatarUrl!.isNotEmpty)
+                    ? CustomNetworkImage(
+                        imageUrl: student.avatarUrl!,
+                        fit: BoxFit.cover,
+                        width: 54.w,
+                        height: 54.w,
+                        boxShape: BoxShape.circle,
+                        errorWidget: Center(
+                          child: Text(
+                            student.initials,
+                            style: TxtStyle.titleLarge(
+                              color: AppColors.primaryDark,
+                              fontSize: 20.sp,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ),
+                      )
+                    : Center(
+                        child: Text(
+                          student.initials,
+                          style: TxtStyle.titleLarge(
+                            color: AppColors.primaryDark,
+                            fontSize: 20.sp,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ),
               ),
             ),
             Positioned(
@@ -139,7 +253,9 @@ class TeacherStudentDetailsScreen extends ConsumerWidget {
                 height: 14.w,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: const Color(0xff18b86b),
+                  color: isActive
+                      ? const Color(0xff18b86b)
+                      : const Color(0xffffa726),
                   border: Border.all(color: Colors.white, width: 2),
                 ),
               ),
@@ -152,7 +268,7 @@ class TeacherStudentDetailsScreen extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Lucas Rivera',
+                student.fullName,
                 style: TxtStyle.titleLarge(
                   color: AppColors.text,
                   fontSize: 22.sp,
@@ -161,7 +277,16 @@ class TeacherStudentDetailsScreen extends ConsumerWidget {
               ),
               SizedBox(height: 4.h),
               Text(
-                '${ref.watchTr(AppStrings.bachillerato1)} • ${ref.watchTr(AppStrings.groupA)} • ${ref.watchTr(AppStrings.deskPrefix)} 04',
+                [
+                  if (student.gradeLevel != null &&
+                      student.gradeLevel!.isNotEmpty)
+                    student.gradeLevel,
+                  if (student.enrollmentNumber.isNotEmpty)
+                    student.enrollmentNumber,
+                  isActive
+                      ? tr(AppStrings.activeStatus)
+                      : student.status,
+                ].join(' • '),
                 style: TxtStyle.bodyMedium(
                   color: AppColors.subtitleTextColor,
                   fontSize: 14.5.sp,
@@ -174,16 +299,25 @@ class TeacherStudentDetailsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _metrics(WidgetRef ref) {
+  // ===============================================================
+  // METRICS
+  // ===============================================================
+
+  Widget _metrics(WidgetRef ref, TeacherStudentDetailDto student) {
+    final tr = ref.watchTr;
+    final att = student.attendancePercentage.toInt();
+
     return Row(
       children: [
         Expanded(
           flex: 3,
           child: _metricCard(
             ref,
-            label: ref.watchTr(AppStrings.attendance).toUpperCase(),
-            value: '96%',
-            accentColor: const Color(0xff18b86b),
+            label: tr(AppStrings.attendance).toUpperCase(),
+            value: '$att%',
+            accentColor: att >= 80
+                ? const Color(0xff18b86b)
+                : const Color(0xffdf8a00),
           ),
         ),
         SizedBox(width: 8.w),
@@ -191,8 +325,8 @@ class TeacherStudentDetailsScreen extends ConsumerWidget {
           flex: 2,
           child: _metricCard(
             ref,
-            label: ref.watchTr(AppStrings.absent).toUpperCase(),
-            value: '1',
+            label: tr(AppStrings.activeStatus).toUpperCase(),
+            value: student.status.toUpperCase() == 'ACTIVE' ? 'OK' : 'N/A',
             accentColor: AppColors.primaryDark,
           ),
         ),
@@ -201,8 +335,8 @@ class TeacherStudentDetailsScreen extends ConsumerWidget {
           flex: 2,
           child: _metricCard(
             ref,
-            label: ref.watchTr(AppStrings.late).toUpperCase(),
-            value: '0',
+            label: tr(AppStrings.facultyNoteTitle).split(' ').last.toUpperCase(),
+            value: '${student.notes.length}',
             accentColor: AppColors.subtitleTextColor,
           ),
         ),
@@ -249,6 +383,10 @@ class TeacherStudentDetailsScreen extends ConsumerWidget {
     );
   }
 
+  // ===============================================================
+  // SECTION TITLE
+  // ===============================================================
+
   Widget _sectionTitle(
     WidgetRef ref,
     String title, {
@@ -280,32 +418,109 @@ class TeacherStudentDetailsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _latestReport(WidgetRef ref) {
+  // ===============================================================
+  // LATEST REPORT
+  // ===============================================================
+
+  Widget _latestReport(
+    WidgetRef ref,
+    TeacherStudentLatestReportDto? report,
+  ) {
+    final tr = ref.watchTr;
+
+    if (report == null) {
+      return Container(
+        width: double.infinity,
+        padding: EdgeInsets.all(14.w),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(7.r),
+          border: Border.all(color: AppColors.backgroundsLinesColor),
+        ),
+        child: Text(
+          tr(AppStrings.noReportsFound),
+          style: TxtStyle.bodyMedium(
+            color: AppColors.subtitleTextColor,
+            fontSize: 15.sp,
+            fontStyle: FontStyle.italic,
+          ),
+        ),
+      );
+    }
+
     return Container(
-      padding: EdgeInsets.all(11.w),
+      width: double.infinity,
+      padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(7.r),
         border: Border.all(color: AppColors.backgroundsLinesColor),
       ),
-      child: RichText(
-        text: TextSpan(
-          style: TxtStyle.bodyMedium(
-            color: AppColors.subtitleTextColor,
-            fontSize: 15.5.sp,
-            height: 1.45,
-          ),
-          children: [
-            TextSpan(
-              text: '${ref.watchTr(AppStrings.boardDemonstrationTitle)} ',
-              style: TxtStyle.bodyMedium(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (report.subjectName != null && report.subjectName!.isNotEmpty) ...[
+            Text(
+              report.subjectName!,
+              style: TxtStyle.titleLarge(
                 color: AppColors.primaryDark,
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w700,
               ),
             ),
-            TextSpan(text: ref.watchTr(AppStrings.boardDemonstrationDesc)),
+            SizedBox(height: 4.h),
           ],
+          Text(
+            report.contentCovered,
+            style: TxtStyle.bodyMedium(
+              color: AppColors.text,
+              fontSize: 15.5.sp,
+              height: 1.45,
+            ),
+          ),
+          if (report.observations != null &&
+              report.observations!.isNotEmpty) ...[
+            SizedBox(height: 8.h),
+            Text(
+              '${tr(AppStrings.facultyObservationTitle)}: ${report.observations}',
+              style: TxtStyle.bodyMedium(
+                color: AppColors.subtitleTextColor,
+                fontSize: 14.sp,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          ],
+          if (report.attitudeRating != null ||
+              report.workEffortRating != null) ...[
+            SizedBox(height: 8.h),
+            Wrap(
+              spacing: 6.w,
+              children: [
+                if (report.attitudeRating != null)
+                  _badge(report.attitudeRating!, const Color(0xff18b86b)),
+                if (report.workEffortRating != null)
+                  _badge(report.workEffortRating!, AppColors.primary),
+              ],
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _badge(String label, Color color) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(6.r),
+      ),
+      child: Text(
+        label.replaceAll('_', ' '),
+        style: TxtStyle.bodyMedium(
+          color: color,
+          fontSize: 12.sp,
+          fontWeight: FontWeight.w700,
         ),
       ),
     );
@@ -329,14 +544,21 @@ class TeacherStudentDetailsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _homeworkCard(WidgetRef ref, String langCode) {
-    final dueDate = DateFormat(
-      'd MMM',
-      langCode,
-    ).format(DateTime.now().add(const Duration(days: 5)));
+  // ===============================================================
+  // HOMEWORK CARD
+  // ===============================================================
+
+  Widget _homeworkCard(
+    WidgetRef ref,
+    String langCode,
+    TeacherStudentLatestReportDto? report,
+  ) {
+    final tr = ref.watchTr;
+    final hwText = report?.homeworkAssigned ?? '';
 
     return Container(
-      padding: EdgeInsets.all(11.w),
+      width: double.infinity,
+      padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(7.r),
@@ -346,111 +568,153 @@ class TeacherStudentDetailsScreen extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            ref.watchTr(AppStrings.homeworkDemoTitle),
+            tr(AppStrings.activeHomeworkTitle),
             style: TxtStyle.titleLarge(
-              color: AppColors.text,
-              fontSize: 16.5.sp,
+              color: AppColors.primaryDark,
+              fontSize: 15.sp,
               fontWeight: FontWeight.w700,
             ),
           ),
           SizedBox(height: 4.h),
           Text(
-            ref.watchTr(AppStrings.homeworkDemoSubtitle),
+            hwText.isNotEmpty
+                ? hwText
+                : (tr(AppStrings.legalTermsAndConditions).split(' ')[0] ==
+                        'Términos'
+                    ? 'No hay tareas activas asignadas.'
+                    : 'No active homework assigned.'),
             style: TxtStyle.bodyMedium(
-              color: AppColors.subtitleTextColor,
-              fontSize: 16.sp,
+              color: hwText.isNotEmpty
+                  ? AppColors.text
+                  : AppColors.subtitleTextColor,
+              fontSize: 15.sp,
+              height: 1.4,
+              fontStyle:
+                  hwText.isEmpty ? FontStyle.italic : FontStyle.normal,
             ),
-          ),
-          SizedBox(height: 9.h),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Icon(
-                    Icons.calendar_today_outlined,
-                    size: 11.sp,
-                    color: AppColors.subtitleTextColor,
-                  ),
-                  SizedBox(width: 4.w),
-                  Text(
-                    '${ref.watchTr(AppStrings.duePrefix)} $dueDate',
-                    style: TxtStyle.bodyMedium(
-                      color: AppColors.subtitleTextColor,
-                      fontSize: 15.5.sp,
-                    ),
-                  ),
-                ],
-              ),
-              Gap(10.w),
-              Flexible(
-                child: Text(
-                  ref.watchTr(AppStrings.physicalCopy),
-                  style: TxtStyle.bodyMedium(
-                    color: AppColors.primaryDark,
-                    fontSize: 15.5.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ],
           ),
         ],
       ),
     );
   }
 
-  Widget _facultyNoteWidget(WidgetRef ref, List<String> facultyNotes) {
-    final defaultNote = ref.watchTr(AppStrings.facultyDefaultNote);
-    final notes = [defaultNote, ...facultyNotes];
+  // ===============================================================
+  // FACULTY NOTES
+  // ===============================================================
+
+  Widget _facultyNotesSection(
+    WidgetRef ref,
+    List<TeacherStudentNoteDto> notes,
+    String langCode,
+  ) {
+    final tr = ref.watchTr;
+
+    if (notes.isEmpty) {
+      return Container(
+        width: double.infinity,
+        padding: EdgeInsets.all(14.w),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(7.r),
+          border: Border.all(color: AppColors.backgroundsLinesColor),
+        ),
+        child: Text(
+          tr(AppStrings.noNotesFound),
+          style: TxtStyle.bodyMedium(
+            color: AppColors.subtitleTextColor,
+            fontSize: 15.sp,
+            fontStyle: FontStyle.italic,
+          ),
+        ),
+      );
+    }
 
     return Column(
       children: notes.map((note) {
+        final dateStr = note.createdAt != null
+            ? DateFormat('d MMM, HH:mm', langCode).format(note.createdAt!)
+            : '';
+
         return Container(
           width: double.infinity,
           margin: EdgeInsets.only(bottom: 8.h),
-          padding: EdgeInsets.all(11.w),
+          padding: EdgeInsets.all(12.w),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(7.r),
             border: Border.all(color: AppColors.backgroundsLinesColor),
           ),
-          child: Text(
-            '"$note"',
-            style: TxtStyle.bodyMedium(
-              color: AppColors.subtitleTextColor,
-              fontSize: 16.sp,
-              height: 1.5,
-              fontStyle: FontStyle.italic,
-            ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '"${note.content}"',
+                style: TxtStyle.bodyMedium(
+                  color: AppColors.text,
+                  fontSize: 15.5.sp,
+                  height: 1.45,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+              if (dateStr.isNotEmpty) ...[
+                SizedBox(height: 6.h),
+                Text(
+                  dateStr,
+                  style: TxtStyle.bodyMedium(
+                    color: AppColors.subtitleTextColor,
+                    fontSize: 12.sp,
+                  ),
+                ),
+              ],
+            ],
           ),
         );
       }).toList(),
     );
   }
 
-  Widget _addNoteButton(BuildContext context, WidgetRef ref) {
+  // ===============================================================
+  // ADD NOTE BUTTON
+  // ===============================================================
+
+  Widget _addNoteButton(
+    BuildContext context,
+    WidgetRef ref,
+    TeacherStudentDetailController controller,
+    bool isAddingNote,
+    String studentId,
+  ) {
     return OutlinedButton(
-      onPressed: () => _showAddNoteBottomSheet(context, ref),
+      onPressed: isAddingNote
+          ? null
+          : () => _showAddNoteBottomSheet(context, ref, controller, studentId),
       style: OutlinedButton.styleFrom(
-        minimumSize: Size(double.infinity, 38.h),
+        minimumSize: Size(double.infinity, 42.h),
         side: BorderSide(color: AppColors.backgroundsLinesColor),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7.r)),
       ),
-      child: Text(
-        ref.watchTr(AppStrings.addNoteBtn),
-        style: TxtStyle.titleLarge(
-          color: AppColors.primaryDark,
-          fontSize: 17.sp,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
+      child: isAddingNote
+          ? const SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            )
+          : Text(
+              ref.watchTr(AppStrings.addNoteBtn),
+              style: TxtStyle.titleLarge(
+                color: AppColors.primaryDark,
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
     );
   }
 
   Future<void> _showAddNoteBottomSheet(
     BuildContext context,
     WidgetRef ref,
+    TeacherStudentDetailController controller,
+    String studentId,
   ) async {
     final note = await showModalBottomSheet<String>(
       context: context,
@@ -463,10 +727,102 @@ class TeacherStudentDetailsScreen extends ConsumerWidget {
     );
 
     if (note != null && note.trim().isNotEmpty) {
-      ref.read(teacherFacultyNotesProvider.notifier).addNote(note.trim());
+      final success = await controller.addNote(
+        studentId: studentId,
+        content: note.trim(),
+      );
+      if (context.mounted) {
+        if (success) {
+          ApiSnackbar.show(
+            ref.readTr(AppStrings.noteAddedSuccess),
+            type: SnackbarType.success,
+          );
+        } else {
+          ApiSnackbar.show(
+            ref.readTr(AppStrings.noteAddError),
+            type: SnackbarType.error,
+          );
+        }
+      }
     }
   }
+
+  Widget _errorView(WidgetRef ref, String error, VoidCallback onRetry) {
+    final isSpanish = ref.watch(languageProvider).valueOrNull?.language ==
+        AppLanguage.spanish;
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.all(24.w),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.error_outline_rounded,
+              size: 48.sp,
+              color: AppColors.redColor,
+            ),
+            SizedBox(height: 12.h),
+            Text(
+              isSpanish
+                  ? 'Error al cargar detalles del alumno'
+                  : 'Failed to load student details',
+              style: TxtStyle.titleLarge(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            SizedBox(height: 6.h),
+            Text(
+              error,
+              textAlign: TextAlign.center,
+              style: TxtStyle.bodyMedium(
+                fontSize: 14.sp,
+                color: AppColors.subtitleTextColor,
+              ),
+            ),
+            SizedBox(height: 16.h),
+            ElevatedButton.icon(
+              onPressed: onRetry,
+              icon: const Icon(Icons.refresh_rounded, size: 18),
+              label: Text(
+                isSpanish ? 'Reintentar' : 'Retry',
+                style: TxtStyle.bodyMedium(
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primaryDark,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _emptyView(WidgetRef ref) {
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.all(24.w),
+        child: Text(
+          ref.watchTr(AppStrings.noStudentsFound),
+          style: TxtStyle.bodyMedium(
+            fontSize: 15.sp,
+            color: AppColors.subtitleTextColor,
+          ),
+        ),
+      ),
+    );
+  }
 }
+
+// ===============================================================
+// ADD NOTE BOTTOM SHEET
+// ===============================================================
 
 class _AddNoteBottomSheet extends ConsumerStatefulWidget {
   const _AddNoteBottomSheet();
@@ -493,14 +849,14 @@ class _AddNoteBottomSheetState extends ConsumerState<_AddNoteBottomSheet> {
 
   void _saveNote() {
     final note = _controller.text.trim();
-    if (note.isEmpty) {
-      return;
-    }
+    if (note.isEmpty) return;
     Navigator.of(context).pop(note);
   }
 
   @override
   Widget build(BuildContext context) {
+    final tr = ref.watchTr;
+
     return Padding(
       padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
       child: Container(
@@ -517,7 +873,7 @@ class _AddNoteBottomSheetState extends ConsumerState<_AddNoteBottomSheet> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  ref.watchTr(AppStrings.addNoteTitle),
+                  tr(AppStrings.addNoteTitle),
                   style: TxtStyle.titleLarge(
                     color: AppColors.text,
                     fontSize: 20.sp,
@@ -531,7 +887,7 @@ class _AddNoteBottomSheetState extends ConsumerState<_AddNoteBottomSheet> {
                   autofocus: true,
                   textInputAction: TextInputAction.newline,
                   decoration: InputDecoration(
-                    hintText: ref.watchTr(AppStrings.writeNoteHint),
+                    hintText: tr(AppStrings.addNoteHint),
                     hintStyle: TxtStyle.bodyMedium(
                       color: AppColors.subtitleTextColor,
                       fontSize: 15.sp,
@@ -561,8 +917,15 @@ class _AddNoteBottomSheetState extends ConsumerState<_AddNoteBottomSheet> {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: _saveNote,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primaryDark,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.r),
+                      ),
+                      padding: EdgeInsets.symmetric(vertical: 12.h),
+                    ),
                     child: Text(
-                      ref.watchTr(AppStrings.saveNoteBtn),
+                      tr(AppStrings.saveNoteBtn),
                       style: TxtStyle.titleLarge(
                         color: Colors.white,
                         fontSize: 16.sp,

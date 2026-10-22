@@ -7,7 +7,6 @@ import 'package:geolocator/geolocator.dart';
 import '../../../../utils/app_strings/app_strings.dart';
 import '../../../../utils/color/app_colors.dart';
 import '../../../../utils/extension/language_extension.dart';
-import '../../../service/language/language_provider.dart';
 import '../push_notification_service.dart';
 
 /// Contextual in-app banner for surfaces like the Notifications Tab or Dashboard.

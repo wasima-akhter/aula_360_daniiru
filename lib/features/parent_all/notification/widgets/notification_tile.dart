@@ -109,9 +109,10 @@ class NotificationTile extends StatelessWidget {
 
   Widget _buildIcon(bool unread) {
     final IconData icon = switch (item.type.toLowerCase()) {
-      'report' || 'academic' => Icons.description_outlined,
-      'attendance' => Icons.fact_check_outlined,
-      'homework' || 'assignment' => Icons.assignment_outlined,
+      'report' || 'academic' || 'report_filed' => Icons.description_outlined,
+      'attendance' || 'attendance_marked' => Icons.fact_check_outlined,
+      'homework' || 'assignment' || 'homework_created' => Icons.assignment_outlined,
+      'session_started' || 'session_ended' => Icons.timer_outlined,
       'alert' || 'warning' => Icons.warning_amber_rounded,
       _ => Icons.notifications_none_rounded,
     };

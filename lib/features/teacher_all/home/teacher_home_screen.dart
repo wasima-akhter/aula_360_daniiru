@@ -2,10 +2,12 @@ import 'package:aula360/features/parent_all/helper/parent_home_helper.dart';
 import 'package:intl/intl.dart';
 
 import '../../auth/presentation/controllers/auth_controller.dart';
+import '../../parent_all/presentation/controllers/parent_notifications_controller.dart';
 import '../../share/export/screen_export.dart';
 import '../../share/widgets/button/app_logo.dart';
+import '../helper/teacher_enums.dart';
 import '../helper/teacher_models.dart';
-import '../presentation/controllers/teacher_home_controller.dart';
+import 'presentation/controllers/teacher_home_controller.dart';
 
 /// ===============================================================
 /// HOME SCREEN
@@ -43,16 +45,40 @@ class TeacherHomeScreen extends ConsumerWidget {
           child: AulaLogo(width: 105),
         ),
         actions: [
-          IconButton(
-            onPressed: () {
-              // Open notifications
+          Consumer(
+            builder: (context, ref, _) {
+              final unread =
+                  ref.watch(parentNotificationsControllerProvider).unreadCount;
+              return Stack(
+                alignment: Alignment.center,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      context.push(RoutePath.notification.addBasePath);
+                    },
+                    splashRadius: 22,
+                    icon: Icon(
+                      Icons.notifications_none_rounded,
+                      color: AppColors.text,
+                      size: 25.sp,
+                    ),
+                  ),
+                  if (unread > 0)
+                    Positioned(
+                      top: 10.h,
+                      right: 10.w,
+                      child: Container(
+                        width: 8.w,
+                        height: 8.w,
+                        decoration: const BoxDecoration(
+                          color: AppColors.primary,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                ],
+              );
             },
-            splashRadius: 22,
-            icon: Icon(
-              Icons.notifications_none_rounded,
-              color: AppColors.text,
-              size: 25.sp,
-            ),
           ),
           Padding(
             padding: EdgeInsets.only(left: 2.w, right: 15.w),
@@ -60,41 +86,147 @@ class TeacherHomeScreen extends ConsumerWidget {
           ),
         ],
       ),
-      body: state.isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : CustomScrollView(
-              physics: const BouncingScrollPhysics(),
-              slivers: [
-                SliverToBoxAdapter(
-                  child: _topSection(context, ref, schedule, teacherName),
-                ),
-                SliverPersistentHeader(
-                  pinned: true,
-                  delegate: _HomeStickyHeaderDelegate(
-                    minHeight: 48.h,
-                    maxHeight: 48.h,
-                    child: _scheduleHeader(ref),
-                  ),
-                ),
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: EdgeInsets.fromLTRB(16.w, 4.h, 16.w, 30.h),
-                    child: Column(
-                      children: [
-                        ...schedule.asMap().entries.map(
-                          (entry) => _scheduleItem(
-                            context,
-                            ref,
-                            entry.value,
-                            entry.key,
+      body: RefreshIndicator(
+        color: AppColors.primaryDark,
+        onRefresh: () async {
+          await ref.read(teacherHomeControllerProvider.notifier).loadHomeData();
+        },
+        child: state.isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : state.error != null
+                ? Center(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 24.w),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.error_outline_rounded,
+                            color: AppColors.error,
+                            size: 48.sp,
+                          ),
+                          SizedBox(height: 12.h),
+                          Text(
+                            'Error al cargar horario',
+                            style: TxtStyle.titleLarge(
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          SizedBox(height: 8.h),
+                          Text(
+                            state.error!,
+                            textAlign: TextAlign.center,
+                            style: TxtStyle.bodyMedium(
+                              color: AppColors.subtitleTextColor,
+                              fontSize: 13.sp,
+                            ),
+                          ),
+                          SizedBox(height: 16.h),
+                          AulaPrimaryButton(
+                            text: 'Reintentar',
+                            onTap: () => ref
+                                .read(teacherHomeControllerProvider.notifier)
+                                .loadHomeData(),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                : CustomScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(
+                      parent: BouncingScrollPhysics(),
+                    ),
+                    slivers: [
+                      SliverToBoxAdapter(
+                        child: _topSection(
+                          context,
+                          ref,
+                          schedule,
+                          teacherName,
+                        ),
+                      ),
+                      SliverPersistentHeader(
+                        pinned: true,
+                        delegate: _HomeStickyHeaderDelegate(
+                          minHeight: 48.h,
+                          maxHeight: 48.h,
+                          child: _scheduleHeader(ref),
+                        ),
+                      ),
+                      if (schedule.isEmpty)
+                        SliverToBoxAdapter(
+                          child: Padding(
+                            padding: EdgeInsets.fromLTRB(
+                              24.w,
+                              40.h,
+                              24.w,
+                              30.h,
+                            ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  width: 58.w,
+                                  height: 58.w,
+                                  decoration: const BoxDecoration(
+                                    color: AppColors.blueSoft,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.event_available_outlined,
+                                    color: AppColors.primaryDark,
+                                    size: 28.sp,
+                                  ),
+                                ),
+                                SizedBox(height: 14.h),
+                                Text(
+                                  'No hay clases para hoy',
+                                  textAlign: TextAlign.center,
+                                  style: TxtStyle.titleLarge(
+                                    fontSize: 17.sp,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                SizedBox(height: 6.h),
+                                Text(
+                                  'No tienes sesiones programadas en este momento.',
+                                  textAlign: TextAlign.center,
+                                  style: TxtStyle.bodyMedium(
+                                    color: AppColors.subtitleTextColor,
+                                    fontSize: 13.5.sp,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      else
+                        SliverToBoxAdapter(
+                          child: Padding(
+                            padding: EdgeInsets.fromLTRB(
+                              16.w,
+                              4.h,
+                              16.w,
+                              30.h,
+                            ),
+                            child: Column(
+                              children: [
+                                ...schedule.asMap().entries.map(
+                                  (entry) => _scheduleItem(
+                                    context,
+                                    ref,
+                                    entry.value,
+                                    entry.key,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ],
-                    ),
+                    ],
                   ),
-                ),
-              ],
-            ),
+      ),
     );
   }
 
@@ -350,7 +482,21 @@ class TeacherHomeScreen extends ConsumerWidget {
   /// =============================================================
 
   void _openClass(BuildContext context, HomeScheduleItem item) {
-    context.push(RoutePath.teacherClassDetail, extra: item);
+    final academyClass = AcademyClass(
+      id: item.id,
+      scheduleId: item.scheduleId,
+      time: '${item.startTime} - ${item.endTime}',
+      title: item.title,
+      subtitle: item.subtitle,
+      room: item.room,
+      group: item.group,
+      students: item.students,
+      status: item.type == HomeClassType.next
+          ? ClassStatus.next
+          : ClassStatus.scheduled,
+      rawStatus: item.rawStatus,
+    );
+    context.push(RoutePath.teacherClassDetail, extra: academyClass);
   }
 }
 

@@ -13,10 +13,14 @@ class ApiClient {
     Options? options,
     CancelToken? cancelToken,
   }) {
+    final callerStackTrace = StackTrace.current;
+    final requestOptions = (options ?? Options()).copyWith(
+      extra: {...?options?.extra, 'callerStackTrace': callerStackTrace},
+    );
     return _dio.get<T>(
       path,
       queryParameters: queryParameters,
-      options: options,
+      options: requestOptions,
       cancelToken: cancelToken,
     );
   }
@@ -29,11 +33,9 @@ class ApiClient {
     CancelToken? cancelToken,
   }) {
     final callerStackTrace = StackTrace.current;
-
-    final requestOptions = options?.copyWith(
-      extra: {...?options.extra, 'callerStackTrace': callerStackTrace},
+    final requestOptions = (options ?? Options()).copyWith(
+      extra: {...?options?.extra, 'callerStackTrace': callerStackTrace},
     );
-
     return _dio.post<T>(
       path,
       data: data,
@@ -50,11 +52,15 @@ class ApiClient {
     Options? options,
     CancelToken? cancelToken,
   }) {
+    final callerStackTrace = StackTrace.current;
+    final requestOptions = (options ?? Options()).copyWith(
+      extra: {...?options?.extra, 'callerStackTrace': callerStackTrace},
+    );
     return _dio.put<T>(
       path,
       data: data,
       queryParameters: queryParameters,
-      options: options,
+      options: requestOptions,
       cancelToken: cancelToken,
     );
   }
@@ -66,11 +72,15 @@ class ApiClient {
     Options? options,
     CancelToken? cancelToken,
   }) {
+    final callerStackTrace = StackTrace.current;
+    final requestOptions = (options ?? Options()).copyWith(
+      extra: {...?options?.extra, 'callerStackTrace': callerStackTrace},
+    );
     return _dio.patch<T>(
       path,
       data: data,
       queryParameters: queryParameters,
-      options: options,
+      options: requestOptions,
       cancelToken: cancelToken,
     );
   }
@@ -82,11 +92,15 @@ class ApiClient {
     Options? options,
     CancelToken? cancelToken,
   }) {
+    final callerStackTrace = StackTrace.current;
+    final requestOptions = (options ?? Options()).copyWith(
+      extra: {...?options?.extra, 'callerStackTrace': callerStackTrace},
+    );
     return _dio.delete<T>(
       path,
       data: data,
       queryParameters: queryParameters,
-      options: options,
+      options: requestOptions,
       cancelToken: cancelToken,
     );
   }

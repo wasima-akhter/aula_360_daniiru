@@ -214,12 +214,6 @@ class _EditTeacherProfileScreenState
   // ===============================================================
 
   Widget _profilePhotoCard() {
-    final profile = ref.watch(teacherProfileControllerProvider).profile;
-    final authUser = ref.watch(authControllerProvider).user;
-    final teacherId = profile.id.trim().isNotEmpty
-        ? profile.id.trim()
-        : (authUser?.id.trim() ?? '');
-    final hasId = teacherId.isNotEmpty;
     final badgeText = ref.watchTr(AppStrings.verified);
 
     // hasId

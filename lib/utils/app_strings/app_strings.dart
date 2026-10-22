@@ -508,6 +508,10 @@ class AppStrings {
   static const String addNoteTitle = 'add_note_title';
   static const String addNoteHint = 'add_note_hint';
   static const String saveNoteBtn = 'save_note_btn';
+  static const String noteAddedSuccess = 'note_added_success';
+  static const String noteAddError = 'note_add_error';
+  static const String noStudentsFound = 'no_students_found';
+  static const String noNotesFound = 'no_notes_found';
   static const String academyNavigationTitle = 'academy_navigation_title';
   static const String teacherPortalBadge = 'teacher_portal_badge';
   static const String teacherId = 'teacher_id';
@@ -731,4 +735,45 @@ class AppStrings {
   static const String notificationBannerTitle = 'notification_banner_title';
   static const String notificationBannerSubtitle = 'notification_banner_subtitle';
   static const String notificationBannerEnable = 'notification_banner_enable';
+
+  // ── Legal Section ─────────────────────────────────────────────────────────
+  static const String legalTermsAndConditions = 'legal_terms_and_conditions';
+  static const String legalTermsAndConditionsSubtitle =
+      'legal_terms_and_conditions_subtitle';
+  static const String legalPrivacyPolicy = 'legal_privacy_policy';
+  static const String legalPrivacyPolicySubtitle =
+      'legal_privacy_policy_subtitle';
+  static const String legalAboutUs = 'legal_about_us';
+  static const String legalAboutUsSubtitle = 'legal_about_us_subtitle';
+  static const String legalDataProtection = 'legal_data_protection';
+  static const String legalDataProtectionSubtitle =
+      'legal_data_protection_subtitle';
+  static const String legalDocumentInPreparation =
+      'legal_document_in_preparation';
+  static const String legalDocumentInPreparationDesc =
+      'legal_document_in_preparation_desc';
+  static const String legalViewGeneralInfo = 'legal_view_general_info';
+  static const String legalViewSavedInfo = 'legal_view_saved_info';
+  static const String legalLoadingDocument = 'legal_loading_document';
+  static const String legalNoContentAvailable = 'legal_no_content_available';
+  static const String legalNoContentDesc = 'legal_no_content_desc';
+  static const String legalNoInternetTitle = 'legal_no_internet_title';
+  static const String legalNoInternetDesc = 'legal_no_internet_desc';
+  static const String legalServerErrorTitle = 'legal_server_error_title';
+  static const String legalServerErrorDesc = 'legal_server_error_desc';
+  static const String legalGenericErrorTitle = 'legal_generic_error_title';
+  static const String legalInstitutionalInfo = 'legal_institutional_info';
+  static const String legalInstitutionalNotice = 'legal_institutional_notice';
+  static const String legalLastUpdated = 'legal_last_updated';
+  static const String legalCheckServer = 'legal_check_server';
+
+  // ── Parent Schedule, Teachers & Progress ──────────────────────────────
+  static const String noScheduleFound = 'no_schedule_found';
+  static const String noScheduleFoundDesc = 'no_schedule_found_desc';
+  static const String noTeachersFound = 'no_teachers_found';
+  static const String academicProgressTitle = 'academic_progress_title';
+  static const String enrolledSubjects = 'enrolled_subjects';
+  static const String homeworkCompletion = 'homework_completion';
+  static const String childAddedSuccess = 'child_added_success';
+  static const String subjectsTitle = 'subjects_title';
 }

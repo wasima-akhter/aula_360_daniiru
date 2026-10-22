@@ -56,6 +56,7 @@ class RoutePath {
   static const String teacherPostClassReport = 'teacherPostClassReport';
   static const String teacherReportSubmitted = 'teacherReportSubmitted';
   static const String teacherEndClass = 'teacherEndClass';
+  static const String teacherHomework = 'teacherHomework';
 
   //
   static const String teacherReportDetail = 'teacherReportDetail';
@@ -69,4 +70,6 @@ class RoutePath {
 
   static const String privacyPolicyScreen = 'privacyPolicyScreen';
   static const String termsAndConditionsScreen = 'termsAndConditionsScreen';
+  static const String aboutUsScreen = 'aboutUsScreen';
+  static const String dataProtectionScreen = 'dataProtectionScreen';
 }
