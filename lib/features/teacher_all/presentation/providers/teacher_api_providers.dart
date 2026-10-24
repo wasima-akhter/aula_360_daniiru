@@ -51,15 +51,12 @@ final teacherActionControllerProvider =
 );
 
 class TeacherActionController extends Notifier<TeacherActionState> {
-  late final TeacherClassesRepository _classesRepo;
-  late final TeacherAttendanceRepository _attendanceRepo;
-  late final TeacherHomeworkRepository _homeworkRepo;
+  TeacherClassesRepository get _classesRepo => ref.read(teacherClassesRepositoryProvider);
+  TeacherAttendanceRepository get _attendanceRepo => ref.read(teacherAttendanceRepositoryProvider);
+  TeacherHomeworkRepository get _homeworkRepo => ref.read(teacherHomeworkRepositoryProvider);
 
   @override
   TeacherActionState build() {
-    _classesRepo = ref.watch(teacherClassesRepositoryProvider);
-    _attendanceRepo = ref.watch(teacherAttendanceRepositoryProvider);
-    _homeworkRepo = ref.watch(teacherHomeworkRepositoryProvider);
     return const TeacherActionState();
   }
 

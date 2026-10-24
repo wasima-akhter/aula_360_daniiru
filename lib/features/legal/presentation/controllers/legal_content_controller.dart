@@ -58,11 +58,10 @@ final legalContentControllerProvider = NotifierProvider<
 
 class LegalContentController
     extends Notifier<Map<LegalContentType, LegalContentState>> {
-  late final LegalRepository _repository;
+  LegalRepository get _repository => ref.read(legalRepositoryProvider);
 
   @override
   Map<LegalContentType, LegalContentState> build() {
-    _repository = ref.watch(legalRepositoryProvider);
     return const {};
   }
 

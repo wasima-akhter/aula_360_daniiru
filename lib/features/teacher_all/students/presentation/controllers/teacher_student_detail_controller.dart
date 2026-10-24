@@ -43,11 +43,10 @@ final teacherStudentDetailControllerProvider = NotifierProvider<
 
 class TeacherStudentDetailController
     extends Notifier<TeacherStudentDetailState> {
-  late final TeacherStudentsRepository _repository;
+  TeacherStudentsRepository get _repository => ref.read(teacherStudentsRepositoryProvider);
 
   @override
   TeacherStudentDetailState build() {
-    _repository = ref.watch(teacherStudentsRepositoryProvider);
     return const TeacherStudentDetailState();
   }
 

@@ -126,7 +126,7 @@ class _NotificationPermissionBannerState
             width: 38.w,
             height: 38.w,
             decoration: BoxDecoration(
-              color: AppColors.primaryColor.withOpacity(0.15),
+              color: AppColors.primaryColor.withValues(alpha: 0.15),
               shape: BoxShape.circle,
             ),
             child: Icon(

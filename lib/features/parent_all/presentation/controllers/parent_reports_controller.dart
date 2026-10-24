@@ -14,18 +14,7 @@ class ParentReportsState {
 
   const ParentReportsState({
     this.reports = const [],
-    this.students = const [
-      StudentModel(
-        name: 'Lucas Rivera',
-        grade: '2º ESO • Aula 3B',
-        initials: 'LR',
-      ),
-      StudentModel(
-        name: 'Sophia Rivera',
-        grade: '5º Primaria • Aula 1A',
-        initials: 'SR',
-      ),
-    ],
+    this.students = const [],
     this.selectedStudentIndex = 0,
     this.selectedCategoryIndex = 0,
     this.isLoading = false,
@@ -80,32 +69,18 @@ final parentReportsControllerProvider =
     );
 
 class ParentReportsController extends Notifier<ParentReportsState> {
-  late final ParentRepository _repository;
+  ParentRepository get _repository => ref.read(parentRepositoryProvider);
 
   @override
   ParentReportsState build() {
-    _repository = ref.watch(parentRepositoryProvider);
     final children = ref.watch(parentChildrenControllerProvider).children;
-    final students = children.isNotEmpty
-        ? children
-            .map((c) => StudentModel(
-                  name: c.name,
-                  grade: '${c.grade} • ${c.classroom}',
-                  initials: c.initials,
-                ))
-            .toList()
-        : const [
-            StudentModel(
-              name: 'Lucas Rivera',
-              grade: '2º ESO • Aula 3B',
-              initials: 'LR',
-            ),
-            StudentModel(
-              name: 'Sophia Rivera',
-              grade: '5º Primaria • Aula 1A',
-              initials: 'SR',
-            ),
-          ];
+    final students = children
+        .map((c) => StudentModel(
+              name: c.name,
+              grade: '${c.grade} • ${c.classroom}',
+              initials: c.initials,
+            ))
+        .toList();
 
     Future.microtask(() => loadReports());
     return ParentReportsState(isLoading: true, students: students);

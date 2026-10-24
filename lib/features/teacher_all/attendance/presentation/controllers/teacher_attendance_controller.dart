@@ -55,11 +55,10 @@ final teacherAttendanceControllerProvider =
     );
 
 class TeacherAttendanceController extends Notifier<TeacherAttendanceState> {
-  late final TeacherAttendanceRepository _repository;
+  TeacherAttendanceRepository get _repository => ref.read(teacherAttendanceRepositoryProvider);
 
   @override
   TeacherAttendanceState build() {
-    _repository = ref.watch(teacherAttendanceRepositoryProvider);
     Future.microtask(() => loadStudents());
     return const TeacherAttendanceState(isLoading: true);
   }

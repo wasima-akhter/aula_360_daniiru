@@ -34,11 +34,10 @@ final teacherHomeworkControllerProvider =
 );
 
 class TeacherHomeworkController extends Notifier<TeacherHomeworkActionState> {
-  late final TeacherHomeworkRepository _repository;
+  TeacherHomeworkRepository get _repository => ref.read(teacherHomeworkRepositoryProvider);
 
   @override
   TeacherHomeworkActionState build() {
-    _repository = ref.watch(teacherHomeworkRepositoryProvider);
     return const TeacherHomeworkActionState();
   }
 

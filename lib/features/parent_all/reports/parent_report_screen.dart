@@ -201,7 +201,30 @@ class ReportsScreen extends ConsumerWidget {
         SizedBox(height: 10.h),
 
         if (state.students.isEmpty)
-          const SizedBox.shrink()
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.all(12.w),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12.r),
+              border: Border.all(color: AppColors.backgroundsLinesColor),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.person_outline, color: AppColors.subtitleTextColor, size: 24.sp),
+                SizedBox(width: 8.w),
+                Expanded(
+                  child: Text(
+                    ref.watchTr(AppStrings.noChildrenLinked),
+                    style: TxtStyle.bodyMedium(
+                      color: AppColors.subtitleTextColor,
+                      fontSize: 13.5.sp,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          )
         else if (state.students.length <= 2)
           Row(
             children: [

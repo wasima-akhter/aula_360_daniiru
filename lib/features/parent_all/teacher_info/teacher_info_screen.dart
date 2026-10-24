@@ -386,7 +386,7 @@ class _TeacherInformationScreenState
           Row(
             children: [
               Icon(
-                Icons.forum_outlined,
+                Icons.mail_outline,
                 color: const Color(0xFF082E78),
                 size: 20.sp,
               ),
@@ -402,43 +402,16 @@ class _TeacherInformationScreenState
             ],
           ),
           SizedBox(height: 14.h),
-          _messageBox(ref),
-          if (teacher.email.isNotEmpty) ...[
-            SizedBox(height: 12.h),
-            _emailBox(teacher.email),
-          ],
-        ],
-      ),
-    );
-  }
-
-  Widget _messageBox(WidgetRef ref) {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.fromLTRB(12.w, 11.h, 12.w, 12.h),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF0F3F8),
-        borderRadius: BorderRadius.circular(8.r),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            ref.watchTr(AppStrings.portalDirectMessage),
-            style: TxtStyle.titleLarge(
-              color: const Color(0xFF263149),
-              fontSize: 14.5.sp,
-              fontWeight: FontWeight.w600,
+          if (teacher.email.isNotEmpty)
+            _emailBox(teacher.email)
+          else
+            Text(
+              ref.watchTr(AppStrings.noTeachersFound),
+              style: TxtStyle.bodyMedium(
+                color: AppColors.secondaryText,
+                fontSize: 13.5.sp,
+              ),
             ),
-          ),
-          SizedBox(height: 9.h),
-          _primaryButton(
-            icon: Icons.send_outlined,
-            text: ref.watchTr(AppStrings.sendMessageBtn),
-            onTap: () {
-              AppRouter.navigatorKey.currentContext!.push(RoutePath.chatInbox);
-            },
-          ),
         ],
       ),
     );
@@ -478,36 +451,6 @@ class _TeacherInformationScreenState
     );
   }
 
-  Widget _primaryButton({
-    required IconData icon,
-    required String text,
-    required VoidCallback onTap,
-  }) {
-    return SizedBox(
-      width: double.infinity,
-      height: 36.h,
-      child: ElevatedButton.icon(
-        onPressed: onTap,
-        icon: Icon(icon, color: Colors.white, size: 14.sp),
-        label: Text(
-          text,
-          style: TxtStyle.titleLarge(
-            color: Colors.white,
-            fontSize: 14.sp,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        style: ElevatedButton.styleFrom(
-          elevation: 0,
-          backgroundColor: const Color(0xFF052E82),
-          padding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(7.r),
-          ),
-        ),
-      ),
-    );
-  }
 
   Widget _emptyView(WidgetRef ref) {
     return Container(

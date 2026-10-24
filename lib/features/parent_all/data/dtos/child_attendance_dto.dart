@@ -50,7 +50,6 @@ class ChildAttendanceDto {
   AttendanceRecord toRecord() {
     DateTime? dt = DateTime.tryParse(sessionDate);
     final formattedDate = dt != null ? DateFormat('d MMM').format(dt) : sessionDate;
-    final formattedDay = dt != null ? DateFormat('EEEE').format(dt) : '';
 
     AttendanceStatus attStatus = AttendanceStatus.present;
     final upper = status.toUpperCase();
@@ -62,9 +61,13 @@ class ChildAttendanceDto {
       attStatus = AttendanceStatus.excused;
     }
 
+    final subjectOrDay = subjectName.isNotEmpty
+        ? subjectName
+        : (dt != null ? DateFormat('EEEE').format(dt) : 'Sesión');
+
     return AttendanceRecord(
       date: formattedDate,
-      dayName: formattedDay,
+      dayName: subjectOrDay,
       status: attStatus,
       checkInTime: dt != null ? DateFormat('HH:mm').format(dt) : '08:30',
       note: note,

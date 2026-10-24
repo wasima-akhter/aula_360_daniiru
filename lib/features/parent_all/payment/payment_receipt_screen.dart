@@ -1,7 +1,19 @@
+import 'package:intl/intl.dart';
+
 import '../../share/export/screen_export.dart';
+import '../domain/models/parent_models.dart';
+import '../presentation/controllers/parent_children_controller.dart';
+import '../presentation/controllers/parent_payment_controller.dart';
 
 class PaymentReceiptScreen extends ConsumerStatefulWidget {
-  const PaymentReceiptScreen({super.key});
+  final InvoiceModel? invoice;
+  final ChildModel? child;
+
+  const PaymentReceiptScreen({
+    super.key,
+    this.invoice,
+    this.child,
+  });
 
   @override
   ConsumerState<PaymentReceiptScreen> createState() =>
@@ -15,6 +27,25 @@ class _PaymentReceiptScreenState extends ConsumerState<PaymentReceiptScreen> {
   String? _downloadedFilePath;
   bool _downloadSuccess = false;
 
+  InvoiceModel? get _activeInvoice {
+    if (widget.invoice != null) return widget.invoice;
+    try {
+      final paid = ref.read(parentPaymentControllerProvider).paidInvoices;
+      return paid.isNotEmpty ? paid.first : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  ChildModel? get _activeChild {
+    if (widget.child != null) return widget.child;
+    try {
+      return ref.read(parentChildrenControllerProvider).selectedChild;
+    } catch (_) {
+      return null;
+    }
+  }
+
   Future<void> _startDownload() async {
     if (_isDownloading) return;
 
@@ -25,16 +56,29 @@ class _PaymentReceiptScreenState extends ConsumerState<PaymentReceiptScreen> {
       _downloadSuccess = false;
     });
 
+    final inv = _activeInvoice;
+    final ch = _activeChild;
+
+    final invoiceNum = inv != null
+        ? (inv.receiptNumber ??
+            '#${inv.id.length > 8 ? inv.id.substring(0, 8).toUpperCase() : inv.id}')
+        : '#A360';
+    final studentName = ch?.name ?? 'Estudiante';
+    final studentDetails = ch != null ? '${ch.grade} • ${ch.classroom}' : '';
+    final amountFormatted =
+        inv != null ? '${inv.amount.toStringAsFixed(2)} €' : '0,00 €';
+    final dateFormatted = inv?.paidDate ??
+        DateFormat('d MMM yyyy • HH:mm').format(DateTime.now());
+
     final downloadService = ref.read(fileDownloadServiceProvider);
     final result = await downloadService.downloadReceipt(
-      invoiceNumber: '#A360-8492',
-      studentName: 'Lucas Rivera',
-      studentDetails:
-          '${ref.readTr(AppStrings.eso2)} • ${ref.readTr(AppStrings.aula3)}',
+      invoiceNumber: invoiceNum,
+      studentName: studentName,
+      studentDetails: studentDetails,
       period: ref.readTr(AppStrings.academicYearLabel),
-      date: '24 Oct 2024 • 12:14',
+      date: dateFormatted,
       paymentMethod: 'VISA •••• 4242',
-      amount: '340,00 €',
+      amount: amountFormatted,
       status: ref.readTr(AppStrings.paidAndSettled),
       onProgress: (received, total) {
         if (!mounted || total <= 0) return;
@@ -216,12 +260,15 @@ class _PaymentReceiptScreenState extends ConsumerState<PaymentReceiptScreen> {
                       SizedBox(height: 12.h),
                       _previewRow(
                         ref.watchTr(AppStrings.invoiceLabel),
-                        '#A360-8492',
+                        _activeInvoice != null
+                            ? (_activeInvoice!.receiptNumber ??
+                                '#${_activeInvoice!.id.length > 8 ? _activeInvoice!.id.substring(0, 8).toUpperCase() : _activeInvoice!.id}')
+                            : '#A360',
                       ),
                       SizedBox(height: 6.h),
                       _previewRow(
                         ref.watchTr(AppStrings.studentLabel),
-                        'Lucas Rivera',
+                        _activeChild?.name ?? 'Estudiante',
                       ),
                       SizedBox(height: 6.h),
                       _previewRow(
@@ -231,7 +278,8 @@ class _PaymentReceiptScreenState extends ConsumerState<PaymentReceiptScreen> {
                       SizedBox(height: 6.h),
                       _previewRow(
                         ref.watchTr(AppStrings.date),
-                        '24 Oct 2024 • 12:14',
+                        _activeInvoice?.paidDate ??
+                            DateFormat('d MMM yyyy • HH:mm').format(DateTime.now()),
                       ),
                       SizedBox(height: 6.h),
                       _previewRow(
@@ -256,7 +304,9 @@ class _PaymentReceiptScreenState extends ConsumerState<PaymentReceiptScreen> {
                             ),
                           ),
                           Text(
-                            '340,00 € EUR',
+                            _activeInvoice != null
+                                ? '${_activeInvoice!.amount.toStringAsFixed(2).replaceAll('.', ',')} € EUR'
+                                : '0,00 € EUR',
                             style: TxtStyle.titleLarge(
                               color: AppColors.primaryDark,
                               fontSize: 16.sp,
@@ -403,7 +453,9 @@ class _PaymentReceiptScreenState extends ConsumerState<PaymentReceiptScreen> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    '340,00 €',
+                    _activeInvoice != null
+                        ? '${_activeInvoice!.amount.toStringAsFixed(2).replaceAll('.', ',')} €'
+                        : '0,00 €',
                     style: TxtStyle.titleLarge(
                       color: AppColors.primaryDark,
                       fontSize: 26.sp,
@@ -528,12 +580,19 @@ class _PaymentReceiptScreenState extends ConsumerState<PaymentReceiptScreen> {
           _receiptDivider(),
           _receiptRow(
             ref.watchTr(AppStrings.studentLabel),
-            'Lucas Rivera',
-            subValue:
-                '${ref.watchTr(AppStrings.eso2)} • ${ref.watchTr(AppStrings.aula3)}',
+            _activeChild?.name ?? 'Estudiante',
+            subValue: _activeChild != null
+                ? '${_activeChild!.grade} • ${_activeChild!.classroom}'
+                : null,
           ),
           _receiptDivider(),
-          _receiptRow(ref.watchTr(AppStrings.invoiceLabel), '#A360-8492'),
+          _receiptRow(
+            ref.watchTr(AppStrings.invoiceLabel),
+            _activeInvoice != null
+                ? (_activeInvoice!.receiptNumber ??
+                    '#${_activeInvoice!.id.length > 8 ? _activeInvoice!.id.substring(0, 8).toUpperCase() : _activeInvoice!.id}')
+                : '#A360',
+          ),
           _receiptDivider(),
           _receiptRow(
             ref.watchTr(AppStrings.methodLabel),
@@ -541,7 +600,11 @@ class _PaymentReceiptScreenState extends ConsumerState<PaymentReceiptScreen> {
             leading: _cardBrand('VISA'),
           ),
           _receiptDivider(),
-          _receiptRow(ref.watchTr(AppStrings.date), '24 Oct 2024 • 12:14'),
+          _receiptRow(
+            ref.watchTr(AppStrings.date),
+            _activeInvoice?.paidDate ??
+                DateFormat('d MMM yyyy • HH:mm').format(DateTime.now()),
+          ),
           SizedBox(height: 12.h),
           _receiptActions(),
         ],

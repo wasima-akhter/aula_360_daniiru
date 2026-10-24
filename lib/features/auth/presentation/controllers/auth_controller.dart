@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/errors/app_error_resolver.dart';
@@ -29,10 +30,24 @@ class AuthController extends Notifier<AuthState> {
     final repository = ref.watch(authRepositoryProvider);
     final storageService = ref.watch(storageServiceProvider);
     final sessionManager = ref.watch(sessionManagerProvider);
+    final pushService = ref.watch(pushNotificationServiceProvider);
 
     sessionManager.registerAuthResetCallback(_onSessionExpired);
+    pushService.onTokenRefreshed = (newToken) async {
+      final hasToken = await ref.read(storageServiceProvider).hasAccessToken();
+      if (hasToken) {
+        debugPrint('AuthController: Syncing rotated FCM token with backend...');
+        try {
+          await ref.read(checkSessionUseCaseProvider).call(fcmToken: newToken);
+        } catch (e) {
+          debugPrint('AuthController: Error syncing rotated FCM token: $e');
+        }
+      }
+    };
+
     ref.onDispose(() {
       sessionManager.unregisterAuthResetCallback(_onSessionExpired);
+      pushService.onTokenRefreshed = null;
     });
 
     final user = repository.getCurrentUser();

@@ -1,5 +1,8 @@
+import 'package:intl/intl.dart';
+
 import '../../share/export/screen_export.dart';
 import '../helper/parent_home_helper.dart';
+import '../presentation/controllers/parent_children_controller.dart';
 
 class ClassDetailsScreen extends ConsumerStatefulWidget {
   final ClassModel classData;
@@ -14,6 +17,25 @@ class _ClassDetailsScreenState extends ConsumerState<ClassDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     final data = widget.classData;
+    final selectedChild =
+        ref.watch(parentChildrenControllerProvider).selectedChild;
+    final childName =
+        selectedChild?.name ?? ref.watchTr(AppStrings.studentLabel);
+    final childGrade = selectedChild?.grade ?? '';
+    final childRoom = selectedChild != null
+        ? '${selectedChild.room}${selectedChild.id.isNotEmpty ? ' • ID ${selectedChild.id.length > 8 ? selectedChild.id.substring(0, 8).toUpperCase() : selectedChild.id}' : ''}'
+        : '';
+    final childInitials =
+        selectedChild != null && selectedChild.name.trim().isNotEmpty
+            ? selectedChild.name
+                .trim()
+                .substring(0, selectedChild.name.trim().length >= 2 ? 2 : 1)
+                .toUpperCase()
+            : 'E';
+    final langCode =
+        ref.watch(languageProvider).valueOrNull?.language.code ?? 'en';
+    final formattedDate =
+        DateFormat('EEEE, d MMMM yyyy', langCode).format(DateTime.now());
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
@@ -45,7 +67,7 @@ class _ClassDetailsScreenState extends ConsumerState<ClassDetailsScreen> {
                   AulaCard(
                     child: Row(
                       children: [
-                        const UserAvatar(initials: 'LR', size: 42),
+                        UserAvatar(initials: childInitials, size: 42),
                         SizedBox(width: 11.w),
                         Expanded(
                           child: Column(
@@ -55,8 +77,7 @@ class _ClassDetailsScreenState extends ConsumerState<ClassDetailsScreen> {
                                 children: [
                                   Flexible(
                                     child: Text(
-                                      'Lucas Rivera',
-
+                                      childName,
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: TxtStyle.titleLarge(
@@ -66,42 +87,45 @@ class _ClassDetailsScreenState extends ConsumerState<ClassDetailsScreen> {
                                       ),
                                     ),
                                   ),
-                                  SizedBox(width: 7.w),
-                                  Flexible(
-                                    child: Container(
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 6.w,
-                                        vertical: 3.h,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFFE8EDFF),
-                                        borderRadius: BorderRadius.circular(
-                                          5.r,
+                                  if (childGrade.isNotEmpty) ...[
+                                    SizedBox(width: 7.w),
+                                    Flexible(
+                                      child: Container(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 6.w,
+                                          vertical: 3.h,
                                         ),
-                                      ),
-                                      child: Text(
-                                        ref.watchTr(AppStrings.eso2),
-
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TxtStyle.titleLarge(
-                                          color: AppColors.primary,
-                                          fontSize: 13.5.sp,
-                                          fontWeight: FontWeight.w700,
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xFFE8EDFF),
+                                          borderRadius: BorderRadius.circular(
+                                            5.r,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          childGrade,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TxtStyle.titleLarge(
+                                            color: AppColors.primary,
+                                            fontSize: 13.5.sp,
+                                            fontWeight: FontWeight.w700,
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
+                                  ],
                                 ],
                               ),
-                              SizedBox(height: 4.h),
-                              Text(
-                                '${ref.watchTr(AppStrings.aula3)} • ID #A360-842',
-                                style: TxtStyle.titleLarge(
-                                  color: AppColors.secondaryText,
-                                  fontSize: 14.5.sp,
+                              if (childRoom.isNotEmpty) ...[
+                                SizedBox(height: 4.h),
+                                Text(
+                                  childRoom,
+                                  style: TxtStyle.titleLarge(
+                                    color: AppColors.secondaryText,
+                                    fontSize: 14.5.sp,
+                                  ),
                                 ),
-                              ),
+                              ],
                             ],
                           ),
                         ),
@@ -153,7 +177,7 @@ class _ClassDetailsScreenState extends ConsumerState<ClassDetailsScreen> {
                         _detailRow(
                           icon: Icons.calendar_today_outlined,
                           label: ref.watchTr(AppStrings.date),
-                          value: 'Miércoles, 24 de Octubre de 2024',
+                          value: formattedDate,
                         ),
                         SizedBox(height: 10.h),
                         _detailRow(

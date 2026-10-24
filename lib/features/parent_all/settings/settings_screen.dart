@@ -1,13 +1,66 @@
 import '../../share/export/screen_export.dart';
 import 'package:aula360/core/services/biometric/biometric_provider.dart';
+import 'package:aula360/core/services/notification/push_notification_service.dart';
 import '../../teacher_all/settings/language_picker.dart';
 import '../presentation/controllers/parent_settings_controller.dart';
 
-class SettingsScreen extends ConsumerWidget {
+class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends ConsumerState<SettingsScreen>
+    with WidgetsBindingObserver {
+  bool _didOpenDeviceSettings = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && _didOpenDeviceSettings) {
+      _didOpenDeviceSettings = false;
+      _checkPermissionAfterDeviceSettings();
+    }
+  }
+
+  Future<void> _checkPermissionAfterDeviceSettings() async {
+    final pushService = ref.read(pushNotificationServiceProvider);
+    final isGranted = await pushService.isPermissionGranted();
+    if (isGranted && mounted) {
+      final controller = ref.read(parentSettingsControllerProvider.notifier);
+      final result = await controller.togglePush(true);
+      if (result == TogglePushResult.enabled && mounted) {
+        final isSpanish = ref.read(languageProvider).valueOrNull?.language ==
+            AppLanguage.spanish;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              isSpanish
+                  ? 'Notificaciones push activadas correctamente'
+                  : 'Push notifications enabled successfully',
+              style: TextStyle(color: Colors.white, fontSize: 14.sp),
+            ),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final tr = ref.watchTr;
     final currentLang = ref.watch(languageProvider).valueOrNull?.language;
     final langLabel = currentLang == AppLanguage.spanish
@@ -43,7 +96,7 @@ class SettingsScreen extends ConsumerWidget {
 
               _sectionLabel(tr(AppStrings.settingsSectionNotifications)),
               SizedBox(height: 8.h),
-              _notificationCard(tr, settings, controller),
+              _notificationCard(context, ref, tr, settings, controller),
 
               SizedBox(height: 22.h),
 
@@ -275,6 +328,8 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   Widget _notificationCard(
+    BuildContext context,
+    WidgetRef ref,
     String Function(String) tr,
     ParentSettingsState settings,
     ParentSettingsController controller,
@@ -293,7 +348,19 @@ class SettingsScreen extends ConsumerWidget {
             title: tr(AppStrings.settingsNotifPush),
             subtitle: tr(AppStrings.settingsNotifPushSub),
             value: settings.pushNotifications,
-            onChanged: (value) => controller.togglePush(value),
+            onChanged: (value) async {
+              final result = await controller.togglePush(value);
+              if (result == TogglePushResult.permissionDenied &&
+                  context.mounted) {
+                _showPermissionDeniedDialog(context, ref, tr);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(tr(AppStrings.permissionDeniedNotice)),
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+              }
+            },
           ),
           _settingsDivider(),
           _notificationRow(
@@ -310,6 +377,85 @@ class SettingsScreen extends ConsumerWidget {
             subtitle: tr(AppStrings.settingsNotifAttendanceAlertsSub),
             value: settings.attendanceAlerts,
             onChanged: (value) => controller.toggleAttendanceAlerts(value),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showPermissionDeniedDialog(
+    BuildContext context,
+    WidgetRef ref,
+    String Function(String) tr,
+  ) {
+    showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(18.r),
+        ),
+        title: Row(
+          children: [
+            Container(
+              padding: EdgeInsets.all(6.r),
+              decoration: BoxDecoration(
+                color: AppColors.primary.withValues(alpha: 0.12),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.notifications_off_outlined,
+                color: AppColors.primary,
+                size: 22.sp,
+              ),
+            ),
+            SizedBox(width: 10.w),
+            Expanded(
+              child: Text(
+                tr(AppStrings.notificationSettingsDeniedTitle),
+                style: TextStyle(
+                  fontSize: 16.5.sp,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.text,
+                ),
+              ),
+            ),
+          ],
+        ),
+        content: Text(
+          tr(AppStrings.notificationSettingsDeniedBody),
+          style: TextStyle(
+            fontSize: 13.5.sp,
+            color: AppColors.subtitleTextColor,
+            height: 1.4,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: Text(
+              tr(AppStrings.cancel),
+              style: TextStyle(
+                color: Colors.grey.shade600,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.r),
+              ),
+            ),
+            onPressed: () async {
+              Navigator.of(ctx).pop();
+              _didOpenDeviceSettings = true;
+              await ref
+                  .read(pushNotificationServiceProvider)
+                  .openDeviceSettings();
+            },
+            child: Text(tr(AppStrings.openSettings)),
           ),
         ],
       ),

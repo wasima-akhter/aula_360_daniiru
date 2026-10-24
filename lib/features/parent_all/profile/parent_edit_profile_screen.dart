@@ -73,12 +73,14 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   }
 
   void _previewProfilePhoto(ParentProfileState profile) {
+    if (_profileImage == null &&
+        (profile.avatarUrl == null || profile.avatarUrl!.isEmpty)) {
+      return;
+    }
     ImageViewerService.open(
       context,
       imageFile: _profileImage,
-      imageUrl: _profileImage == null
-          ? (profile.avatarUrl ?? 'https://i.pravatar.cc/300?img=47')
-          : null,
+      imageUrl: _profileImage == null ? profile.avatarUrl : null,
       title: profile.name,
     );
   }
@@ -245,9 +247,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                               fit: BoxFit.cover,
                             )
                           : CustomNetworkImage(
-                              imageUrl:
-                                  profile.avatarUrl ??
-                                  'https://i.pravatar.cc/300?img=47',
+                              imageUrl: profile.avatarUrl ?? '',
                               width: 80.w,
                               height: 80.w,
                               boxShape: BoxShape.circle,

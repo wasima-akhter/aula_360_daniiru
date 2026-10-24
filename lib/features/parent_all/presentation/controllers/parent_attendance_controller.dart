@@ -16,7 +16,7 @@ class ParentAttendanceState {
     this.records = const [],
     this.selectedChildIndex = 0,
     this.filterStatus,
-    this.percentage = 96,
+    this.percentage = 0,
     this.isLoading = false,
     this.error,
   });
@@ -59,13 +59,17 @@ final parentAttendanceControllerProvider =
     );
 
 class ParentAttendanceController extends Notifier<ParentAttendanceState> {
-  late final ParentRepository _repository;
+  ParentRepository get _repository => ref.read(parentRepositoryProvider);
 
   @override
   ParentAttendanceState build() {
-    _repository = ref.watch(parentRepositoryProvider);
-    Future.microtask(() => loadAttendance());
-    return const ParentAttendanceState(isLoading: true);
+    final activeChildId = ref.watch(
+      parentChildrenControllerProvider.select((s) => s.selectedChild?.id),
+    );
+    if (activeChildId != null && activeChildId.isNotEmpty) {
+      Future.microtask(() => loadAttendance(activeChildId));
+    }
+    return const ParentAttendanceState(percentage: 0, isLoading: true);
   }
 
   Future<void> loadAttendance([String? childId]) async {
@@ -75,11 +79,16 @@ class ParentAttendanceController extends Notifier<ParentAttendanceState> {
           ref.read(parentChildrenControllerProvider).selectedChild?.id ??
           '';
       if (id.isEmpty) {
-        state = state.copyWith(isLoading: false);
+        state = state.copyWith(isLoading: false, percentage: 0);
         return;
       }
       final records = await _repository.getAttendanceHistory(id);
-      final percentage = await _repository.getChildAttendancePercentage(id);
+      int percentage = await _repository.getChildAttendancePercentage(id);
+      if (percentage == 0 && records.isNotEmpty) {
+        final presentCount =
+            records.where((r) => r.status == AttendanceStatus.present).length;
+        percentage = ((presentCount / records.length) * 100).round();
+      }
       state = state.copyWith(
         records: records,
         percentage: percentage,

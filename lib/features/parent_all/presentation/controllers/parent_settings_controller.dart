@@ -1,8 +1,20 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/errors/app_error_resolver.dart';
 import '../../../../core/service/language/language_provider.dart';
+import '../../../../core/services/notification/push_notification_service.dart';
+import '../../../../core/storage/storage_provider.dart';
+import '../../../auth/presentation/providers/auth_providers.dart';
 import '../../../settings/presentation/providers/settings_providers.dart';
+
+enum TogglePushResult {
+  enabled,
+  disabled,
+  permissionDenied,
+  error,
+}
 
 class ParentSettingsState {
   final bool emailNotifications;
@@ -18,7 +30,7 @@ class ParentSettingsState {
 
   const ParentSettingsState({
     this.emailNotifications = true,
-    this.pushNotifications = true,
+    this.pushNotifications = false,
     this.smsNotifications = false,
     this.attendanceAlerts = true,
     this.reportAlerts = true,
@@ -87,8 +99,11 @@ class ParentSettingsController extends Notifier<ParentSettingsState> {
     state = state.copyWith(isLoading: true);
     try {
       final settings = await ref.read(getSettingsUseCaseProvider).call();
+      final isPermissionGranted = await ref
+          .read(pushNotificationServiceProvider)
+          .isPermissionGranted();
       state = state.copyWith(
-        pushNotifications: settings.pushNotifications,
+        pushNotifications: settings.pushNotifications && isPermissionGranted,
         emailNotifications: settings.emailNotifications,
         isLoading: false,
       );
@@ -101,17 +116,89 @@ class ParentSettingsController extends Notifier<ParentSettingsState> {
   }
 
   /// Updates notification preferences via POST /api/v1/settings/notification
-  Future<void> togglePush(bool value) async {
-    final prev = state.pushNotifications;
-    state = state.copyWith(pushNotifications: value);
-    try {
-      await ref.read(updateNotificationPreferencesUseCaseProvider).call(
-        push: value,
-        email: state.emailNotifications,
-      );
-    } catch (e) {
-      final msg = _resolveError(e);
-      state = state.copyWith(pushNotifications: prev, userMessage: msg);
+  /// Enforces Phase 2:
+  /// - Toggle OFF: Sends push: false to backend, keeps OS permission untouched.
+  /// - Toggle ON (OS granted): Sends push: true to backend, syncs token.
+  /// - Toggle ON (OS denied): Does NOT flip toggle, returns permissionDenied to show settings dialog.
+  Future<TogglePushResult> togglePush(bool value) async {
+    if (!value) {
+      final prev = state.pushNotifications;
+      state = state.copyWith(pushNotifications: false);
+      try {
+        await ref.read(updateNotificationPreferencesUseCaseProvider).call(
+          push: false,
+          email: state.emailNotifications,
+        );
+        return TogglePushResult.disabled;
+      } catch (e) {
+        final msg = _resolveError(e);
+        state = state.copyWith(pushNotifications: prev, userMessage: msg);
+        return TogglePushResult.error;
+      }
+    }
+
+    final pushService = ref.read(pushNotificationServiceProvider);
+    final isGranted = await pushService.isPermissionGranted();
+
+    if (isGranted) {
+      final prev = state.pushNotifications;
+      state = state.copyWith(pushNotifications: true);
+      try {
+        await ref.read(updateNotificationPreferencesUseCaseProvider).call(
+          push: true,
+          email: state.emailNotifications,
+        );
+        final token = await pushService.getFcmToken(requestPermissionFirst: false);
+        if (token != null && token.isNotEmpty) {
+          await ref.read(storageServiceProvider).saveFcmToken(token);
+          try {
+            await ref.read(checkSessionUseCaseProvider).call(fcmToken: token);
+            debugPrint('ParentSettings: Synced FCM token to backend session.');
+          } catch (e) {
+            debugPrint('ParentSettings: Session token sync warning: $e');
+          }
+        }
+        return TogglePushResult.enabled;
+      } catch (e) {
+        final msg = _resolveError(e);
+        state = state.copyWith(pushNotifications: prev, userMessage: msg);
+        return TogglePushResult.error;
+      }
+    }
+
+    final status = await pushService.getAuthorizationStatus();
+    if (status == AuthorizationStatus.denied) {
+      return TogglePushResult.permissionDenied;
+    }
+
+    // If not determined, prompt native OS permission dialog
+    final granted = await pushService.promptPermissionsFromPrimer();
+    if (granted) {
+      final prev = state.pushNotifications;
+      state = state.copyWith(pushNotifications: true);
+      try {
+        await ref.read(updateNotificationPreferencesUseCaseProvider).call(
+          push: true,
+          email: state.emailNotifications,
+        );
+        final token = await pushService.getFcmToken(requestPermissionFirst: false);
+        if (token != null && token.isNotEmpty) {
+          await ref.read(storageServiceProvider).saveFcmToken(token);
+          try {
+            await ref.read(checkSessionUseCaseProvider).call(fcmToken: token);
+            debugPrint('ParentSettings: Synced fresh FCM token to backend session.');
+          } catch (e) {
+            debugPrint('ParentSettings: Session token sync warning: $e');
+          }
+        }
+        return TogglePushResult.enabled;
+      } catch (e) {
+        final msg = _resolveError(e);
+        state = state.copyWith(pushNotifications: prev, userMessage: msg);
+        return TogglePushResult.error;
+      }
+    } else {
+      return TogglePushResult.permissionDenied;
     }
   }
 

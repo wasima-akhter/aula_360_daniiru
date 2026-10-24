@@ -34,11 +34,10 @@ final parentProgressControllerProvider =
 );
 
 class ParentProgressController extends Notifier<ParentProgressState> {
-  late final ParentRepository _repository;
+  ParentRepository get _repository => ref.read(parentRepositoryProvider);
 
   @override
   ParentProgressState build() {
-    _repository = ref.watch(parentRepositoryProvider);
     return const ParentProgressState();
   }
 

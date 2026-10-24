@@ -131,16 +131,21 @@ class ConversationDto {
     this.unreadCount = 0,
   });
 
-  String get displayName => participant?.fullName ?? participantName ?? 'Chat';
+  String get displayName =>
+      participant?.fullName ?? participantName ?? 'Administración Aula 360';
   String? get displayAvatar => participant?.avatarUrl;
   String? get role => participant?.role;
 
   factory ConversationDto.fromJson(Map<String, dynamic> json) {
-    final part = json['participant'] is Map<String, dynamic>
-        ? ConversationParticipantDto.fromJson(
-            json['participant'] as Map<String, dynamic>,
-          )
+    final participantRaw = json['participant'] ?? json['otherParticipant'];
+    final part = participantRaw is Map<String, dynamic>
+        ? ConversationParticipantDto.fromJson(participantRaw)
         : null;
+
+    final lastMessageRaw = json['lastMessage'];
+    final String? lastMessageStr = lastMessageRaw is Map<String, dynamic>
+        ? lastMessageRaw['body'] as String?
+        : lastMessageRaw as String? ?? json['latestMessage'] as String?;
 
     return ConversationDto(
       id: json['id'] as String? ?? '',
@@ -152,8 +157,7 @@ class ConversationDto {
       participantName: part?.fullName ??
           json['participantName'] as String? ??
           json['title'] as String?,
-      lastMessage: json['lastMessage'] as String? ??
-          json['latestMessage'] as String?,
+      lastMessage: lastMessageStr,
       updatedAt: json['updatedAt'] as String? ?? json['lastMessageAt'] as String?,
       unreadCount: (json['unreadCount'] as num?)?.toInt() ?? 0,
     );

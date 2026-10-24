@@ -1,3 +1,4 @@
+import '../../chat/presentation/controllers/chat_controller.dart';
 import '../../parent_all/helper/parent_widgets.dart';
 import '../../share/component/logout_btn.dart';
 import '../../share/export/screen_export.dart';
@@ -334,7 +335,7 @@ class TeacherProfileScreen extends ConsumerWidget {
                   ref.watchTr(AppStrings.academyMessagesSubtitle),
                   () {
                     Navigator.pop(bottomSheetContext);
-                    _showMessage(ref.watchTr(AppStrings.academyMessagesTitle));
+                    context.push(RoutePath.chatList);
                   },
                 ),
                 _bottomAction(
@@ -347,12 +348,32 @@ class TeacherProfileScreen extends ConsumerWidget {
                   },
                 ),
                 _bottomAction(
-                  Icons.people_outline,
-                  ref.watchTr(AppStrings.familyCommunicationTitle),
-                  ref.watchTr(AppStrings.familyCommunicationSubtitle),
-                  () {
+                  Icons.admin_panel_settings_outlined,
+                  ref.watchTr(AppStrings.chatWithAdmin),
+                  ref.watchTr(AppStrings.noConversationsDesc),
+                  () async {
                     Navigator.pop(bottomSheetContext);
-                    context.push(RoutePath.chatInbox);
+                    final conv = await ref
+                        .read(chatControllerProvider.notifier)
+                        .startAdminConversation();
+                    if (context.mounted) {
+                      final activeConv = conv ??
+                          ref.read(chatControllerProvider).selectedConversation;
+                      if (activeConv != null) {
+                        context.push(RoutePath.chatInbox, extra: activeConv);
+                      } else {
+                        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              ref.readTr(AppStrings.chatTargetAdminNotFound),
+                            ),
+                            backgroundColor: AppColors.primaryDark,
+                            duration: const Duration(seconds: 4),
+                          ),
+                        );
+                      }
+                    }
                   },
                 ),
               ],

@@ -100,5 +100,24 @@ void main() {
       await storageService.resetNotificationPrimerDismissal();
       expect(storageService.isNotificationPrimerDismissedRecently(), isFalse);
     });
+
+    test('onTokenRefreshed callback can be assigned and invoked safely', () {
+      String? rotatedToken;
+      notificationService.onTokenRefreshed = (token) {
+        rotatedToken = token;
+      };
+
+      expect(notificationService.onTokenRefreshed, isNotNull);
+      notificationService.onTokenRefreshed?.call('fresh-fcm-token-999');
+      expect(rotatedToken, equals('fresh-fcm-token-999'));
+    });
+
+    test('handlePendingInitialNotification does not crash when pending message is null', () {
+      expect(() => notificationService.handlePendingInitialNotification(), returnsNormally);
+    });
+
+    test('foregroundMessages stream is broadcast and can be listened to', () async {
+      expect(notificationService.foregroundMessages.isBroadcast, isTrue);
+    });
   });
 }

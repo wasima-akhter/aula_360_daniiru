@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import '../../auth/presentation/controllers/auth_controller.dart';
 import '../../share/export/screen_export.dart';
 import '../helper/parent_widgets.dart';
 import '../presentation/controllers/parent_children_controller.dart';
@@ -20,9 +23,19 @@ class _AddChildScreenState extends ConsumerState<AddChildScreen> {
   final dobController = TextEditingController();
   final studentIdController = TextEditingController();
   DateTime? _selectedDob;
+  File? _selectedImage;
 
   String gradeKey = AppStrings.primaria2;
   String genderKey = 'male';
+
+  static String _extractInitials(String name) {
+    final parts = name.trim().split(RegExp(r'\s+'));
+    if (parts.isEmpty || parts[0].isEmpty) return 'P';
+    if (parts.length == 1) {
+      return parts[0].substring(0, parts[0].length >= 2 ? 2 : 1).toUpperCase();
+    }
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+  }
 
   @override
   void dispose() {
@@ -126,6 +139,12 @@ class _AddChildScreenState extends ConsumerState<AddChildScreen> {
   }
 
   Widget _parentAccountCard() {
+    final currentUser = ref.watch(authControllerProvider).user;
+    final parentName = currentUser?.fullName.isNotEmpty == true
+        ? currentUser!.fullName
+        : 'Parent';
+    final parentInitials = _extractInitials(parentName);
+
     return Container(
       padding: EdgeInsets.all(11.w),
       decoration: BoxDecoration(
@@ -144,7 +163,7 @@ class _AddChildScreenState extends ConsumerState<AddChildScreen> {
             ),
             alignment: Alignment.center,
             child: Text(
-              'EV',
+              parentInitials,
               style: TxtStyle.titleLarge(
                 color: AppColors.primaryDark,
                 fontSize: 14.sp,
@@ -167,7 +186,7 @@ class _AddChildScreenState extends ConsumerState<AddChildScreen> {
                 ),
                 SizedBox(height: 2.h),
                 Text(
-                  'Eleanor Vance',
+                  parentName,
                   style: TxtStyle.titleLarge(
                     color: AppColors.text,
                     fontSize: 14.5.sp,
@@ -197,19 +216,84 @@ class _AddChildScreenState extends ConsumerState<AddChildScreen> {
     );
   }
 
-  Widget _photoUploader() {
-    return InkWell(
-      onTap: () {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              ref.watchTr(AppStrings.uploadPhotoOptional),
-              style: TxtStyle.titleLarge(fontSize: 14.sp, color: Colors.white),
-            ),
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
+  Future<void> _pickPhoto() async {
+    final picked = await AppImagePicker.showImagePickerBottomSheet(
+      context,
+      ref: ref,
+      title: ref.watchTr(AppStrings.chooseProfilePhoto),
+      subtitle: ref.watchTr(AppStrings.selectOptionProfilePhoto),
+      showRemoveOption: _selectedImage != null,
+      onRemovePhoto: () {
+        setState(() => _selectedImage = null);
       },
+    );
+    if (picked != null) {
+      setState(() => _selectedImage = picked);
+    }
+  }
+
+  Widget _photoUploader() {
+    if (_selectedImage != null) {
+      return Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8.r),
+          border: Border.all(color: AppColors.border),
+        ),
+        padding: EdgeInsets.all(10.w),
+        child: Row(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8.r),
+              child: Image.file(
+                _selectedImage!,
+                width: 58.w,
+                height: 58.w,
+                fit: BoxFit.cover,
+              ),
+            ),
+            SizedBox(width: 12.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    ref.watchTr(AppStrings.chooseProfilePhoto),
+                    style: TxtStyle.titleLarge(
+                      color: AppColors.text,
+                      fontSize: 14.5.sp,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  SizedBox(height: 2.h),
+                  Text(
+                    _selectedImage!.path.split(Platform.pathSeparator).last,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TxtStyle.bodyMedium(
+                      color: AppColors.subtitleTextColor,
+                      fontSize: 12.5.sp,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            IconButton(
+              icon: Icon(Icons.edit_outlined, color: AppColors.primary, size: 20.sp),
+              onPressed: _pickPhoto,
+            ),
+            IconButton(
+              icon: Icon(Icons.delete_outline_rounded, color: AppColors.error, size: 20.sp),
+              onPressed: () => setState(() => _selectedImage = null),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return InkWell(
+      onTap: _pickPhoto,
       borderRadius: BorderRadius.circular(8.r),
       child: Container(
         width: double.infinity,
@@ -519,18 +603,22 @@ class _AddChildScreenState extends ConsumerState<AddChildScreen> {
       return;
     }
 
-    final parentTeacher =
-        ref
-            .read(languageProvider)
-            .valueOrNull
-            ?.tr(AppStrings.assignedAfterEnrollment) ??
-        'Asignado tras matrícula';
     final selectedGrade =
         ref.read(languageProvider).valueOrNull?.tr(gradeKey) ??
         ref.watchTr(gradeKey);
 
-    final gender =
-        genderKey.toLowerCase().contains('female') ? 'Female' : 'Male';
+    final String gender;
+    switch (genderKey.toLowerCase()) {
+      case 'female':
+        gender = 'Female';
+        break;
+      case 'male':
+        gender = 'Male';
+        break;
+      default:
+        gender = 'Other';
+    }
+
     final dobIso = _selectedDob?.toUtc().toIso8601String();
     final enrollmentNumber = studentIdController.text.trim();
 
@@ -543,8 +631,7 @@ class _AddChildScreenState extends ConsumerState<AddChildScreen> {
           grade: selectedGrade,
           enrollmentNumber:
               enrollmentNumber.isNotEmpty ? enrollmentNumber : null,
-          room: 'Aula 2A',
-          parentTeacher: parentTeacher,
+          avatarFile: _selectedImage,
         );
 
     if (mounted) {
@@ -560,7 +647,7 @@ class _AddChildScreenState extends ConsumerState<AddChildScreen> {
         final error = ref.read(parentChildrenControllerProvider).error;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(error ?? 'Error al matricular estudiante'),
+            content: Text(error ?? ref.watchTr(AppStrings.errorAddChild)),
             backgroundColor: AppColors.error,
           ),
         );

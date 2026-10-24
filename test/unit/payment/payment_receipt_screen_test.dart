@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:aula360/core/files/file_download_service.dart';
 import 'package:aula360/core/files/file_providers.dart';
+import 'package:aula360/features/parent_all/domain/models/parent_models.dart';
 import 'package:aula360/features/parent_all/payment/payment_receipt_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -50,7 +51,18 @@ void main() {
         child: ScreenUtilInit(
           designSize: const Size(390, 844),
           builder: (context, child) => const MaterialApp(
-            home: PaymentReceiptScreen(),
+            home: PaymentReceiptScreen(
+              invoice: InvoiceModel(
+                id: '8492',
+                concept: 'Matrícula',
+                monthYear: 'Octubre 2024',
+                amount: 340.0,
+                dueDate: '24 Oct 2024',
+                isPaid: true,
+                paidDate: '24 Oct 2024 • 12:14',
+                receiptNumber: '#A360-8492',
+              ),
+            ),
           ),
         ),
       ),

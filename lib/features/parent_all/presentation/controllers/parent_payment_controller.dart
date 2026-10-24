@@ -43,11 +43,10 @@ final parentPaymentControllerProvider =
     );
 
 class ParentPaymentController extends Notifier<ParentPaymentState> {
-  late final ParentRepository _repository;
+  ParentRepository get _repository => ref.read(parentRepositoryProvider);
 
   @override
   ParentPaymentState build() {
-    _repository = ref.watch(parentRepositoryProvider);
     Future.microtask(() => loadInvoices());
     return const ParentPaymentState();
   }

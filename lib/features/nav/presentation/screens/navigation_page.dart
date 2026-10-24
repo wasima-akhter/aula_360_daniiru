@@ -7,6 +7,8 @@ import 'package:aula360/features/teacher_all/home/teacher_home_screen.dart';
 import 'package:aula360/features/teacher_all/reports/teacher_reports_screen.dart';
 import 'package:aula360/features/teacher_all/students/teacher_students_screen.dart';
 
+import '../../../../core/network/socket_service.dart';
+import '../../../../core/services/notification/push_notification_service.dart';
 import '../../../../core/services/notification/widgets/notification_primer_sheet.dart';
 import '../../../../utils/enum/app_enum.dart';
 import '../../../parent_all/presentation/controllers/parent_notifications_controller.dart';
@@ -37,9 +39,21 @@ class _NavigationPageState extends ConsumerState<NavigationPage> {
       });
     }
 
+    // Process any initial push notification tapped from killed state
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref
+          .read(pushNotificationServiceProvider)
+          .handlePendingInitialNotification();
+    });
+
     // Check and show the Soft In-App Primer after dashboard renders
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkNotificationPrimer();
+    });
+
+    // Establish real-time Socket.IO chat connection
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(socketServiceProvider).connect();
     });
   }
 

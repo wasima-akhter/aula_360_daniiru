@@ -55,11 +55,10 @@ final passwordRecoveryControllerProvider =
     );
 
 class PasswordRecoveryController extends Notifier<PasswordRecoveryState> {
-  late final AuthRepository _repository;
+  AuthRepository get _repository => ref.read(authRepositoryProvider);
 
   @override
   PasswordRecoveryState build() {
-    _repository = ref.watch(authRepositoryProvider);
     return const PasswordRecoveryState();
   }
 

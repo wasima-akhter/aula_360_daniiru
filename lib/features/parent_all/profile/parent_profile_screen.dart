@@ -1,6 +1,7 @@
 import '../../share/component/logout_btn.dart';
 import '../../share/export/screen_export.dart';
 import '../helper/parent_widgets.dart';
+import '../presentation/controllers/parent_children_controller.dart';
 import '../presentation/controllers/parent_profile_controller.dart';
 
 /// ===============================================================
@@ -263,6 +264,26 @@ class ParentProfileScreen extends ConsumerWidget {
   }
 
   Widget _menuCard(BuildContext context, WidgetRef ref) {
+    final childrenState = ref.watch(parentChildrenControllerProvider);
+    final children = childrenState.children;
+    final int count = children.isNotEmpty ? children.length : 2;
+    final String names = children.isNotEmpty
+        ? children
+            .map((c) => c.name.trim().split(' ').first)
+            .where((n) => n.isNotEmpty)
+            .join(', ')
+        : 'Lucas, Sophia';
+
+    final String enrolledText = count == 1
+        ? ref.watchTr(AppStrings.enrolledChildSingle)
+        : ref.watchTr(AppStrings.enrolledChildrenPlural);
+
+    final String childrenSubtitle = names.isNotEmpty
+        ? '$count $enrolledText ($names)'
+        : '$count $enrolledText';
+
+    final String childrenBadge = '$count ${ref.watchTr(AppStrings.active)}';
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -274,8 +295,8 @@ class ParentProfileScreen extends ConsumerWidget {
           _profileMenu(
             icon: Icons.family_restroom_outlined,
             title: ref.watchTr(AppStrings.myChildren),
-            subtitle: '2 Hijos Matriculados (Lucas, Sophia)',
-            badge: '2 ${ref.watchTr(AppStrings.active)}',
+            subtitle: childrenSubtitle,
+            badge: childrenBadge,
             onTap: () {
               context.push(RoutePath.children);
             },
@@ -286,7 +307,7 @@ class ParentProfileScreen extends ConsumerWidget {
             title: ref.watchTr(AppStrings.communicationTitle),
             subtitle: ref.watchTr(AppStrings.communicationSubtitle),
             onTap: () {
-              context.push(RoutePath.chatInbox);
+              context.push(RoutePath.chatList);
             },
           ),
           _divider(),

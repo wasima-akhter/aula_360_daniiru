@@ -32,9 +32,9 @@ class _ReportDetailsScreenState extends ConsumerState<ReportDetailsScreen> {
             reportsState.students.length - 1,
           )]
         : null;
-    final studentName = currentStudent?.name ?? 'Lucas Rivera';
-    final studentClass = currentStudent?.grade ??
-        '${ref.watchTr(AppStrings.eso2)} • ${ref.watchTr(AppStrings.aula3)}';
+    final studentName =
+        currentStudent?.name ?? ref.watchTr(AppStrings.studentLabel);
+    final studentClass = currentStudent?.grade ?? '';
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),

@@ -32,24 +32,92 @@ class _TuitionPaymentScreenState extends ConsumerState<TuitionPaymentScreen> {
       backgroundColor: const Color(0xFFF8F7FC),
       appBar: _paymentAppBar(),
       body: SafeArea(
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          padding: EdgeInsets.fromLTRB(14.w, 15.h, 14.w, 30.h),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _studentInvoiceCard(activeChild, pendingInvoice),
-              SizedBox(height: 20.h),
-              _sectionTitle(ref.watchTr(AppStrings.paymentMethodTitle)),
-              SizedBox(height: 10.h),
-              _cardDetails(),
-              SizedBox(height: 10.h),
-              _saveCard(),
-              SizedBox(height: 20.h),
-              _payButton(paymentState, paymentController, pendingInvoice),
-            ],
-          ),
-        ),
+        child: pendingInvoice == null
+            ? Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 40.h, horizontal: 24.w),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 64.w,
+                        height: 64.w,
+                        decoration: const BoxDecoration(
+                          color: Color(0xFFE5FAF2),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(
+                          child: Icon(
+                            Icons.check_circle_outline,
+                            color: AppColors.emeraldGreenColor,
+                            size: 34.sp,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 16.h),
+                      Text(
+                        ref.watchTr(AppStrings.noPendingPayments),
+                        textAlign: TextAlign.center,
+                        style: TxtStyle.titleLarge(
+                          color: AppColors.text,
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      SizedBox(height: 8.h),
+                      Text(
+                        ref.watchTr(AppStrings.noPendingPaymentsDesc),
+                        textAlign: TextAlign.center,
+                        style: TxtStyle.bodyMedium(
+                          color: AppColors.subtitleTextColor,
+                          fontSize: 14.sp,
+                        ),
+                      ),
+                      if (paymentState.paidInvoices.isNotEmpty) ...[
+                        SizedBox(height: 24.h),
+                        ElevatedButton.icon(
+                          onPressed: () {
+                            context.push(
+                              RoutePath.paymentReceipt.addBasePath,
+                              extra: {
+                                'invoice': paymentState.paidInvoices.first,
+                                'child': activeChild,
+                              },
+                            );
+                          },
+                          icon: const Icon(Icons.receipt_long_outlined, size: 18),
+                          label: Text(ref.watchTr(AppStrings.previewReceipt)),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primaryDark,
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.r),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              )
+            : SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                padding: EdgeInsets.fromLTRB(14.w, 15.h, 14.w, 30.h),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _studentInvoiceCard(activeChild, pendingInvoice),
+                    SizedBox(height: 20.h),
+                    _sectionTitle(ref.watchTr(AppStrings.paymentMethodTitle)),
+                    SizedBox(height: 10.h),
+                    _cardDetails(),
+                    SizedBox(height: 10.h),
+                    _saveCard(),
+                    SizedBox(height: 20.h),
+                    _payButton(paymentState, paymentController, pendingInvoice, activeChild),
+                  ],
+                ),
+              ),
       ),
     );
   }
@@ -89,21 +157,21 @@ class _TuitionPaymentScreenState extends ConsumerState<TuitionPaymentScreen> {
   }
 
   Widget _studentInvoiceCard(ChildModel? child, InvoiceModel? invoice) {
-    final initials = child?.initials ?? 'LR';
-    final name = child?.name ?? 'Lucas Rivera';
+    final initials = child?.initials ?? 'ST';
+    final name = child?.name ?? 'Estudiante';
     final gradeClass = child != null
         ? '${child.grade} • ${child.classroom}'
-        : '${ref.watchTr(AppStrings.eso2)} • ${ref.watchTr(AppStrings.aula3)}';
+        : '';
     final invoiceNum = invoice != null
         ? '#${invoice.id.length > 8 ? invoice.id.substring(0, 8).toUpperCase() : invoice.id}'
-        : '#A360-8492';
-    final concept = invoice?.concept ?? 'Cuota 2º Trimestre';
+        : '';
+    final concept = invoice?.concept ?? '';
     final amountFormatted = invoice != null
         ? '${invoice.amount.toStringAsFixed(2)} €'
-        : '340,00 €';
+        : '0,00 €';
     final dueDateText = invoice != null
         ? 'Vence: ${invoice.dueDate}'
-        : 'Vence: 15 Oct 2024';
+        : '';
 
     return Container(
       width: double.infinity,
@@ -467,16 +535,13 @@ class _TuitionPaymentScreenState extends ConsumerState<TuitionPaymentScreen> {
   Widget _payButton(
     ParentPaymentState state,
     ParentPaymentController controller,
-    InvoiceModel? invoice,
-  ) {
+    InvoiceModel? invoice, [
+    ChildModel? child,
+  ]) {
     final amountFormatted = invoice != null
         ? '${invoice.amount.toStringAsFixed(2)} €'
-        : '340,00 €';
-    final invoiceId =
-        invoice?.id ??
-        (state.pendingInvoices.isNotEmpty
-            ? state.pendingInvoices.first.id
-            : 'INV-2026-001');
+        : '0,00 €';
+    final invoiceId = invoice?.id ?? '';
 
     return SizedBox(
       width: double.infinity,
@@ -487,9 +552,16 @@ class _TuitionPaymentScreenState extends ConsumerState<TuitionPaymentScreen> {
         leading: Icon(Icons.lock_outline, color: Colors.white, size: 15.sp),
         trailing: const SizedBox.shrink(),
         onTapAsync: () async {
+          if (invoiceId.isEmpty) return;
           final success = await controller.processPayment(invoiceId);
           if (success && mounted) {
-            context.go(RoutePath.paymentReceipt.addBasePath);
+            context.go(
+              RoutePath.paymentReceipt.addBasePath,
+              extra: {
+                'invoice': invoice?.copyWith(isPaid: true),
+                'child': child,
+              },
+            );
           }
         },
       ),

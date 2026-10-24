@@ -47,11 +47,10 @@ final parentScheduleControllerProvider =
     );
 
 class ParentScheduleController extends Notifier<ParentScheduleState> {
-  late final ParentRepository _repository;
+  ParentRepository get _repository => ref.read(parentRepositoryProvider);
 
   @override
   ParentScheduleState build() {
-    _repository = ref.watch(parentRepositoryProvider);
     Future.microtask(() => loadSchedule(2));
     return const ParentScheduleState(isLoading: true, selectedDayIndex: 2);
   }
@@ -67,21 +66,19 @@ class ParentScheduleController extends Notifier<ParentScheduleState> {
 
       if (effectiveChildId != null && effectiveChildId.isNotEmpty) {
         final sessions = await _repository.getChildSchedule(effectiveChildId);
-        if (sessions.isNotEmpty) {
-          state = state.copyWith(
-            rawSessions: sessions,
-            classes: sessions.map((s) => s.toClassModel()).toList(),
-            selectedDayIndex: dayIndex,
-            isLoading: false,
-            error: null,
-          );
-          return;
-        }
+        state = state.copyWith(
+          rawSessions: sessions,
+          classes: sessions.map((s) => s.toClassModel()).toList(),
+          selectedDayIndex: dayIndex,
+          isLoading: false,
+          error: null,
+        );
+        return;
       }
 
-      final list = await _repository.getWeeklySchedule(dayIndex, childId: effectiveChildId);
       state = state.copyWith(
-        classes: list,
+        rawSessions: const [],
+        classes: const [],
         selectedDayIndex: dayIndex,
         isLoading: false,
         error: null,

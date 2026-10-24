@@ -59,7 +59,7 @@ class MyChildrenScreen extends ConsumerWidget {
                         ),
                         SizedBox(height: 10.h),
                         Text(
-                          'No hay alumnos vinculados',
+                          ref.watchTr(AppStrings.noChildrenLinked),
                           style: TxtStyle.titleLarge(
                             fontSize: 16.sp,
                             fontWeight: FontWeight.w700,
@@ -67,7 +67,7 @@ class MyChildrenScreen extends ConsumerWidget {
                         ),
                         SizedBox(height: 4.h),
                         Text(
-                          'Vincule a su hijo/a para ver su horario, asistencia y calificaciones.',
+                          ref.watchTr(AppStrings.noChildrenLinkedDesc),
                           textAlign: TextAlign.center,
                           style: TxtStyle.bodyMedium(
                             color: AppColors.subtitleTextColor,
@@ -136,25 +136,25 @@ class MyChildrenScreen extends ConsumerWidget {
                               ),
                             ),
                           ),
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 6.w,
-                              vertical: 2.h,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppColors.softSlateBgColor,
-                              borderRadius: BorderRadius.circular(8.r),
-                              border: Border.all(color: AppColors.border),
-                            ),
-                            child: Text(
-                              child.id,
-                              style: TxtStyle.titleLarge(
-                                color: AppColors.subtitleTextColor,
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ),
+                          // Container(
+                          //   padding: EdgeInsets.symmetric(
+                          //     horizontal: 6.w,
+                          //     vertical: 2.h,
+                          //   ),
+                          //   decoration: BoxDecoration(
+                          //     color: AppColors.softSlateBgColor,
+                          //     borderRadius: BorderRadius.circular(8.r),
+                          //     border: Border.all(color: AppColors.border),
+                          //   ),
+                          //   child: Text(
+                          //     child.id,
+                          //     style: TxtStyle.titleLarge(
+                          //       color: AppColors.subtitleTextColor,
+                          //       fontSize: 12.sp,
+                          //       fontWeight: FontWeight.w700,
+                          //     ),
+                          //   ),
+                          // ),
                         ],
                       ),
                     ],
@@ -169,6 +169,8 @@ class MyChildrenScreen extends ConsumerWidget {
             ),
             SizedBox(height: 9.h),
             Divider(height: 1, color: AppColors.backgroundsLinesColor),
+
+            /*
             SizedBox(height: 9.h),
             Row(
               children: [
@@ -189,6 +191,7 @@ class MyChildrenScreen extends ConsumerWidget {
                 ),
               ],
             ),
+
             SizedBox(height: 9.h),
             Row(
               children: [
@@ -199,7 +202,7 @@ class MyChildrenScreen extends ConsumerWidget {
                   ),
                 ),
               ],
-            ),
+            ),   */
           ],
         ),
       ),
@@ -219,22 +222,39 @@ class MyChildrenScreen extends ConsumerWidget {
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(7.r),
-            child: Image.network(
-              child.imageUrl,
-              fit: BoxFit.cover,
-              errorBuilder: (_, _, _) => Container(
-                color: AppColors.blueSoft,
-                alignment: Alignment.center,
-                child: Text(
-                  child.name.isNotEmpty ? child.name[0] : '?',
-                  style: TextStyle(
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.primary,
+            child:
+                child.imageUrl.isNotEmpty &&
+                    Uri.tryParse(child.imageUrl)?.hasScheme == true
+                ? Image.network(
+                    child.imageUrl,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, _, _) => Container(
+                      color: AppColors.blueSoft,
+                      alignment: Alignment.center,
+                      child: Text(
+                        child.name.isNotEmpty
+                            ? child.name[0].toUpperCase()
+                            : '?',
+                        style: TextStyle(
+                          fontSize: 20.sp,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+                  )
+                : Container(
+                    color: AppColors.blueSoft,
+                    alignment: Alignment.center,
+                    child: Text(
+                      child.name.isNotEmpty ? child.name[0].toUpperCase() : '?',
+                      style: TextStyle(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.primary,
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ),
           ),
         ),
         Positioned(
@@ -254,6 +274,7 @@ class MyChildrenScreen extends ConsumerWidget {
     );
   }
 
+  /*
   Widget _activeBadge(WidgetRef ref, String text) {
     return Align(
       alignment: Alignment.centerLeft,
@@ -274,6 +295,7 @@ class MyChildrenScreen extends ConsumerWidget {
       ),
     );
   }
+  */
 
   Widget _addChildButton(BuildContext context, WidgetRef ref) {
     return InkWell(

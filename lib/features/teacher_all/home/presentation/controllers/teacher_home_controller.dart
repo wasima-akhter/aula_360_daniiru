@@ -35,11 +35,10 @@ final teacherHomeControllerProvider =
 );
 
 class TeacherHomeController extends Notifier<TeacherHomeState> {
-  late final TeacherClassesRepository _classesRepository;
+  TeacherClassesRepository get _classesRepository => ref.read(teacherClassesRepositoryProvider);
 
   @override
   TeacherHomeState build() {
-    _classesRepository = ref.watch(teacherClassesRepositoryProvider);
     Future.microtask(() => loadHomeData());
     return const TeacherHomeState(isLoading: true);
   }

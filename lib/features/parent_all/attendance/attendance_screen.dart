@@ -1,7 +1,7 @@
 import 'package:intl/intl.dart';
 
 import '../../share/export/screen_export.dart';
-import '../domain/models/parent_models.dart';
+import '../helper/parent_home_helper.dart';
 import '../helper/parent_widgets.dart';
 import '../presentation/controllers/parent_attendance_controller.dart';
 import '../presentation/controllers/parent_children_controller.dart';
@@ -82,19 +82,343 @@ class _AttendanceScreenState extends ConsumerState<AttendanceScreen> {
               parent: BouncingScrollPhysics(),
             ),
             padding: EdgeInsets.fromLTRB(14.w, 14.h, 14.w, 30.h),
-            child: Column(
-              children: [
-                if (activeChild != null)
-                  _summaryCard(ref, activeChild, attendanceState),
-                SizedBox(height: 17.h),
-                _monthHeader(ref, attendanceState.records.length),
-                SizedBox(height: 8.h),
-                _attendanceContent(ref, attendanceState, activeChild),
-              ],
-            ),
+            child: activeChild == null
+                ? Center(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 40.h, horizontal: 20.w),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.person_off_outlined, size: 48.sp, color: AppColors.subtitleTextColor),
+                          SizedBox(height: 12.h),
+                          Text(
+                            ref.watchTr(AppStrings.noChildrenLinked),
+                            style: TxtStyle.titleLarge(fontSize: 17.sp, fontWeight: FontWeight.w700),
+                          ),
+                          SizedBox(height: 6.h),
+                          Text(
+                            ref.watchTr(AppStrings.noChildrenLinkedDesc),
+                            textAlign: TextAlign.center,
+                            style: TxtStyle.bodyMedium(color: AppColors.subtitleTextColor, fontSize: 13.5.sp),
+                          ),
+                          SizedBox(height: 16.h),
+                          ElevatedButton.icon(
+                            onPressed: () => context.push(RoutePath.addChild),
+                            icon: const Icon(Icons.add, size: 18),
+                            label: Text(ref.watchTr(AppStrings.addChildTitle)),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primary,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (childrenState.children.length > 1)
+                        _studentSelector(ref, childrenState, activeChild),
+                      if (attendanceState.isLoading && attendanceState.records.isEmpty)
+                        Padding(
+                          padding: EdgeInsets.symmetric(vertical: 60.h),
+                          child: const Center(
+                            child: CircularProgressIndicator(strokeWidth: 2.5),
+                          ),
+                        )
+                      else if (attendanceState.error != null && attendanceState.records.isEmpty)
+                        _errorPlaceholder(ref, activeChild, attendanceState.error!)
+                      else if (attendanceState.records.isEmpty)
+                        _emptyAttendancePlaceholder(ref, activeChild)
+                      else ...[
+                        _summaryCard(ref, activeChild, attendanceState),
+                        SizedBox(height: 17.h),
+                        _monthHeader(ref, attendanceState.records.length),
+                        SizedBox(height: 8.h),
+                        _attendanceContent(ref, attendanceState, activeChild),
+                      ],
+                    ],
+                  ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _studentSelector(
+    WidgetRef ref,
+    ParentChildrenState childrenState,
+    ChildModel activeChild,
+  ) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 14.h),
+      height: 42.h,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: childrenState.children.length,
+        separatorBuilder: (_, _) => SizedBox(width: 8.w),
+        itemBuilder: (context, index) {
+          final child = childrenState.children[index];
+          final isSelected = child.id == activeChild.id;
+          return GestureDetector(
+            onTap: () {
+              ref.read(parentChildrenControllerProvider.notifier).selectChild(child);
+              ref.read(parentAttendanceControllerProvider.notifier).loadAttendance(child.id);
+            },
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
+              decoration: BoxDecoration(
+                color: isSelected ? AppColors.primary : Colors.white,
+                borderRadius: BorderRadius.circular(20.r),
+                border: Border.all(
+                  color: isSelected ? AppColors.primary : AppColors.border,
+                ),
+                boxShadow: isSelected
+                    ? [
+                        BoxShadow(
+                          color: AppColors.primary.withValues(alpha: 0.25),
+                          blurRadius: 6,
+                          offset: const Offset(0, 2),
+                        ),
+                      ]
+                    : null,
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.person_outline,
+                    size: 16.sp,
+                    color: isSelected ? Colors.white : AppColors.secondaryText,
+                  ),
+                  SizedBox(width: 6.w),
+                  Text(
+                    child.name,
+                    style: TxtStyle.titleLarge(
+                      color: isSelected ? Colors.white : AppColors.text,
+                      fontSize: 13.5.sp,
+                      fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _errorPlaceholder(WidgetRef ref, ChildModel child, String error) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(20.w),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(color: AppColors.border),
+      ),
+      child: Column(
+        children: [
+          Icon(Icons.error_outline, size: 36.sp, color: AppColors.error),
+          SizedBox(height: 10.h),
+          Text(
+            error,
+            textAlign: TextAlign.center,
+            style: TxtStyle.bodyMedium(
+              color: AppColors.error,
+              fontSize: 13.5.sp,
+            ),
+          ),
+          SizedBox(height: 14.h),
+          ElevatedButton.icon(
+            onPressed: () {
+              ref
+                  .read(parentAttendanceControllerProvider.notifier)
+                  .loadAttendance(child.id);
+            },
+            icon: const Icon(Icons.refresh, size: 16),
+            label: Text(ref.watchTr(AppStrings.retry)),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.r),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _emptyAttendancePlaceholder(
+    WidgetRef ref,
+    ChildModel child,
+  ) {
+    return Column(
+      children: [
+        Container(
+          width: double.infinity,
+          padding: EdgeInsets.all(12.w),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10.r),
+            border: Border.all(color: AppColors.border),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 44.w,
+                height: 44.w,
+                decoration: const BoxDecoration(
+                  color: AppColors.blueSoft,
+                  shape: BoxShape.circle,
+                ),
+                child: ClipOval(
+                  child: child.imageUrl.isNotEmpty
+                      ? Image.network(
+                          child.imageUrl,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, _, _) => Container(
+                            color: AppColors.blueSoft,
+                            alignment: Alignment.center,
+                            child: Text(
+                              child.name.isNotEmpty ? child.name[0] : '?',
+                              style: TextStyle(
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.primary,
+                              ),
+                            ),
+                          ),
+                        )
+                      : Container(
+                          color: AppColors.blueSoft,
+                          alignment: Alignment.center,
+                          child: Text(
+                            child.name.isNotEmpty ? child.name[0] : '?',
+                            style: TextStyle(
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.primary,
+                            ),
+                          ),
+                        ),
+                ),
+              ),
+              SizedBox(width: 12.w),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      child.name,
+                      style: TxtStyle.titleLarge(
+                        color: AppColors.text,
+                        fontSize: 17.sp,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    SizedBox(height: 2.h),
+                    Text(
+                      '${child.grade}${child.room.isNotEmpty ? ' • ${child.room}' : ''}',
+                      style: TxtStyle.bodyMedium(
+                        color: AppColors.secondaryText,
+                        fontSize: 13.5.sp,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              StatusPill(
+                text: ref.watchTr(AppStrings.pendingReviews),
+                color: const Color(0xFF6B7280),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: 18.h),
+        Container(
+          width: double.infinity,
+          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 36.h),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12.r),
+            border: Border.all(color: AppColors.border),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: 64.w,
+                height: 64.w,
+                decoration: BoxDecoration(
+                  color: AppColors.softSlateBgColor,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.fact_check_outlined,
+                  size: 32.sp,
+                  color: AppColors.subtitleTextColor,
+                ),
+              ),
+              SizedBox(height: 16.h),
+              Text(
+                ref.watchTr(AppStrings.noAttendanceRecords),
+                textAlign: TextAlign.center,
+                style: TxtStyle.titleLarge(
+                  color: AppColors.text,
+                  fontSize: 17.sp,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              SizedBox(height: 6.h),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 14.w),
+                child: Text(
+                  ref.watchTr(AppStrings.noAttendanceRecordsDesc),
+                  textAlign: TextAlign.center,
+                  style: TxtStyle.bodyMedium(
+                    color: AppColors.secondaryText,
+                    fontSize: 13.5.sp,
+                  ),
+                ),
+              ),
+              SizedBox(height: 20.h),
+              OutlinedButton.icon(
+                onPressed: () {
+                  ref
+                      .read(parentAttendanceControllerProvider.notifier)
+                      .loadAttendance(child.id);
+                },
+                icon: const Icon(Icons.refresh, size: 16),
+                label: Text(
+                  ref.watchTr(AppStrings.retry),
+                  style: TextStyle(
+                    fontSize: 13.5.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppColors.primary,
+                  side: const BorderSide(color: AppColors.primary),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 18.w,
+                    vertical: 10.h,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.r),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -104,11 +428,9 @@ class _AttendanceScreenState extends ConsumerState<AttendanceScreen> {
     ParentAttendanceState state,
   ) {
     final displayPercentage = state.percentage;
-    final presentCount =
-        state.records.isNotEmpty ? state.presentCount : child.present;
-    final absentCount =
-        state.records.isNotEmpty ? state.absentCount : child.absent;
-    final lateCount = state.records.isNotEmpty ? state.lateCount : child.late;
+    final presentCount = state.presentCount;
+    final absentCount = state.absentCount;
+    final lateCount = state.lateCount;
 
     return Container(
       width: double.infinity,
@@ -352,7 +674,7 @@ class _AttendanceScreenState extends ConsumerState<AttendanceScreen> {
             ),
             SizedBox(height: 10.h),
             Text(
-              'No hay registros de asistencia',
+              ref.watchTr(AppStrings.noAttendanceRecords),
               style: TxtStyle.titleLarge(
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w700,
@@ -360,7 +682,7 @@ class _AttendanceScreenState extends ConsumerState<AttendanceScreen> {
             ),
             SizedBox(height: 4.h),
             Text(
-              'Aún no se han registrado sesiones de asistencia para este periodo.',
+              ref.watchTr(AppStrings.noAttendanceRecordsDesc),
               textAlign: TextAlign.center,
               style: TxtStyle.bodyMedium(
                 color: AppColors.subtitleTextColor,

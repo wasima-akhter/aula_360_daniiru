@@ -34,11 +34,10 @@ final parentAnnouncementsControllerProvider =
 );
 
 class ParentAnnouncementsController extends Notifier<ParentAnnouncementsState> {
-  late final ParentRepository _repository;
+  ParentRepository get _repository => ref.read(parentRepositoryProvider);
 
   @override
   ParentAnnouncementsState build() {
-    _repository = ref.watch(parentRepositoryProvider);
     Future.microtask(() => loadAnnouncements());
     return const ParentAnnouncementsState(isLoading: true);
   }

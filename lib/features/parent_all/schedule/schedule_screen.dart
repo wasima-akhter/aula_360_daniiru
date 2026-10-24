@@ -28,19 +28,6 @@ class ScheduleScreen extends ConsumerWidget {
     });
   }
 
-  final List<ClassModel> completedClasses = const [
-    ClassModel(
-      subject: 'Lengua Castellana y Literatura',
-      teacher: 'Dña. Sarah Vance',
-      time: '08:30',
-      duration: '09:50',
-      room: 'Aula 4A',
-      building: 'Humanidades',
-      category: 'Lengua',
-      color: Color(0xFF2B9D70),
-    ),
-  ];
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final scheduleState = ref.watch(parentScheduleControllerProvider);
@@ -49,7 +36,6 @@ class ScheduleScreen extends ConsumerWidget {
     );
     final childrenState = ref.watch(parentChildrenControllerProvider);
     final children = childrenState.children;
-    final upcomingClasses = scheduleState.classes;
 
     final langCode =
         ref.watch(languageProvider).valueOrNull?.language.code ?? 'en';
@@ -66,6 +52,29 @@ class ScheduleScreen extends ConsumerWidget {
       'EEEE, d MMM',
       langCode,
     ).format(selectedDayDate);
+
+    final selectedDaySessions = scheduleState.rawSessions.where((s) {
+      if (s.sessionDate == null) return true;
+      return s.sessionDate!.year == selectedDayDate.year &&
+          s.sessionDate!.month == selectedDayDate.month &&
+          s.sessionDate!.day == selectedDayDate.day;
+    }).toList();
+
+    final effectiveSessions = selectedDaySessions.isNotEmpty
+        ? selectedDaySessions
+        : (scheduleState.rawSessions.every((s) => s.sessionDate == null)
+            ? scheduleState.rawSessions
+            : selectedDaySessions);
+
+    final upcomingClasses = effectiveSessions
+        .where((s) => s.status != 'COMPLETED')
+        .map((s) => s.toClassModel())
+        .toList();
+
+    final completedClasses = effectiveSessions
+        .where((s) => s.status == 'COMPLETED')
+        .map((s) => s.toClassModel())
+        .toList();
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F7FC),
@@ -112,23 +121,49 @@ class ScheduleScreen extends ConsumerWidget {
 
                 SizedBox(height: 9.h),
 
-                SizedBox(
-                  height: 78.h,
-                  child: Row(
-                    children: [
-                      for (int i = 0; i < children.length && i < 2; i++) ...[
+                if (children.isEmpty)
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(12.w),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12.r),
+                      border: Border.all(color: AppColors.backgroundsLinesColor),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.person_outline, color: AppColors.subtitleTextColor, size: 24.sp),
+                        SizedBox(width: 8.w),
                         Expanded(
-                          child: _studentCard(
-                            children[i],
-                            scheduleState.selectedChildIndex == i,
-                            () => scheduleController.selectChild(i),
+                          child: Text(
+                            ref.watchTr(AppStrings.noChildrenLinked),
+                            style: TxtStyle.bodyMedium(
+                              color: AppColors.subtitleTextColor,
+                              fontSize: 13.5.sp,
+                            ),
                           ),
                         ),
-                        if (i == 0 && children.length > 1) SizedBox(width: 9.w),
                       ],
-                    ],
+                    ),
+                  )
+                else
+                  SizedBox(
+                    height: 78.h,
+                    child: Row(
+                      children: [
+                        for (int i = 0; i < children.length && i < 2; i++) ...[
+                          Expanded(
+                            child: _studentCard(
+                              children[i],
+                              scheduleState.selectedChildIndex == i,
+                              () => scheduleController.selectChild(i),
+                            ),
+                          ),
+                          if (i == 0 && children.length > 1) SizedBox(width: 9.w),
+                        ],
+                      ],
+                    ),
                   ),
-                ),
 
                 SizedBox(height: 18.h),
 
@@ -202,16 +237,6 @@ class ScheduleScreen extends ConsumerWidget {
 
                 SizedBox(height: 25.h),
 
-                // =================================================
-                // UPCOMING
-                // =================================================
-                SectionHeader(
-                  title: ref.watchTr(AppStrings.upcomingClasses),
-                  actionText: ref.watchTr(AppStrings.remainingToday),
-                ),
-
-                SizedBox(height: 12.h),
-
                 if (scheduleState.isLoading) ...[
                   const Center(
                     child: Padding(
@@ -225,29 +250,34 @@ class ScheduleScreen extends ConsumerWidget {
                     scheduleState.error!,
                     () => scheduleController.loadSchedule(selectedIndex),
                   ),
-                ] else if (upcomingClasses.isEmpty) ...[
+                ] else if (upcomingClasses.isEmpty && completedClasses.isEmpty) ...[
                   _emptyScheduleCard(ref),
                 ] else ...[
-                  for (final classData in upcomingClasses) ...[
-                    _scheduleClassCard(context, classData),
+                  if (upcomingClasses.isNotEmpty) ...[
+                    SectionHeader(
+                      title: ref.watchTr(AppStrings.upcomingClasses),
+                      actionText: ref.watchTr(AppStrings.remainingToday),
+                    ),
                     SizedBox(height: 12.h),
+                    for (final classData in upcomingClasses) ...[
+                      _scheduleClassCard(context, classData),
+                      SizedBox(height: 12.h),
+                    ],
+                  ],
+
+                  if (completedClasses.isNotEmpty) ...[
+                    SizedBox(height: 6.h),
+                    SectionHeader(
+                      title: ref.watchTr(AppStrings.completedEarlier),
+                      actionText: ref.watchTr(AppStrings.today),
+                    ),
+                    SizedBox(height: 12.h),
+                    for (final classData in completedClasses) ...[
+                      _completedClassCard(ref, classData),
+                      SizedBox(height: 12.h),
+                    ],
                   ],
                 ],
-
-                SizedBox(height: 9.h),
-
-                // =================================================
-                // COMPLETED
-                // =================================================
-                SectionHeader(
-                  title: ref.watchTr(AppStrings.completedEarlier),
-                  actionText: ref.watchTr(AppStrings.tomorrow),
-                ),
-
-                SizedBox(height: 12.h),
-
-                for (final classData in completedClasses)
-                  _completedClassCard(ref, classData),
               ]),
             ),
           ),
@@ -285,11 +315,28 @@ class ScheduleScreen extends ConsumerWidget {
         ),
         child: Row(
           children: [
-            UserAvatar(
-              initials: student.name.length >= 2
-                  ? student.name.substring(0, 2).toUpperCase()
-                  : 'ST',
-              size: 37,
+            Container(
+              width: 37.w,
+              height: 37.w,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.blueSoft,
+              ),
+              child: ClipOval(
+                child: student.imageUrl.isNotEmpty
+                    ? Image.network(
+                        student.imageUrl,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, _, _) => UserAvatar(
+                          initials: student.initials,
+                          size: 37,
+                        ),
+                      )
+                    : UserAvatar(
+                        initials: student.initials,
+                        size: 37,
+                      ),
+              ),
             ),
             SizedBox(width: 8.w),
             Expanded(

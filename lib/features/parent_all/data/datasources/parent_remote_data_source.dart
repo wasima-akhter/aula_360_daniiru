@@ -16,11 +16,8 @@ import '../dtos/parent_invoice_dto.dart';
 abstract class ParentRemoteDataSource {
   Future<List<ChildDto>> getChildren();
   Future<ChildDto> addChild(AddChildDto dto);
-  Future<(ChildAttendanceMetaDto?, List<ChildAttendanceDto>)> getChildAttendance(
-    String childId, {
-    int page = 1,
-    int limit = 20,
-  });
+  Future<(ChildAttendanceMetaDto?, List<ChildAttendanceDto>)>
+  getChildAttendance(String childId, {int page = 1, int limit = 20});
   Future<List<ChildReportDto>> getChildReports(
     String childId, {
     int page = 1,
@@ -44,7 +41,10 @@ abstract class ParentRemoteDataSource {
   });
   Future<List<ChildTeacherDto>> getChildTeachers(String childId);
   Future<ChildProgressDto> getChildProgress(String childId);
-  Future<List<AnnouncementDto>> getAnnouncements({int page = 1, int limit = 10});
+  Future<List<AnnouncementDto>> getAnnouncements({
+    int page = 1,
+    int limit = 10,
+  });
   Future<List<ConversationDto>> getConversations();
   Future<ConversationDto> createConversation(String targetUserId);
   Future<List<ChatMessageDto>> getConversationMessages(
@@ -85,23 +85,20 @@ class ParentRemoteDataSourceImpl implements ParentRemoteDataSource {
       return const [];
     } catch (e) {
       if (e is ApiException) rethrow;
-      throw ApiException(message: 'Failed to fetch parent children: $e', statusCode: 500);
+      throw ApiException(
+        message: 'Failed to fetch parent children: $e',
+        statusCode: 500,
+      );
     }
   }
 
   @override
-  Future<(ChildAttendanceMetaDto?, List<ChildAttendanceDto>)> getChildAttendance(
-    String childId, {
-    int page = 1,
-    int limit = 20,
-  }) async {
+  Future<(ChildAttendanceMetaDto?, List<ChildAttendanceDto>)>
+  getChildAttendance(String childId, {int page = 1, int limit = 20}) async {
     try {
       final response = await _client.get(
         ApiConstants.parentChildAttendance(childId),
-        queryParameters: {
-          'page': page,
-          'limit': limit,
-        },
+        queryParameters: {'page': page, 'limit': limit},
       );
 
       final data = response.data;
@@ -110,7 +107,9 @@ class ParentRemoteDataSourceImpl implements ParentRemoteDataSource {
 
       if (data is Map<String, dynamic>) {
         if (data['meta'] is Map<String, dynamic>) {
-          meta = ChildAttendanceMetaDto.fromJson(data['meta'] as Map<String, dynamic>);
+          meta = ChildAttendanceMetaDto.fromJson(
+            data['meta'] as Map<String, dynamic>,
+          );
         }
         final rawList = data['data'];
         if (rawList is List) {
@@ -124,7 +123,10 @@ class ParentRemoteDataSourceImpl implements ParentRemoteDataSource {
       return (meta, list);
     } catch (e) {
       if (e is ApiException) rethrow;
-      throw ApiException(message: 'Failed to fetch child attendance: $e', statusCode: 500);
+      throw ApiException(
+        message: 'Failed to fetch child attendance: $e',
+        statusCode: 500,
+      );
     }
   }
 
@@ -137,10 +139,7 @@ class ParentRemoteDataSourceImpl implements ParentRemoteDataSource {
     try {
       final response = await _client.get(
         ApiConstants.parentChildReports(childId),
-        queryParameters: {
-          'page': page,
-          'limit': limit,
-        },
+        queryParameters: {'page': page, 'limit': limit},
       );
 
       final data = response.data;
@@ -157,7 +156,10 @@ class ParentRemoteDataSourceImpl implements ParentRemoteDataSource {
       return const [];
     } catch (e) {
       if (e is ApiException) rethrow;
-      throw ApiException(message: 'Failed to fetch child reports: $e', statusCode: 500);
+      throw ApiException(
+        message: 'Failed to fetch child reports: $e',
+        statusCode: 500,
+      );
     }
   }
 
@@ -170,10 +172,7 @@ class ParentRemoteDataSourceImpl implements ParentRemoteDataSource {
     try {
       final response = await _client.get(
         ApiConstants.parentChildHomework(childId),
-        queryParameters: {
-          'page': page,
-          'limit': limit,
-        },
+        queryParameters: {'page': page, 'limit': limit},
       );
 
       final data = response.data;
@@ -190,7 +189,10 @@ class ParentRemoteDataSourceImpl implements ParentRemoteDataSource {
       return const [];
     } catch (e) {
       if (e is ApiException) rethrow;
-      throw ApiException(message: 'Failed to fetch child homework: $e', statusCode: 500);
+      throw ApiException(
+        message: 'Failed to fetch child homework: $e',
+        statusCode: 500,
+      );
     }
   }
 
@@ -201,10 +203,7 @@ class ParentRemoteDataSourceImpl implements ParentRemoteDataSource {
     int limit = 20,
   }) async {
     try {
-      final queryParams = <String, dynamic>{
-        'page': page,
-        'limit': limit,
-      };
+      final queryParams = <String, dynamic>{'page': page, 'limit': limit};
       if (status != null && status.isNotEmpty) {
         queryParams['status'] = status;
       }
@@ -228,7 +227,10 @@ class ParentRemoteDataSourceImpl implements ParentRemoteDataSource {
       return const [];
     } catch (e) {
       if (e is ApiException) rethrow;
-      throw ApiException(message: 'Failed to fetch parent invoices: $e', statusCode: 500);
+      throw ApiException(
+        message: 'Failed to fetch parent invoices: $e',
+        statusCode: 500,
+      );
     }
   }
 
@@ -249,7 +251,10 @@ class ParentRemoteDataSourceImpl implements ParentRemoteDataSource {
       return null;
     } catch (e) {
       if (e is ApiException) rethrow;
-      throw ApiException(message: 'Failed to initiate invoice payment: $e', statusCode: 500);
+      throw ApiException(
+        message: 'Failed to initiate invoice payment: $e',
+        statusCode: 500,
+      );
     }
   }
 
@@ -434,7 +439,10 @@ class ParentRemoteDataSourceImpl implements ParentRemoteDataSource {
       );
     } catch (e) {
       if (e is ApiException) rethrow;
-      throw ApiException(message: 'Failed to send message: $e', statusCode: 500);
+      throw ApiException(
+        message: 'Failed to send message: $e',
+        statusCode: 500,
+      );
     }
   }
 

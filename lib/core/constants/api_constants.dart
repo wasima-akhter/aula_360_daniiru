@@ -103,7 +103,12 @@ abstract final class ApiConstants {
   // ==============================
   static const String conversations = '/conversations';
   static String conversationMessages(String id) => '/conversations/$id/messages';
+  static const String defaultAdminUserId = '000e4567-e89b-12d3-a456-426614174000';
+  static const String defaultAdminSwaggerUserId = '123e4567-e89b-12d3-a456-426614174002';
   static const String socketGatewayUrl = 'https://alua.localbox.online';
+  static const String chatSocketUrl = 'https://alua.localbox.online/api/v1/chat';
+  static const String notificationSocketUrl =
+      'https://alua.localbox.online/api/v1/notification';
   static const String chatGatewayUrl = 'wss://alua.localbox.online/api/v1/chat';
   static const String notificationGatewayUrl =
       'wss://alua.localbox.online/api/v1/notification';

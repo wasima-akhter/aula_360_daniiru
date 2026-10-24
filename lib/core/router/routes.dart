@@ -1,7 +1,9 @@
 import 'package:aula360/features/auth/presentation/parent_auth/profile_setup_screen.dart';
 import 'package:aula360/features/auth/presentation/teacher_auth/teacher_login_screen.dart';
 import 'package:aula360/features/auth/presentation/teacher_auth/teacher_sign_up_screen.dart';
-import 'package:aula360/features/parent_all/chat/chat_inbox_screen.dart';
+import 'package:aula360/features/chat/presentation/screens/chat_inbox_screen.dart';
+import 'package:aula360/features/chat/presentation/screens/chat_list_screen.dart';
+import 'package:aula360/features/parent_all/data/dtos/conversation_dto.dart';
 import 'package:aula360/features/parent_all/children/add_children_screen.dart';
 import 'package:aula360/features/parent_all/children/child_profile_screen.dart';
 import 'package:aula360/features/parent_all/children/my_children_screen.dart';
@@ -37,6 +39,7 @@ import '../../features/entry/presentation/screens/splash_screen.dart';
 import '../../features/nav/presentation/screens/navigation_page.dart';
 import '../../features/parent_all/attendance/attendance_screen.dart';
 import '../../features/parent_all/helper/parent_home_helper.dart';
+import '../../features/parent_all/domain/models/parent_models.dart';
 import '../../features/parent_all/payment/payment_receipt_screen.dart';
 import '../../features/parent_all/profile/parent_edit_profile_screen.dart';
 import '../../features/parent_all/teacher_info/teacher_info_screen.dart';
@@ -293,12 +296,25 @@ class AppRouter {
       ),
       // -------------
       GoRoute(
-        name: RoutePath.chatInbox,
-        path: RoutePath.chatInbox.addBasePath,
+        name: RoutePath.chatList,
+        path: RoutePath.chatList.addBasePath,
         pageBuilder: (context, state) {
           return _buildPageWithAnimation(
             state: state,
-            child: TeacherChatScreen(),
+            child: const ChatListScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        name: RoutePath.chatInbox,
+        path: RoutePath.chatInbox.addBasePath,
+        pageBuilder: (context, state) {
+          final conv = state.extra is ConversationDto
+              ? state.extra as ConversationDto
+              : null;
+          return _buildPageWithAnimation(
+            state: state,
+            child: ChatInboxScreen(conversation: conv),
           );
         },
       ),
@@ -316,9 +332,18 @@ class AppRouter {
         name: RoutePath.paymentReceipt,
         path: RoutePath.paymentReceipt.addBasePath,
         pageBuilder: (context, state) {
+          InvoiceModel? invoice;
+          ChildModel? child;
+          if (state.extra is Map<String, dynamic>) {
+            final map = state.extra as Map<String, dynamic>;
+            invoice = map['invoice'] as InvoiceModel?;
+            child = map['child'] as ChildModel?;
+          } else if (state.extra is InvoiceModel) {
+            invoice = state.extra as InvoiceModel;
+          }
           return _buildPageWithAnimation(
             state: state,
-            child: PaymentReceiptScreen(),
+            child: PaymentReceiptScreen(invoice: invoice, child: child),
           );
         },
       ),

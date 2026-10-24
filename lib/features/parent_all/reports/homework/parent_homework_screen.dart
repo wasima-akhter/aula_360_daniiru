@@ -126,7 +126,7 @@ class HomeworkScreen extends ConsumerWidget {
                           ),
                           SizedBox(height: 14.h),
                           Text(
-                            'No hay tareas pendientes',
+                            ref.watchTr(AppStrings.noHomeworkAssigned),
                             style: TxtStyle.titleLarge(
                               color: AppColors.text,
                               fontSize: 18.sp,
@@ -135,7 +135,7 @@ class HomeworkScreen extends ConsumerWidget {
                           ),
                           SizedBox(height: 6.h),
                           Text(
-                            'Todas las tareas asignadas para esta categoría están al día.',
+                            ref.watchTr(AppStrings.noHomeworkAssignedDesc),
                             textAlign: TextAlign.center,
                             style: TxtStyle.titleLarge(
                               color: AppColors.secondaryText,
@@ -171,6 +171,34 @@ class HomeworkScreen extends ConsumerWidget {
     ParentHomeworkState state,
     ParentHomeworkController controller,
   ) {
+    if (state.students.isEmpty) {
+      return Container(
+        width: double.infinity,
+        padding: EdgeInsets.all(12.w),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12.r),
+          border: Border.all(color: AppColors.backgroundsLinesColor),
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.person_outline, color: AppColors.subtitleTextColor, size: 24.sp),
+            SizedBox(width: 8.w),
+            Expanded(
+              child: Consumer(
+                builder: (context, ref, _) => Text(
+                  ref.watchTr(AppStrings.noChildrenLinked),
+                  style: TxtStyle.bodyMedium(
+                    color: AppColors.subtitleTextColor,
+                    fontSize: 13.5.sp,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
     return Row(
       children: [
         for (int i = 0; i < state.students.length; i++) ...[

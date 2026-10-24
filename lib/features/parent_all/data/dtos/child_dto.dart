@@ -36,19 +36,18 @@ class ChildDto {
   }
 
   ChildModel toModel({
-    double attendance = 96.0,
-    int present = 48,
-    int absent = 2,
-    int late = 1,
-    String parentTeacher = 'Tutora asignada',
+    double attendance = 0.0,
+    int present = 0,
+    int absent = 0,
+    int late = 0,
+    String parentTeacher = '',
   }) {
     return ChildModel(
       id: id,
       name: fullName,
       grade: gradeLevel ?? 'Curso general',
       room: enrollmentNumber,
-      imageUrl: avatarUrl ??
-          'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400',
+      imageUrl: avatarUrl ?? '',
       parentTeacher: parentTeacher,
       attendance: attendance,
       present: present,

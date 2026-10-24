@@ -40,12 +40,11 @@ final parentNotificationsControllerProvider =
     );
 
 class ParentNotificationsController extends Notifier<ParentNotificationsState> {
-  late final ParentRepository _repository;
+  ParentRepository get _repository => ref.read(parentRepositoryProvider);
   bool _isFetching = false;
 
   @override
   ParentNotificationsState build() {
-    _repository = ref.watch(parentRepositoryProvider);
     Future.microtask(() => loadNotifications());
     return const ParentNotificationsState(isLoading: true);
   }

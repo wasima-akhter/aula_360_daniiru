@@ -2,6 +2,7 @@ import 'package:aula360/features/parent_all/helper/parent_home_helper.dart';
 import 'package:intl/intl.dart';
 
 import '../../auth/presentation/controllers/auth_controller.dart';
+import '../../chat/presentation/controllers/chat_controller.dart';
 import '../../parent_all/presentation/controllers/parent_notifications_controller.dart';
 import '../../share/export/screen_export.dart';
 import '../../share/widgets/button/app_logo.dart';
@@ -47,14 +48,56 @@ class TeacherHomeScreen extends ConsumerWidget {
         actions: [
           Consumer(
             builder: (context, ref, _) {
-              final unread =
-                  ref.watch(parentNotificationsControllerProvider).unreadCount;
+              final chatState = ref.watch(chatControllerProvider);
+              final totalUnread = chatState.conversations.fold<int>(
+                0,
+                (sum, c) => sum + c.unreadCount,
+              );
               return Stack(
                 alignment: Alignment.center,
                 children: [
                   IconButton(
                     onPressed: () {
-                      context.push(RoutePath.notification.addBasePath);
+                      context.push(RoutePath.chatList);
+                    },
+                    splashRadius: 22,
+                    icon: Icon(
+                      Icons.chat_bubble_outline_rounded,
+                      color: AppColors.text,
+                      size: 23.sp,
+                    ),
+                  ),
+                  if (totalUnread > 0)
+                    Positioned(
+                      top: 10.h,
+                      right: 10.w,
+                      child: Container(
+                        padding: EdgeInsets.all(2.w),
+                        decoration: const BoxDecoration(
+                          color: AppColors.primary,
+                          shape: BoxShape.circle,
+                        ),
+                        constraints: BoxConstraints(
+                          minWidth: 8.w,
+                          minHeight: 8.w,
+                        ),
+                      ),
+                    ),
+                ],
+              );
+            },
+          ),
+          Consumer(
+            builder: (context, ref, _) {
+              final unread = ref
+                  .watch(parentNotificationsControllerProvider)
+                  .unreadCount;
+              return Stack(
+                alignment: Alignment.center,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      context.push(RoutePath.navigationPages, extra: 3);
                     },
                     splashRadius: 22,
                     icon: Icon(
@@ -94,138 +137,123 @@ class TeacherHomeScreen extends ConsumerWidget {
         child: state.isLoading
             ? const Center(child: CircularProgressIndicator())
             : state.error != null
-                ? Center(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 24.w),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.error_outline_rounded,
-                            color: AppColors.error,
-                            size: 48.sp,
-                          ),
-                          SizedBox(height: 12.h),
-                          Text(
-                            'Error al cargar horario',
-                            style: TxtStyle.titleLarge(
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          SizedBox(height: 8.h),
-                          Text(
-                            state.error!,
-                            textAlign: TextAlign.center,
-                            style: TxtStyle.bodyMedium(
-                              color: AppColors.subtitleTextColor,
-                              fontSize: 13.sp,
-                            ),
-                          ),
-                          SizedBox(height: 16.h),
-                          AulaPrimaryButton(
-                            text: 'Reintentar',
-                            onTap: () => ref
-                                .read(teacherHomeControllerProvider.notifier)
-                                .loadHomeData(),
-                          ),
-                        ],
+            ? Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 24.w),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.error_outline_rounded,
+                        color: AppColors.error,
+                        size: 48.sp,
                       ),
-                    ),
-                  )
-                : CustomScrollView(
-                    physics: const AlwaysScrollableScrollPhysics(
-                      parent: BouncingScrollPhysics(),
-                    ),
-                    slivers: [
-                      SliverToBoxAdapter(
-                        child: _topSection(
-                          context,
-                          ref,
-                          schedule,
-                          teacherName,
+                      SizedBox(height: 12.h),
+                      Text(
+                        'Error al cargar horario',
+                        style: TxtStyle.titleLarge(
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
-                      SliverPersistentHeader(
-                        pinned: true,
-                        delegate: _HomeStickyHeaderDelegate(
-                          minHeight: 48.h,
-                          maxHeight: 48.h,
-                          child: _scheduleHeader(ref),
+                      SizedBox(height: 8.h),
+                      Text(
+                        state.error!,
+                        textAlign: TextAlign.center,
+                        style: TxtStyle.bodyMedium(
+                          color: AppColors.subtitleTextColor,
+                          fontSize: 13.sp,
                         ),
                       ),
-                      if (schedule.isEmpty)
-                        SliverToBoxAdapter(
-                          child: Padding(
-                            padding: EdgeInsets.fromLTRB(
-                              24.w,
-                              40.h,
-                              24.w,
-                              30.h,
-                            ),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Container(
-                                  width: 58.w,
-                                  height: 58.w,
-                                  decoration: const BoxDecoration(
-                                    color: AppColors.blueSoft,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Icon(
-                                    Icons.event_available_outlined,
-                                    color: AppColors.primaryDark,
-                                    size: 28.sp,
-                                  ),
-                                ),
-                                SizedBox(height: 14.h),
-                                Text(
-                                  'No hay clases para hoy',
-                                  textAlign: TextAlign.center,
-                                  style: TxtStyle.titleLarge(
-                                    fontSize: 17.sp,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                                SizedBox(height: 6.h),
-                                Text(
-                                  'No tienes sesiones programadas en este momento.',
-                                  textAlign: TextAlign.center,
-                                  style: TxtStyle.bodyMedium(
-                                    color: AppColors.subtitleTextColor,
-                                    fontSize: 13.5.sp,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        )
-                      else
-                        SliverToBoxAdapter(
-                          child: Padding(
-                            padding: EdgeInsets.fromLTRB(
-                              16.w,
-                              4.h,
-                              16.w,
-                              30.h,
-                            ),
-                            child: Column(
-                              children: [
-                                ...schedule.asMap().entries.map(
-                                  (entry) => _scheduleItem(
-                                    context,
-                                    ref,
-                                    entry.value,
-                                    entry.key,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
+                      SizedBox(height: 16.h),
+                      AulaPrimaryButton(
+                        text: ref.watchTr(AppStrings.chatRetry),
+                        onTap: () => ref
+                            .read(teacherHomeControllerProvider.notifier)
+                            .loadHomeData(),
+                      ),
                     ],
                   ),
+                ),
+              )
+            : CustomScrollView(
+                physics: const AlwaysScrollableScrollPhysics(
+                  parent: BouncingScrollPhysics(),
+                ),
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: _topSection(context, ref, schedule, teacherName),
+                  ),
+                  SliverPersistentHeader(
+                    pinned: true,
+                    delegate: _HomeStickyHeaderDelegate(
+                      minHeight: 48.h,
+                      maxHeight: 48.h,
+                      child: _scheduleHeader(ref),
+                    ),
+                  ),
+                  if (schedule.isEmpty)
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(24.w, 40.h, 24.w, 30.h),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: 58.w,
+                              height: 58.w,
+                              decoration: const BoxDecoration(
+                                color: AppColors.blueSoft,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                Icons.event_available_outlined,
+                                color: AppColors.primaryDark,
+                                size: 28.sp,
+                              ),
+                            ),
+                            SizedBox(height: 14.h),
+                            Text(
+                              'No hay clases para hoy',
+                              textAlign: TextAlign.center,
+                              style: TxtStyle.titleLarge(
+                                fontSize: 17.sp,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            SizedBox(height: 6.h),
+                            Text(
+                              'No tienes sesiones programadas en este momento.',
+                              textAlign: TextAlign.center,
+                              style: TxtStyle.bodyMedium(
+                                color: AppColors.subtitleTextColor,
+                                fontSize: 13.5.sp,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  else
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(16.w, 4.h, 16.w, 30.h),
+                        child: Column(
+                          children: [
+                            ...schedule.asMap().entries.map(
+                              (entry) => _scheduleItem(
+                                context,
+                                ref,
+                                entry.value,
+                                entry.key,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                ],
+              ),
       ),
     );
   }

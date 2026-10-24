@@ -72,7 +72,7 @@ void main() {
       expect(model.name, 'Lucas Rivera');
       expect(model.grade, '2º ESO');
       expect(model.room, 'ENR-4821');
-      expect(model.attendance, 96.0);
+      expect(model.attendance, 0.0);
     });
 
     test('ChildAttendanceDto parses JSON and maps to AttendanceRecord', () {

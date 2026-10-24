@@ -68,9 +68,16 @@ class HomeworkDetailsScreen extends ConsumerWidget {
           SizedBox(height: 14.h),
           Row(
             children: [
-              _infoChip(Icons.calendar_today_outlined, '26 Oct 2024'),
-              SizedBox(width: 8.w),
-              _infoChip(Icons.schedule_rounded, '23:59'),
+              _infoChip(
+                Icons.calendar_today_outlined,
+                homework.deadline.isNotEmpty
+                    ? homework.deadline
+                    : ref.watchTr(AppStrings.noDueDate),
+              ),
+              if (homework.time.isNotEmpty) ...[
+                SizedBox(width: 8.w),
+                _infoChip(Icons.schedule_rounded, homework.time),
+              ],
             ],
           ),
         ],
@@ -79,11 +86,17 @@ class HomeworkDetailsScreen extends ConsumerWidget {
   }
 
   Widget _teacherCard(WidgetRef ref, HomeworkModel homework) {
+    final initials = homework.teacher.trim().isNotEmpty
+        ? homework.teacher
+            .trim()
+            .substring(0, homework.teacher.trim().length >= 2 ? 2 : 1)
+            .toUpperCase()
+        : 'P';
     return AulaCard(
       padding: EdgeInsets.all(14.w),
       child: Row(
         children: [
-          const UserAvatar(initials: 'RH', size: 40),
+          UserAvatar(initials: initials, size: 40),
           SizedBox(width: 10.w),
           Expanded(
             child: Column(

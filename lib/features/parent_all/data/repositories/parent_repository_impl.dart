@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 
 import '../../../../core/network/network_providers.dart';
 import '../../domain/models/parent_models.dart';
@@ -44,107 +43,8 @@ class ParentRepositoryImpl implements ParentRepository {
     this.parentRemoteDataSource,
   });
 
-  List<ChildModel> _children = [
-    const ChildModel(
-      id: '#STU-4821',
-      name: 'Lucas Rivera',
-      grade: '2º ESO',
-      room: 'Aula 3B',
-      imageUrl:
-          'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400',
-      parentTeacher: 'Dña. Sarah Vance (Tutora)',
-      attendance: 96.0,
-      present: 48,
-      absent: 2,
-      late: 1,
-    ),
-    const ChildModel(
-      id: '#STU-5298',
-      name: 'Sophia Rivera',
-      grade: '5º Primaria',
-      room: 'Aula 1A',
-      imageUrl:
-          'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400',
-      parentTeacher: 'D. David Miller (Tutor)',
-      attendance: 98.0,
-      present: 49,
-      absent: 1,
-      late: 0,
-    ),
-  ];
-
-  final List<ClassModel> _todayClasses = const [
-    ClassModel(
-      subject: 'Matemáticas Avanzadas',
-      teacher: 'D. Roberto Hayes',
-      time: '10:30',
-      duration: '12:00',
-      room: 'Aula 3B',
-      building: 'Edificio Principal',
-      category: 'Matemáticas',
-      color: Color(0xFF14388D),
-    ),
-    ClassModel(
-      subject: 'Física y Química',
-      teacher: 'Dra. Ángela Bennett',
-      time: '14:00',
-      duration: '15:20',
-      room: 'Laboratorio 2',
-      building: 'Edificio Ciencias',
-      category: 'Física',
-      color: Color(0xFF7656D8),
-    ),
-  ];
-
-  final List<ReportModel> _reports = const [
-    ReportModel(
-      dateLabel: 'HOY — MIÉRCOLES, 24 OCT',
-      subject: 'Lengua Castellana y Literatura',
-      teacher: 'Dña. Sarah Vance',
-      time: '08:30 – 09:50',
-      category: 'Lengua',
-      status: 'Presente',
-      note:
-          'Lucas mostró excelente participación en la sesión de hoy y aportó reflexiones muy acertadas.',
-      initials: 'SV',
-    ),
-  ];
-
-  final List<HomeworkModel> _homeworkList = const [
-    HomeworkModel(
-      subject: 'Física y Química',
-      teacher: 'Dra. Bennett',
-      period: 'T1 - Trimestre 1',
-      title: 'Informe de Laboratorio: Enlaces Químicos',
-      description:
-          'Redactar la práctica de laboratorio sobre conductividad y tipos de enlace. Incluir conclusiones y gráficas.',
-      status: HomeworkStatus.pending,
-      deadline: '28 Oct',
-      time: '23:59',
-    ),
-  ];
-
-  List<InvoiceModel> _invoices = [
-    const InvoiceModel(
-      id: 'INV-2023-001',
-      concept: 'Cuota Mensual Escolar - Octubre 2023',
-      monthYear: 'Octubre 2023',
-      amount: 450.00,
-      dueDate: '31 Oct 2023',
-      isPaid: false,
-    ),
-    const InvoiceModel(
-      id: 'INV-2023-002',
-      concept: 'Cuota Mensual Escolar - Septiembre 2023',
-      monthYear: 'Septiembre 2023',
-      amount: 450.00,
-      dueDate: '30 Sep 2023',
-      isPaid: true,
-      paidDate: '28 Sep 2023',
-      receiptNumber: 'REC-98214',
-    ),
-  ];
-
+  List<ChildModel> _children = [];
+  List<InvoiceModel> _invoices = [];
   List<ParentNotificationModel> _notifications = [];
   final List<ChatMessageModel> _messages = [];
   final Map<String, int> _attendancePercentages = {};
@@ -154,12 +54,10 @@ class ParentRepositoryImpl implements ParentRepository {
     if (parentRemoteDataSource != null) {
       try {
         final dtos = await parentRemoteDataSource!.getChildren();
-        if (dtos.isNotEmpty) {
-          _children = dtos.map((dto) => dto.toModel()).toList();
-          return _children;
-        }
-      } catch (_) {
-        // Fall back to cached list
+        _children = dtos.map((dto) => dto.toModel()).toList();
+        return _children;
+      } catch (e) {
+        debugPrint('ParentRepositoryImpl getChildren error: $e');
       }
     }
     await Future.delayed(const Duration(milliseconds: 100));
@@ -178,25 +76,26 @@ class ParentRepositoryImpl implements ParentRepository {
       try {
         final childDto = await parentRemoteDataSource!.addChild(dto);
         final model = childDto.toModel();
+        _children.removeWhere((c) => c.id == model.id);
         _children.add(model);
         return model;
       } catch (e) {
-        // Fall back if remote fails
+        debugPrint('ParentRepositoryImpl addChild remote error: $e');
       }
     }
     final fallback = ChildModel(
       id: '#STU-${DateTime.now().millisecondsSinceEpoch % 10000}',
       name: dto.fullName,
       grade: dto.gradeLevel ?? 'Curso general',
-      room: dto.enrollmentNumber ?? 'Aula general',
-      imageUrl: dto.avatarUrl ??
-          'https://images.unsplash.com/photo-1543610892-0b1f7e6d8ac1?w=400',
-      parentTeacher: 'Tutora asignada',
-      attendance: 100.0,
-      present: 1,
+      room: dto.enrollmentNumber ?? '',
+      imageUrl: dto.avatarUrl ?? '',
+      parentTeacher: '',
+      attendance: 0.0,
+      present: 0,
       absent: 0,
       late: 0,
     );
+    _children.removeWhere((c) => c.id == fallback.id);
     _children.add(fallback);
     return fallback;
   }
@@ -213,13 +112,13 @@ class ParentRepositoryImpl implements ParentRepository {
           fromDate: startOfDay,
           toDate: endOfDay,
         );
-        if (sessions.isNotEmpty) {
-          return sessions.map((s) => s.toClassModel()).toList();
-        }
-      } catch (_) {}
+        return sessions.map((s) => s.toClassModel()).toList();
+      } catch (e) {
+        debugPrint('ParentRepositoryImpl getTodayClasses error: $e');
+        return const [];
+      }
     }
-    await Future.delayed(const Duration(milliseconds: 100));
-    return _todayClasses;
+    return const [];
   }
 
   @override
@@ -227,13 +126,12 @@ class ParentRepositoryImpl implements ParentRepository {
     if (childId != null && parentRemoteDataSource != null) {
       try {
         final sessions = await parentRemoteDataSource!.getChildSchedule(childId);
-        if (sessions.isNotEmpty) {
-          return sessions.map((s) => s.toClassModel()).toList();
-        }
-      } catch (_) {}
+        return sessions.map((s) => s.toClassModel()).toList();
+      } catch (e) {
+        debugPrint('ParentRepositoryImpl getWeeklySchedule error: $e');
+      }
     }
-    await Future.delayed(const Duration(milliseconds: 100));
-    return _todayClasses;
+    return const [];
   }
 
   @override
@@ -249,7 +147,9 @@ class ParentRepositoryImpl implements ParentRepository {
           fromDate: fromDate,
           toDate: toDate,
         );
-      } catch (_) {}
+      } catch (e) {
+        debugPrint('ParentRepositoryImpl getChildSchedule error: $e');
+      }
     }
     return const [];
   }
@@ -259,7 +159,9 @@ class ParentRepositoryImpl implements ParentRepository {
     if (parentRemoteDataSource != null) {
       try {
         return await parentRemoteDataSource!.getChildTeachers(childId);
-      } catch (_) {}
+      } catch (e) {
+        debugPrint('ParentRepositoryImpl getChildTeachers error: $e');
+      }
     }
     return const [];
   }
@@ -271,12 +173,14 @@ class ParentRepositoryImpl implements ParentRepository {
         final progress = await parentRemoteDataSource!.getChildProgress(childId);
         _attendancePercentages[childId] = progress.attendancePercentage.toInt();
         return progress;
-      } catch (_) {}
+      } catch (e) {
+        debugPrint('ParentRepositoryImpl getChildProgress error: $e');
+      }
     }
     return const ChildProgressDto(
-      attendancePercentage: 95,
-      homeworkCompletionPercentage: 88,
-      subjects: ['Matemáticas Avanzadas', 'Física y Química', 'Lengua Castellana'],
+      attendancePercentage: 0,
+      homeworkCompletionPercentage: 0,
+      subjects: [],
     );
   }
 
@@ -285,8 +189,7 @@ class ParentRepositoryImpl implements ParentRepository {
     if (_children.isNotEmpty) {
       return getChildReports(_children.first.id);
     }
-    await Future.delayed(const Duration(milliseconds: 100));
-    return _reports;
+    return const [];
   }
 
   @override
@@ -294,13 +197,12 @@ class ParentRepositoryImpl implements ParentRepository {
     if (parentRemoteDataSource != null) {
       try {
         final dtos = await parentRemoteDataSource!.getChildReports(childId);
-        if (dtos.isNotEmpty) {
-          return dtos.map((d) => d.toModel()).toList();
-        }
-      } catch (_) {}
+        return dtos.map((d) => d.toModel()).toList();
+      } catch (e) {
+        debugPrint('ParentRepositoryImpl getChildReports error: $e');
+      }
     }
-    await Future.delayed(const Duration(milliseconds: 100));
-    return _reports;
+    return const [];
   }
 
   @override
@@ -308,8 +210,7 @@ class ParentRepositoryImpl implements ParentRepository {
     if (_children.isNotEmpty) {
       return getChildHomework(_children.first.id);
     }
-    await Future.delayed(const Duration(milliseconds: 100));
-    return _homeworkList;
+    return const [];
   }
 
   @override
@@ -317,13 +218,12 @@ class ParentRepositoryImpl implements ParentRepository {
     if (parentRemoteDataSource != null) {
       try {
         final dtos = await parentRemoteDataSource!.getChildHomework(childId);
-        if (dtos.isNotEmpty) {
-          return dtos.map((d) => d.toModel()).toList();
-        }
-      } catch (_) {}
+        return dtos.map((d) => d.toModel()).toList();
+      } catch (e) {
+        debugPrint('ParentRepositoryImpl getChildHomework error: $e');
+      }
     }
-    await Future.delayed(const Duration(milliseconds: 100));
-    return _homeworkList;
+    return const [];
   }
 
   @override
@@ -335,34 +235,12 @@ class ParentRepositoryImpl implements ParentRepository {
         if (meta != null) {
           _attendancePercentages[childId] = meta.percentage;
         }
-        if (dtos.isNotEmpty) {
-          return dtos.map((d) => d.toRecord()).toList();
-        }
-      } catch (_) {}
+        return dtos.map((d) => d.toRecord()).toList();
+      } catch (e) {
+        debugPrint('ParentRepositoryImpl getAttendanceHistory error: $e');
+      }
     }
-
-    final now = DateTime.now();
-    return [
-      AttendanceRecord(
-        date: DateFormat('d MMM').format(now),
-        dayName: DateFormat('EEEE').format(now),
-        status: AttendanceStatus.present,
-        checkInTime: '08:28',
-      ),
-      AttendanceRecord(
-        date: DateFormat('d MMM').format(now.subtract(const Duration(days: 1))),
-        dayName: DateFormat('EEEE').format(now.subtract(const Duration(days: 1))),
-        status: AttendanceStatus.present,
-        checkInTime: '08:25',
-      ),
-      AttendanceRecord(
-        date: DateFormat('d MMM').format(now.subtract(const Duration(days: 2))),
-        dayName: DateFormat('EEEE').format(now.subtract(const Duration(days: 2))),
-        status: AttendanceStatus.late,
-        checkInTime: '08:42',
-        note: '12 min',
-      ),
-    ];
+    return const [];
   }
 
   @override
@@ -370,7 +248,7 @@ class ParentRepositoryImpl implements ParentRepository {
     if (_attendancePercentages.containsKey(childId)) {
       return _attendancePercentages[childId]!;
     }
-    return 96;
+    return 0;
   }
 
   @override
@@ -378,13 +256,12 @@ class ParentRepositoryImpl implements ParentRepository {
     if (parentRemoteDataSource != null) {
       try {
         final dtos = await parentRemoteDataSource!.getInvoices(status: status);
-        if (dtos.isNotEmpty) {
-          _invoices = dtos.map((d) => d.toModel()).toList();
-          return _invoices;
-        }
-      } catch (_) {}
+        _invoices = dtos.map((d) => d.toModel()).toList();
+        return _invoices;
+      } catch (e) {
+        debugPrint('ParentRepositoryImpl getInvoices error: $e');
+      }
     }
-    await Future.delayed(const Duration(milliseconds: 100));
     return _invoices;
   }
 

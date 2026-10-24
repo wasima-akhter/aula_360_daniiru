@@ -38,11 +38,10 @@ final parentTeachersControllerProvider =
 );
 
 class ParentTeachersController extends Notifier<ParentTeachersState> {
-  late final ParentRepository _repository;
+  ParentRepository get _repository => ref.read(parentRepositoryProvider);
 
   @override
   ParentTeachersState build() {
-    _repository = ref.watch(parentRepositoryProvider);
     return const ParentTeachersState();
   }
 

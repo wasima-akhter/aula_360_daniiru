@@ -64,7 +64,15 @@ class _ChildProfileScreenState extends ConsumerState<ChildProfileScreen> {
     if (activeChild == null) {
       return Scaffold(
         appBar: simpleAppBar(context, ref.watchTr(AppStrings.childProfile)),
-        body: const Center(child: Text('No hay información disponible')),
+        body: Center(
+          child: Text(
+            ref.watchTr(AppStrings.noDataAvailable),
+            style: TxtStyle.bodyMedium(
+              color: AppColors.subtitleTextColor,
+              fontSize: 14.sp,
+            ),
+          ),
+        ),
       );
     }
 
@@ -123,9 +131,7 @@ class _ChildProfileScreenState extends ConsumerState<ChildProfileScreen> {
     final homeworkText = progress != null
         ? '${progress.homeworkCompletionPercentage}%'
         : '-';
-    final subjectsText = progress != null
-        ? '${progress.subjects.length}'
-        : '-';
+    final subjectsText = progress != null ? '${progress.subjects.length}' : '-';
 
     return Container(
       width: double.infinity,
@@ -181,7 +187,7 @@ class _ChildProfileScreenState extends ConsumerState<ChildProfileScreen> {
                     ),
                     SizedBox(height: 3.h),
                     Text(
-                      '${activeChild.grade} • ${activeChild.room} • ID: ${activeChild.id}',
+                      '${activeChild.grade} \n• ID: ${activeChild.room}', //  • ID: ${activeChild.id}
                       style: TxtStyle.titleLarge(
                         color: AppColors.subtitleTextColor,
                         fontSize: 14.sp,
@@ -301,9 +307,9 @@ class _ChildProfileScreenState extends ConsumerState<ChildProfileScreen> {
             icon: Icons.calendar_month_outlined,
             color: AppColors.primaryDark,
             title: ref.watchTr(AppStrings.navSchedule),
-            subtitle: "Clases de hoy y horario",
+            subtitle: ref.watchTr(AppStrings.homeTodaysSchedule),
             onTap: () {
-              context.push(RoutePath.schedule);
+              context.go(RoutePath.navigationPages, extra: 1);
             },
           ),
           _divider(),
@@ -312,8 +318,8 @@ class _ChildProfileScreenState extends ConsumerState<ChildProfileScreen> {
             color: AppColors.emeraldGreenColor,
             title: ref.watchTr(AppStrings.attendance),
             subtitle: progress != null
-                ? '${progress.attendancePercentage}% registro de asistencia'
-                : '${activeChild.attendance.toStringAsFixed(0)}% registro de asistencia',
+                ? '${progress.attendancePercentage}%'
+                : '${activeChild.attendance.toStringAsFixed(0)}%',
             onTap: () {
               context.push(RoutePath.attendance, extra: activeChild);
             },
@@ -323,7 +329,7 @@ class _ChildProfileScreenState extends ConsumerState<ChildProfileScreen> {
             icon: Icons.description_outlined,
             color: AppColors.primaryDark,
             title: ref.watchTr(AppStrings.navReports),
-            subtitle: 'Resúmenes e informes de clase',
+            subtitle: ref.watchTr(AppStrings.allReports),
             onTap: () {
               context.push(RoutePath.navigationPages, extra: 2);
             },
@@ -332,10 +338,10 @@ class _ChildProfileScreenState extends ConsumerState<ChildProfileScreen> {
           _activityRow(
             icon: Icons.assignment_outlined,
             color: AppColors.orangeColor,
-            title: 'Tareas',
+            title: ref.watchTr(AppStrings.homeworkAndTasks),
             subtitle: progress != null
-                ? '${progress.homeworkCompletionPercentage}% completadas'
-                : 'Ejercicios pendientes',
+                ? '${progress.homeworkCompletionPercentage}% ${ref.watchTr(AppStrings.completedTab).toLowerCase()}'
+                : ref.watchTr(AppStrings.pendingTab),
             onTap: () {
               context.push(RoutePath.homework);
             },
@@ -346,8 +352,8 @@ class _ChildProfileScreenState extends ConsumerState<ChildProfileScreen> {
             color: AppColors.purpleAccentColor,
             title: ref.watchTr(AppStrings.academicProgressTitle),
             subtitle: progress != null
-                ? '${progress.subjects.length} ${ref.watchTr(AppStrings.subjectsTitle).toLowerCase()} • ${progress.attendancePercentage}% asistencia'
-                : 'Notas y evaluación trimestral',
+                ? '${progress.subjects.length} ${ref.watchTr(AppStrings.subjectsTitle).toLowerCase()} • ${progress.attendancePercentage}%'
+                : ref.watchTr(AppStrings.academicProgressTitle),
             onTap: () {
               _showProgressBottomSheet(
                 context,
@@ -365,7 +371,7 @@ class _ChildProfileScreenState extends ConsumerState<ChildProfileScreen> {
             title: ref.watchTr(AppStrings.teacherInfoTitle),
             subtitle: activeChild.parentTeacher.isNotEmpty
                 ? activeChild.parentTeacher
-                : 'Consultar información del profesor',
+                : ref.watchTr(AppStrings.teacherInfoTitle),
             onTap: () {
               context.push(RoutePath.teacherInformation, extra: activeChild);
             },
@@ -489,7 +495,7 @@ class _ChildProfileScreenState extends ConsumerState<ChildProfileScreen> {
                   SizedBox(height: 8.h),
                   if (progress.subjects.isEmpty)
                     Text(
-                      'No hay materias matriculadas',
+                      ref.watchTr(AppStrings.noDataAvailable),
                       style: TxtStyle.bodyMedium(
                         color: AppColors.subtitleTextColor,
                         fontSize: 13.sp,
@@ -539,7 +545,8 @@ class _ChildProfileScreenState extends ConsumerState<ChildProfileScreen> {
                       child: Column(
                         children: [
                           Text(
-                            progressState.error ?? 'Error al cargar progreso',
+                            progressState.error ??
+                                ref.watchTr(AppStrings.errorGeneric),
                             textAlign: TextAlign.center,
                             style: TxtStyle.bodyMedium(
                               color: AppColors.redColor,
@@ -691,7 +698,7 @@ class _ChildProfileScreenState extends ConsumerState<ChildProfileScreen> {
   Widget _messageCard(BuildContext context) {
     return InkWell(
       onTap: () {
-        context.push(RoutePath.chatInbox);
+        context.push(RoutePath.chatList);
       },
       borderRadius: BorderRadius.circular(8.r),
       child: Container(

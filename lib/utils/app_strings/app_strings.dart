@@ -259,11 +259,19 @@ class AppStrings {
   static const String saveChild = 'save_child';
   static const String cancel = 'cancel';
   static const String myChildren = 'my_children';
+  static const String enrolledChildSingle = 'enrolled_child_single';
+  static const String enrolledChildrenPlural = 'enrolled_children_plural';
   static const String addAnotherChild = 'add_another_child';
   static const String active = 'active';
   static const String attendance = 'attendance';
   static const String childProfile = 'child_profile';
   static const String academicActivity = 'academic_activity';
+  static const String noChildrenLinked = 'no_children_linked';
+  static const String noChildrenLinkedDesc = 'no_children_linked_desc';
+  static const String noClassesToday = 'no_classes_today';
+  static const String sessionsAttended = 'sessions_attended';
+  static const String errorAddChild = 'error_add_child';
+  static const String noDataAvailable = 'no_data_available';
 
   // ── Profile Setup & Management ────────────────────────────────────────────
   static const String profileSetupTitle = 'profile_setup_title';
@@ -735,6 +743,11 @@ class AppStrings {
   static const String notificationBannerTitle = 'notification_banner_title';
   static const String notificationBannerSubtitle = 'notification_banner_subtitle';
   static const String notificationBannerEnable = 'notification_banner_enable';
+  static const String notificationSettingsDeniedTitle =
+      'notification_settings_denied_title';
+  static const String notificationSettingsDeniedBody =
+      'notification_settings_denied_body';
+  static const String openSettings = 'open_settings';
 
   // ── Legal Section ─────────────────────────────────────────────────────────
   static const String legalTermsAndConditions = 'legal_terms_and_conditions';
@@ -776,4 +789,47 @@ class AppStrings {
   static const String homeworkCompletion = 'homework_completion';
   static const String childAddedSuccess = 'child_added_success';
   static const String subjectsTitle = 'subjects_title';
+
+  // ── Placeholders & Empty States Across Parent Portal ────────────────────
+  static const String noAttendanceRecords = 'no_attendance_records';
+  static const String noAttendanceRecordsDesc = 'no_attendance_records_desc';
+  static const String noHomeworkAssigned = 'no_homework_assigned';
+  static const String noHomeworkAssignedDesc = 'no_homework_assigned_desc';
+  static const String noPendingPayments = 'no_pending_payments';
+  static const String noPendingPaymentsDesc = 'no_pending_payments_desc';
+  static const String realtimeChat = 'realtime_chat';
+  static const String noMessagesYet = 'no_messages_yet';
+  static const String noMessagesYetDesc = 'no_messages_yet_desc';
+  static const String permissionDeniedNotice = 'permission_denied_notice';
+  static const String noCompletedClasses = 'no_completed_classes';
+  static const String messages = 'messages';
+  static const String errorGeneric = 'error_generic';
+  static const String noDueDate = 'no_due_date';
+  static const String pendingReviews = 'pending_reviews';
+  static const String loading = 'loading';
+  static const String chatListTitle = 'chat_list_title';
+  static const String chatWithAdmin = 'chat_with_admin';
+  static const String noConversationsTitle = 'no_conversations_title';
+  static const String noConversationsDesc = 'no_conversations_desc';
+  static const String adminName = 'admin_name';
+  static const String typingIndicator = 'typing_indicator';
+  static const String chatOnlineChannel = 'chat_online_channel';
+  static const String chatReconnecting = 'chat_reconnecting';
+  static const String chatReconnectTooltip = 'chat_reconnect_tooltip';
+  static const String chatOfflineTitle = 'chat_offline_title';
+  static const String chatOfflineDesc = 'chat_offline_desc';
+  static const String chatReconnect = 'chat_reconnect';
+  static const String chatRetry = 'chat_retry';
+  static const String chatOfflineStrip = 'chat_offline_strip';
+  static const String chatConnectionRequiredNotice = 'chat_connection_required_notice';
+  static const String chatSendFailedNotice = 'chat_send_failed_notice';
+  static const String chatTypeMessageOfflineHint = 'chat_type_message_offline_hint';
+  static const String liveBadge = 'live_badge';
+  static const String offlineBadge = 'offline_badge';
+  static const String chatTargetAdminNotFound = 'chat_target_admin_not_found';
+  static const String noOtherChildrenLinked = 'no_other_children_linked';
+  static const String switchChildTitle = 'switch_child_title';
+  static const String switchChildSubtitle = 'switch_child_subtitle';
+  static const String switchedToChild = 'switched_to_child';
+  static const String activeStudent = 'active_student';
 }
